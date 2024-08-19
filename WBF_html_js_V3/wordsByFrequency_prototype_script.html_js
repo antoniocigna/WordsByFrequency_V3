@@ -1,0 +1,575 @@
+"use strict";
+/*  
+Words By Frequence: A tool to practice language comprehension
+Antonio Cigna 2023
+license MIT: you can share and modify the software, but you must include the license file 
+*/
+/* jshint strict: true */
+/* jshint esversion: 6 */
+/* jshint undef: true, unused: true */
+//----------------------------------------------
+	
+	//   onclick_sortWordBy_ixField(nField,ndeep,isNumber,ascending); 
+	
+	let prototype_tableWordList_Header = `  
+		<table id="idTableWordList"   style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n	
+			<colgroup id="idwcol2">
+				<col id="idwcol2_0" span="1">
+				<col id="idwcol2_1" span="1">
+				<col id="idwcol2_2" span="1" style="visibility: §sel2collapse§;">  
+				<col id="idwcol2_3" span="1">
+				<col id="idwcol2_4" span="1">
+				<col id="idwcol2_5" span="1">
+				<col id="idwcol2_6" span="1">
+				<col id="idwcol2_7" span="1">
+				<col id="idwcol2_8" span="1">
+				<col id="idwcol2_9" span="1">
+			</colgroup>	
+			
+			<thead   id="idTableWordList_thead" style="position: sticky;top: 0;">  				
+				
+				<tr class="tabWhead_r1">  
+					<th style="text-align:center;width:5%;">
+						<span style="display:none;">numTR</span>
+						<span style="display:none;">
+							<span>word</span>    
+							<span>ixW2StudyLs</span>
+							<span>ix1</span>
+							<span>ixLemma</span>	
+						</span>						
+					</th>  				
+					<th  rowspan="3" style="text-align:center; vertical-align:middle; width:1em; font-size:0.8em;" >
+						<div  class="c_verticalText">frequenza in<br> tutte le righe</div>
+					</th>
+					
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+						<div  class="c_verticalText">frequenza nelle<br> righe scelte</div>
+					</th>
+					<th  rowspan="3" style="text-align:center; vertical-align:middle; width:1em;  font-size:0.8em;" >
+						<div  class="c_verticalText">learned <br><span style="font-size:0.8em;">(reset next column)</span></div>
+					</th>
+					
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+						<div  class="c_verticalText">to be studied</div>
+					</th>
+					
+					
+					<th style="text-align:center;width:25%;border-right:0px solid black;" >	
+						
+						<div class="hpad top left1">
+							parola 
+							<span style="font-size:0.6em; font-weight: lighter;"><br>passare il mouse sopra la parola <br>per leggere la <span class="c_tranW"><b>traduzione</b></span></span>  
+						</div>
+					</th>	
+					<th style="text-align:center;border-left:0px solid black;">	
+						<div class="hpad top left1">	
+							lemma paradigma 						
+						</div>
+					</th>	
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+						<div  class="c_verticalText">Play Voce Preferita</div>
+					</th>
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+						<div  class="c_verticalText">Play a new voice</div>
+					</th>
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+						<div  class="c_verticalText">Spelling della parola</div>
+					</th>	
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+						<div  class="c_verticalText">lista le righe con <br>questa parola</div>
+					</th>
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+						<div  class="c_verticalText">lista le righe con <br>questo lemma</div>
+					</th>
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+						<div  class="c_verticalText">lista le parole con<br> lo stesso lemma<br> o con lo stesso inizio</div>
+					</th>					
+				</tr>   
+				
+				<tr class="tabWhead_r2">   	
+					<th style="text-align:center;width:5%;"></th>  
+									
+					<!--    2 th  rowspanned 3-->		
+					<!--    2 th  rowspanned 3-->		
+					<th style="text-align:center;width:25%;border-right:0px solid black;" ></th>	
+					<th style="text-align:center;border-left:0px solid black;" >	</th>	  	
+					<!--    3 th  rowspanned 3-->		
+					<!--    3 th  rowspanned 3-->					
+				</tr>  
+				
+				<tr class="tabWhead_r3">   
+					<th style="text-align:center;width:5%;"></th>  
+					<!--    2 th  rowspanned 3-->		
+					<!--    2 th  rowspanned 3-->						
+					<th style="text-align:center;width:25%;border-right:0px solid black;" >	
+						<div class="hpad top left1">
+							<span style="color:red;font-size:0.6em;" id="id_w_to_learn_written"></span>
+							<br>
+							<button onclick="onclick_write_words_to_learn()">Scrivi le parole da imparare</button>
+							<br>
+							
+							<button onclick="onclick_remove_words_already_known()">Estrai solo le parole da studiare</button>
+						</div>
+					</th>				
+					<th style="text-align:center;border-left:0px solid black;" ></th>	  	
+					<!--    3 th  rowspanned 3-->	
+					<!--    3 th  rowspanned 3-->	
+				</tr>   
+				
+				<tr class="tabWhead_r4">   
+					<!--                     onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1, nChild2,ndeep2,isNumber2,ascending2)  -->
+					<th style="text-align:center;width:5%;"></th>  
+					<th style="text-align:center;width:5%;"><button onclick="onclick_sortWordBy_ixField(1,0,true,'d', 5,1,false,'a')">sort</button></th> 					
+					<th style="text-align:center;width:5%;"><button onclick="onclick_sortWordBy_ixField(2,0,true,'d', 1,0,true, 'd')">sort</button></th> 					
+					<th style="text-align:center;width:5%;"></th> 					
+					<th style="text-align:center;width:5%;"><button onclick="onclick_sortWordBy_ixField(4,1,true,'d', 1,0,true,'d')">sort</button></th>  	
+					<th style="text-align:center;width:25%;border-right:0px solid black;" >	
+						<div class="hpad top left1">
+							<button onclick="onclick_sortWordBy_ixField(5,1,false,'a', 6,1,false,'a')">sort</button></th>
+						</div>
+					</th>	
+					
+					
+					<th style="text-align:center;border-left:0px solid black;" >	
+						<div class="hpad top left1">
+							<button onclick="onclick_sortWordBy_ixField(6,1,false,'a', 5,1,false,'a')">sort</button></th>
+						</div>
+					</th>	  	
+					
+					<th style="text-align:center;" ></th>					
+					<th style="text-align:center;" ></td>     
+					<th style="text-align:center;" ></th>						
+					<th style="text-align:center;font-size:0.8em;">
+						<label>max<br> 
+							<input type="number"  min="1" value="100" id="idTabWRoW1" 
+								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
+						</label>					
+					</th>
+					<th style="text-align:center;font-size:0.8em;">
+						<label>max<br> 
+							<input type="number"  min="1" value="100" id="idTabWRoL2"
+								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
+						</label>					
+					</th>
+					<th style="text-align:center;font-size:0.8em;">
+						<label style="visibility:hidden;">max<br> 
+							<input type="number"  min="1" value="100" id="idTabWoWL3"
+								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
+						</label>					
+					</th>
+				</tr>
+			
+				<tr>
+					<th  style="padding:1.5px; background-color:black;" colspan="13"></th>
+				</tr>
+				
+				
+			</thead>    
+			<tbody id="idTableWordList_tbody">   \n 
+		 ` ; // end of prototype_tableWordList_Header ; 
+		
+	let prototype_oneTR_lemma = `  
+		<tr> 
+			<td style="text-align:center;font-size:0.8em;font-weight:100;">
+					<span onmouseover="mouseOverWord(this)" onmouseout="mouseOutWord(this)"  >§one-numTR§</span>					
+					<span style="display:none;">
+						<span>§one-word1§</span>    
+						<span>§ixW2StudyLs§</span>
+						<span>§one-ix1§</span>
+						<span>§one-ixixLemma§</span>	
+						<span>§one-ixLemma§</span>	
+					</span>	
+			</td>  
+			<td style="text-align:center;"  class="borderVert_L"  >§one-nrow§</td> 
+			<td style="text-align:center;color:blue;" class="borderVert_L" >§one-n_extr_row§</td> 
+			<td style="text-align:center;" class="borderVert_L"  ><button onclick="onclick_word_known(\'§one-ix1§\',0,this)">§known_yes§</button></td>
+			<td style="text-align:center;"><button onclick="onclick_word_known(\'§one-ix1§\',1,this)">§known_no§</button></td>
+			<td style="text-align:center;" class="borderVert_L" >					
+				<div class="hpad top left1"  >
+					<span onmouseover="mouseOverWord(this)" onmouseout="mouseOutWord(this)" ondblclick="onclickDoubleWordTran(this)"> 
+						<span class="c_wordOrig"><b>§one-word1§</b></span>						
+					</span> 
+					<span  class="c_wordTran" style="display:none;">§one-f_tran§</span>			
+				</div>
+			</td>		
+			<td style="text-align:center;" class="borderVert_R">					
+				<span style="display:none;">§one-f_lemma§</span>
+				<div class="hpad top left1">
+					<span> 
+						<span><b><b>§one-f_lemma§</b></span>
+					</span> 			
+								
+					<span  class="c_level"    >§one-x_level§</span>
+					<span  class="c_paradigma">§one-x_para1§</span>
+					<span  class="c_example"  >§one-x_example1§</span>
+					<span  class="c_paradigma">§one-x_para2§</span>
+					<span  class="c_example"  >§one-x_example2§</span>
+				</div>
+			</td>
+		
+			<td>
+				<button class="buttonWhite" onclick="onclick_tts_playSynthVoice_word3Freq(this,'§one-word1§', false,false)"> 
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span>
+				</button>
+            </td>
+			<td class="c_m0">
+                <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_word3Freq(this,'§one-word1§', false,true )">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">&plus;</span>
+                </button>
+            </td>
+            <td class="c_m0">
+                <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_word3Freq(this,'§one-word1§', true, false)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">${word_pause_symb}</span>
+                </button>
+            </td>    
+			
+			<td style="text-align:center;" class="borderVert_L"  >
+				<button §displaNone§ onclick="onclick_rowsByIxWord(\'§one-ix1§\')">W</button>
+			</td> \n
+			<td style="text-align:center;" class="borderVert_L"  >	
+				<button §displaNone§ onclick="onclick_rowsByIxLemma(\'§one-ixLemma§\')">L</button>
+			</td> \n			
+			<td style="text-align:center;" class="borderVert_L"  >
+				<button §displaNone§ onclick="onclick_require_PrefWord_lemma(\'§one-word1§\',\'§one-f_lemma§\')">P</button>	
+			</td> \n 			
+		</tr> \n
+		
+	` ; // end of prototype_oneTR_lemma
+	//----------------------------------------------
+	let prototype_oneTR_lemma2 = ` 
+		<tr> 
+				<td style="text-align:center;">§one-numTR§</td>  	
+				<td style="text-align:center;"></td>  	
+				<td style="text-align:center;"></td>
+				<td style="text-align:center;"></td>
+				<td style="text-align:center;" class="borderL"></td>		
+				<td style="text-align:center;" class="borderR">									
+					<span style="display:none;">§one-f_lemma§</span>
+					<div class="hpad top left1">
+						<span> 
+								<span><b><b>§one-f_lemma§</b></span>
+						</span> 								
+						<span  class="c_level"    >§one-x_level§</span>
+						<span  class="c_paradigma">§one-x_para1§</span>
+						<span  class="c_example"  >§one-x_example1§</span>
+						<span  class="c_paradigma">§one-x_para2§</span>
+						<span  class="c_example"  >§one-x_example2§</span>
+					</div>
+				</td>				
+				<td></td><td></td><td></td>
+				</tr> \n					
+	` ; // end of prototype_oneTR_lemma2
+		
+	//--------------------------------------------------------------------
+	
+	function newTr_from_prototype( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, word1, f_lemma, x_level, 
+					f_para, f_tran, x_para1, x_para2, x_example1, x_example2, showAltre, m, 
+					n_extr_row, 
+					knowYesCtr, knowNoCtr ) {  
+	    
+		//if (word1=="schrift") { console.log("newTr_from_prototype( numeroTR=", numeroTR, " ", word1, " nrow=", nrow, " ix1=", ix1, " m=",m , "  n_extr_row=",   n_extr_row  ) }
+		
+		var newTr = prototype_oneTR_lemma.trim(); 
+		
+		if (x_level != "")    { x_level    = "<br>" + "(lev." + x_level + ")"; }
+		if (x_para1 != "")    { x_para1    = "<br>" + x_para1    ; }		
+		if (x_example1 != "") { x_example1 = "<br>" + x_example1 ; }
+		if (x_para2 != "")    { x_para2    = "<br>" + x_para2    ; }		
+		if (x_example2 != "") { x_example2 = "<br>" + x_example2 ; }
+		
+	
+		if ( (1*knowNoCtr) > 0) { 
+			//newTr = newTr.replaceAll("§notKnowBackSty","border:2px solid black;");
+			newTr = newTr.replaceAll("§notKnowBackSty",' style="border:5px solid black;' );
+		} else {			
+			newTr = newTr.replaceAll("§notKnowBackSty","");
+		}
+		
+		var displayNone = "";
+		if (nrow == 0) {
+			displayNone = 'style="display:none;"';
+		} 
+		//console.log(word1 , "  nrow=", nrow,  " displayNone=>" + displayNone, "<==")
+		newTr = newTr.
+			replaceAll("§displaNone§"    , displayNone ).    
+			replaceAll("§ixW2StudyLs§"      , ""+ixW2StudyLs ). 
+			replaceAll("§one-ixLemma§"   , ""+ixLemma   ). 
+			replaceAll("§one-ixixLemma§" , ""+ixixLemma ). 
+			replaceAll("§one-numTR§"     , ""+numeroTR ). 
+			replaceAll("§one-nrow§"      , ""+nrow     ). 
+			replaceAll("§one-ix1§"       , ""+  ix1    ). 
+			replaceAll("§one-word1§"     , ""+word1    ). 			
+			replaceAll("§one-f_lemma§"   , ""+f_lemma  ). 			 
+			replaceAll("§one-x_level§"   , ""+x_level  ).
+			replaceAll("§one-f_tran§"    , ""+f_tran   ).   
+			replaceAll("§one-x_para1§"   , ""+x_para1  ). 
+			replaceAll("§one-x_para2§"   , ""+x_para2  ). 
+			replaceAll("§one-x_example1§", ""+x_example1 ). 
+			replaceAll("§one-x_example2§", ""+x_example2 ). 
+			replaceAll("§one-showAltre§",  ""+ showAltre). 	
+			replaceAll("§one-n_extr_row§", ""+ n_extr_row).
+			replaceAll("§known_yes§"     , ""+knowYesCtr).		
+			replaceAll("§known_no§"      , ""+knowNoCtr)  			
+			;  
+		return newTr;	
+		
+	}  // end of newTr_from_prototype
+	
+	//======================================================
+	let prototype_tr_m2_tts = ` 
+		<tr id="idtr_§1§_m2" style="display:none;height:1.5em;">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td class="borderVert"></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+			<td></td>
+         </tr>	\n	 
+	` ; // end of prototype_tr_m2_tts
+
+	//--------------------------------
+
+	let prototype_tr_m1_tts = ` 
+         <tr id="idtr_§1§_m1" style="display:none;  border-bottom:1px solid black;">
+            <td></td>
+            <td></td>
+            <td>
+				<button class="buttonTD2" id="idb_§1§_m" onclick="onclick_showHide_orig_row_group(this)">
+				   <span style="display:none;font-size:2em;">${openbook_symb}</span>
+				   <span style="display:block;font-size:2em;">${closedbook_symb}</span>
+				</button>
+            </td>
+            <td>
+				<button class="buttonTD2" id="idbT_§1§_m"  onclick="onclick_showHide_tran_row_group(this)">				
+					<span style="display:none;font-size:2em;height:1.4em; ">
+							<span style="font-weight:bold;">${show_translation_symb}</span>
+					</span>
+					<span style="display:block;font-size:2em;height:1.4em;padding:0 0.1em;">
+							<span style="font-weight:bold;min-width:4em;">${hide_translation_symb}</span>
+					</span>
+				</button>
+            </td>
+            <td>
+			</td>
+            <td class="borderVert" style="color:black;font-size:0.5em;text-align:center;vertical-align:middle;">
+				doppio click sulla frase per inserire la traduzione o variare quella esistente 
+			</td>		
+			<td>
+				<button class="buttonWhite" onclick="onclick_tts_playSynthVoice_m1_row2(this,§1§,false,false)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span>
+				</button>
+            </td>
+            <td>
+               <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_m1_row2(this,§1§,false,true)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">&plus;</span>
+               </button>
+            </td>
+            <td>
+               <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_m1_row2(this,§1§,true,false)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">${word_pause_symb}</span>
+               </button>
+            </td>
+            <td></td>
+			<td></td>
+         </tr> \n
+	` ; //	end of prototype_tr_m1_tts		 
+
+	//---------------------------------------
+	
+	let prototype_tr_tts = `		 
+         <tr id="idtr_§1§" class="seleRow§nfile§" style="width:100%;§visib§">
+            <td class="arrow12"><button class="buttonFromToIx" id="b1_§1§" onclick="onclick_tts_arrowFromIx(this, §1§, 1)">
+               <span style="font-size:1em;height:1.4em;">${right_arrow_symb}</span></button>
+            </td>
+            <td class="arrow12"><button class="buttonFromToIx" id="b2_§1§" onclick="onclick_tts_arrowToIx(  this, §1§, 1)">
+               <span style="font-size:1em;height:1.4em;">${left_arrow_symb}</span></button>
+            </td>		
+            <td>
+               <button class="buttonTD2" id="idb_§1§" onclick="onclick_tts_show_rowOrig( this, §1§)">
+				   <span style="display:none;font-size:2em;height:1.4em;">${openbook_symb}</span>
+				   <span style="display:block;font-size:2em;height:1.4em;">${closedbook_symb}</span>
+               </button>
+            </td>
+            <td>
+               <button class="buttonTD2" id="idbT_§1§" onclick="onclick_tts_show_rowTran(this, §1§)">
+				   <span style="display:none;font-size:2em;height:1.4em; ">
+							<span style="font-weight:bold;">${show_translation_symb}</span>
+				   </span>
+				   <span style="display:block;font-size:2em;height:1.4em;padding:0 0.1em;">
+							<span style="font-weight:bold;min-width:4em;">${hide_translation_symb}</span>
+				   </span>
+               </button>
+            </td>
+            <td>
+               <button class="buttonTD2" id="idG_§1§" onclick="onclick_tts_seeWordsGO1(§1§,§6ix§)">			
+						<span style="font-size:2em;height:1.4em;padding:0 0.1em;">
+						<span>${magnifyingGlass_symb}</span>
+					</span>
+			   </button>
+            </td>            
+			<td class="borderVert"> 
+				<div class="divRowText" >
+					<div class="suboLine" style="display:none;" id="idc_§1§"  ondblclick="onclickDoubleRowTran(this)">§4txt§</div>
+					<div class="tranLine" style="display:none;" id="idt_§1§">§5txt§<br></div>	
+					<div id="idw_§1§" class="center" style="width:100%;border:0px solid red;"></div>				
+					<div style="display:none;" id="idtts§1§">§ttstxt§</div>
+					<div style="display:none;">§ixRow2StudyLs§</div>
+				</div>
+			</td>	
+            <td>
+               <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_row2(this,§1§,false,false)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span>
+               </button>
+            </td>
+            <td>
+               <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_row2(this,§1§,false,true)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">&plus;</span>
+               </button>
+            </td>
+            <td>
+               <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_row2(this,§1§,true,false)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">${word_pause_symb}</span>
+               </button>
+            </td>		
+            <td class="filerow  textfile§nfile§">§1§</td>
+			<td class="filerow  textfile§nfile§">
+					<span onmouseover="mouseOverWord(this)" onmouseout="mouseOutWord(this)">§6id§</span> 
+					<span style="display:none;">§6id2§</span>				
+			</td>
+         </tr>
+	` ; // end of prototype_tr_tts
+//=====================================
+
+let prototype_word_tr_m2_tts = ` 	  
+         <tr id="widtr_§1§_m2" style="display:none;min-height:1.5em">
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+			<td></td>
+			<td></td>
+         </tr>
+		`; // end of prototype_word_tr_m2_tts
+
+//-----------------------------------------		
+
+let prototype_word_tr_m1_tts = ` 	
+         <tr id="widtr_§1§_m1" style="display:none;border-bottom:1px solid black;">
+            <td></td>
+            <td></td>
+            <td>
+               <button class="buttonTD2" id="widb_§1§_m" onclick="onclick_showHide_orig_word_group(this)">
+                  <span style="display:none;font-size:2em;height:1.4em;">${openbook_symb}</span>
+                  <span style="display:block;font-size:2em;height:1.4em;">${closedbook_symb}</span>
+			   </button>	  
+            </td>
+            <td></td>    			
+            <td>
+               <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_m1_row3(this,§1§,false,true)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">&plus;</span>
+               </button>
+            </td>
+            <td>
+               <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_m1_row3(this,§1§,true,false)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">${word_pause_symb}</span>
+               </button>
+            </td>
+			<td></td>
+			<td></td>
+         </tr>
+		`; // end of prototype_word_tr_m1_tts	
+		
+//--------------------------
+let prototype_word_table_header = `
+	<div style="width:95%;height:95%;border:1px solid blue;">
+		<table style="border:0.5em solid transparent;width:100%; table-layout:fixed;"> \n
+	<!-- Attenzione table-layout fixed utilizza width del TH/TD della prima TR ed ignora quelle delle TR successive -->
+	<tr>   \n
+		<th style="text-align:center;width:6%; "></th> \n
+		<th style="text-align:center;width:6%; "></th> \n 
+		<th style="text-align:center;width:5%; "></th> \n
+		<th style="text-align:center;width:60%;"></th> \n		
+		<th style="text-align:center;width:5%; "></th> \n	
+		<th style="text-align:center;width:5%; "></th> \n
+		<th style="text-align:center;width:5%; "></th> \n		
+		<th style="text-align:center;width:8%; "></th> \n	
+	</tr>    \n
+	`; // end of prototype_word_table_header	
+	
+let prototype_word_table_end = `</table> \n</div> \n `; 
+
+//---------------------------------
+let prototype_word_tr_tts = `			
+         <tr id="widtr_§1§" style="background-color: lightgrey;">
+            <td class="arrow12">
+			   <button class="buttonFromToIx" id="wb1_§1§" onclick="onclick_tts_word_arrowFromIx(this, §1§, true, false)">
+					<span style="font-size:1em;height:1.4em;">${right_arrow_symb}</span>
+			   </button>
+            </td>
+            <td class="arrow12">
+				<button class="buttonFromToIx" id="wb2_§1§" onclick="onclick_tts_word_arrowToIx(  this, §1§, true, false)">
+					<span style="font-size:1em;height:1.4em;">${left_arrow_symb}</span>
+			   </button>
+            </td>
+            <td>
+               <button class="buttonTD2" id="widb_§1§" onclick="onclick_tts_word_show_one_row( this, §1§)">		
+					<span style="display:none;font-size:2em;height:1.4em;">${openbook_symb}</span> 
+					<span style="display:block;font-size:2em;height:1.4em;">${closedbook_symb}</span>				
+               </button>
+            </td>			
+	
+	        <td>  	
+				<div class="hpad top left1"  >
+						<span class="c_wordOrig2"  id="widc_§1§" style="display:none;" onmouseover="mouseOverWord2(this)" onmouseout="mouseOutWord2(this)"> 
+							<b>§4txt§</b>							
+							<span  class="c_paradigma2">§7lemma§</span>							
+							<span  class="c_wordTran2" style="display:none;">§6tran§</span>
+						</span> 
+				</div>
+				<div  style="display:none;" id="widtts_§1§">§ttsWtxt§</div>
+			</td>
+			
+            <td class="c_m0">
+               <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_word3(this,§1§,false,true)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">&plus;</span>
+               </button>
+            </td>
+            <td class="c_m0">
+               <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_word3(this,§1§,true,false)">
+					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">${word_pause_symb}</span>
+               </button>
+            </td>    
+			<td>
+			   <button class="buttonWhite" onclick='onclick_require_PrefWordFromRowList("§4txt§")'>pref</button>
+            </td>
+			<td>
+			   <button class="buttonWhite"  onclick='onclick_require_rowListWithThisWord2(2,"§4txt§","§4maxNumRow§")'>§8numfrasi§&nbsp;frasi</button>
+            </td>
+			
+         </tr>
+ 		`; // end of prototype_word_tts	
+//----------------------------------------
+let word_tr_allclip =  "\n" + prototype_word_tr_tts; 
+//-------------------------------------
+function getWord_tr( z3, parola1, paro_tts, paro_lemma, paro_tran, paro_nFrasi, maxNumRow) {
+
+	var wordTR = word_tr_allclip.replaceAll("§1§", z3).replaceAll("§4txt§", parola1).replaceAll("§4maxNumRow§", ""+maxNumRow).
+			replaceAll("§ttsWtxt§", paro_tts). replaceAll("§7lemma§", paro_lemma).
+			replaceAll( "§6tran§", paro_tran).replaceAll("§8numfrasi§",paro_nFrasi) ;
+	
+	//if (z3 == 1) {console.log("wordTR=>" + wordTR	 + "<==")	}
+	
+	return wordTR;
+	
+} // end of getWord_tr 
+
+	let string_tr_xx = "";		
+
+//-----------------------------
