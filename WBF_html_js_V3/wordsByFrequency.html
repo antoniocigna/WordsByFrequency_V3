@@ -949,25 +949,42 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
                                             </div>
 	
 											<div id="id_model_tSHeadW" style="display:none;"> 
-												<div class="centerXY" style="width:100%;text-align:left;font-size:0.8em;">													
-													<table id="tsHead1" style="display:none;">
-														<tbody id="id_model_tSHeadW1_bdy">
-															<tr><td colspan="2" class="c_lemma">§1lemma§</td> </tr>															
-															<tr><td style="width:1em;">&nbsp;</td><td class="c_word">§1wordXlem§</td></tr> 
-															<tr><td style="width:1em;">&nbsp;</td><td class="c_tranW">§1tran§</td></tr> 
+												<div class="centerXY" style="width:100%;text-align:left;font-size:0.8em;">			
+													<!-- case 2:  one lemma many words  --> 													
+													<table id="tsHead_2" style="display:none;">
+														<tbody id="id_model_tSHead_bdy_2">
+															<tr>
+																<td><span style="font-size:0.5em;">lemma </span></td>
+																<td>				
+																	<span class="c_lemma">§1lemma§</span>
+																	<span class="c_tranW" style="padding-left:0.5em;">§1tran§</span> 
+																</td> 
+															</tr>															
+															<tr>
+																<td style="visibility:hidden;">&nbsp;</td>
+																<td  colspan="2" class="c_word">§1wordXlem§</td>
+															</tr> 
 														</tbody>
-													</table>
-													<table id="tsHead2" style="display:none;">
-														<tbody id="id_model_tSHeadW2_bdy">
+													</table>	
+													<!-- case 1:  one lemma one word ---> 
+													<table id="tsHead_1_3" style="display:none;">
+														<tbody id="id_model_tSHead_bdy_13">
 															<tr><td colspan="2" class="c_word">§1wordXlem§</td> </tr>															
-															<tr><td style="width:1em;">&nbsp;</td><td class="c_lemma">§1lemma§</td>
-																				<td class="c_tranW">§1tran§</td></tr> 
+															<tr><td><span style="font-size:0.5em;">lemma </span></td>
+																<td style="padding-right:0.5em;">																
+																	<span class="c_lemma">§1lemma§</span>
+																</td>
+																<td class="c_tranW">§1tran§</td></tr> 
 														</tbody>
 													</table>
+													<!-- case 3:  one word many lemmas ---> 
 													<table id="tsHead3" style="display:none;">
-														<tbody id="id_model_tSHeadW2_row2_bdy">														
-															<tr><td style="width:1em;">&nbsp;</td><td class="c_lemma">§1lemma§</td>
-																				<td class="c_tranW">§1tran§</td></tr> 
+														<tbody id="id_model_tSHead_bdy_13_row2">														
+															<tr><td><span style="font-size:0.5em;">lemma </span></td>
+																<td style="padding-right:0.5em;">																			
+																	<span class="c_lemma">§1lemma§</span>
+																</td>
+																<td class="c_tranW">§1tran§</td></tr> 	
 														</tbody>
 													</table>
 												</div>	

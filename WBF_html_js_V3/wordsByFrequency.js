@@ -1005,15 +1005,8 @@ function onclick_require_lemmaWordList() {
 } // end of onclick_require_lemmaWordList
 //------------------------------------
 function js_go_showLemmaWordList(wordListStr,  js_parm, jsFunc,goFunc) {
-	console.log(" js_go_showLemmaWordList () ", "wordListStr=\n" + wordListStr + "\n-------------------\n")
-	/**
-	if (js_parm=="") {
-		console.log("js_go_showLemmaWordList(wordListStr=" + wordListStr , "\n\t  <-- " + goFunc + " <-- " + jsFunc) ;
-	} else {
-			console.log("js_go_showLemmaWordList(wordListStr=" + wordListStr , "\n\t js_parm=", js_parm, " <-- " + goFunc + " <-- " + jsFunc) ;
-    }	
-	console.log("wordListStr=\n" + wordListStr + "\n-------------------\n")
-	**/
+	//console.log(" js_go_showLemmaWordList () ", "wordListStr=\n" + wordListStr + "\n-------------------\n")
+	
 	
 	if (wordListStr.substring(0,5) == "NONE,") {
 		//document.getElementById("id_inpLemma_word").innerHTML = wordListStr.substring(5) 
@@ -1242,6 +1235,7 @@ function checkUpper( thisWord, thisListRow) {
 //------------------------
 
 function splitHeader( inpHeader ) {
+	//console.log("splitHeader(", 	inpHeader); 
 	/**	
 		<HEADER>
 			<WORD>ihren,L:ihren</WORD> 
@@ -1273,8 +1267,213 @@ function splitHeader( inpHeader ) {
 }
 
 //---------------------------------------
+function buildHeaderTable( str1 ) {	
+
+	//console.log( green("buildHeaderTable"), " str1=\n", str1);
+	/***
+	buildHeaderTable () str1= 
+		one Lemma, many words 
+		:lemma=sein :tran=essere :wordsInLemma=bin  
+		:lemma=sein :tran=essere :wordsInLemma=bist  
+		:lemma=sein :tran=essere :wordsInLemma=gewesen  
+		:lemma=sein :tran=essere :wordsInLemma=ihren
+	
+		many Lemma - One Word only
+		<HEADER>
+			<WORD>ihren,L:ihren</WORD> 
+			:lemma=ihr 		:tran=tu 		:wordsInLemma=ihren 
+			:lemma=ihre 	:tran=loro		:wordsInLemma=ihren 
+			:lemma=ihrer 	:tran=loro 		:wordsInLemma=ihren 
+			:lemma=sein 	:tran=essere	:wordsInLemma=ihren 
+		</HEADER>
+	**/
+	
+	
+	var lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
+	if (lineTr[0] == "") {  lineTr = lineTr.slice(1);}
+	
+	var str2 = '' ; 
+	var len1 = lineTr.length
+	//-------------------------------
+	// caso 1: un solo lemma e una voce 
+	// caso 2: un solo lemma e diverse voci 
+	// caso 3: diversi lemma e una sola voce
+	// caso 4: diversi lemma e diverse voci    ( non previsto )   	
+	//---------------------------------------
+	var oneWordOnly, oneLemmaOnly; 
+	
+	//-----------
+	var numVoci=0
+	var numLemma=0
+	var preLem = "", lem1="", tran1=""
+	var preVoce=""
+	for(var z1=0; z1 < len1; z1++) {
+		var oneTr1 = lineTr[z1].split(":")	
+		lem1 = oneTr1[0].trim()
+		if (lem1 != preLem) {
+			numLemma++
+			preLem = lem1
+			tran1 = oneTr1[1].trim() 
+		}
+		var voce =  oneTr1[2].trim() 
+		if (preVoce == "") {
+			preVoce = voce; 
+			numVoci++
+		} else {
+			if (voce != preVoce ) {
+				numVoci++
+				preVoce =voce; 
+			}
+		} 	
+	} 
+	oneWordOnly  = (numVoci == 1)
+	oneLemmaOnly = (numLemma == 1)
+	//------------------------	
+	var ele_model_tSHeadW_bdy;
+	var model_tSHeadW_div;	
+	
+	
+
+	//--------------------------------
+	var type = 0;
+
+	if (oneWordOnly) {	
+		document.getElementById("tsHead_1_3").style.display="block"; 
+		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_13"); 	
+		if (oneLemmaOnly) {
+			type=1;
+			//console.log( green(" CASO 1 "), "1XXXXXXXX ONE WORD Only and ONE LEMMA only XXXXXXXXXX")
+		} else {
+			type=3;
+			//console.log( green(" CASO 3 "), "1XXXXXXXX ONE WORD and many LEMMA XXXXXXXXXX")			
+		}	
+	} 
+	if (oneLemmaOnly) {
+		if (oneWordOnly) {
+			type=1;
+			//console.log( green(" CASO 1 "), "2XXXXXXXX ONE WORD Only and ONE LEMMA XXXXXXXXXX")		
+		} else {
+			type=2;
+			//console.log( green(" CASO 2 "), "1XXXXXXXX many WORD  and ONE LEMMA XXXXXXXXXX")
+		}	
+		document.getElementById("tsHead_2").style.display="block"; 
+		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_2"); 	
+	}
+	if ((oneWordOnly == false) && (oneLemmaOnly == false)) {
+		type=4;
+		//console.log( green(" CASO 4 "), "3XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX")
+	}
+	//----------------------------------
+	var model_tSHeadW_lemma  = ele_model_tSHeadW_bdy.innerHTML; 
+	//console.log("aaa ", model_tSHeadW_lemma)
+	var model_tSHeadW13_row2 = document.getElementById("id_model_tSHead_bdy_13_row2").innerHTML; 	
+	
+	
+	
+	//-----
+	switch( type ) {			
+		 case 1: //console.log("caso 1  una parola e un lemma")	
+			case_type1_3(); break;
+		 case 2: //console.log("caso 2  un lemma diverse parole")			
+			case_type2();
+			break;
+		 case 3: 
+			//console.log("caso 3  una parola e diversi lemma")	
+			case_type1_3(); 		
+			break;
+		 case 4: 
+			//console.log("caso 4  diverse parole con diversi lemma")
+			break;
+		 default:
+			break;
+	}
+	//----------------
+	function case_type1_3() {
+					//console.log("caso 1  una parola e un lemma")
+					//console.log("caso 3  una parola e diversi lemma")				/*	
+				for(var z1=0; z1 < len1; z1++) {
+					var oneTr1 = lineTr[z1]	
+					var jT = oneTr1.indexOf(":tran=");
+					var jW = oneTr1.indexOf(":wordsInLemma=");
+					var nuovoLemma   = oneTr1.substring(0,jT    ).trim();
+					var nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
+					var nuovoLisWord = oneTr1.substring(jW+14   ).trim();						
+					if (z1 == 0) {
+						str2 += model_tSHeadW_lemma.replace("§1lemma§",nuovoLemma).
+											replace("§1tran§",     nuovoTran).
+											replace("§1wordXlem§", nuovoLisWord). 
+											replace("§1tran§",     nuovoTran) + 
+											"\n\n";  				
+					} else {
+						str2 += model_tSHeadW13_row2.replace("§1lemma§",nuovoLemma).
+											replace("§1tran§",     nuovoTran) + 
+											"\n\n";  		
+					}			
+				} // end for z1
+	} // end of case_type1_3	
+	//------------------
+		
+	function case_type2() {
+			// console.log("caso 2  un lemma diverse parole")			/**
+													<!-- case 2:  one lemma many words  --> 
+			/*											
+													<table id="tsHead_2" style="display:none;">
+														<tbody id="id_model_tSHead_bdy_2">
+															<tr>
+																<td colspan="2">
+																	<span class="c_lemma">§1lemma§</span>
+																	<span class="c_tranW" style="padding-left:5em;">§1tran§</span> 
+																</td> 
+															</tr>															
+															<tr>
+																<td style="width:1em;">&nbsp;</td>
+																<td class="c_word">§1wordXlem§</td>
+															</tr> 
+														</tbody>
+													</table>
+			**/
+		var listParole = ""
+		var nuovoLemma = "",  nuovoTran = ""
+		for(var z1=0; z1 < len1; z1++) {	
+			var oneTr1 = lineTr[z1]	
+			var jT = oneTr1.indexOf(":tran=");
+			var jW = oneTr1.indexOf(":wordsInLemma=");
+			if (z1==0) {
+				nuovoLemma   = oneTr1.substring(0,jT    ).trim();
+				nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
+			}
+			var nuovoLisWord = oneTr1.substring(jW+14   ).trim();		
+			listParole += '<span style="margin-right:2em;">' + nuovoLisWord + "</span>"
+		}
+		str2 += model_tSHeadW_lemma.replace("§1lemma§", nuovoLemma).
+					replace("§1tran§",     nuovoTran). 
+					replace("§1wordXlem§", listParole) + "\n\n";  		
+		
+	} // end of case_type2
+	//-----------------------------------
+	
+	var ele_model_tSHeadW_DIV = document.getElementById("id_model_tSHeadW"); 
+	var model_tSHeadW_div = ele_model_tSHeadW_DIV.innerHTML; 	
+	var jBody  = model_tSHeadW_div.indexOf("<tbody");
+	var jBody2 = model_tSHeadW_div.indexOf("<tr", jBody);	
+	
+	var newDiv = model_tSHeadW_div.substr(0, jBody2) +"\n" + str2.trim()  + "\n</tbody></table></div>\n";  
+		
+	//console.log("6 buildHeaderTable () newDiv = ", newDiv)
+	return newDiv;  
+	
+} // end of buildHeaderTable
+//======================================================
 //---------------------------------------
-function buildHeaderTable( str1 ) {
+function OLD2buildHeaderTable( str1 ) {
+	/***
+	1 buildHeaderTable () str1= 
+		:lemma=sein :tran=essere :wordsInLemma=bin  
+		:lemma=sein :tran=essere :wordsInLemma=bist  
+		:lemma=sein :tran=essere :wordsInLemma=gewesen  
+		:lemma=sein :tran=essere :wordsInLemma=ihren
+	***/
+		
 	/**	
 		many Lemma - One Word only
 		<HEADER>
@@ -1295,10 +1494,10 @@ function buildHeaderTable( str1 ) {
 	var lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
 	if (lineTr[0] == "") {  lineTr = lineTr.slice(1);}
 	
-	console.log("1 buildHeaderTable() str1=" , str1); 
+	console.log("1 buildHeaderTable () str1=" , str1); 
  	
 		
-	//console.log("2 buildHeaderTable() model_tSHeadW_div=> " + model_tSHeadW_div  + "<==="); 
+	//console.log("2 buildHeaderTable () model_tSHeadW_div=> " + model_tSHeadW_div  + "<==="); 
 	
 	/**********
 	
@@ -1439,11 +1638,11 @@ function buildHeaderTable( str1 ) {
 	
 	var newDiv = model_tSHeadW_div.substr(0, jBody2) +"\n" + str2.trim()  + "\n</tbody></table></div>\n";  
 		
-	console.log("6 buildHeaderTable() newDiv = ", newDiv)
+	console.log("6 buildHeaderTable () newDiv = ", newDiv)
 	
 	return newDiv;  
 	
-} // end of buildHeaderTable
+} // end of OLD2buildHeaderTable
 
 //---------------------------------------
 function OLDbuildHeaderTable( str1 ) {
@@ -1460,12 +1659,12 @@ function OLDbuildHeaderTable( str1 ) {
 	var lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
 	if (lineTr[0] == "") {  lineTr = lineTr.slice(1);}
 	
-	console.log("1 buildHeaderTable() str1=" , str1); 
+	console.log("1 buildHeaderTable () str1=" , str1); 
  	
 	var ele_model_tSHeadW = document.getElementById("id_model_tSHeadW"); 
 	var model_tSHeadW_div = ele_model_tSHeadW.innerHTML; 
 	
-	//console.log("2 buildHeaderTable() model_tSHeadW_div=> " + model_tSHeadW_div  + "<==="); 
+	//console.log("2 buildHeaderTable () model_tSHeadW_div=> " + model_tSHeadW_div  + "<==="); 
 	
 	var ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHeadW_bdy"); 
 	var model_tSHeadW_lemma = ele_model_tSHeadW_bdy.innerHTML; 
@@ -1524,7 +1723,7 @@ function OLDbuildHeaderTable( str1 ) {
 	}
 	str2 += '';
 	
-	//console.log("6 buildHeaderTable() str2 = " + str2 + "<==" ) ; 
+	//console.log("6 buildHeaderTable () str2 = " + str2 + "<==" ) ; 
 
 	
 	var newDiv = model_tSHeadW_div.substr(0, jBody) + str2 + model_tSHeadW_div.substr(jBodyEnd+8);  
@@ -1584,7 +1783,7 @@ function js_go_showWrdRowList(inpstr) {
 	
 	var inpHeader = inpstr.substring( 0, ks + 9);
 	
-	console.log("js_go_showWrdRowList inpHeader=\n" + inpHeader +"\n-----------------\n") 
+	//console.log("js_go_showWrdRowList inpHeader=\n" + inpHeader +"\n-----------------\n") 
 	/**	
 		<HEADER>
 			<WORD>ihren,L:ihren</WORD> 
@@ -1611,8 +1810,7 @@ function js_go_showWrdRowList(inpstr) {
 		h_wordListStr = h_wordListStr00.substring(jh+3).trim();		
 	}	
 		
-	//console.log("ANTONIO _showWordRowList ", "reqWord=" + inpReqWord + ",h_wordListStr=" + h_wordListStr + "\n-------------------------------------\n") ;
-	
+	//console.log("ANTONIO _showWordRowList ", "inpReqWord=" + inpReqWord + ",h_wordListStr=" + h_wordListStr + "\n-------------------------------------\n") ;
 	
 	h_wordTab     = buildHeaderTable( col1[1] )
 	
@@ -1646,7 +1844,7 @@ function js_go_rowList( inpstr, js_parm, jsFunc,goFunc) {
 	
 	// triggered by go ( go_passToJs_rowList and js_go_showWrdRowList)
 	
-	console.log("function js_go_rowList() <-- " + goFunc + " <-- " + jsFunc ) 
+	//console.log("function js_go_rowList() <-- " + goFunc + " <-- " + jsFunc ) 
 	//console.log("inpstr=" +inpstr ) 
 	
 	rowToStudy_list = [];
