@@ -87,7 +87,8 @@ const FILE_words_to_learn    string = "wordsToLearn.txt"
 
 const FILE_last_mainpage_values2 string = "last_mainpage_values2.txt" // to transfer values between runs
 const FILE_inpParadigma      string = "myParadigma.csv" ; 
-const FILE_inpLemma          string = "myWordLemmaFile.txt"  
+const FILE_inpLemma_word_lemma   string = "myWordLemmaFile_fmtWordLemma.txt"  
+const FILE_inpLemma_lemma_word   string = "myWordLemmaFile_fmtLemmaWord.txt"  
 const FILE_language          string = "language.txt"           // lang and voice file    
 //---------------------------------------------
 
@@ -325,6 +326,8 @@ var lista_gruppiSelectRow  = make([]  rowGroupStruct, 0, 100)
 
 var countNumLines  bool = false 
 var maxNumLinesToWrite = 0
+var lemmaFormat   = "word lemma"
+var sw_lemma_word = false 
 
 //var rowArrayByFreq []rowStruct;
 //-------------------------------
@@ -387,20 +390,21 @@ func check(e error) {
 }
 
 //-------------------------------
-func getPgmArgs( key0, key1 , key2 , key3 string) (string, string, bool, int) {  
+func getPgmArgs( key0, key1 , key2 , key3, key4 string) (string, string, bool, int, string) {  
 	
 	//  getPgmArgs("-html", "-input" , "-countNumLines" ,  "-maxNumLinesToWrite")	
 
 	args1    :=  os.Args[1:]		
 	
 	
-	var val0, val1, val2, val3 string
+	var val0, val1, val2, val3, val4 string
 	for a:=0; a < (len(args1)-1); a++ {
 		switch args1[a] {
 			case key0 :   val0 = args1[a+1]
 			case key1 :   val1 = args1[a+1]
 			case key2 :   val2 = args1[a+1]
 			case key3 :   val3 = args1[a+1]
+			case key4 :   val4 = args1[a+1]
 		}
 	}  
 	var isCount = false;
@@ -413,9 +417,9 @@ func getPgmArgs( key0, key1 , key2 , key3 string) (string, string, bool, int) {
 		num=0
 	}
 
-	//fmt.Println("args=", args1,  " val0=", val0, " val1=", val1, " val2=", val2 , " val3=", val3, " num=", num)   
+	//fmt.Println("args=", args1,  " val0=", val0, " val1=", val1, " val2=", val2 , " val3=", val3, " num=", num, " val4=", val4)   
 	
-	return val0, val1, isCount, num
+	return val0, val1, isCount, num, val4
 	
 } // end of getPgmArgs
 
@@ -429,9 +433,12 @@ func main() {
 	
 	fmt.Println( "\ncolori:", red("rosso"), green("verde"), yellow("giallo"),  magenta("magenta"), cyan("ciano") , "\n"  )  
 	
-	val0, val1, val2, val3 := getPgmArgs("-html",  "-input" , "-countNumLines" , "-maxNumLinesToWrite")	
+	val0, val1, val2, val3, val4 := getPgmArgs("-html",  "-input" , "-countNumLines" , "-maxNumLinesToWrite", "-lemmaformat")	
 	countNumLines      = val2
 	maxNumLinesToWrite = val3
+	lemmaFormat        = val4
+	
+	sw_lemma_word = (lemmaFormat == "lemma-word")
 	
 	if val0 != "" { parameter_path_html = strings.ReplaceAll(val0,"\\","/")  } 
 	if val1 != "" { file_inputControl   = strings.ReplaceAll(val1,"\\","/")  }  	
@@ -441,6 +448,8 @@ func main() {
 	fmt.Println("\n"+ "parameter_path_html =" + parameter_path_html + "\n" +  "input = " + file_inputControl )
 	fmt.Println("countNumLines       = " ,  countNumLines)
 	//fmt.Println("maxNumLinesToWrite = " , maxNumLinesToWrite) 
+	
+	fmt.Println("lemmaformat = ", lemmaFormat, " sw_lemma_word =", sw_lemma_word)
 	fmt.Println("\n----------------\n")
 	
 	//------------------------------
@@ -1217,7 +1226,7 @@ func bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, js_f
 			if totRR > max_num_row4lemma { break }
 		} // end for kLe 
 		
-		//???????antoX
+		
 		 
 	//-------
 	
@@ -1928,7 +1937,7 @@ func split_one_word_dict_row( row1 string ) (string, int, []string, []string) {
 //-------------------------------
 
 func split_ALL_word_dict_row(  strRows string) string {
-	//fmt.Println( "ANTONIO xxxxxxxxxxxxxxxxxxxxxxxxxxxx  split_ALL_word_dict_row( strRows=", strRows); 
+	fmt.Println( "ANTONIO xxxxxxxxxxxxxxxxxxxxxxxxxxxx  split_ALL_word_dict_row( strRows=", strRows); 
 	// eg. einem;14 ; ein einem einer ;  a uno uno;	  ==> word ; ix : list of lemmas ; list of translations	
 	
 	lemmaTranStr := ""
@@ -2358,7 +2367,7 @@ func begin() {
 	
 	if sw_stop { endBegin("2"); return }	
 
-	stat_useWord();	
+	//stat_useWord();	
 
 	if sw_stop { endBegin("3"); return }	
 	
@@ -2498,6 +2507,20 @@ func test_all_folder() {
 } // end of test_all_folders
 
 //------------------
+func getFileByteSize( path1 string,   fileName string) int {
+	path2:=""
+	if path1 != "" {
+		path2 = path1 + string(os.PathSeparator) 
+	} 	
+	fileN := path2 + fileName 
+	fileInfo, _ := os.Stat( fileN )  
+	
+	fmt.Println("getFileByteSize fileN=", fileN, " fileInfo = ", fileInfo) 
+	if fileInfo == nil { return 0 }
+	return int( fileInfo.Size() )
+} // end of getFileByteSize
+
+//--------------
 func myOpenRead( path1 string,   fileName string,   descr string,  func1    string) (*os.File, int) {
 	path2:="";
 	path10:=""
@@ -2506,14 +2529,13 @@ func myOpenRead( path1 string,   fileName string,   descr string,  func1    stri
 		path2 = path1 + string(os.PathSeparator) 
 	} 	
 	fileN := path2 + fileName 
-	sizeByte:=0
+	
 	fmt.Println("\n" + yellow("open file"),  green(fileName) , path10 )
 	
+	sizeByte:= getFileByteSize(path1,fileName)
 	readFile, err := os.Open( fileN )  
-    if err == nil {			
-		fileInfo, _ := os.Stat( fileN )  
-		sizeByte = int( fileInfo.Size() )
-		fmt.Println( "\t", "size: ", fileInfo.Size(), " bytes" )	
+    if err == nil {				
+		fmt.Println( "\t", "size: ", sizeByte, " bytes" )	
 		return readFile, sizeByte
 	}
 	msg1_Js:= `il file "` + fileN + `" (` + descr + " " + func1 + ")" + " non esiste"
@@ -2578,7 +2600,7 @@ func read_all_files() {
 	test_all_folder()
 	if sw_stop {return}
 	
-	read_lemma_file( FOLDER_I_lemma, FILE_inpLemma) 
+	read_lemma_file( FOLDER_I_lemma, FILE_inpLemma_word_lemma, FILE_inpLemma_lemma_word) 
 	if sw_stop { return }
 	
 	read_ParadigmaFile( FOLDER_I_paradigma, FILE_inpParadigma ) ;		
@@ -2792,8 +2814,8 @@ func checkTheWord( word0 string ) string {
 			//fmt.Println(" ex loop ",  wor, "    ", "il carattere strano continua ad esserci, quindi elimino la parola " )	
 			return ""    
 		} 
-	} 	
-	return wor
+	} 
+	return stdCode(wor)
 }
 //---------------------------------------
 
@@ -4604,6 +4626,8 @@ func read_dictLemmaTran_file(path1 string, inpFile string) {
 		
 	}	
 	
+	fmt.Println("read_dictLemmaTran_file", " len(lineD)=", len(lineD), " len( dictLemmaTran)=", len(dictLemmaTran) )
+	
 	sort_lemmaTran2();
 	
 	fmt.Println( len(dictLemmaTran) , "  lemma - translation elements of  dictLemmaTran" , "( input: ", inpFile, ")"  )   
@@ -4614,48 +4638,122 @@ func read_dictLemmaTran_file(path1 string, inpFile string) {
 //---------------------------------------
 
 //-----------------------
-func read_lemma_file( path1 string, inpLemmaFile string) {
+func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWord string) {
 	
 	//showInfoRead( inpLemmaFile, " inizio lettura " )
 	
 	bytesPerRow:=10
-
-    lineS:= rowListFromFile( path1, inpLemmaFile, "assoc. word-lemma", "read_lemma_file", bytesPerRow)  	
-	
-	//showInfoRead( inpLemmaFile, " fine lettura " )
-	
-	if sw_stop { return }
-	
-	var wordLemma1 wordLemmaPairStruct 
 	numLemmaDict=0; 
 	
-	for z:=0; z< len(lineS); z++ { 
-		lineZ0 := strings.TrimSpace(lineS[z])   //  format:     word   lemma		
-		if lineZ0 == "" {continue}
-		lineZ := strings.ReplaceAll( lineZ0, "\t" , " ")			
-		
-		cols:= strings.Fields( lineZ )   // Fields   split using whitespace,  treats consecutive whitespace characters as a single separator		
-		if len(cols) < 2 { continue } 
-		
-		wordLemma1.lWord2   = cols[0]		
-		wordLemma1.lLemma   = cols[1]	
-		if len(wordLemma1.lLemma) < 1 { continue;  } 
-		if wordLemma1.lLemma[0:1] < "A" { continue;  }   // ignore number  
-		
-		wordLemma1.lWordCod = newCode( wordLemma1.lWord2)
-		wordLemma1.lIxLemma = -1
+	var wordLemma1 wordLemmaPairStruct 
+	//------
+	file1_bytes := getFileByteSize(path1, inpLemmaFile_wordLemma)
+	file2_bytes := getFileByteSize(path1, inpLemmaFile_lemmaWord)
+	fmt.Println("file ", inpLemmaFile_wordLemma, "  ", file1_bytes , " bytes") 
+	fmt.Println("file ", inpLemmaFile_lemmaWord, "  ", file2_bytes , " bytes") 
+	numEleMax:= int(  (file1_bytes + file2_bytes) / bytesPerRow ); 
+	if numEleMax < 10 {numEleMax=10}
+	//----------------
+    lineS:= rowListFromFile( path1, inpLemmaFile_wordLemma, "1assoc. word-lemma", "read_lemma_file", bytesPerRow)  		
 	
-		if wordLemma1.lLemma == "-" { continue } 
-		wordLemmaPair = append(wordLemmaPair, wordLemma1 ) 
-		numLemmaDict++		
+	wordLemmaPairTMP := make( []wordLemmaPairStruct, 0, numEleMax)
+	
+	if (sw_stop == false) {	
+		// read word lemma
+		for z:=0; z< len(lineS); z++ { 
+			lineZ0 := strings.TrimSpace(lineS[z])   //  format:     word   lemma		
+			if lineZ0 == "" {continue}
+			lineZ := strings.ReplaceAll( lineZ0, "\t" , " ")			
+			
+			cols:= strings.Fields( strings.ToLower( lineZ ) )   // Fields   split using whitespace,  treats consecutive whitespace characters as a single separator		
+			if len(cols) < 2 { continue } 
+			wordLemma1.lWord2   = stdCode( cols[0] ) 		
+			wordLemma1.lLemma   = stdCode( cols[1] )	
+			
+			if len(wordLemma1.lLemma) < 1 { continue;  } 
+			if ((wordLemma1.lLemma == "-") || (wordLemma1.lLemma[0:1] < "A")) { continue;  }   // ignore number  
+						
+			wordLemma1.lWordCod = newCode( wordLemma1.lWord2)
+			wordLemma1.lIxLemma = -1
+			
+			if ((  wordLemma1.lWord2 == "cäsar") || (wordLemma1.lWord2 == "caesar") || (wordLemma1.lWord2 == "casar") ) { fmt.Println(green(" 00 carica Lemma "), " newCode=",wordLemma1.lWordCod       ) }
+			
+			wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
+			numLemmaDict++		
+		}
+		fmt.Println(" read ", len(lineS), " input lemma: format word-lemma")
 	}
+	
+	//----------------
+    lineS = rowListFromFile( path1, inpLemmaFile_lemmaWord, "2assoc. lemma-word", "read_lemma_file", bytesPerRow)  		
+	
+	if (sw_stop == false) {	
+		// read word lemma
+		for z:=0; z< len(lineS); z++ { 
+			lineZ0 := strings.TrimSpace(lineS[z])   //  format:     word   lemma		
+			if lineZ0 == "" {continue}
+			lineZ := strings.ReplaceAll( lineZ0, "\t" , " ")			
+			
+			cols:= strings.Fields( strings.ToLower( lineZ ) )   // Fields   split using whitespace,  treats consecutive whitespace characters as a single separator		
+			if len(cols) < 2 { continue } 
+			wordLemma1.lLemma   = stdCode( cols[0] )					
+			wordLemma1.lWord2   = stdCode( cols[1] )
+			
+			if len(wordLemma1.lLemma) < 1 { continue;  } 
+			if ((wordLemma1.lLemma == "-") || (wordLemma1.lLemma[0:1] < "A")) { continue;  } 		
+			
+			wordLemma1.lWordCod = newCode( wordLemma1.lWord2)
+			wordLemma1.lIxLemma = -1
+			
+			if ((  wordLemma1.lWord2 == "cäsar") || (wordLemma1.lWord2 == "caesar") || (wordLemma1.lWord2 == "casar") ) { fmt.Println(green(" 00 carica Lemma "), " newCode=",wordLemma1.lWordCod       ) }
+	
+			
+			wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
+			numLemmaDict++		
+		}
+		fmt.Println(" read ", len(lineS), " input lemma: format lemma-word")
+	}
+	lineS = nil
+	//---------------------------------------	
 	//-----		
-	fmt.Println( "caricate " , numLemmaDict ,  " coppie word-lemma dal file ", inpLemmaFile, "\n")
+	fmt.Println( "lette " , numLemmaDict ,  " coppie word-lemma", "\n")
 	//-----	
-	// sort x lemma
-	sort.Slice(wordLemmaPair, func(i, j int) bool {			
-		return wordLemmaPair[i].lLemma < wordLemmaPair[j].lLemma				
-		} )
+	// sort x lemma, word
+
+	sort.Slice(wordLemmaPairTMP, func(i, j int) bool {
+			if (wordLemmaPairTMP[i].lLemma != wordLemmaPairTMP[j].lLemma) {
+				return wordLemmaPairTMP[i].lLemma < wordLemmaPairTMP[j].lLemma
+			} else {
+				return wordLemmaPairTMP[i].lWord2 < wordLemmaPairTMP[j].lWord2
+			}
+		} )	 	
+	//-------------------------------------
+	preLemS:=  ""
+	lemS:= ""	
+		
+	wordLemmaPair = make( []wordLemmaPairStruct, 0, len(wordLemmaPairTMP)	)
+	
+	doppi:=0
+ 
+	for nn1, lemX := range wordLemmaPairTMP {
+		lemS = lemX.lLemma + " " + lemX.lWord2 
+		if ((  lemX.lWord2 == "cäsar") || (lemX.lWord2 == "caesar") || (lemX.lWord2 == "casar") ) { fmt.Println(" 111 carica Lemma ", nn1,  " lemX=" , lemX) }
+		if preLemS == lemS {
+			doppi++
+			continue
+		}	
+		preLemS = lemS
+		wordLemmaPair = append( wordLemmaPair, lemX)
+	}
+	if doppi > 0 {
+		fmt.Println(" scartate ", doppi, " entrate doppie in lemma - word ") 
+	}
+	numLemmaDict = len(wordLemmaPair)
+	
+	fmt.Println( "caricate " , numLemmaDict ,  " coppie word-lemma", "\n")
+	
+	//---------------------------
+	wordLemmaPairTMP = nil; 
 	//---------------------------
 	/*
 	//---
@@ -4683,9 +4781,10 @@ func read_lemma_file( path1 string, inpLemmaFile string) {
 	fromIx:=0; toIx:=0
 	iixLem:=0	
 	
-	fmt.Println("2  len(wordLemmaPair)=", len(wordLemmaPair) )
-	
+	fmt.Println("  len(wordLemmaPair)=", len(wordLemmaPair) )
+		
 	for z:=0; z< len(wordLemmaPair); z++ {
+		
 		if (wordLemmaPair[z].lLemma != preLem) {
 			if numW > 0 {
 				//scrive lemma precedente 				
@@ -4716,6 +4815,9 @@ func read_lemma_file( path1 string, inpLemmaFile string) {
 					wordLemmaPair[h].lIxLemma = iixLem 
 				}			
 	}
+	
+	//-------------------------------------
+	
 	//----------------------
 	seq:=""; //swerr:=false
 	for  _, lem := range lemmaSlice {
@@ -4761,20 +4863,56 @@ func read_lemma_file( path1 string, inpLemmaFile string) {
 				}
 			}
 		} )	 
-
+	//------------------------	
 	
+	check_wordLemma_sameCode()
+	
+	//-------------------------------
 } // end of  read_lemma_file
 
+//-------------------------------------------
+
+func check_wordLemma_sameCode() {
+	fmt.Println( green("check_wordLemma_sameCode") , "()"  )
+	// check same words  written in diffent way (eg. caesar   and  "cäsar")
+	pre_wordCod := ""
+	pre_word2   := ""	
+	//pre_lemma   := ""
+	pre_z := -1
+	
+	for z, wordPair := range wordLemmaPair {	
+			if ((  wordPair.lWord2 == "cäsar") || (wordPair.lWord2 == "caesar") || (wordPair.lWord2 == "casar") ) { fmt.Println(" check 222 Lemma ", z,  " wordPair=" , wordPair) }
+	
+		if (wordPair.lWordCod != pre_wordCod) {
+			pre_wordCod = wordPair.lWordCod 
+			pre_word2   = wordPair.lWord2 
+			//pre_lemma   = wordPair.lLemma 
+			pre_z = z
+			continue
+		}
+		if (wordLemmaPair[z].lWord2 == pre_word2) {
+			continue
+		}
+		//--------
+		fmt.Println( green("check_wordLemma_sameCode") )
+		for x:= pre_z; x<= z; x++ {
+			fmt.Println("\t", " wordLemmaPair[",x,"] = ", wordLemmaPair[x] )   
+		} 
+		
+	}	
+	//   ???antoX   if ((  lemX.lWord2 == "cäsar") || (lemX.lWord2 == "caesar")  || (lemX.lWord2 == "casar")) { fmt.Println(" 111 carica Lemma ", nn1,  " lemX=" , lemX) }
+}
+
 //---------------------------------
-func addUnknowToLemma( word1 string) int {
+
+func addUnknowToLemma( lemma1 string) int {
 	var leV lemmaStruct 
-	leV.leLemma    = word1
+	leV.leLemma    = lemma1
 	leV.leNumWords = 0; 
 	leV.leTran     = ""
 	lemmaSlice = append(lemmaSlice, leV ); 
 	return len(lemmaSlice) -1 
 } 
-
 
 //-----------------------------------------
 func OLDread_lemma_file( path1 string, inpLemmaFile string) {
@@ -4830,7 +4968,9 @@ func OLDread_lemma_file( path1 string, inpLemmaFile string) {
 //---------------------------------
 
 func sort_lemmaTran2() {
-
+	
+	if len(dictLemmaTran) < 1 { return }
+	
 	sort.Slice(dictLemmaTran, func(i, j int) bool {
 			if (dictLemmaTran[i].dL_lemmaCod != dictLemmaTran[j].dL_lemmaCod) { 
 				return dictLemmaTran[i].dL_lemmaCod < dictLemmaTran[j].dL_lemmaCod 
@@ -4920,15 +5060,21 @@ func addWordLemmaTranLevelParadigma() {
 	list1Exam := ""	
 	lemma3:= ""
 	
-	var swMio bool = false
+	//var swMio bool = false
 	
 	//--------------------------------------
 	for zz:=0; zz < len(uniqueWordByFreq); zz++ {
 		wF:= uniqueWordByFreq[zz]
 		
-		//fmt.Println(" loop unique x lemma ", wF.uWord2)
+		
+		swprova:= ((wF.uWord2 == "cäsar") || (wF.uWord2 == "caesar") || (wF.uWord2 == "casar")) 
+		
+		
 		
 		ixLemmaPairFoundList := lookForAllLemmas( wF.uWord2 ) // 
+		
+		if swprova { fmt.Println("1 loop unique x lemma ", wF.uWord2,  " ixLemmaPairFoundList=",  ixLemmaPairFoundList ) }
+
 				/**
 						//
 						var lemmaSlice       [] lemmaStruct         // lemma , translation 
@@ -4960,6 +5106,8 @@ func addWordLemmaTranLevelParadigma() {
 				**/ 
 		nele := len(ixLemmaPairFoundList)
 		
+		if swprova { fmt.Println("2 loop unique x lemma  nele=", nele) }
+		
 		lis_ixLemma:=make( [] int,    0, nele )		
 		lis_lemma := make( [] string, 0, nele )		
 		lis_tran  := make( [] string, 0, nele )
@@ -4969,10 +5117,16 @@ func addWordLemmaTranLevelParadigma() {
 		
 
 		ixLemma:=-1
+		numLerr:=0; maxNumLerr:=100; 
 		for  _, ixLp := range ixLemmaPairFoundList { 
+			
+			if swprova { fmt.Println("\t3 loop unique x lemma  ixLemmaPairFoundList=", ixLp) }
+			
+			if numLerr > maxNumLerr { break}
 			if ixLp < 0 {
-				ixLemma = addUnknowToLemma(wF.uWord2) 
-				lemma3 = wF.uWord2
+				lemma3 = "?" + wF.uWord2	
+				ixLemma = addUnknowToLemma(lemma3) 
+			    if swprova { fmt.Println("\t4 loop unique x lemma  ixLemma=", ixLemma, " lemma3=", lemma3, " lemmaSlice[ixLemma]=", lemmaSlice[ixLemma]) }
 			} else {
 				newWL = wordLemmaPair[ixLp]
 				if newWL.lWord2 != wF.uWord2 { // error 
@@ -4983,27 +5137,37 @@ func addWordLemmaTranLevelParadigma() {
 			}
 			lis_ixLemma = append( lis_ixLemma, ixLemma  )   
 			lis_lemma   = append( lis_lemma,   lemma3   )  
-			
+			if (ixLemma < 0) {
+					fmt.Println( red("errore1 "), " in addWordLemmaTranLevelParadigma" , " word=",wF.uWord2, " ixLp=", ixLp, " ixLemma=",ixLemma, 
+					" lemma3=", lemma3, red("  ixLemma negativo") )
+					numLerr++
+					continue; 	
+			}
 			if lemmaSlice[ixLemma].leLemma != lemma3 {
-				fmt.Println( red("errore "), " in addWordLemmaTranLevelParadigma" , " word=",wF.uWord2, " ixLp=", ixLp, " ixLemma=",ixLemma, 
+				fmt.Println( red("errore2 "), " in addWordLemmaTranLevelParadigma" , " word=",wF.uWord2, " ixLp=", ixLp, " ixLemma=",ixLemma, 
 					" lemma3=", lemma3," lemmaSlice[ixLemma].leLemma=",lemmaSlice[ixLemma].leLemma , red(" lemma non eguale") )  
+				numLerr++	
+				continue
 			}	
 			lemmaSlice[ixLemma].leNumWords++
 		}
-		
+		if numLerr > 0 {
+			fmt.Println( "trovati ", numLerr, " ", red("errori"), " in addWordLemmaTranLevelParadigma")
+		}
 		
 		newWL.lWord2   = wF.uWord2
 		newWL.lWordCod = newCode( wF.uWord2 )
 		newWL.lLemma = ""
 		newWL.lIxLemma = -1
 		
-		swMio = (newWL.lWord2 == "erklären")   //antonio123
+		//swMio = (newWL.lWord2 == "erklären")   //antonio123
 		
 		// each word can have many lemmas 
 		//                       each lemma can have many levels, paradigmas, translations ( they are separated by "|", eg "A1|A2|B1" ) 
 		//---------------
 		for  ixix, lem := range lis_lemma { 
 			ixLemma2:= lis_ixLemma[ixix] 
+			if ixLemma2 < 0 { continue }  // error 
 			if lemmaSlice[ixLemma2].leLemma != lem { ixLemma2 = -1 }
 			list1Level, list1Para, list1Exam = fromLemmaTo3List( lem )  // ogni list può contenere più elementi separati da |   ( lo stesso num.di elementi per tutte le liste: A1|A2,par1|par2, ex1|ex2 )  
 			lis_level = append( lis_level, list1Level )
@@ -5033,7 +5197,7 @@ func addWordLemmaTranLevelParadigma() {
 		} // end of for , lem 
 		//-----------
 		
-		if swMio {  fmt.Println("ANTONIO  word=", newWL.lWord2, " ixLemma=",lis_ixLemma,   " uLemmaL=" , lis_lemma, ",    tran=", lis_tran) }
+		//if swMio {  fmt.Println("ANTONIO  word=", newWL.lWord2, " ixLemma=",lis_ixLemma,   " uLemmaL=" , lis_lemma, ",    tran=", lis_tran) }
 		
 		wF.uIxLemmaL= make( []int,     nele, nele )    
 		wF.uLemmaL  = make( []string,  nele, nele )    
@@ -5051,7 +5215,7 @@ func addWordLemmaTranLevelParadigma() {
 		copy( wF.uExample , lis_exam  ) 
 		uniqueWordByFreq[zz] = wF
 		
-		if swMio {  fmt.Println("ANTONIO unique word=", newWL.lWord2, " wFixLemma=",wF.uIxLemmaL,   " wF uLemmaL=" ,wF.uLemmaL ) }  // , ",    tran=",  wF.uTranL ) }
+		//if swMio {  fmt.Println("ANTONIO unique word=", newWL.lWord2, " wFixLemma=",wF.uIxLemmaL,   " wF uLemmaL=" ,wF.uLemmaL ) }  // , ",    tran=",  wF.uTranL ) }
 	
 		/**
 		if ((wF.uWord2== "tun") || (wF.uWord2 == "umwelt") ) {
@@ -5243,8 +5407,15 @@ func lookForAllLemmas2(  wordToFindCod string) []int {
 
 	// get the index of a word in word-lemma dictionary (-1 if not found)  
 	var ixFoundList = make( []int, 0,0) 
-	fromIxX, _ := lookForWordLemmaPair(wordToFindCod)
+	
+	if len(wordLemmaPair) == 0 { return ixFoundList}
+	
+	fromIxX, toIx := lookForWordLemmaPair(wordToFindCod)
+	
+	if toIx < 0 { return ixFoundList }
+	
 	fromIx:= fromIxX
+	
 	for k:= fromIxX; k >= 0; k-- {
 		if wordLemmaPair[k].lWordCod < wordToFindCod { break }
 		fromIx = k
@@ -5274,6 +5445,8 @@ func lookForWordLemmaPair(wordToFindCod string) (int, int) {
 	high  := numLemmaDict - 1	
 	maxIx := high; 
 	
+	if high < 1 { return -1, -1 } 
+	
 	//----
 	for low <= high{
 		median := (low + high) / 2
@@ -5286,7 +5459,9 @@ func lookForWordLemmaPair(wordToFindCod string) (int, int) {
 	//---
 	fromIx:= low; toIx := high; 
 	if fromIx > toIx { fromIx = high; toIx = low;}
+	
 	if fromIx < 0 { fromIx=0} 
+	
 	if toIx  > maxIx { toIx = maxIx}
 	return fromIx, toIx	
 
@@ -5664,7 +5839,10 @@ func read_lastValueSets2() {
 		sw_stop = false
 	}		
 	getMainPageLastVal2( dat + ",,,,,,,,,,,," )
-	
+	rwS:= ""
+	if last_rG_firstIxRowOfGr < len(inputTextRowSlice) {
+		rwS = inputTextRowSlice[ last_rG_firstIxRowOfGr ].rRow1  		
+	}
 	outS1:= fmt.Sprintf( "%d,%s,%d,%d,html,%d,%d,%d,ix,%d,%d,w,%d,%d,%s, :row=,%s", 
 				last_rG_ixSelGrOption, 
 				last_rG_group,
@@ -5682,8 +5860,7 @@ func read_lastValueSets2() {
 				last_word_numWords,		
 				
 				last_sel_extrRow, 	
-				
-				inputTextRowSlice[ last_rG_firstIxRowOfGr ].rRow1 ) 		
+				rwS) 
 	if outS1 == "" {
 		fmt.Println( red("read_lastValueSets2"), " outS1 empty =" + outS1, " \n" + " sw_stop=", sw_stop, "  dat=" , dat)
 		return
@@ -5949,9 +6126,62 @@ func writeList( fileName string, lines []string)  {
     }
 } 
 //----------------------------------------
-
+func stdCode(inpCode string ) string {	
+	CoerInp:= strings.ReplaceAll( 
+					strings.ReplaceAll( 
+						strings.ReplaceAll( 
+							strings.ReplaceAll(inpCode, "ae","ä"),  
+							"oe","ö"), 
+						"ue","ü"),
+					"ß","ss")  	           // non tutte le ss sono 	ß, ma è vero il contrario				
+					
+	return CoerInp  
+}
 //----------------------------
 func newCode( inpCode string ) string {	
+
+	//  pronto soltanto per il tedesco 
+
+	/*
+	1) serve soprattutto per mettere le parole in sequenza alfabetica coerente 
+		( es. per il tedesco es.  ä, ö, ü, ß vicini rispettivamente ad a, o, u, ss)   
+	2) a volte ä, ö, ü, ß sono scritti come ae, oe, ue, ss, in questo caso li sostituiamo con a, o, u, ss
+    3) a volte eu dovrebbe rimanere tale (es. Treue), non ho modo di distinguere per cui la sequenza è falsata ue è prima di ua o di uz 
+		l'alternativa potrebbe essere tradurre ü con ue, ma questo porterebbe alla sequenza errata  ue nel posto ua, ue, uz invece di u ua uz
+	----------
+	questo codice di sequenza   è usato per word e lemma
+	la scrittura alternativa a quella ufficiale (es. ue invece di ü) può essere trovata in un testo.
+	Il lemma si trova in un file "ufficiale"  quindi improbabile che venga usata la scrittura alternativa.
+
+	a) nel lemma il newCode mi serve soltanto per correggere la sequenza
+	b) nel word (che si trova nel testo analizzato) il new code mi serve per confrontare 
+		però è probabile che un testo sia scritto o in codice alternativo o in modo normale, improbabile in entrambi modi. 
+	c) si potrebbe pensare ad un switch da impostare 
+	d) cosa devo confrontare?
+		lemma ( non mi serve tradurre eventuale codice alternativo, però newCode mi serve per la sequenza )
+			confronto per collegarlo a word e per trovare la traduzione
+		word  ( confronto per assegnare il lemma )       	
+	
+	*/
+	SQinp1:= strings.ReplaceAll( 
+						strings.ReplaceAll( 
+							strings.ReplaceAll(inpCode, "ae","a"),  
+							"oe","o"), 
+						"ue","u") 		
+	SQinp2:= strings.ReplaceAll( 
+					strings.ReplaceAll( 
+						strings.ReplaceAll( 
+							strings.ReplaceAll(SQinp1, "ä","a"),  
+							"ö","o"), 
+						"ü","u"), 
+					"ß","ss")   					
+	
+	return SQinp2 + "." +  stdCode(inpCode)  
+	
+}// end of newCode					
+//--------------------------------	
+//----------------------------
+func OLDnewCode( inpCode string ) string {	
 	/*
 	1) serve soprattutto per mettere le parole in sequenza alfabetica coerente 
 		( es. per il tedesco es.  ä, ö, ü, ß vicini rispettivamente ad a, o, u, ss)   
@@ -5987,5 +6217,5 @@ func newCode( inpCode string ) string {
 					"ß","ss")   
 	return inp2 + "." + inpCode  // 21Nov2023
 	
-}// end of newCode					
+}// end of OLDnewCode					
 //--------------------------------	

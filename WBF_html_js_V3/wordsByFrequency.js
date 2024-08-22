@@ -2125,74 +2125,47 @@ function onclick_show_or_hide_statistics() {
     }
 } // end of onclick_require_statistics
 
-//----------------------------------------------------
+//----------------------------------------
+function stdCode(inpCode) {	
+
+	var CoerInp = inpCode.replaceAll( "ae","ä").replaceAll("oe","ö").replaceAll("ue","ü").replaceAll("ß","ss") 
+					
+	return CoerInp  
+}
+//----------------------------
 
 function evidenzia( unaparola, txtinp1) {
-	
-	unaparola = unaparola.toLowerCase().trim();
-	var lenParola = unaparola.length; 
-	var lowinp1 = txtinp1.toLowerCase() + "            ";
-		
-	var separator = " ;,:\"\'."  + '<>»«()[]!?„“';
-	var tabParo1 = []; var tabParo2 = []; 	
-	var pre=0;	var x1=0; var pp; var nn=0; var i=0;
-	//console.log("\nXXXXXXXXXXXXXXXX  evidenzia (unaparola=" + unaparola, " lenParola=", lenParola, " txtinp1=", txtinp1) 
-	//-------------
-	for(i=0; i < lowinp1.length; i++) {
-		pre = nn; 
-		x1 = lowinp1.indexOf(unaparola,pre) ;		
-		if (x1 < 0) {break;}
-		pp=x1-1; nn = x1 + lenParola; 
-		
-		//console.log("\t evidenzia i=",i, " x1=", x1, " pp=", pp, "  nn=", nn)
-		
-		if (pp>=0) {
-			var chPre = lowinp1.substr(pp,1);
-			//console.log("\t evidenzia  chPre=", chPre)
-			if 	(separator.indexOf(chPre) < 0) continue;
-		}
-		if (nn>=0) {			
-			var chNn  = lowinp1.substr(nn,1);	
-			//console.log("\t evidenzia  chNn=", chNn)
-			if 	(separator.indexOf(chNn) < 0) continue;
-		}
-		//console.log("\t evidenzia  push tabParo1 tabParo2 pp=", pp, " nn=", nn)
-		
-		tabParo1.push(pp); tabParo2.push(nn);
-	}   
-	var j1, j2=0; var jj;
 	var newRow="";
-	var lenrow = txtinp1.length;
-	tabParo1.push(lenrow);
-	tabParo2.push(0);
+	unaparola = unaparola.toLowerCase().trim();
 	
-	for(var j=0; j < tabParo1.length; j++) {
-		jj = j2;				
-		if (jj > lenrow) break;
-		j1 = tabParo1[j]; j2 = tabParo2[j];   		
-		newRow += txtinp1.substring(jj, j1+1) ;		
-		
-		//console.log("\t evidenzia loop1 j1=",j1, " j2=", j2, " txtinp1.substring(jj, j1)=" + txtinp1.substring(jj, j1) + "<== newRow=" + newRow + "<==");  	
-		
-		if (j2 < 1) break;
-		if (j2 < j1) continue;
-		newRow += wBold_set( txtinp1.substring(j1+1, j2) );	
-		
-		//console.log("\t evidenzia loop2, BOLD " + "<== newRow=" + newRow + "<==");  	
-		
+	var lenParola = unaparola.length; 
+	
+	var lowinp0 = txtinp1.toLowerCase().replaceAll("§"," ") + "§"; 
+	var lowinp1 = lowinp0.replace(/[\s;,:"'\.<>»«()\[\]\!\?„“]/g,"§")  
+	
+	var j0=-1, j1=0;
+	var jNew=0
+	var swBold=false;
+	var parola1, parolaT;
+	
+	for(var i=0; i < lowinp1.length; i++) {	    
+		j0=j1+1
+		j1 = lowinp1.indexOf("§", j0);  
+		if (j1 < 0) break;
+		parola1 = lowinp1.substring(j0,j1) 
+		parolaT = stdCode(parola1)
+		newRow += txtinp1.substring(jNew, j0) 	
+		swBold = (parolaT == unaparola) 
+		if (swBold) newRow += '<span class="c_wordTarg">'
+		newRow +=  txtinp1.substring(j0, j1)
+		jNew = j1;	
+		if (swBold) newRow += '</span>' 
 	}	
-	newRow = newRow.trim();
-	
-	return newRow;  
-	
-	//------------------------------
-	function wBold_set( winp ) {
-			//  the §§ characters have been added, to make the word unrecognizable in any next run  
-			return '<span class="c_wordTarg">§§' + winp + "§§</span>"; 
-	}	
+
+	return newRow; 
 	
 } // end of evidenzia 
-
+//------------------------------
 //----------------------------------------------------
 
 
