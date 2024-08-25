@@ -42,7 +42,7 @@ import (
 //--
 //----------------------------------
 
-//var apiceInverso = `40`
+//var apiceInverso = `40`  //  in windows:  tasto Alt + 96 (tastierino numerico)
 
 var lastPerc=0; 
 var prevPerc = -1; 
@@ -1873,8 +1873,9 @@ func bind_go_write_word_dictionary( listGoWords string) {
 		
 		// listGoWords = list of NEW translated words
 		
-		//fmt.Println("bind_go_write_word_dictionary ",  listGoWords  );  		
+		//fmt.Println( "GO ",red("bind_go_write_word_dictionary"),  listGoWords  );  	
 		
+		//js_console_log("GO esegue bind_go_write_word_dictionary ")
 	
 		
 		if len(listGoWords) < 1 { return }
@@ -1885,6 +1886,8 @@ func bind_go_write_word_dictionary( listGoWords string) {
 		lemmaTranStr := ""; //  "__" + outFileName + "\n" + "_lemma	_traduzione"
 		lastNumDict++; 
 		lemmaTranStr += split_ALL_word_dict_row( listGoWords )	
+		
+		//js_console_log("GO bind_go_write_word_dictionary " + "listGoWords=" + listGoWords   + "lemmaTranStr=" + lemmaTranStr )
 		
 		sort_lemmaTran2();  // sort_lemmaX2 in write_word_dict... utilizzabili già in questo run 	
 		
@@ -1905,6 +1908,7 @@ func bind_go_write_word_dictionary( listGoWords string) {
 		
 		rewrite_LemmaTranDict_file() 
 		
+		//js_console_log("GO fine esecuzione bind_go_write_word_dictionary ")
 		
 } // end of bind_go_write_word_dictionary 	
 
@@ -1924,8 +1928,12 @@ func split_one_word_dict_row( row1 string ) (string, int, []string, []string) {
 	var field = strings.Split( row1, ";");     // eg. einem;  14; ein§einem§einer; uno§uno§uno
 											   //	 field[0]; 1;               2; 3 
 	
-	lemmaLis = strings.Split(field[2],wSep);   // eg. ein , einem,   einer       
-	tranLis  = strings.Split(field[3],wSep);   //     uno , uno,     uno  
+	lemmaLis = strings.Split( strings.TrimRight(field[2],wSep), wSep)  // eg. ein , einem,   einer       
+	tranLis  = strings.Split( strings.TrimRight(field[3],wSep), wSep)  //     uno , uno,     uno  
+	
+	//fmt.Println( green("split_one_word_dict_row"), "\n\t lemma=",len(lemmaLis), " ", strings.Join(lemmaLis, " - ")  ,    
+	//			 "\n\t tranl=",len(tranLis), " ", strings.Join(tranLis, " - ") )	
+	
 	
 	ix1, err := strconv.Atoi( field[1] )
 	if err != nil { return "",	-1,	lemmaLis, tranLis }                           //error
@@ -1937,9 +1945,16 @@ func split_one_word_dict_row( row1 string ) (string, int, []string, []string) {
 //-------------------------------
 
 func split_ALL_word_dict_row(  strRows string) string {
-	fmt.Println( "ANTONIO xxxxxxxxxxxxxxxxxxxxxxxxxxxx  split_ALL_word_dict_row( strRows=", strRows); 
+	//fmt.Println( "ANTONIO xxxxxxxxxxxxxxxxxxxxxxxxxxxx  split_ALL_word_dict_row( strRows=", strRows); 
 	// eg. einem;14 ; ein einem einer ;  a uno uno;	  ==> word ; ix : list of lemmas ; list of translations	
-	
+	/**	
+	ANTONIO xxxxxxxxxxxxxxxxxxxxxxxxxxxx  split_ALL_word_dict_row( 
+	strRows= 
+dem;31;dem;dem§
+den;7;den;tana§
+der;0;der;il§
+die;8;die;il§	
+	***/
 	lemmaTranStr := ""
 	
 	lines := strings.Split( strRows, "\n");	
@@ -1975,7 +1990,7 @@ func split_ALL_word_dict_row(  strRows string) string {
 	
 	for z:=0;  z < len(lines); z++ {   
 		
-		//fmt.Println("split_ALL_word_dict_row() 1 ", lines[z] )	
+		//fmt.Println("\nsplit_ALL_word_dict_row() lines[",z,"]=", lines[z] )	
 		
 		_, ix1, lemmaLis,tranLis := split_one_word_dict_row( lines[z] )
 		if ix1 < 0 { continue }		
@@ -1986,6 +2001,11 @@ func split_ALL_word_dict_row(  strRows string) string {
 		}
 		//---------------
 		//fmt.Println("   ix1=", ix1, " \tlemmaLis=", lemmaLis, "\ttranLis=", tranLis )  
+		
+		/**
+		  ix1= 37      lemmaLis= [ihr ihre ihrer sein]         tranLis= [tu loro loro essere ]
+		**/
+		
 		//---------------
 		if uniqueWordByFreq[ix1].uIxUnW != ix1 {	
 			fmt.Println("error7 2 len(uniqueWordByFreq)=", len(uniqueWordByFreq), " ix1=", ix1 ,  " lines[z=", z, "]=", lines[z] )
@@ -1994,60 +2014,72 @@ func split_ALL_word_dict_row(  strRows string) string {
 		
 		//swUpdList[ix1] = true 
 		//numUpd++  		
-		ixAlfa := uniqueWordByFreq[ix1].uIxUnW_al  	
+		//ixAlfa := uniqueWordByFreq[ix1].uIxUnW_al  	
 		
+		//fmt.Println("  uniqueWordByFreq[ix1=", ix1, "] = ",uniqueWordByFreq[ix1], "\n\tuLemmaL=", uniqueWordByFreq[ix1].uLemmaL) 
+		
+		/***
+		 {ihren.ihren ihren 37 29 1 1 63 1 1 0 0 [25114 25115 25116 45916] [ihr ihre ihrer sein] [   ] [   ] [   ]}
+		 
+			uLemmaL= [ihr ihre ihrer sein]	
+		
+		***/
 		len1:= len(uniqueWordByFreq[ix1].uLemmaL)
 		
 		//fmt.Println("\tsplit_ALL_word_dict_row() 2 ", " ix1=", ix1, " len1=", len1, ", len(lemmaLis)=", len(lemmaLis), ",     len(tranLis)=",  len(tranLis) )
 		if len1 != len(lemmaLis) { 
-			fmt.Println("split_ALL_word_dict_row() 1 ", lines[z] )
+			fmt.Println(red("split_ALL_word_dict_row"),"() 1 ", lines[z] ," number of lemma not equal ")
 			for mio1:=0; mio1 < len1; mio1++ {
 				fmt.Println("\tsplit_ALL_word_dict_row() 2.1 ", "  uniqueWordByFreq[ix1].uLemmaL[", mio1,"] =>" + uniqueWordByFreq[ix1].uLemmaL[mio1] + "<==")
 			}   
 		}   
-		if len1 != len(lemmaLis) { continue }               // error 
-		if len1 != len(tranLis)  { continue }               // error 
+		if len1 != len(lemmaLis) { fmt.Println( red("error1"), " split_ALL_word_dict_row!") ;  continue }               // error 
+		
+		if len1 != len(tranLis)  { fmt.Println( red("error2"), " split_ALL_word_dict_row!") ;continue }               // error 
 		
 		//---------------------
 		oneW := uniqueWordByFreq[ix1]
+		
 		for m:=0; m < len1; m++ {
 			mLemm := strings.TrimSpace( lemmaLis[m] )
-			if mLemm == oneW.uLemmaL[m] {
+			mTran := strings.TrimSpace( tranLis[m] )
+			if mLemm == oneW.uLemmaL[m] {  
+				// fmt.Println("lemma trovato con m=",m," ", mLemm)
 				ixLe:= oneW.uIxLemmaL[m]
-				lemmaSlice[ixLe].leTran = strings.TrimSpace( tranLis[m] )	
-			} else {
+				lemmaSlice[ixLe].leTran             = mTran
+				//uniqueWordByFreq[ix1].uTranL[m]     = mTran 	
+				//uniqueWordByAlpha[ixAlfa].uTranL[m] = mTran 	
+			} else { 
+				//fmt.Println("lemma NON trovato, lo cerco ", mLemm)
 				for m2:=0; m2 < len(oneW.uLemmaL); m2++ {
 					if mLemm == oneW.uLemmaL[m2] {
-						ixLe:= oneW.uIxLemmaL[m]
-						lemmaSlice[ixLe].leTran = strings.TrimSpace( tranLis[m2] )	
+						// fmt.Println("lemma trovato con m2=",m2," ", mLemm)
+						ixLe:= oneW.uIxLemmaL[m2]
+						lemmaSlice[ixLe].leTran              = mTran
+						//uniqueWordByFreq[ix1].uTranL[m2]     = mTran 	
+						//uniqueWordByAlpha[ixAlfa].uTranL[m2] = mTran 	
 						break;
 					}
 				} 
 			}
 		} 
-		//--------------------
-		for m:=0; m < len1; m++ {
+		//---------------------------
+		
+		for m:=0; m < len1; m++ {		
 			mLemm := strings.TrimSpace( lemmaLis[m] )
 			mTran := strings.TrimSpace( tranLis[m] 	)	
-			//uniqueWordByFreq[ix1].uTranL[m]      = mTran 		//??anto3 uTranL    già fatto con lemmaSlice[]
-			//uniqueWordByAlpha[ixAlfa].uTranL[m]  = mTran 		
-			uniqueWordByAlpha[ixAlfa].uLemmaL[m] = mLemm	
-			
-			uniqueWordByAlpha[ixAlfa].uKnow_yes_ctr = 0 
-			uniqueWordByAlpha[ixAlfa].uKnow_no_ctr  = 0 
-			
+				
 			lemmaTranStr += "\n" + mLemm + "|" + mTran 	
 			
-			//fmt.Println("\tsplit_ALL_word_dict_row() 3 lemma n.", m, " lemma="+ mLemm + " trad.=" + mTran 	)
-			
 			ele1.dL_lemmaCod = newCode(mLemm) 
-			ele1.dL_lemma2 = mLemm 
-			ele1.dL_numDict = lastNumDict
-			ele1.dL_tran  = mTran           ////cigna1_1 
+			ele1.dL_lemma2   = mLemm 
+			ele1.dL_numDict  = lastNumDict
+			ele1.dL_tran     = mTran          
 			if mTran != "" { 		
 				dictLemmaTran = append( dictLemmaTran, ele1 ) 
 			}
-		}	
+		}
+		
 	} // end of z 
 	
 	return lemmaTranStr
@@ -2999,7 +3031,7 @@ func elabWordList() {
 	
 	build_lemma_word_ix()
 	
-	antoList_wordSchrift_anto()
+	//antoList_wordSchrift_anto()
 	
 	
 } // end of elabWordList()
@@ -3038,11 +3070,13 @@ func antoList_wordSchrift_anto() {
 				leTran     string  
 			} 
 		*/
+		
 		fmt.Println("LISTA  uniqueWordByFreq ", n1, " \t ", WS.uWord2, " ixLemma=", WS.uIxLemmaL, " lemmaL=", WS.uIxLemmaL); // , " tran=",  WS.uTranL) 
 		for _, ixLe:= range WS.uIxLemmaL {
 			LE:= lemmaSlice[ixLe]
 			fmt.Println("\t\t ixLemma=", ixLe,  " \t ", LE.leLemma, " \t ", LE.leNumWords ,"words ", "\t tran=", LE.leTran)
 		}
+		
 	}	
 } // end of antoConta_wordSchrift_anto
 
@@ -3497,13 +3531,14 @@ func build_lemma_word_ix() {
 				lemmaSlice[preIxLem].leToIxLW   = toIxWL
 			}
 	//---------------
-	
+	/**
 	for z2:=0; z2 < len( lemma_word_ix); z2++ { 
 		if z2 < 20 { fmt.Println(   "lemma_word_ix[", z2, "] = ", lemma_word_ix[z2]  ) } else { break }
 		
 	}
+	**/
 	//---------------
-	
+	/**
 	for z2:=0; z2 < len( lemmaSlice); z2++ { 
 		LE := lemmaSlice[z2];
 		if LE.leLemma == "werkzeug" {
@@ -3515,6 +3550,7 @@ func build_lemma_word_ix() {
 			break;
 		}
 	}
+	***/
 	
 } // end of build_lemma_word_ix  
  
@@ -4900,8 +4936,8 @@ func check_wordLemma_sameCode() {
 		} 
 		
 	}	
-	//   ???antoX   if ((  lemX.lWord2 == "cäsar") || (lemX.lWord2 == "caesar")  || (lemX.lWord2 == "casar")) { fmt.Println(" 111 carica Lemma ", nn1,  " lemX=" , lemX) }
-}
+	
+} // end of check_wordLemma_sameCode
 
 //---------------------------------
 
@@ -5067,13 +5103,13 @@ func addWordLemmaTranLevelParadigma() {
 		wF:= uniqueWordByFreq[zz]
 		
 		
-		swprova:= ((wF.uWord2 == "cäsar") || (wF.uWord2 == "caesar") || (wF.uWord2 == "casar")) 
+		//swprova:= ((wF.uWord2 == "cäsar") || (wF.uWord2 == "caesar") || (wF.uWord2 == "casar")) 
 		
 		
 		
 		ixLemmaPairFoundList := lookForAllLemmas( wF.uWord2 ) // 
 		
-		if swprova { fmt.Println("1 loop unique x lemma ", wF.uWord2,  " ixLemmaPairFoundList=",  ixLemmaPairFoundList ) }
+		//if swprova { fmt.Println("1 loop unique x lemma ", wF.uWord2,  " ixLemmaPairFoundList=",  ixLemmaPairFoundList ) }
 
 				/**
 						//
@@ -5106,7 +5142,7 @@ func addWordLemmaTranLevelParadigma() {
 				**/ 
 		nele := len(ixLemmaPairFoundList)
 		
-		if swprova { fmt.Println("2 loop unique x lemma  nele=", nele) }
+		//if swprova { fmt.Println("2 loop unique x lemma  nele=", nele) }
 		
 		lis_ixLemma:=make( [] int,    0, nele )		
 		lis_lemma := make( [] string, 0, nele )		
@@ -5120,13 +5156,13 @@ func addWordLemmaTranLevelParadigma() {
 		numLerr:=0; maxNumLerr:=100; 
 		for  _, ixLp := range ixLemmaPairFoundList { 
 			
-			if swprova { fmt.Println("\t3 loop unique x lemma  ixLemmaPairFoundList=", ixLp) }
+			//if swprova { fmt.Println("\t3 loop unique x lemma  ixLemmaPairFoundList=", ixLp) }
 			
 			if numLerr > maxNumLerr { break}
 			if ixLp < 0 {
 				lemma3 = "?" + wF.uWord2	
 				ixLemma = addUnknowToLemma(lemma3) 
-			    if swprova { fmt.Println("\t4 loop unique x lemma  ixLemma=", ixLemma, " lemma3=", lemma3, " lemmaSlice[ixLemma]=", lemmaSlice[ixLemma]) }
+			    //if swprova { fmt.Println("\t4 loop unique x lemma  ixLemma=", ixLemma, " lemma3=", lemma3, " lemmaSlice[ixLemma]=", lemmaSlice[ixLemma]) }
 			} else {
 				newWL = wordLemmaPair[ixLp]
 				if newWL.lWord2 != wF.uWord2 { // error 
@@ -5298,12 +5334,12 @@ func add_ixWord_to_WordSliceFreq() {
 	for f:=1; f < len( only_level_numWords ) ; f++ {
 		if only_level_numWords[f] == 0 { continue }
 		perc_level[f] = only_level_numWords[f] * 100 / tot ;     
-		fmt.Println(f, " num. words ","list_level[f]", list_level[f], " = " , "only_level_numWords[f]=", only_level_numWords[f],    " \t", perc_level[f] , "%" ) 
+		//fmt.Println(f, " num. words ","list_level[f]", list_level[f], " = " , "only_level_numWords[f]=", only_level_numWords[f],    " \t", perc_level[f] , "%" ) 
 	}	
 
 	if only_level_numWords[0] > 0 {  
 		perc_level[0] = only_level_numWords[0] * 100 / tot ;     
-		fmt.Println(" num. words ", list_level[0], " = ", only_level_numWords[0],    " \t", perc_level[0] , "%" ) 	
+		//fmt.Println(" num. words ", list_level[0], " = ", only_level_numWords[0],    " \t", perc_level[0] , "%" ) 	
 	}
 
 	
@@ -5664,7 +5700,9 @@ func rewrite_word_lemma_dictionary() {
 //--------------------------------
 
 func rewrite_LemmaTranDict_file() {
-						
+
+	//fmt.Println( "GO ", green("rewrite_LemmaTranDict_file" ))
+	
 	//outFile := FOLDER_IO_lastTRAN +  string(os.PathSeparator) + FILE_ outLemmaTranDict;
 	
 	outFile := FOLDER_IO_lastTRAN  +  string(os.PathSeparator) + FILE_last_updated_dict_words 
@@ -5820,8 +5858,9 @@ func bind_go_passToJs_write_WordsToLearn(js_function string)  {
 } // end of rewrite_word_to_learn_file
 
 //----------------------------------------
-func console( str1 string) {
-	go_exec_js_function( "js_go_console", str1 ) 	
+func js_console_log( str1 string) {
+	var cmd1 = `console.log("go_msg: ` + strings.ReplaceAll(str1,"\n"," ") + `") `
+	ui.Eval(  cmd1 ) 
 }
 //-----------------------------------------------
 func read_lastValueSets2() {

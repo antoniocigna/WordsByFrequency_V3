@@ -402,10 +402,12 @@ genannt.genannt      ;.  genannt    ;.505;.    145;. 123;. 123;. nennen  ;.  nom
 					   
 		//	0       1      2       3       4        5           6            7          8            9         
 		//   				10            11         12           13          14
+		/**
 		if ((chk_ix != "ix") || (chk_ixLemma != "ixLemma"))  {
 			console.log( red("error "), " in ", green("js_go_showWordList_lev2"), 
 				" in string argument got from GO (field3 not 'ix' or field13 not 'ixLemma' 0\n\t", ww)   			
-		}			
+		}	
+		***/		
 		/**
 		if (z==1) {
 			console.log( green("oneElemToStudy "), z,"  ", wordLineZ, "\n\t" ,  chk_ix,ixUnW2, chk_ixLemma, wIxLemmaList)			
@@ -842,9 +844,12 @@ function write_word_dictionary() {
 		//console.log("write_word_dictionary",  " nessuna nuova traduzione"); 	
 		return;
 	}
-	console.log("write_word_dictionary ",  newTranWord, " parole tradotte"); 	
+	//console.log("write_word_dictionary ",  newTranWord, " parole tradotte"); 	
+	//console.log(red("\tJS  run go_write_word_dictionary("),  listNewTranWords.substring(1)   ); 	
 	
 	go_write_word_dictionary(  listNewTranWords.substring(1)  ); 
+	
+	//console.log(red("\tJS  dopo l'istruzione di run go_write_word_dictionary")); 	
 	
 } // end of write_word_dictionary
 
@@ -961,8 +966,8 @@ function onclick_require_betweenWordList() {
 
 //------------------------------------
 function js_go_showBetweenWordList(wordListStr, js_parm, jsFunc,goFunc) {
-	console.log("function js_go_showBetweenWordList() ", " js_parm=", js_parm, " <-- " + goFunc + " <-- " + jsFunc) ;
-	console.log("wordListStr=\n"+wordListStr +"\n--------------------------\n")
+	//console.log("function js_go_showBetweenWordList() ", " js_parm=", js_parm, " <-- " + goFunc + " <-- " + jsFunc) ;
+	//console.log("wordListStr=\n"+wordListStr +"\n--------------------------\n")
 	
 	if (wordListStr == "") {
 		document.getElementById("id_bW_err").style.display ="block";   // no entry found
@@ -2223,7 +2228,8 @@ function copyInnerHTML_to_clipboard( this1 , ele_textarea) {
 //--------------------------------------
 
 function onclick_showWordsButton(type) {
-	//console.log("onclick_showWordsButton() ") 	
+	
+	console.log("antonio prova", "lorca", "con tre parole") 	
 
 	// if all words are translated continue 
 	// is some translations are missing, ask if they must be ignored, otherwise loop till no translations are missing     
@@ -2299,7 +2305,7 @@ function onclick_showWordsButton(type) {
 		if ( parseInt(ixUnWtS) != numIxTrad) {
 			sw_someTranMissingW= true;	
 			if (sw_ignore_missTranWord == false) {
-				console.log("onclick_showWordsButton() error4w entry z=" + z + " = " + wT  + "\n\t wordToStudy_list[ixzNum="+ ixzNum +"]=" +  wordToStudy_list[ixzNum] +  
+				console.log("onclick_showWordsButton() ", red("error4w"), " entry z=" + z + " = " + wT  + "\n\t wordToStudy_list[ixzNum="+ ixzNum +"]=" +  wordToStudy_list[ixzNum] +  
 					"\n\tixUnWtS=" + ixUnWtS + " ixUnTrad=" + ixUnTrad);			
 				continue; 
 			}	
@@ -2351,9 +2357,11 @@ function onclick_showWordsButton(type) {
 		}
 	}	
 	
-	//console.log("onclick_showWordsButton() write word dictionary ") 
+	//console.log("onclick_showWordsButton() call write word dictionary ") 
 	
 	write_word_dictionary(); 
+	
+	//console.log("onclick_showWordsButton() ",red("call write word dictionary ")) 
 	
 	if (sw_Minus1) {
 		for (var i = 0; i < wordToStudy_list.length; i++) {  
@@ -3999,6 +4007,8 @@ function onclick_saveNewWordTran(this1) {
 
 	
 	if (newUp > 0) {
+		console.log( red(" onclick_saveNewWordTran	call  write_word_dictionary"))
+		
 		write_word_dictionary()
 	}
 	
