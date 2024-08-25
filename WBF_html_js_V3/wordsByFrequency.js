@@ -1194,7 +1194,7 @@ function onclick_rowsByIxLemma(sIxLemma) {
 	
 	var max_num_row4lemma = document.getElementById("idTabWRoL2").value 
 
-	console.log( green("onclick_rowsByIxLemma"), " sixLemma=", sIxLemma, " max_num_row4lemma=", max_num_row4lemma)
+	//console.log( green("onclick_rowsByIxLemma"), " sixLemma=", sIxLemma, " max_num_row4lemma=", max_num_row4lemma)
 
     go_passToJs_getRowsByIxLemma(""+sIxLemma, ""+max_num_row4lemma, "js_go_showLemmaRowList4"); // ask 'go' to give the rows of the word  by the go function js_go...  
 

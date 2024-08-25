@@ -676,8 +676,8 @@ func isNumber(s string) bool {
 func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords int, onlyThisLevel string, 
 						sel_extrRow string, sel_toBeLearned string,  js_function string) {
 					
-		fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
-						" from=",  fromWord, " numWords=", numWords )
+		//fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
+		//				" from=",  fromWord, " numWords=", numWords )
 		var from1, to1 int; 
 		from1 = fromWord; //   - 1; 
 		if (from1 < 1) {
@@ -1177,6 +1177,7 @@ func bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, js_f
 		lemmaToFind0:= leS.leLemma;
 		lemmaTran   := leS.leTran
 		
+		/**
 		fmt.Println( green("bind_go_passToJs_getRowsByIxLemma"), " ixLemma=", ixLemma,  " lemmaSlice[]=", leS)
 		
 		for f:= leS.leFromIxLW; f <= leS.leToIxLW; f++ {
@@ -1188,6 +1189,7 @@ func bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, js_f
 			//???? bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_function string) { 
 		
 		}  
+		**/
 		//---------------------
 		
 		lemmaCod:= newCode( lemmaToFind0 )
@@ -4470,7 +4472,7 @@ func write_lastValueSets() {
 	outS2:= []string{ outS1}	
 	writeList(FOLDER_INPUT_OUTPUT  + string(os.PathSeparator) + FILE_last_mainpage_values2, outS2 )		
 	
-	fmt.Println( green("write_lastValueSets"), " in file ",  FILE_last_mainpage_values2    ) 
+	//fmt.Println( green("write_lastValueSets"), " in file ",  FILE_last_mainpage_values2    ) 
 	
 } // end of 
 //----------------------------------
@@ -4712,7 +4714,7 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 			wordLemma1.lWordCod = newCode( wordLemma1.lWord2)
 			wordLemma1.lIxLemma = -1
 			
-			if ((  wordLemma1.lWord2 == "cäsar") || (wordLemma1.lWord2 == "caesar") || (wordLemma1.lWord2 == "casar") ) { fmt.Println(green(" 00 carica Lemma "), " newCode=",wordLemma1.lWordCod       ) }
+			//if ((  wordLemma1.lWord2 == "cäsar") || (wordLemma1.lWord2 == "caesar") || (wordLemma1.lWord2 == "casar") ) { fmt.Println(green(" 00 carica Lemma "), " newCode=",wordLemma1.lWordCod       ) }
 			
 			wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
 			numLemmaDict++		
@@ -4741,7 +4743,7 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 			wordLemma1.lWordCod = newCode( wordLemma1.lWord2)
 			wordLemma1.lIxLemma = -1
 			
-			if ((  wordLemma1.lWord2 == "cäsar") || (wordLemma1.lWord2 == "caesar") || (wordLemma1.lWord2 == "casar") ) { fmt.Println(green(" 00 carica Lemma "), " newCode=",wordLemma1.lWordCod       ) }
+			//if ((  wordLemma1.lWord2 == "cäsar") || (wordLemma1.lWord2 == "caesar") || (wordLemma1.lWord2 == "casar") ) { fmt.Println(green(" 00 carica Lemma "), " newCode=",wordLemma1.lWordCod       ) }
 	
 			
 			wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
@@ -4771,9 +4773,9 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 	
 	doppi:=0
  
-	for nn1, lemX := range wordLemmaPairTMP {
+	for _, lemX := range wordLemmaPairTMP {
 		lemS = lemX.lLemma + " " + lemX.lWord2 
-		if ((  lemX.lWord2 == "cäsar") || (lemX.lWord2 == "caesar") || (lemX.lWord2 == "casar") ) { fmt.Println(" 111 carica Lemma ", nn1,  " lemX=" , lemX) }
+		//if ((  lemX.lWord2 == "cäsar") || (lemX.lWord2 == "caesar") || (lemX.lWord2 == "casar") ) { fmt.Println(" 111 carica Lemma ", nn1,  " lemX=" , lemX) }
 		if preLemS == lemS {
 			doppi++
 			continue
@@ -4917,7 +4919,7 @@ func check_wordLemma_sameCode() {
 	pre_z := -1
 	
 	for z, wordPair := range wordLemmaPair {	
-			if ((  wordPair.lWord2 == "cäsar") || (wordPair.lWord2 == "caesar") || (wordPair.lWord2 == "casar") ) { fmt.Println(" check 222 Lemma ", z,  " wordPair=" , wordPair) }
+			//if ((  wordPair.lWord2 == "cäsar") || (wordPair.lWord2 == "caesar") || (wordPair.lWord2 == "casar") ) { fmt.Println(" check 222 Lemma ", z,  " wordPair=" , wordPair) }
 	
 		if (wordPair.lWordCod != pre_wordCod) {
 			pre_wordCod = wordPair.lWordCod 
