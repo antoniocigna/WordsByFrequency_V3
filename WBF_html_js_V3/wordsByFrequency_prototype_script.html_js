@@ -58,7 +58,6 @@ license MIT: you can share and modify the software, but you must include the lic
 						
 						<div class="hpad top left1">
 							parola 
-							<span style="font-size:0.6em; font-weight: lighter;"><br>passare il mouse sopra la parola <br>per leggere la <span class="c_tranW"><b>traduzione</b></span></span>  
 						</div>
 					</th>	
 					<th style="text-align:center;border-left:0px solid black;">	
@@ -82,7 +81,7 @@ license MIT: you can share and modify the software, but you must include the lic
 						<div  class="c_verticalText">lista le righe con <br>questo lemma</div>
 					</th>
 					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
-						<div  class="c_verticalText">lista le parole con<br> lo stesso lemma<br> o con lo stesso inizio</div>
+						<div  class="c_verticalText">lista le parole con<br>questo lemma</div>
 					</th>					
 				</tr>   
 				
@@ -152,8 +151,8 @@ license MIT: you can share and modify the software, but you must include the lic
 						</label>					
 					</th>
 					<th style="text-align:center;font-size:0.8em;">
-						<label style="visibility:hidden;">max<br> 
-							<input type="number"  min="1" value="100" id="idTabWoWL3"
+						<label>max<br> 
+							<input type="number"  min="1" value="100" id="idTabWRLL3"
 								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
 						</label>					
 					</th>
@@ -168,7 +167,7 @@ license MIT: you can share and modify the software, but you must include the lic
 			<tbody id="idTableWordList_tbody">   \n 
 		 ` ; // end of prototype_tableWordList_Header ; 
 		
-	let prototype_oneTR_lemma = `  
+	let prototype_oneTR_lemma = `\n  
 		<tr> 
 			<td style="text-align:center;font-size:0.8em;font-weight:100;">
 					<span onmouseover="mouseOverWord(this)" onmouseout="mouseOutWord(this)"  >§one-numTR§</span>					
@@ -185,26 +184,26 @@ license MIT: you can share and modify the software, but you must include the lic
 			<td style="text-align:center;" class="borderVert_L"  ><button onclick="onclick_word_known(\'§one-ix1§\',0,this)">§known_yes§</button></td>
 			<td style="text-align:center;"><button onclick="onclick_word_known(\'§one-ix1§\',1,this)">§known_no§</button></td>
 			<td style="text-align:center;" class="borderVert_L" >					
-				<div class="hpad top left1"  >
-					<span onmouseover="mouseOverWord(this)" onmouseout="mouseOutWord(this)" ondblclick="onclickDoubleWordTran(this)"> 
-						<span class="c_wordOrig"><b>§one-word1§</b></span>						
-					</span> 
-					<span  class="c_wordTran" style="display:none;">§one-f_tran§</span>			
+				<div class="hpad top left1">
+						<span class="c_wordOrig" §wordvisib§><b>§one-word1§</b></span>		
 				</div>
-			</td>		
+			</td>	
+			
 			<td style="text-align:center;" class="borderVert_R">					
 				<span style="display:none;">§one-f_lemma§</span>
 				<div class="hpad top left1">
-					<span> 
-						<span><b><b>§one-f_lemma§</b></span>
-					</span> 			
-								
-					<span  class="c_level"    >§one-x_level§</span>
-					<span  class="c_paradigma">§one-x_para1§</span>
-					<span  class="c_example"  >§one-x_example1§</span>
-					<span  class="c_paradigma">§one-x_para2§</span>
-					<span  class="c_example"  >§one-x_example2§</span>
-				</div>
+					<details>
+						<summary §summarystyle§> 				
+								 <span onmouseover='mouseOverWord(this)' onmouseout='mouseOutWord(this)'><b>§one-f_lemma§</b></span>
+								 <span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
+						</summary>
+						<div> 								
+							<span  class="c_level"    >§one-x_level§</span>
+							<span  class="c_paradigma">§one-x_para1§</span>
+							<div   class="c_example"  >§one-x_example1§</div>
+						</div>
+					</details>
+				</div>				
 			</td>
 		
 			<td>
@@ -230,42 +229,25 @@ license MIT: you can share and modify the software, but you must include the lic
 				<button §displaNone§ onclick="onclick_rowsByIxLemma(\'§one-ixLemma§\')">L</button>
 			</td> \n			
 			<td style="text-align:center;" class="borderVert_L"  >
-				<button §displaNone§ onclick="onclick_require_PrefWord_lemma(\'§one-word1§\',\'§one-f_lemma§\')">P</button>	
+				<button §displaNone§ onclick="onclick_require_lemmaWordList2(\'§one-f_lemma§\')">WL</button>	
 			</td> \n 			
 		</tr> \n
 		
 	` ; // end of prototype_oneTR_lemma
-	//----------------------------------------------
-	let prototype_oneTR_lemma2 = ` 
-		<tr> 
-				<td style="text-align:center;">§one-numTR§</td>  	
-				<td style="text-align:center;"></td>  	
-				<td style="text-align:center;"></td>
-				<td style="text-align:center;"></td>
-				<td style="text-align:center;" class="borderL"></td>		
-				<td style="text-align:center;" class="borderR">									
-					<span style="display:none;">§one-f_lemma§</span>
-					<div class="hpad top left1">
-						<span> 
-								<span><b><b>§one-f_lemma§</b></span>
-						</span> 								
-						<span  class="c_level"    >§one-x_level§</span>
-						<span  class="c_paradigma">§one-x_para1§</span>
-						<span  class="c_example"  >§one-x_example1§</span>
-						<span  class="c_paradigma">§one-x_para2§</span>
-						<span  class="c_example"  >§one-x_example2§</span>
-					</div>
-				</td>				
-				<td></td><td></td><td></td>
-				</tr> \n					
-	` ; // end of prototype_oneTR_lemma2
-		
+
+	
+	//-------------------------------------
+	/**
+	function buttonWordList( lemma3 ) {
+		return '<button onclick="onclick_require_lemmaWordList(\"' + lemma3 + '\")" class="tdBut1">Lista le Parole di questo lemma</button>'
+	}
+	**/
 	//--------------------------------------------------------------------
 	
 	function newTr_from_prototype( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, word1, f_lemma, x_level, 
-					f_para, f_tran, x_para1, x_para2, x_example1, x_example2, showAltre, m, 
+					f_para, f_tran, x_para1,x_example1, showAltre, m, 
 					n_extr_row, 
-					knowYesCtr, knowNoCtr ) {  
+					knowYesCtr, knowNoCtr, numButton) {  
 	    
 		//if (word1=="schrift") { console.log("newTr_from_prototype( numeroTR=", numeroTR, " ", word1, " nrow=", nrow, " ix1=", ix1, " m=",m , "  n_extr_row=",   n_extr_row  ) }
 		
@@ -274,9 +256,12 @@ license MIT: you can share and modify the software, but you must include the lic
 		if (x_level != "")    { x_level    = "<br>" + "(lev." + x_level + ")"; }
 		if (x_para1 != "")    { x_para1    = "<br>" + x_para1    ; }		
 		if (x_example1 != "") { x_example1 = "<br>" + x_example1 ; }
-		if (x_para2 != "")    { x_para2    = "<br>" + x_para2    ; }		
-		if (x_example2 != "") { x_example2 = "<br>" + x_example2 ; }
-		
+		var summarystyle = ' style="list-style-position: outside;" ' 
+		if ((x_level == "") && ( x_para1=="") && (x_example1=="") ) {
+			summarystyle= ' style="display:block;" '  // in <detail><summary></summary> other staff </details> if other stuff is empty hide the arrow (default is display:list-item) 
+		}
+		var wordvisib = "";
+		if (numButton == "5") {  wordvisib = ' style="visibility:hidden;" ' ;}
 	
 		if ( (1*knowNoCtr) > 0) { 
 			//newTr = newTr.replaceAll("§notKnowBackSty","border:2px solid black;");
@@ -289,8 +274,16 @@ license MIT: you can share and modify the software, but you must include the lic
 		if (nrow == 0) {
 			displayNone = 'style="display:none;"';
 		} 
+		/**
+		if (word1 == "$lemmalist$") {
+			word1 = buttonWordList( f_lemma )
+		}
+		**/
+		
 		//console.log(word1 , "  nrow=", nrow,  " displayNone=>" + displayNone, "<==")
 		newTr = newTr.
+			replaceAll("§summarystyle§"  , summarystyle).
+			replaceAll(" §wordvisib§"    , wordvisib   ). 
 			replaceAll("§displaNone§"    , displayNone ).    
 			replaceAll("§ixW2StudyLs§"      , ""+ixW2StudyLs ). 
 			replaceAll("§one-ixLemma§"   , ""+ixLemma   ). 
@@ -303,9 +296,7 @@ license MIT: you can share and modify the software, but you must include the lic
 			replaceAll("§one-x_level§"   , ""+x_level  ).
 			replaceAll("§one-f_tran§"    , ""+f_tran   ).   
 			replaceAll("§one-x_para1§"   , ""+x_para1  ). 
-			replaceAll("§one-x_para2§"   , ""+x_para2  ). 
 			replaceAll("§one-x_example1§", ""+x_example1 ). 
-			replaceAll("§one-x_example2§", ""+x_example2 ). 
 			replaceAll("§one-showAltre§",  ""+ showAltre). 	
 			replaceAll("§one-n_extr_row§", ""+ n_extr_row).
 			replaceAll("§known_yes§"     , ""+knowYesCtr).		

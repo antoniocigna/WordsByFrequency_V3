@@ -49,6 +49,10 @@
 			color: blue;
 			font-weight:bold;
          }	
+		  .c_wordTarg2 {
+			color:  #0080ff;
+			font-weight:bold;
+         }	
             .wBold {
             color:blue;
             font-weight:bold; 
@@ -557,31 +561,66 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
                     </tr>
 					
                     <tr>
-                        <td class="tdV1"> 
-                            <button onclick="onclick_require_betweenWordList()" class="tdBut1">Lista le Parole comprese tra
+                        <td class="tdV1"  style="vertical-align:top;"> 
+							<div>
+                            <button onclick="onclick_require_betweenWordList()" class="tdBut1">Lista le Parole richieste
 								<!-- <br><span  style="font-size:0.4em;">onclick_require_betweenWordList() input "id_inpFromABC" "id_inpToABC" maxNum="id_inpMaxNumABC"</span> -->
 							</button>
                         </td>
-                        <td class="tdV1" style="text-align:left;"> 
-                            <input id="id_inpFromABC" type="text" size="20" placeholder="prima parola" 
+                        <td class="tdV1" style="text-align:left; padding-left:0.5em;"> 
+							
+                            <input id="id_inpFromABC" type="text" size="33" placeholder="parola / prefisso- / -suffisso" 
 										style="text-align:left;padding-left:0.5em;  background-color:white;font-size:0.8em; font-weight:bold;">	
 							&nbsp;&nbsp;
+							<!--
 							e 
 							&nbsp;&nbsp;
-							<input id="id_inpToABC" type="text" size="20" placeholder="ultima parola" 
+							<input id="id_inpToABC" type="text" size="20" placeholder="ultima parola  (o suo inizio)" 
 										style="text-align:left;padding-left:0.5em;  background-color:white;font-size:0.8em; font-weight:bold;">		
+							-->			
 							<span style="font-size:0.8em;">
 								&nbsp;&nbsp;(
 								massimo 
-								<input id="id_inpMaxNumABC"  type="number" min="1" max="400" value="1" style="text-align:right; width:4em; background-color:white;" >
+								<input id="id_inpMaxNumABC"  type="number" min="1" max="400" value="100" style="text-align:right; width:4em; background-color:white;" >
 								&nbsp;
 								parole)
 							</span>
-							
+							<span style="font-size:0.4em;line-height: 80%;background-color:lightgrey;"><br>il segno meno indica un prefisso o un suffisso</span> 
 							<br><span id="id_bW_err" style="display:none;color:red;">non è stata trovata nessuna parola</span>
-                        </td>
+							
+						</td>
                     </tr>				
-						
+					
+					<tr >
+                        <td class="tdV1" style="vertical-align:top;"> 
+                            <button onclick="onclick_require_betweenLemmaList()" class="tdBut1">Lista i lemma richiesti
+								<!-- <br><span  style="font-size:0.4em;">onclick_require_betweenWordList() input "id_inpFromABC" "id_inpToABC" maxNum="id_inpMaxNumABC"</span> -->
+							</button>
+                        </td>
+                        <td class="tdV1" style="text-align:left; padding-left:0.5em; "> 
+                            <input id="id_inpLemmaFromABC" type="text" size="33" placeholder="lemma / prefisso- / -suffisso" 
+										style="text-align:left;padding-left:0.5em;  background-color:white;font-size:0.8em; font-weight:bold;">	
+							&nbsp;&nbsp;
+							<!--
+							e 
+							&nbsp;&nbsp;
+							<input id="id_inpLemmaToABC" type="text" size="20" placeholder="ultimo lemma (o suo inizio)" 
+										style="text-align:left;padding-left:0.5em;  background-color:white;font-size:0.8em; font-weight:bold;">		
+							-->			
+							<span style="font-size:0.8em;">
+								&nbsp;&nbsp;(
+								massimo 
+								<input id="id_inpLemmaMaxNumABC"  type="number" min="1" max="400" value="100" style="text-align:right; width:4em; background-color:white;" >
+								&nbsp;
+								lemma)
+							</span>
+							<span style="font-size:0.4em;line-height: 80%;background-color:lightgrey;"><br>il segno meno indica un prefisso o un suffisso</span> 
+							<br><span id="id_bW0_err" style="display:none;color:red;">non è stata trovato nessun lemma</span>
+                        </td>
+                    </tr>			
+
+
+					<!--
                     <tr>
                         <td class="tdV1"> 
                             <button onclick="onclick_require_lemmaWordList()" class="tdBut1">Lista le Parole con il lemma 
@@ -599,12 +638,12 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 							<br><span id="id_inpLemma_msg" style="display:none;color:red;">non è stata trovata nessuna parola</span>
                         </td>
                     </tr>	
-                    	
+                    -->	
 					  <tr>
                         <td  id="id_list_Righe_TD_But" class="tdV1"> 
                             <button onclick="onclick_require_rowList1()" class="tdBut1">Lista le Righe</button>
                         </td>                      
-						 <td  class="tdV1" >
+						 <td  class="tdV1"  style="padding-left:0.5em;" >
 							<div id="id_list_Righe_TD_Num"  style="padding: 2px 4px 6px 0px;font-size:0.8em;">
 								<div  class="centerXY" style="width:100%; ">
 								<div>
@@ -789,8 +828,9 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 				<div id="dragWLsTip5" class="mydrag_backButton " >
 					<div id="dragWLsTip5_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
 						<span style="font-size:0.7em;">	
-							Sposta il mouse sulla <span style="color:blue;font-weight:bold;">parola</span> per leggere la <span style="color:green;font-weight:bold;">traduzione</span> 
+							Sposta il mouse sul <span style="color:blue;font-weight:bold;">lemma</span> per leggere la <span style="color:green;font-weight:bold;">traduzione</span> 
 							<br>Per listare le righe che contengono la <span style="color:blue;font-weight:bold;">parola</span> 
+							o il <span style="color:blue;font-weight:bold;">lemma</span> 
 							<br>
 							clicca su un pulsante delle ultime tre colonne,		
 							<br>
