@@ -28,7 +28,7 @@ type lemmaStruct struct {
 //-------------------------------
 
 type wordLemmaPairStruct struct {
-	lWordCod string 
+	lWordSeq string 
 	lWord2   string 
 	lLemma   string
 	lIxLemma int
@@ -38,7 +38,7 @@ type wordLemmaPairStruct struct {
 
 //---------------
 type lemmaWordStruct struct {
-	lw_lemmaCod string 	
+	lw_lemmaSeq string 	
 	lw_lemma2   string 	
 	lw_prefix   string
 	lw_word     string 
@@ -79,7 +79,7 @@ const SEL_NO_EXTR_ROW = 2;
 
 //--
 type wordStruct struct {       // a word is repeated several time one for each row containing it  
-	wWordCod  string
+	wWordSeq  string
     wWord2    string
 	wIxUniq   int               // index of uniqueWordByFreq      
 	wNfile    int 
@@ -94,7 +94,7 @@ type wordStruct struct {       // a word is repeated several time one for each r
 }
 //--
 type wordIxStruct struct {
-	uWordCod    string	
+	uWordSeq    string	
     uWord2      string	
 	uIxUnW      int            // index of this word in the uniqueWordByFreq	
 	uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
@@ -131,7 +131,7 @@ type statStruct struct {
 //--------------------------
 var lastNumDict = 0;   
 type lemmaTranStruct struct {
-	dL_lemmaCod  string 
+	dL_lemmaSeq  string 
 	dL_lemma2    string 
 	dL_numDict   int	
 	dL_tran      string         //

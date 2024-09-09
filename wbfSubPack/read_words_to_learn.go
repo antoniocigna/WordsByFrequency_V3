@@ -44,10 +44,10 @@ func read_wordsToLearn() {
 		known_yes_ctr, _ := strconv.Atoi( strings.TrimSpace( fields[1] ) ) 
 		known_no_ctr , _ := strconv.Atoi( strings.TrimSpace( fields[2] ) ) 
 		
-		wordCod:= newCode( r_word2)		
+		wordCod:= seqCode( r_word2)		
 	
 		/**
-			uWordCod    string	
+			uWordSeq    string	
 			uWord2      string	
 			uIxUnW      int            // index of this word in the uniqueWordByFreq	
 			uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
@@ -68,7 +68,7 @@ func read_wordsToLearn() {
 		}		
 		for ixA:= ixF; ixA <= ixT; ixA++ {
 			xWordA :=  uniqueWordByAlpha[ixA]
-			if xWordA.uWordCod != wordCod {
+			if xWordA.uWordSeq != wordCod {
 				continue
 			}			
 			uniqueWordByAlpha[ixA].uKnow_yes_ctr = known_yes_ctr

@@ -6,6 +6,7 @@ import (
     "bufio"	
 	"sort"
 	"time"
+	//"strings"
 )
 //--------------------------------
 
@@ -13,8 +14,8 @@ func rewrite_word_lemma_dictionary() {
 	
 	//----------------------------------------------------
 	sort.Slice(newWordLemmaPair, func(i, j int) bool {
-			if (newWordLemmaPair[i].lWordCod != newWordLemmaPair[j].lWordCod) {
-				return newWordLemmaPair[i].lWordCod < newWordLemmaPair[j].lWordCod
+			if (newWordLemmaPair[i].lWordSeq != newWordLemmaPair[j].lWordSeq) {
+				return newWordLemmaPair[i].lWordSeq < newWordLemmaPair[j].lWordSeq
 			} else {
 				if (newWordLemmaPair[i].lWord2 != newWordLemmaPair[j].lWord2) {
 					return newWordLemmaPair[i].lWord2 < newWordLemmaPair[j].lWord2 
@@ -56,11 +57,15 @@ func rewrite_LemmaTranDict_file() {
 	lines = append(lines,  "__" + outFile + "\n" + "_lemma	_traduzione")
 	
 	for z:=0; z < len(dictLemmaTran); z++ {
+	
 		pkey=key
 		
-		//if dictLemmaTran[z].dL_lemma2 == dictLemmaTran[z].dL_tran { continue }
+		
 		
 		key = dictLemmaTran[z].dL_lemma2 + "|"  + dictLemmaTran[z].dL_tran  		////cigna1_3
+		
+		//if strings.Index(key,"eindhoven")>=0 { fmt.Println("rewrite_LemmaTranDict_file ",  dictLemmaTran[z],  " key=",key, " pkey=", pkey) }
+		
 		if pkey == key { continue}
 		
 		lines = append(lines, key ) 

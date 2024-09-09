@@ -137,6 +137,9 @@ func appendOneLemma( xLemma string, fromIx int, toIx int, numLemmaOrig int, numL
 	
 	// eg. einstellen  = ein + stellen 	
 	
+	/**
+	works even with multibyte characters: eg. if prefix="日本"  then   lemma="日本語語語"  is broken down into:  "日本" + "語語語"   
+	**/
 	for _, p:= range separPrefList {
 		//fmt.Println("separable prefix ", p.sPrefix , " \t ", p.sPrefTran)
 	

@@ -3030,6 +3030,10 @@ function tts_3_boldCell(tr1, this1, ixVoice, wh) {
 //---------------------------
 
 function tts_3_breakTextToPause(txt3, pre_idtr1) {
+	/**
+	break down the text in characters   
+	works even with multybyte chars:  eg.  日本語  is broken down into  日, 本, 語, 
+	**/
     var g, ww2, txt4 = "";
     if (pre_idtr1 == "") {
         var ww1 = (txt3 + " ").replaceAll("–", " ").replaceAll("-", " ").

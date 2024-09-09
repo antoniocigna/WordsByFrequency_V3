@@ -13,6 +13,7 @@ package wbfSubPack
 
 func elabWordList() {	
 
+
 	fmt.Println("\n", green("elabWordList"), "\n")
 	
 	elabWordAlpha_buildWordFreqList() 		
@@ -20,8 +21,6 @@ func elabWordList() {
 	build_uniqueWord_byFreqAlpha(); 
 	
 	loadInverseWordSlice()
-	
-	provaInverseWord( "weise", 10)  //  TEST  togli ??antoX
 	
 	putWordFrequenceInRowArray()
 
@@ -50,11 +49,11 @@ func elabWordAlpha_buildWordFreqList() {
 		/******************** rimosso il 15/11/2023
 	
 	for nn, wS1 := range wordSliceAlpha {	
-		if wS1.wWordCod == LAST_WORD  { wordSliceAlpha[nn].totRow = LAST_WORD_FREQ }
+		if wS1.wWordSeq == LAST_WORD  { wordSliceAlpha[nn].totRow = LAST_WORD_FREQ }
 		//fmt.Println("ANTO elab...FreqList() ", nn, "  alpha=",  wordSliceAlpha[nn]);  	
 		//fmt.Println("ANTO elab...FreqList() nn=", nn, ", preW=" + preW + ",  wS1 ", wS1)  
 		
-		if (wS1.wWordCod != preW) {		
+		if (wS1.wWordSeq != preW) {		
 			removeIxWord = -1
 			preW = wS1.wWord2; 
 		}
@@ -63,7 +62,7 @@ func elabWordAlpha_buildWordFreqList() {
 		if removeIxWord >= 0 {
 			//fmt.Println("\t ANTO 2elab" , "  removeIxWord=" , removeIxWord , " wordSliceAlpha[ removeIxWord ].word=" + wordSliceAlpha[ removeIxWord ].word  )
 			
-		    if wS1.wWordCod == wordSliceAlpha[ removeIxWord ].wWordCod {
+		    if wS1.wWordSeq == wordSliceAlpha[ removeIxWord ].wWordSeq {
 				wordSliceAlpha[ nn ].sw_ignore = true 
 			}	
 		}	
@@ -73,7 +72,7 @@ func elabWordAlpha_buildWordFreqList() {
 	
 	//----------------
 	for nn, wS1 := range wordSliceAlpha {	
-		if wS1.wWordCod == LAST_WORD  { wordSliceAlpha[nn].wTotRow = LAST_WORD_FREQ }	
+		if wS1.wWordSeq == LAST_WORD  { wordSliceAlpha[nn].wTotRow = LAST_WORD_FREQ }	
 		inputTextRowSlice[ wS1.wIxRow ].rNumWords ++; 		// number of words in a row (eg. the row "the cat is on the table"  contains 6 words --> .numWords = 6 
 	}
 	//------------
@@ -92,8 +91,8 @@ func elabWordAlpha_buildWordFreqList() {
 			if wordSliceFreq[i].wTotRow !=  wordSliceFreq[j].wTotRow {
 			   return wordSliceFreq[i].wTotRow > wordSliceFreq[j].wTotRow        // totRow    descending order (how many row contain the word) 
 			} else {
-				if wordSliceFreq[i].wWordCod != wordSliceFreq[j].wWordCod {
-					return wordSliceFreq[i].wWordCod < wordSliceFreq[j].wWordCod            // word  ascending order (eg.   a before b ) 
+				if wordSliceFreq[i].wWordSeq != wordSliceFreq[j].wWordSeq {
+					return wordSliceFreq[i].wWordSeq < wordSliceFreq[j].wWordSeq            // word  ascending order (eg.   a before b ) 
 				} else {
 					return wordSliceFreq[i].wWord2 < wordSliceFreq[j].wWord2  			
 				}
@@ -196,8 +195,8 @@ func build_uniqueWord_byFreqAlpha() {
 		num_word_0++
 		//}
 		
-		if wS1.wWordCod != preW {
-			preW = wS1.wWordCod;
+		if wS1.wWordSeq != preW {
+			preW = wS1.wWordSeq;
 			numWordUn += 1 
 			numWordRi += wS1.wTotRow 
 			//if wS1.sw_ignore == false { 
@@ -250,13 +249,13 @@ func build_uniqueWord_byFreqAlpha() {
 	//fmt.Println( "build_uniqueWord_byFreqAlpha() loop 1 ");
 	
 	for n1, wS1 := range wordSliceFreq {	
-		if wS1.wWordCod != preW {
-			preW = wS1.wWordCod;
+		if wS1.wWordSeq != preW {
+			preW = wS1.wWordSeq;
 			
 			if wS1.wTotRow >= LAST_WORD_FREQ {
 				wS1.wTotRow = 0
 			}
-			xWordF.uWordCod  = wS1.wWordCod;
+			xWordF.uWordSeq  = wS1.wWordSeq;
 			xWordF.uWord2    = wS1.wWord2;
 			xWordF.uTotRow   = wS1.wTotRow
 			xWordF.uTotExtrRow = wS1.wTotExtrRow  
@@ -302,7 +301,7 @@ func build_uniqueWord_byFreqAlpha() {
 	highestValueByte, err := hex.DecodeString("ffff")   
 	if err != nil { panic(err) }
 	var highestValue = string( highestValueByte ) + "end_of_list"	
-	xWordF.uWordCod = highestValue 
+	xWordF.uWordSeq = highestValue 
 	xWordF.uWord2   = highestValue 	
 	
 	xWordF.uTotRow = 1 ; // the lowest frequency
@@ -317,7 +316,7 @@ func build_uniqueWord_byFreqAlpha() {
 	//--------------------------
 	
 	addWordLemmaTranLevelParadigma()   
-	
+		 
 	add_ixWord_to_WordSliceFreq()
 	
 	
@@ -335,8 +334,8 @@ func build_uniqueWord_byFreqAlpha() {
 	
 	//------------
 	sort.Slice(uniqueWordByAlpha, func(i, j int) bool {
-		if uniqueWordByAlpha[i].uWordCod != uniqueWordByAlpha[j].uWordCod {
-			return uniqueWordByAlpha[i].uWordCod < uniqueWordByAlpha[j].uWordCod            // word  ascending order (eg.   a before b ) 
+		if uniqueWordByAlpha[i].uWordSeq != uniqueWordByAlpha[j].uWordSeq {
+			return uniqueWordByAlpha[i].uWordSeq < uniqueWordByAlpha[j].uWordSeq            // word  ascending order (eg.   a before b ) 
 		} else {
 			return uniqueWordByAlpha[i].uWord2 < uniqueWordByAlpha[j].uWord2  			
 		}
@@ -352,8 +351,6 @@ func build_uniqueWord_byFreqAlpha() {
 		f:= uniqueWordByAlpha[u].uIxUnW
 		uniqueWordByFreq[f].uIxUnW_al  = u; 		
 		uniqueWordByAlpha[u].uIxUnW_al = u
-		
-		//fmt.Println( "ANTONIO6 uniqueWordByAlpha ANTONIO prova u=", u , " \t unique = ", uniqueWordByAlpha[u].uWordCod , " \t ",   uniqueWordByAlpha[u].uWord2) 
 				
 	}
  	//console( "------------------\n")
@@ -383,7 +380,7 @@ func build_lemma_word_ix() {
 			}
 			//---------------
 			type lemmaWordStruct struct {
-				lw_lemmaCod string 	
+				lw_lemmaSeq string 	
 				lw_lemma2   string 	
 				lw_word     string 
 				lw_ixLemma    int
@@ -395,8 +392,8 @@ func build_lemma_word_ix() {
 	
 	// order by lemma and word 	
 	sort.Slice(lemma_word_ix, func(i, j int) bool {
-			if  lemma_word_ix[i].lw_lemmaCod != lemma_word_ix[j].lw_lemmaCod {
-				return lemma_word_ix[i].lw_lemmaCod < lemma_word_ix[j].lw_lemmaCod 	
+			if  lemma_word_ix[i].lw_lemmaSeq != lemma_word_ix[j].lw_lemmaSeq {
+				return lemma_word_ix[i].lw_lemmaSeq < lemma_word_ix[j].lw_lemmaSeq 	
 			} else {
 				if  lemma_word_ix[i].lw_lemma2 != lemma_word_ix[j].lw_lemma2 {
 					return lemma_word_ix[i].lw_lemma2 < lemma_word_ix[j].lw_lemma2	
@@ -469,8 +466,8 @@ func sortWordListByFreq_and_row_priority() {
 		   return wordSliceFreq[i].wTotRow > wordSliceFreq[j].wTotRow         // totRow    descending order (how many rows contain the word)  	  		   
 		}	
 		
-		if wordSliceFreq[i].wWordCod !=  wordSliceFreq[j].wWordCod {
-		   return wordSliceFreq[i].wWordCod < wordSliceFreq[j].wWordCod            // word      ascending order	  		   
+		if wordSliceFreq[i].wWordSeq !=  wordSliceFreq[j].wWordSeq {
+		   return wordSliceFreq[i].wWordSeq < wordSliceFreq[j].wWordSeq            // word      ascending order	  		   
 		}	
 		if wordSliceFreq[i].wWord2 !=  wordSliceFreq[j].wWord2 {
 		   return wordSliceFreq[i].wWord2 < wordSliceFreq[j].wWord2                // word      ascending order	  		   
@@ -502,7 +499,7 @@ func addWordLemmaTranLevelParadigma() {
 	//fmt.Println("addWordLemmaTranLevelParadigma()" )
 	
 	newWordLemmaPair = make( []wordLemmaPairStruct, 0, len(uniqueWordByFreq)  )		
-	var newWL wordLemmaPairStruct   // 	lWordCod string, lWord2 string , lLemma string
+	var newWL wordLemmaPairStruct   // 	lWordSeq string, lWord2 string , lLemma string
 	var wP lemmaTranStruct  
 		
 	lemma_word_ix = make([]lemmaWordStruct, 0,  len(uniqueWordByFreq)  )  
@@ -551,7 +548,7 @@ func addWordLemmaTranLevelParadigma() {
 						} 
 						//---------
 						type lemmaWordStruct struct {
-							lw_lemmaCod string 	
+							lw_lemmaSeq string 	
 							lw_lemma2   string 	
 							lw_word     string 
 							lw_ixLemma    int
@@ -559,7 +556,7 @@ func addWordLemmaTranLevelParadigma() {
 						}
 						//-------------------------------
 						type wordLemmaPairStruct struct {
-							lWordCod string 
+							lWordSeq string 
 							lWord2   string 
 							lLemma   string
 							lIxLemma int
@@ -583,7 +580,7 @@ func addWordLemmaTranLevelParadigma() {
 		
 		
 		newWL.lWord2   = wF.uWord2
-		newWL.lWordCod = newCode( wF.uWord2 )
+		newWL.lWordSeq = seqCode( wF.uWord2 )
 		newWL.lLemma = ""
 		newWL.lIxLemma = -1
 		
@@ -614,9 +611,13 @@ func addWordLemmaTranLevelParadigma() {
 				wP = dictLemmaTran[ixTra] 
 				lis_tran = append( lis_tran, wP.dL_tran ) 		////cigna1	
 				if ixLemma2 >=0 {	lemmaSlice[ixLemma2].leTran = wP.dL_tran } 
+												// lab_word_list.go   wP.dL_tran= eindhoven   lemmaSlice[ixLemma2].leTran = eindhoven
+				//if lem == "eindhoven" { fmt.Println("elab_word_list.go ", " wP.dL_tran=",wP.dL_tran,"  lemmaSlice[ixLemma2].leTran =",  lemmaSlice[ixLemma2].leTran ) }
 			} else {
 				lis_tran = append( lis_tran, ""         ) 	
-				if ixLemma2 >=0 {	lemmaSlice[ixLemma2].leTran = "" }  	
+				if ixLemma2 >=0 {	lemmaSlice[ixLemma2].leTran = "" }  
+				//if lem == "eindhoven" { fmt.Println("elab_word_list.go ", " NO NO   lemmaSlice[ixLemma2].leTran =",  lemmaSlice[ixLemma2].leTran ) }
+		
 			}	
 			if sw_rewrite_wordLemma_dict { 
 				newWL.lLemma = lem 
@@ -624,7 +625,7 @@ func addWordLemmaTranLevelParadigma() {
 			}			
 			//--			
 			LW.lw_lemma2     = lem                                 
-			LW.lw_lemmaCod   = newCode( lem )			
+			LW.lw_lemmaSeq   = seqCode( lem )			
 			LW.lw_word       = wF.uWord2 
 			LW.lw_ixLemma    = ixLemma2
 			LW.lw_origLemma  = lis_origLemma[n1] 

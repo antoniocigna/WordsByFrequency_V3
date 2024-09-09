@@ -2,7 +2,7 @@ package wbfSubPack
 
 import (  
 	"fmt"
-    "strings"
+    //"strings"
 	"sort"
 )
 //--------------------------------------------------------------------------
@@ -140,9 +140,9 @@ func loadInverseWordSlice()  {
 	
 	inverseWordSlice = make([] inverseStruct, 0, len(uniqueWordByAlpha) )
 	var oneInv inverseStruct
-	                                                 // uWordCod =  codedWord.word,    only codedWord is loaded  
+	                                                
 	for ix1, oneWord := range uniqueWordByAlpha {	
-		oneInv.inInverse = reverseString(  (strings.Split( oneWord.uWordCod,"."))[0]   )
+		oneInv.inInverse = reverseString(  oneWord.uWordSeq )
 		oneInv.inIx      = ix1		
 		inverseWordSlice = append( inverseWordSlice, oneInv )
 	}  
@@ -156,12 +156,10 @@ func loadInverseWordSlice()  {
 }  // end of loadInverseWordSlice
 //-------------------------------------------
 
-func getListInverseWordIndex(dirWordTarg0 string, maxNum int) []int { 
+func getListInverseWordIndex(dirWordTarg string, maxNum int) []int { 
 
-												    // uWordCod =  codedWord.word,    only codedWord is tested  
 													
-	targWordCoded0 := newCode( dirWordTarg0) 
-	targWordCoded  := (strings.Split( targWordCoded0, "."))[0] 	
+	targWordCoded := seqCode( dirWordTarg) 	
 	
 	invWordTarg:= reverseString(targWordCoded) 
 		
@@ -202,7 +200,7 @@ func provaInverseWord( finalWord string, maxNum int) {
 	//fmt.Println( "     prova indici = ",listInverseWordIndex ) 
 	
 	for _,ixL:= range listInverseWordIndex {  
-		fmt.Println( "trovato word con finale=", finalWord , " ==> ", uniqueWordByAlpha[ixL].uWordCod, "  -  ", uniqueWordByAlpha[ixL].uWord2)
+		fmt.Println( "trovato word con finale=", finalWord , " ==> ", uniqueWordByAlpha[ixL].uWordSeq, "  -  ", uniqueWordByAlpha[ixL].uWord2)
 	}
 	//----------------------------
 	

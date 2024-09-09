@@ -18,7 +18,7 @@ func bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_function
 	//---------------------------------------
 
 	var xWordA, xWordF wordIxStruct;  		
-	wordCod:= newCode( aWord )		
+	wordCod:= seqCode( aWord )		
 	
 	ixF, ixT:= lookForWordInUniqueAlpha( wordCod)	
 	
@@ -35,7 +35,7 @@ func bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_function
 	for ix:= ixF; ix <= ixT; ix++ {
 		xWordA =  uniqueWordByAlpha[ix] 
 		
-		if xWordA.uWordCod != wordCod { continue }            // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
+		if xWordA.uWordSeq != wordCod { continue }            // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
 		
 		ixWord = xWordA.uIxUnW			
 		if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
@@ -175,7 +175,7 @@ func OLD_bind_go_passToJs_thisWordRowList( aWord string, swOnlyThisWordRows bool
 	//  1) from the word get all lemma 
 	//-------	
 	var xWordF wordIxStruct;  		
-	wordCod:= newCode( aWord )		
+	wordCod:= seqCode( aWord )		
 	ixF, ixT:= lookForWordInUniqueAlpha( wordCod)	
 	
 	//fmt.Println("   lookForWordInUniqueAlpha(  wordCod=", wordCod,   " ixF=", ixF, " ixT=", ixT) 
@@ -189,12 +189,12 @@ func OLD_bind_go_passToJs_thisWordRowList( aWord string, swOnlyThisWordRows bool
 	for ix:= ixF; ix <= ixT; ix++ {
 		xWordF =  uniqueWordByAlpha[ix] 
 		
-		if xWordF.uWordCod != wordCod { continue }            // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
+		if xWordF.uWordSeq != wordCod { continue }            // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
 		
 		/**
 			if xWordF.uWord2 != aWord { continue; }
 			if swOnlyThisWordRows {
-				if xWordF.uWordCod != wordCod { continue }            // get only the required word 
+				if xWordF.uWordSeq != wordCod { continue }            // get only the required word 
 		}
 		**/
 		ixWord := xWordF.uIxUnW			
@@ -202,7 +202,7 @@ func OLD_bind_go_passToJs_thisWordRowList( aWord string, swOnlyThisWordRows bool
 		xWordF     = uniqueWordByFreq[ixWord] 
 		// get the list of lemma of this word 
 		for z:=0; z < len(xWordF.uLemmaL); z++  {
-			lemmaList1 = append(lemmaList1, newCode( xWordF.uLemmaL[z]) ) 
+			lemmaList1 = append(lemmaList1, seqCode( xWordF.uLemmaL[z]) ) 
 		}			
 	}
 	if len(lemmaList1) < 1 { 
@@ -231,11 +231,11 @@ func OLD_bind_go_passToJs_thisWordRowList( aWord string, swOnlyThisWordRows bool
 		fromIxX, _ := lookForLemmaWord( lemma1Cod )		// se non trova cerca lemma1Cod fino al punto.
 		fromIx:= fromIxX
 		for k:= fromIxX; k >= 0; k-- {
-			if lemma_word_ix[k].lw_lemmaCod < lemma1Cod { break }
+			if lemma_word_ix[k].lw_lemmaSeq < lemma1Cod { break }
 			fromIx = k
 		}
 		for k:= fromIx; k < len(lemma_word_ix); k++ {
-			if lemma_word_ix[k].lw_lemmaCod != lemma1Cod { continue	}   	//  se non trova cerca lemma1Cod fino al punto.
+			if lemma_word_ix[k].lw_lemmaSeq != lemma1Cod { continue	}   	//  se non trova cerca lemma1Cod fino al punto.
 			wL2 = lemma_word_ix[k]	
 			if swOnlyThisWordRows { 
 				if aWord != wL2.lw_word { continue;}                // get only the required word  
@@ -246,7 +246,7 @@ func OLD_bind_go_passToJs_thisWordRowList( aWord string, swOnlyThisWordRows bool
 				}
 				***/
 			}
-			wL2.lw_word = newCode( wL2.lw_word )
+			wL2.lw_word = seqCode( wL2.lw_word )
 			lemWordList2 = append( lemWordList2, wL2 )
 		} 		
 	}	
@@ -308,7 +308,7 @@ func fun_wordListToRowList_head(aWord string, lemmaList []lemmaWordStruct, maxNu
 				listWords_pref += LeS.ls_pref_ein
 				newPref = " = " + LeS.ls_pref_ein +"(" + LeS.ls_pref_tran+ ")" + " + " +  LeS.ls_lemma_stellen 
 			}
-			if newL != lemmaX.lw_lemma2 { continue }   //     newCode   ( sto cercando frasi doppie 
+			if newL != lemmaX.lw_lemma2 { continue }   //     seqCode   ( sto cercando frasi doppie 
 			//newT:= xWordF.uTranL[z]		//	anto1  .uTranL
 			newT:= LeS.leTran
 			//newP:= xWordF.uPara[z]

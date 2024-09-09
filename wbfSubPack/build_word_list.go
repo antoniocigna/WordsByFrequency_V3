@@ -127,22 +127,12 @@ func buildWordList() {
 	addCodedWordToWordSlice()
 	//---------------------------------
 	
-	// now wordSliceAlpha is in order by coded word and actual word ( eg. both actual word "über"   and "ueber" have "uber" as coded word) 
-		
-	/**
-	for g:=0; g < len( wordSliceAlpha ); g++ {
-		fmt.Println( "ANTONIO2 alpha ", wordSliceAlpha[g] )
-	}	
-	fmt.Println( "ANTONIO2 alpha \n")
-	**/
 	
 	addTotRowToWord()
-	
-	
-	
+		
 	
 } // end of buildWordList
-//-----------------
+
 
 //----------------------------------------
 
@@ -194,7 +184,8 @@ func checkTheWord( word0 string ) string {
 	} 
 	return stdCode(wor)
 }
-//---------------------------------------
+
+//-----------------------------------------
 
 func addCodedWordToWordSlice() {
 	/*
@@ -206,14 +197,14 @@ func addCodedWordToWordSlice() {
 	for i, wS1 := range wordSliceAlpha {
 		if (wS1.wWord2 != preW) { 
 			preW = wS1.wWord2	
-			preCoded = newCode(preW)
+			preCoded = seqCode(preW)
 		}
-		wordSliceAlpha[i].wWordCod = preCoded;
+		wordSliceAlpha[i].wWordSeq = preCoded;
 	}	
 	//----	
 	sort.Slice(wordSliceAlpha, func(i, j int) bool {
-		if wordSliceAlpha[i].wWordCod != wordSliceAlpha[j].wWordCod {
-			return wordSliceAlpha[i].wWordCod < wordSliceAlpha[j].wWordCod            // word  ascending order (eg.   a before b ) 
+		if wordSliceAlpha[i].wWordSeq != wordSliceAlpha[j].wWordSeq {
+			return wordSliceAlpha[i].wWordSeq < wordSliceAlpha[j].wWordSeq            // word  ascending order (eg.   a before b ) 
 		} else {
 			if wordSliceAlpha[i].wWord2 != wordSliceAlpha[j].wWord2 {
 				return wordSliceAlpha[i].wWord2 < wordSliceAlpha[j].wWord2  
@@ -235,7 +226,7 @@ func addTotRowToWord() {
 	the number of repetition of a word (totRow) is put in its element  ( later will be put in each row that contain it) 
 		eg.  one 3, one 3, one 3, two 4, two 4, two 4, two 4	
 	*/
-	preW  := wordSliceAlpha[0].wWordCod;	
+	preW  := wordSliceAlpha[0].wWordSeq;	
 	totR  := 0	
 	ix1   := 0
 	ix2   :=-1
@@ -246,7 +237,7 @@ func addTotRowToWord() {
 		
 		//fmt.Println("ANTO addTot ... i=" , i , " => ", wS1 )
 		
-		if (wS1.wWordCod != preW) {
+		if (wS1.wWordSeq != preW) {
 			ix2 = i; 
 			for i2 := ix1; i2 < ix2;i2++ {
 				 wordSliceAlpha[i2].wSwSelRowG = pre_wSwSelRow; 	// se esiste almeno un richiamo a una riga estratta ( wSwSelRowR)allora questo segnale è ripetuto come wSwSelRowG
@@ -262,7 +253,7 @@ func addTotRowToWord() {
 			totR = 0
 			tot_extrRow = 0
 			ix1  = i; 
-			preW = wS1.wWordCod; 
+			preW = wS1.wWordSeq; 
 		} 
 		
 		if wS1.wSwSelRowR == SEL_EXTR_ROW {   // se almeno uno è "estratto", tutti lo sono 

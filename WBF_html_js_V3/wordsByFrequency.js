@@ -312,6 +312,7 @@ function errorNoWord1() {
 function js_go_showWordList_lev2(wordListStr00, numButton, jsFunc,goFunc) {
 	
 	//console.log("function js_go_showWordList_lev2() ", "wordListStr.length=",wordListStr00.length  ," numButton=", numButton, " <-- " + goFunc + " <-- " + jsFunc) ;
+	//console.log("           wordListStr00=", wordListStr00)
 	
 	// numButton=1 default ==> from onclick most frequent word list  
 	// numButton=2         ==> from onclick BetweenWordList or prefix wordlist   
@@ -408,21 +409,31 @@ genannt.genannt      ;.  genannt    ;.505;.    145;. 123;. 123;. nennen  ;.  nom
 		if (wordLineZ == "") return; 
 		
 		
+		//console.log("oneElemToStudy(", z, ") wordToStudy_list ==>" + wordLineZ + "<=="); 
+		
 		//[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList] = getFieldsFromWordToStudy( wordToStudy_listStr[z],"1wordToStudy_"+z ); 	
 		
 		//var col0 = getFieldsFromWordToStudy( wordLineZ,"1wordToStudy_"+z ); 
 		
 		var ww0 = ((wordLineZ + ";.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.").split(";.") ).slice(0,15);
 		
+		//oneElemToStudy( 0 ) wordToStudy_list =  eindhoven;.eindhoven;.ix;.12471;.1;.eindhoven;.§;.;.;.;.0;.0;.0;.ixLemma;.3970§;.
+													   
+
+		 
 		[wordCod, word2, chk_ix, ixUnW2, totRow2, wLemmaListU, wTranListU,	wLevelListU,	wParaListU, wExampleListU,
 					   totExtrRow2, knowYesCtr, knowNoCtr,   chk_ixLemma, wIxLemmaListU] = ww0;  
-				   
+		
+		//if (wLemmaListU.indexOf("eindhoven")>=0) {console.log("  wTranListU=", wTranListU,    "    wSep=", wSep)  } 	
+		
 		wLemmaList   = wLemmaListU.split(   wSep ) 			   
 		wTranList    = wTranListU.split(    wSep ) 		
 		wLevelList   = wLevelListU.split(   wSep ) 		
 		wParaList    = wParaListU.split(    wSep ) 		
 		wExampleList = wExampleListU.split( wSep ) 		   
-		wIxLemmaList = wIxLemmaListU.split( wSep ) 		   
+		wIxLemmaList = wIxLemmaListU.split( wSep ) 		
+
+		//if (wLemmaListU.indexOf("eindhoven")>=0) { console.log(  "1 wTranList=", wTranList )  }
 					   
 		//	0       1      2       3       4        5           6            7          8            9         
 		//   				10            11         12           13          14
@@ -476,11 +487,7 @@ function fun_showWordList(wh, ix1=-1) {
 		//console.log("fun_showWordList(", wh, " ix1=", ix1, ") wordToStudy_list: ", "word2=", word2, "  ixUnW2=",  ixUnW2, " wLemmaList=", wLemmaList, " wTranList=", wTranList)
 		
 		for(var f = 0; f < wLemmaList.length; f++) {	
-			
-			if (wTranList[f] == wLemmaList[f]) {
-				wTranList[f] += " _" ;
-				//wTranList[f] = "" ; // per evitare parole non tradotte che sembrano tradotte,  se è davvero la traduzione aggiungi un carattere per diversificarla per esempio  " _"  
-			}  	
+			if (wLemmaList[f] == "") { continue }			
 			if (wTranList[f] == "") {			
 				numNoTran++			
 				words_to_translate_str += z + ";" + ixUnW2 + ";" + f + "; " +wLemmaList[f] + wordSepEndBeg;  // ;,;    // blank dopo ; prima di wLemma (serve per evitare problemi google)
@@ -491,6 +498,9 @@ function fun_showWordList(wh, ix1=-1) {
 				}
 			}
 		}
+		
+		//if (wLemmaList[0] =="eindhoven") {  console.log( " 2 wTranList=", wTranList )  }
+	
 	}
 	//---------------------
 	//console.log("fun_showWordList   numNoTran=", numNoTran)
@@ -1301,7 +1311,7 @@ function checkUpper( thisWord, thisListRow) {
 //------------------------
 
 function splitHeader( inpHeader ) {
-	console.log("splitHeader(", 	inpHeader); 
+	//console.log("splitHeader(", 	inpHeader); 
 	/**	
 		<HEADER>
 			<WORD>ihren,L:ihren</WORD> 
@@ -1865,7 +1875,7 @@ function js_go_showWrdRowList(inpstr) {
 	
 	var inpHeader = inpstr.substring( 0, ks + 9);
 	
-	console.log("js_go_showWrdRowList inpHeader + \n" +  inpstr.substring( 0, ks + 20)   +"\n-------------------\n") 
+	//console.log("js_go_showWrdRowList inpHeader + \n" +  inpstr.substring( 0, ks + 20)   +"\n-------------------\n") 
 	
 	//console.log("js_go_showWrdRowList inpHeader=\n" + inpHeader +"\n-----------------\n") 
 	/**	
@@ -2426,7 +2436,7 @@ function onclick_showWordsButton(type) {
 		//	[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList ] ???antoX
 		[word1, ixUnWtS, nrow,   wLemmaList, wTranList, 
 					wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr , wIxLemmaList  ] = wordToStudy_list[i];  
-		
+		//console.log("onclick_showWordsButton() 3 i=",i, " wordToStudy_list[i]=" , wordToStudy_list[i])
 		if (word1 == "") { continue; }
 				
 		for(var ixLemma = 0 ; ixLemma < wLemmaList.length; ixLemma++) {	
@@ -2434,6 +2444,7 @@ function onclick_showWordsButton(type) {
 				sw_someTranMissingW = true;  
 				if (sw_ignore_missTranWord == false) {
 					fun_showWordList("2", i)
+					//console.log("fun_showWordList(2,", i)
 					return;	
 				}				
 			}
@@ -3020,7 +3031,7 @@ function onclick_showRowsButton(type) {
 		
 		rowToStudy_list[ouIxRow] = nfileW + "|" + idRowW + "|" + ixRowW + "|" + rowW + "|" + rowNewTran ; // update with translation 	
 		
-		console.log("  xxx  NUOVA rowToStudy_list[ouIxRow=",ouIxRow , "] = " + rowToStudy_list[ouIxRow]	)
+		//console.log("  xxx  NUOVA rowToStudy_list[ouIxRow=",ouIxRow , "] = " + rowToStudy_list[ouIxRow]	)
 		
 		newAddedTran++; 
 					
@@ -3958,11 +3969,14 @@ function onclickDoubleRowTran(this1) {
 			...
 		</tr>
 ***/
+
 function onclickDoubleWordTran(this1) {
 	var eleDiv = this1.parentElement;
 	var eleTD  = eleDiv.parentElement; 
 	
 	//if (eleTD.children.length < 1) { return; } 
+	
+	console.log(red("onclickDoubleWordTran")," () eleTD=", eleTD.outerHTML)
 	
 	if (eleTD.children.length >= 2) { return; } 
 	
@@ -3971,7 +3985,7 @@ function onclickDoubleWordTran(this1) {
 	const newDiv = document.createElement("div");
 	newDiv.style.textAlign = "left";
 	eleTD.appendChild(newDiv);
-	
+	console.log(red("medio eleTD="), eleTD.outerHTML) ; 	
 	var newInn=""
 	newInn += '<div  style="font-size:0.6em;width:100%;">add/modify translation</span></div>' + '\n';
 	newInn += '<div  class="c_wordTran" ' +
@@ -3981,15 +3995,43 @@ function onclickDoubleWordTran(this1) {
 	newInn += '<div  style="width:100%;"><button onclick="onclick_saveNewWordTran(this)">Salva tutte le nuove traduzioni</button></div>\n'; 
 	eleTD.children[1].innerHTML = newInn;    	
 	
-	//console.log("new eleTD=", eleTD.tagName, " ==>" , eleTD.innerHTML) ; 	
+	console.log(red("new eleTD="), eleTD.outerHTML) ; 	
+	/**
+	new eleTD= 
+	<td style="text-align:center;" class="borderVert_L">					
+		<!--
+		<div class="hpad top left1">
+				<span class="c_wordOrig">   ondblclick="onclickDoubleWordTran(this)"<b>leben</b></span>		
+		</div>
+		-->
+		<div class="hpad top left1">
+			<span ondblclick="onclickDoubleWordTran(this)"> 
+				<span class="c_wordOrig"><b>leben</b></span>						
+			</span> 					
+			<span class="c_wordTran" style="display:none;">vivere</span>		
+		</div>
+		
+		<div style="text-align: left;">
+			<div style="font-size:0.6em;width:100%;">add/modify translation</div>
+			<div class="c_wordTran" style="background-color:lightgrey; color:black; font-weight:bold;border:2px solid black;min-width:100%;text-align:left;" 
+					contenteditable="true">
+					vivere
+			</div>
+			<div style="width:100%;">
+				<button onclick="onclick_saveNewWordTran(this)">Salva tutte le nuove traduzioni</button>
+			</div>
+		</div>
+	</td>
 	
+	**/
 } // end of onclickDoubleWordTran
+
 
 //----------------------------------------
 function onclick_saveNewWordTran(this1) {
 	//===
 	let wordx, ix12, nrow, totExtrRow2,  wLemma1, wordTran, knowYesCtr, knowNoCtr   ;
-	var wLemmaList, wTranList, wLevelList, wParaList, wExampleList;	
+	var wLemmaList, wTranList, wLevelList, wParaList, wExampleList,  wIxLemmaList;	
 	/**
 	for (var z2=0; z2 < wordToStudy_list.length; z2++) {
 		[wordx, ix12,  nrow, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr  ] = wordToStudy_list[z2]; 
@@ -4014,6 +4056,8 @@ function onclick_saveNewWordTran(this1) {
 	//var listNewTranIx = [];
 	//var listNewTransla= [];
 	var eleTD_0, eleTD_5; var eleTD0_val;
+	var eleTD_6, ele_details, ele_details, ele_summ, ele_tranLemma; 
+	
 	var newUp = 0; 
 	
 	/*
@@ -4048,7 +4092,7 @@ function onclick_saveNewWordTran(this1) {
 		</td>		
 	*/
 	for(var t1=0; t1 < elePareTr.children.length; t1++) {
-		eleTr2 = elePareTr.children[t1];	
+		eleTr2 = elePareTr.children[t1];	// scan su tutti  i TR ( tutte le righe )
 		eleTD_0 = eleTr2.children[0]; 
 		eleTD0_val = eleTD_0.children[1]; 
 		word1       = eleTD0_val.children[0].innerHTML; 
@@ -4059,8 +4103,30 @@ function onclick_saveNewWordTran(this1) {
 		newTranslation = ""; 
 		swChg=false
 		
-		eleTD_5 = eleTr2.children[5]; 
+		eleTD_5 = eleTr2.children[5];          // colonna WORD 
+			/*
+				<td style="text-align:center;" class="borderVert_L">				
+					<div class="hpad top left1"  >
+						<span ondblclick="onclickDoubleWordTran(this)"> 
+							<span class="c_wordOrig"><b>§one-word1§</b></span>						
+						</span> 					
+						<span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
+					</div>
+					<div style="text-align: left;">
+						<div style="font-size:0.6em;width:100%;">add/modify translation</div>
+						<div class="c_wordTran" style="background-color:lightgrey; color:black; font-weight:bold;border:2px solid black;min-width:100%;text-align:left;" 
+								contenteditable="true">
+								vivere
+						</div>
+						<div style="width:100%;">
+							<button onclick="onclick_saveNewWordTran(this)">Salva tutte le nuove traduzioni</button>
+						</div>
+					</div>
+				</td>	
+			*/
+		
 		oldDivTran = eleTD_5.children[0]
+		
 		if (oldDivTran) {
 			eleOldTran = oldDivTran.children[1];  
 			if (eleOldTran) {
@@ -4077,11 +4143,27 @@ function onclick_saveNewWordTran(this1) {
 				}		
 			} 
 		} 
+		
+		/***				
+			<td style="text-align:center;" class="borderVert_R">					
+				<span style="display:none;">§one-f_lemma§</span>
+				<div class="hpad top left1">
+					<details>
+						<summary §summarystyle§> 				
+								 <span onmouseover='mouseOverWord(this)' onmouseout='mouseOutWord(this)' "> 								 
+										<b>§one-f_lemma§</b>
+								 </span>
+								 <span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
+						</summary>
+						<div> 				
+		
+		***/
+		
 		if (swChg) {  
 			//console.log( "ix=", ix1, " \t ", word1 , " \t oldTran=", oldTranslation, "\t newTran=", newTranslation, " ixW2StudyLs=" + ixW2StudyLs + "<==",
 			//	" wordToStudy_list.length=", wordToStudy_list.length); 
 			 
-			[wordx, ix12,  nrow, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr  ] = wordToStudy_list[ixW2StudyLs]; 
+			[wordx, ix12,  nrow, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList  ] = wordToStudy_list[ixW2StudyLs]; 
 			if (wTranList[ixLemma] == oldTranslation) {
 				wTranList[ixLemma] = newTranslation;
 				
@@ -4091,7 +4173,19 @@ function onclick_saveNewWordTran(this1) {
 						wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList   ] ;
 				newTran[ixW2StudyLs]=1; 
 				newUp++;
-				eleOldTran.innerHTML = newTranslation; 
+				eleOldTran.innerHTML = newTranslation;  
+				
+				eleTD_6 =  eleTr2.children[6];          // colonna Lemma 
+				ele_details = eleTD_6.children[1].children[0]
+				if (ele_details) {
+					if (ele_details.tagName == "DETAILS") {
+						ele_summ= ele_details.children[0]
+						ele_tranLemma = ele_summ.children[1] 
+						if (ele_tranLemma) {
+							ele_tranLemma.innerHTML = newTranslation; 						
+						}
+					}	
+				}
 			} 		
 		} 
 		if (newDivTran) {

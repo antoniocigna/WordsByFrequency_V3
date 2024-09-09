@@ -51,7 +51,7 @@ func lookForLemma(lemmaTarg string) (int, int) {
 
 func lookForAllLemmas(  wordToFind string) []int {
 
-	wordToFindCod:= newCode( wordToFind )	
+	wordToFindCod:= seqCode( wordToFind )	
 	ixFoundList := lookForAllLemmas2(  wordToFindCod ) 
 	if len(ixFoundList) > 0 {
 		return ixFoundList
@@ -65,7 +65,7 @@ func lookForAllLemmas(  wordToFind string) []int {
 						"ue","ü"), 		
 				"ss","ß") 	
 				
-	wordToFindCod2 := newCode( inp1 )
+	wordToFindCod2 := seqCode( inp1 )
 	ixFoundList2 := lookForAllLemmas2(  wordToFindCod2 ) 
 	if len(ixFoundList2) == 0 {
 		ixFoundList2 = append( ixFoundList,  -1)	// if lemma is missing use the original word to find 
@@ -77,7 +77,7 @@ func lookForAllLemmas(  wordToFind string) []int {
 //------------------------------------------
 func lookForAllLemmas2(  wordToFindCod string) []int {
 
-	//wordToFindCod:= newCode( wordToFind )
+	//wordToFindCod:= seqCode( wordToFind )
 
 	// get the index of a word in word-lemma dictionary (-1 if not found)  
 	var ixFoundList = make( []int, 0,0) 
@@ -91,14 +91,14 @@ func lookForAllLemmas2(  wordToFindCod string) []int {
 	fromIx:= fromIxX
 	
 	for k:= fromIxX; k >= 0; k-- {
-		if wordLemmaPair[k].lWordCod < wordToFindCod { break }
+		if wordLemmaPair[k].lWordSeq < wordToFindCod { break }
 		fromIx = k
 	}
 	for k:= fromIx; k < len(wordLemmaPair); k++ {
-		if wordLemmaPair[k].lWordCod == wordToFindCod {
+		if wordLemmaPair[k].lWordSeq == wordToFindCod {
 			ixFoundList = append( ixFoundList, k) ; //    wordLemmaPair[k].lLemma )	
 		} else {
-			if wordLemmaPair[k].lWordCod > wordToFindCod { break }
+			if wordLemmaPair[k].lWordSeq > wordToFindCod { break }
 		}
 	} 
 			
@@ -179,7 +179,7 @@ func lookForParadigma(lemmaToFind string) (int, int) {
 //-----------------------------------------
 
 func lookForAllTran ( lemma30 string ) int {
-	lemma3Cod:= newCode(lemma30)	
+	lemma3Cod:= seqCode(lemma30)	
 	fromIxX, toIxX := lookForTranslation( lemma3Cod )
 	if toIxX < 0 { return -1 }
 	
@@ -187,16 +187,16 @@ func lookForAllTran ( lemma30 string ) int {
 	z:=-1
 	fromIx:= fromIxX
 	for k:= fromIxX; k >= 0; k-- {
-		if dictLemmaTran[k].dL_lemmaCod == lemma3Cod {
+		if dictLemmaTran[k].dL_lemmaSeq == lemma3Cod {
 			z=k
 			break	
 		}
-		if dictLemmaTran[k].dL_lemmaCod < lemma3Cod { break }
+		if dictLemmaTran[k].dL_lemmaSeq < lemma3Cod { break }
 		fromIx = k
 	}
 	if z < 0 {
 		for k:= fromIx; k < len( dictLemmaTran); k++ {
-			if dictLemmaTran[k].dL_lemmaCod == lemma3Cod {
+			if dictLemmaTran[k].dL_lemmaSeq == lemma3Cod {
 				z=k
 				break
 			}
@@ -222,7 +222,7 @@ func lookForTranslation(lemmaToFindCod string) (int, int) {
 	//----
 	for low <= high{
 		median := (low + high) / 2
-		if dictLemmaTran[median].dL_lemmaCod < lemmaToFindCod {  
+		if dictLemmaTran[median].dL_lemmaSeq < lemmaToFindCod {  
 			low = median + 1
 		}else{
 			high = median - 1
@@ -253,7 +253,7 @@ func lookForWordLemmaPair(wordToFindCod string) (int, int) {
 	//----
 	for low <= high{
 		median := (low + high) / 2
-		if wordLemmaPair[median].lWordCod < wordToFindCod {  
+		if wordLemmaPair[median].lWordSeq < wordToFindCod {  
 			low = median + 1
 		}else{
 			high = median - 1
@@ -286,7 +286,7 @@ func lookForWordInUniqueAlpha(wordCoded string) (int, int) {
 		if median >= len(uniqueWordByAlpha) {
 			fmt.Println("errore in lookForWordInUniqueAlpha: median=", median , "     len(uniqueWordByAlpha)=" ,  len(uniqueWordByAlpha) )
 		}
-		if uniqueWordByAlpha[median].uWordCod < wordCoded {
+		if uniqueWordByAlpha[median].uWordSeq < wordCoded {
 			low = median + 1
 		}else{
 			high = median - 1
@@ -308,7 +308,7 @@ func searchAllWordWithPrefixInAlphaList(  wordPref string) (int, int) {
 	// get the indicies of the first and the last word beginning with the required prefix (-1,-1 if not found)  
 	
 	wordPref = strings.ToLower(strings.TrimSpace( wordPref));  
-	wordCodPref:= newCode(wordPref)
+	wordCodPref:= seqCode(wordPref)
 	
 	lenPref:= len(wordPref); 
 	ixTo := -1; ixFrom:= -1;	
@@ -329,7 +329,7 @@ func searchAllWordWithPrefixInAlphaList(  wordPref string) (int, int) {
 	spaceFill := "                                                          ";  
 	//-----------
 	for k:= ix1; k >= 0; k-- {
-		wA =  uniqueWordByAlpha[k].uWordCod + spaceFill
+		wA =  uniqueWordByAlpha[k].uWordSeq + spaceFill
 		if wA[0:lenPref] < wordCodPref { break; }
 		ixFrom = k; 
 	}  
@@ -337,7 +337,7 @@ func searchAllWordWithPrefixInAlphaList(  wordPref string) (int, int) {
 	if (ixFrom >=0) { ixTo = ixFrom; }  //  se ixFrom è valido, deve essere valido anche ixTo   
 	
 	for k:= ix2; k < numberOfUniqueWords; k++ {
-		wA =  uniqueWordByAlpha[k].uWordCod + spaceFill  
+		wA =  uniqueWordByAlpha[k].uWordSeq + spaceFill  
 		if wA[0:lenPref] > wordCodPref { break; }
 		ixTo = k; 
 		if (ixFrom < 0) {ixFrom = ixTo;}  //  se ixTo è valido, deve essere valido anche ixFrom   
@@ -379,7 +379,7 @@ func lookForLemmaWord(lemmaCode string) (int, int) {
 	//----
 	for low <= high{
 		median := (low + high) / 2
-		if lemma_word_ix[median].lw_lemmaCod < lemmaCode {  
+		if lemma_word_ix[median].lw_lemmaSeq < lemmaCode {  
 			low = median + 1
 		}else{
 			high = median - 1

@@ -303,7 +303,7 @@ func bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, js_f
 		} 
 		//--
 		type lemmaWordStruct struct {
-			lw_lemmaCod string 	
+			lw_lemmaSeq string 	
 			lw_lemma2   string 	
 			lw_word     string 
 			lw_ixLemma    int
@@ -333,7 +333,7 @@ func bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, js_f
 		**/
 		//---------------------
 		
-		lemmaCod:= newCode( lemmaToFind0 )
+		lemmaCod:= seqCode( lemmaToFind0 )
 		
 		
 		
@@ -356,7 +356,7 @@ func bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, js_f
 		//------------------------------
 		for kLe:= leS.leFromIxLW; kLe <= leS.leToIxLW; kLe++ {
 		
-			if lemma_word_ix[kLe].lw_lemmaCod != lemmaCod { continue}		// error 
+			if lemma_word_ix[kLe].lw_lemmaSeq != lemmaCod { continue}		// error 
 			
 			ixWord := lemma_word_ix[kLe].lw_ixWordUnFr 			        // indice word da lemma 
 			xWordF := uniqueWordByFreq[ixWord]

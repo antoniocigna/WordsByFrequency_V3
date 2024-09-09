@@ -44,7 +44,7 @@ func bind_go_passToJs_betweenWordList( maxNumWords int, fromWordPref string, js_
 	
 	lenFrom = len(fromWord)  
 	
-	fromWordCod:= newCode(fromWord)		
+	fromWordCod:= seqCode(fromWord)		
 	from1, _:= lookForWordInUniqueAlpha( fromWordCod)		
 	fromIx2 :=0	
 	fromWordTarg := (strings.Split(fromWordCod,"."))[0]
@@ -59,15 +59,12 @@ func bind_go_passToJs_betweenWordList( maxNumWords int, fromWordPref string, js_
 	fromIx2 = from1 
 	for k:= from1; k >=0; k-- {
 		wAlf   := uniqueWordByAlpha[k]
-		j:= strings.Index( wAlf.uWordCod, ".") 
-		if (j<0) {j = len(wAlf.uWordCod) }
-		lenCk   = j; //  len(wAlf.uWordCod[0:j])
+		
+		lenCk   = len(wAlf.uWordSeq)
 		if lenCk > lenFrom { lenCk = lenFrom }
 		
-		//fmt.Println(" k=", k, " wAlf.uWordCod=", wAlf.uWordCod, " lenCk=", lenCk ,"  wAlf.uWordCod[0:lenCk]=",  wAlf.uWordCod[0:lenCk],   " fromWordTarg=", fromWordTarg )
+		if wAlf.uWordSeq[0:lenCk] < fromWordTarg {  break } 
 		
-		if wAlf.uWordCod[0:lenCk] < fromWordTarg {  break } 
-		fmt.Println("   caricto k=", k)  
 		fromIx2 = k
 	}	
 	//---------
@@ -78,22 +75,19 @@ func bind_go_passToJs_betweenWordList( maxNumWords int, fromWordPref string, js_
 	//----
 	for k:= fromIx2; k < len( uniqueWordByAlpha); k++ {		
 		wAlf   := uniqueWordByAlpha[k]
-		j:= strings.Index( wAlf.uWordCod, ".")      // the format of wordCod is: coded_word.the_actual_word  
-		if (j<0) {j = len(wAlf.uWordCod) }
-		lenCk   = j; //  len(wAlf.uWordCod[0:j])
+		lenCk   = len(wAlf.uWordSeq)
 		
 		if sw_oneWord {
-			if wAlf.uWordCod[0:lenCk] != fromWordTarg {
-				if wAlf.uWordCod[0:lenCk] > fromWordTarg { break } 
+			if wAlf.uWordSeq[0:lenCk] != fromWordTarg {
+				if wAlf.uWordSeq[0:lenCk] > fromWordTarg { break } 
 				continue					
 			} 
 		} else {			
 			if lenCk > lenFrom { lenCk = lenFrom}		
 			// compare using the length of the prefix, I shall match just the beginning and nothing else    
-			//fmt.Println(" k=", k, " wAlf.uWordCod=", wAlf.uWordCod, " lenCk=", lenCk ,"  wAlf.uWordCod[0:lenCk]=",  wAlf.uWordCod[0:lenCk])
-		
-			if wAlf.uWordCod[0:lenCk] < fromWordTarg { fmt.Println(" continue "); continue} 		
-			if wAlf.uWordCod[0:lenCk] > fromWordTarg { fmt.Println(" break    "); break } 			
+			
+			if wAlf.uWordSeq[0:lenCk] < fromWordTarg { fmt.Println(" continue "); continue} 		
+			if wAlf.uWordSeq[0:lenCk] > fromWordTarg { fmt.Println(" break    "); break } 			
 		}
 		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf )  	
 		
@@ -145,7 +139,7 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 			}  	
 		}
 		if ix2 >=0 {
-			return sw, xWordF2.uWordCod + ";." + xWordF2.uWord2 + ";." + 
+			return sw, xWordF2.uWordSeq + ";." + xWordF2.uWord2 + ";." + 
 				"ix" + ";." + 
 				strconv.Itoa(xWordF2.uIxUnW) + ";." + strconv.Itoa(xWordF2.uTotRow)  + ";." + 
 				xWordF2.uLemmaL[ix2]              + ";." + 
@@ -162,7 +156,7 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 	
 	//---------------------------	
 	
-	return sw, xWordF2.uWordCod + ";." + xWordF2.uWord2 + ";." + 
+	return sw, xWordF2.uWordSeq + ";." + xWordF2.uWord2 + ";." + 
 				"ix" + ";." + 
 				strconv.Itoa(xWordF2.uIxUnW) + ";." + strconv.Itoa(xWordF2.uTotRow)  + ";." +
 				fmt.Sprint( strings.Join(xWordF2.uLemmaL,  wSep)  ) + ";." + 

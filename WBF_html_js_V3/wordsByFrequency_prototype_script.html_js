@@ -183,18 +183,27 @@ license MIT: you can share and modify the software, but you must include the lic
 			<td style="text-align:center;color:blue;" class="borderVert_L" >§one-n_extr_row§</td> 
 			<td style="text-align:center;" class="borderVert_L"  ><button onclick="onclick_word_known(\'§one-ix1§\',0,this)">§known_yes§</button></td>
 			<td style="text-align:center;"><button onclick="onclick_word_known(\'§one-ix1§\',1,this)">§known_no§</button></td>
-			<td style="text-align:center;" class="borderVert_L" >					
-				<div class="hpad top left1">
-						<span class="c_wordOrig" §wordvisib§><b>§one-word1§</b></span>		
+			<td style="text-align:center;" class="borderVert_L" >				
+				<div class="hpad top left1"  >
+					<span ondblclick="onclickDoubleWordTran(this)"> 
+						<span class="c_wordOrig"><b>§one-word1§</b></span>						
+					</span> 					
+					<span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
 				</div>
+				
+				
+				
+				
 			</td>	
-			
+	
 			<td style="text-align:center;" class="borderVert_R">					
 				<span style="display:none;">§one-f_lemma§</span>
 				<div class="hpad top left1">
 					<details>
 						<summary §summarystyle§> 				
-								 <span onmouseover='mouseOverWord(this)' onmouseout='mouseOutWord(this)'><b>§one-f_lemma§</b></span>
+								 <span onmouseover='mouseOverWord(this)' onmouseout='mouseOutWord(this)' "> 								 
+										<b>§one-f_lemma§</b>
+								 </span>
 								 <span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
 						</summary>
 						<div> 								
@@ -348,7 +357,12 @@ license MIT: you can share and modify the software, but you must include the lic
             <td>
 			</td>
             <td class="borderVert" style="color:black;font-size:0.5em;text-align:center;vertical-align:middle;">
-				doppio click sulla frase per inserire la traduzione o variare quella esistente 
+				se vuoi selezionare solo una parte fai clic sulle frecce a sinistra, la prima per indicare l'inizio, la seconda per la fine 
+				<div>
+					<button onclick="onclick_print_selected_row(this, false)">Stampa il testo delle righe selezionate </button> 
+					<button onclick="onclick_print_selected_row(this, true )">Stampa il testo e la traduzione delle righe selezionate</button>  		
+				</div>
+				fai doppio clic sulla frase per inserire la traduzione o variare quella esistente 
 			</td>		
 			<td>
 				<button class="buttonWhite" onclick="onclick_tts_playSynthVoice_m1_row2(this,§1§,false,false)">

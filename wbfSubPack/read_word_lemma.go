@@ -58,7 +58,7 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 			if len(wordLemma1.lLemma) < 1 { continue;  } 
 			if ((wordLemma1.lLemma == "-") || (wordLemma1.lLemma[0:1] < "A")) { continue;  }   // ignore number  
 			
-			wordLemma1.lWordCod = newCode( wordLemma1.lWord2)
+			wordLemma1.lWordSeq = seqCode( wordLemma1.lWord2)
 			wordLemma1.lIxLemma = -1	
 			
 			wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
@@ -85,7 +85,7 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 			if len(wordLemma1.lLemma) < 1 { continue;  } 
 			if ((wordLemma1.lLemma == "-") || (wordLemma1.lLemma[0:1] < "A")) { continue;  } 
 			
-			wordLemma1.lWordCod = newCode( wordLemma1.lWord2)
+			wordLemma1.lWordSeq = seqCode( wordLemma1.lWord2)
 			wordLemma1.lIxLemma = -1
 				
 			wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
@@ -150,8 +150,8 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 	//--------------------------------
 	// sort x word , lemma 
 	sort.Slice(wordLemmaPair, func(i, j int) bool {
-			if (wordLemmaPair[i].lWordCod != wordLemmaPair[j].lWordCod) {
-				return wordLemmaPair[i].lWordCod < wordLemmaPair[j].lWordCod
+			if (wordLemmaPair[i].lWordSeq != wordLemmaPair[j].lWordSeq) {
+				return wordLemmaPair[i].lWordSeq < wordLemmaPair[j].lWordSeq
 			} else {
 				if (wordLemmaPair[i].lWord2 != wordLemmaPair[j].lWord2) {
 					return wordLemmaPair[i].lWord2 < wordLemmaPair[j].lWord2 
@@ -182,8 +182,8 @@ func check_wordLemma_sameCode() {
 	for z, wordPair := range wordLemmaPair {	
 			//if ((  wordPair.lWord2 == "cäsar") || (wordPair.lWord2 == "caesar") || (wordPair.lWord2 == "casar") ) { fmt.Println(" check 222 Lemma ", z,  " wordPair=" , wordPair) }
 	
-		if (wordPair.lWordCod != pre_wordCod) {
-			pre_wordCod = wordPair.lWordCod 
+		if (wordPair.lWordSeq != pre_wordCod) {
+			pre_wordCod = wordPair.lWordSeq 
 			pre_word2   = wordPair.lWord2 
 			//pre_lemma   = wordPair.lLemma 
 			pre_z = z
@@ -204,60 +204,3 @@ func check_wordLemma_sameCode() {
 
 //--------------------------------------
 
-
-//----------------------------------------
-func stdCode(inpCode string ) string {	
-	CoerInp:= strings.ReplaceAll( 
-					strings.ReplaceAll( 
-						strings.ReplaceAll( 
-							strings.ReplaceAll(inpCode, "ae","ä"),  
-							"oe","ö"), 
-						"ue","ü"),
-					"ß","ss")  	           // non tutte le ss sono 	ß, ma è vero il contrario				
-					
-	return CoerInp  
-}
-//----------------------------
-func newCode( inpCode string ) string {	
-
-	//  pronto soltanto per il tedesco 
-
-	/*
-	1) serve soprattutto per mettere le parole in sequenza alfabetica coerente 
-		( es. per il tedesco es.  ä, ö, ü, ß vicini rispettivamente ad a, o, u, ss)   
-	2) a volte ä, ö, ü, ß sono scritti come ae, oe, ue, ss, in questo caso li sostituiamo con a, o, u, ss
-    3) a volte eu dovrebbe rimanere tale (es. Treue), non ho modo di distinguere per cui la sequenza è falsata ue è prima di ua o di uz 
-		l'alternativa potrebbe essere tradurre ü con ue, ma questo porterebbe alla sequenza errata  ue nel posto ua, ue, uz invece di u ua uz
-	----------
-	questo codice di sequenza   è usato per word e lemma
-	la scrittura alternativa a quella ufficiale (es. ue invece di ü) può essere trovata in un testo.
-	Il lemma si trova in un file "ufficiale"  quindi improbabile che venga usata la scrittura alternativa.
-
-	a) nel lemma il newCode mi serve soltanto per correggere la sequenza
-	b) nel word (che si trova nel testo analizzato) il new code mi serve per confrontare 
-		però è probabile che un testo sia scritto o in codice alternativo o in modo normale, improbabile in entrambi modi. 
-	c) si potrebbe pensare ad un switch da impostare 
-	d) cosa devo confrontare?
-		lemma ( non mi serve tradurre eventuale codice alternativo, però newCode mi serve per la sequenza )
-			confronto per collegarlo a word e per trovare la traduzione
-		word  ( confronto per assegnare il lemma )       	
-	
-	*/
-	SQinp1:= strings.ReplaceAll( 
-						strings.ReplaceAll( 
-							strings.ReplaceAll(inpCode, "ae","a"),  
-							"oe","o"), 
-						"ue","u") 		
-	SQinp2:= strings.ReplaceAll( 
-					strings.ReplaceAll( 
-						strings.ReplaceAll( 
-							strings.ReplaceAll(SQinp1, "ä","a"),  
-							"ö","o"), 
-						"ü","u"), 
-					"ß","ss")   					
-	
-	return SQinp2 + "." +  stdCode(inpCode)  
-	
-}// end of newCode					
-
-//------------------------------------------------

@@ -150,7 +150,7 @@ func lemma_word_to_row( myLem1_name string, myLem2_name string, lw_lemma2 string
 			}  	
 		}
 			
-		return xWordF2.uWordCod + ";." + xWordF2.uWord2 + ";." + 
+		return xWordF2.uWordSeq + ";." + xWordF2.uWord2 + ";." + 
 			"ix" + ";." + 
 			strconv.Itoa(xWordF2.uIxUnW) + ";." + strconv.Itoa(xWordF2.uTotRow)  + ";." + 
 			xWordF2.uLemmaL[ix2]              + ";." + 
