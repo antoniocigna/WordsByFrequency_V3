@@ -32,6 +32,7 @@ const FOLDER_outTRAN    string = "outTRAN"
 
 const FOLDER_dictionary string = "myDictionary"
 
+const FILE_inputLanguage     string = "inputLanguage.txt"
 const FILE_outWordLemmaDict  string = "newWordLemmaDict.txt";
 
 // const FILE_inpLemma_word_lemma   string = "myWordLemmaFile_fmtWordLemma.txt"  

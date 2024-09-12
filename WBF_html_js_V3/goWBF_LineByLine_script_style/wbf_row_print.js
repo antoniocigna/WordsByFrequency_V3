@@ -74,6 +74,7 @@ function onclick_print_selected_row(this1, swTran)	{
 	var toColor = "red"
 	var eleTD1   = this1.parentElement.parentElement
 	var eleTR1   = eleTD1.parentElement 
+	
 	var eleTBODY = eleTR1.parentElement
 	var numRow   = eleTBODY.children.length	
 	var eleTrX, eleTD_from, eleTD_to; 
@@ -90,8 +91,10 @@ function onclick_print_selected_row(this1, swTran)	{
 	outStr += "  </style> \n" 
 	outStr += "  <table>\n" ; 
 	
-	for (var j=eleTR1.rowIndex; j < numRow; j++) {
+		
+	for (var j=eleTR1.sectionRowIndex; j < numRow; j++) {
 		eleTrX = eleTBODY.children[j]
+	
 		if (eleTrX.id.indexOf("_m") > 0 ) { continue} 
 		eleTD_from = eleTrX.children[0]	
 		eleTD_to   = eleTrX.children[1]			
@@ -110,7 +113,7 @@ function onclick_print_selected_row(this1, swTran)	{
 		if (eleTD_to.innerHTML.indexOf( toColor ) > 0 ) { ixTo = j; break} 
 	} 
 	outStr += "    </table>\n  </body>\n</html> \n"	
-	//console.log( outStr) 
+	
 	var myWindow = window.open("", "", "width=500,height=800");
 	myWindow.document.write( outStr ) 
 	

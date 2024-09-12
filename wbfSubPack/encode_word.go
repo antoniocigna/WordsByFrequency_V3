@@ -6,19 +6,22 @@ import (
 )
 
 //=================================================
-//    metti queste 2 righe su file, nello stesso file metti prefissi separabili e non separabili con identificatore di separab/non-separab 
-
+/**
 var translate_chars_std_inp = "" ; // "ä,ö,ü,ß";     
 var translate_chars_std_out = "" ; // "ae,oe,ue,ss"
 //--   
 var translate_chars_SEQ_inp = "ä,ö,ü,ß";      
 var translate_chars_SEQ_out = "aä,oö,uü,ssß"
-
-var translate_chars_std_inpList =  strings.Fields( strings.ReplaceAll(translate_chars_std_inp, ","," ") )	     
-var translate_chars_std_outList =  strings.Fields( strings.ReplaceAll(translate_chars_std_out, ","," ") )	 
+**/
+// 	 can be used in case a character might be written in more than one way:   eg. ß = ss        
+var translate_chars_std_inpList []string	 // filled by inputLanguage.txt file in func read_languageFile     
+var translate_chars_std_outList []string	 // filled by inputLanguage.txt file in func read_languageFile       
 //--   
-var translate_chars_SEQ_inpList =  strings.Fields( strings.ReplaceAll(translate_chars_SEQ_inp, ","," ") )	       
-var translate_chars_SEQ_outList =  strings.Fields( strings.ReplaceAll(translate_chars_SEQ_out, ","," ") )	 
+//   to modify the the place of a character in the alphabetic sequence order: eg.  'aä' replaces 'ä' so that the 'ä' is immediately after the normal 'a' 
+//					                eg. german ==>  inp = "ä,ö,ü,ß"  / out "aä,oö,uü,ssß"
+
+var translate_chars_SEQ_inpList []string     // filled by inputLanguage.txt file in func read_languageFile           
+var translate_chars_SEQ_outList []string	 // filled by inputLanguage.txt file in func read_languageFile     
 
 //=================================================
 

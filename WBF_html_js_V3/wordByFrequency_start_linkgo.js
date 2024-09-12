@@ -16,7 +16,7 @@ function js_call_go() {
 			
 function js_call_go() {  // called by  html page body onload
 	var msg1 = "html loaded"; 
-	//console.log("html function js_call_go: ", msg1, "\n") 
+	console.log("html function js_call_go: ", msg1, "\n") 
 	
 	go_passToJs_html_is_ready(msg1,  "") ;  //  "js_go_go_is_ready"); 
 

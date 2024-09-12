@@ -359,8 +359,8 @@ license MIT: you can share and modify the software, but you must include the lic
             <td class="borderVert" style="color:black;font-size:0.5em;text-align:center;vertical-align:middle;">
 				se vuoi selezionare solo una parte fai clic sulle frecce a sinistra, la prima per indicare l'inizio, la seconda per la fine 
 				<div>
-					<button onclick="onclick_print_selected_row(this, false)">Stampa il testo delle righe selezionate </button> 
-					<button onclick="onclick_print_selected_row(this, true )">Stampa il testo e la traduzione delle righe selezionate</button>  		
+					<button style="width:50%;" onclick="onclick_print_selected_row(this, false)">Stampa il testo delle righe selezionate </button> 
+					<button style="width:50%;" onclick="onclick_print_selected_row(this, true )">Stampa il testo e la traduzione delle righe selezionate</button>  		
 				</div>
 				fai doppio clic sulla frase per inserire la traduzione o variare quella esistente 
 			</td>		

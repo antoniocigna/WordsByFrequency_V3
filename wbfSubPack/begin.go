@@ -118,8 +118,10 @@ func read_all_files() {
 	if sw_stop { endBegin("1"); return }
 	test_all_folder()
 	if sw_stop {return}
-
-	get_separablePrefix()
+	
+	read_languageFile(  FOLDER_INPUT, FILE_inputLanguage)
+	if sw_stop { return }
+	//get_separablePrefix()
 	
 	read_lemma_file( FOLDER_I_lemma, FILE_inpLemma_word_lemma, FILE_inpLemma_lemma_word)
 	if sw_stop { return }
