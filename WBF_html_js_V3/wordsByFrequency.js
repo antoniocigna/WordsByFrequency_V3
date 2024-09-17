@@ -3901,8 +3901,9 @@ function js_go_valueFromLastRun( gostr1 ) {
 					<div class="tranLine" style="display:none;" id="idt_§1§">§5txt§<br></div>	
 					<div id="idw_§1§" class="center" style="width:100%;border:0px solid red;"></div>				
 					<div style="display:none;" id="idtts§1§">§ttstxt§</div>
-				</div>
-				-------------------- to be added ---- 
+					<div style="display:none;">§ixRow2StudyLs§</div>
+				</div>			
+				-------------------- to be added BY DOUBLE CLICK ---- 
 				<div>
 					<div>add/modify translation</div>' 
 					<div  style="background-color:lightgrey; color:black; font-weight:bold;border:2px solid black;min-width:100%;text-align:left;"
@@ -4204,14 +4205,44 @@ function onclick_saveNewWordTran(this1) {
 } // end of onclick_saveNewWordTran	
 
 //------------------------------------
+/***
+<td class="borderVert"> 
+				<div class="divRowText" >
+					<div class="suboLine" style="display:none;" id="idc_§1§"  ondblclick="onclickDoubleRowTran(this)">§4txt§</div>
+					<div class="tranLine" style="display:none;" id="idt_§1§">§5txt§<br></div>	
+					<div id="idw_§1§" class="center" style="width:100%;border:0px solid red;"></div>				
+					<div style="display:none;" id="idtts§1§">§ttstxt§</div>
+					<div style="display:none;">§ixRow2StudyLs§</div>
+				</div>			
+				-------------------- to be added BY DOUBLE CLICK ---- 
+				<div>
+					<div>add/modify translation</div>' 
+					<div  style="background-color:lightgrey; color:black; font-weight:bold;border:2px solid black;min-width:100%;text-align:left;"
+						contentEditable=true>
+						newTranslation 
+					</div>
+					<div><button onclick="onclick_saveNewWordTran(this)">Salva tutte le nuove traduzioni</button> </div> 
+				</div>
+			</td>	
+
+***/ 
 //----------------------------------------
 function onclick_saveNewRowTran(this1) {	
-	
+	// questo onclick appare nella riga creata da onclickDoubleRowTran(this)
+	/*
+	questa funzione salva tutte le nuove traduzioni inserite trovate in tutte le TR del TBODY
+	*/
+	var eleDiv1 = this1.parentElement;  
+	var eleDiv2 = eleDiv1.parentElement; 	
+	var eleTDs  = eleDiv2.parentElement;
+	var eleTR   = eleTDs.parentElement; 
+	/*
 	var eleTR = this1.parentElement; 
 	for(var z1=0; z1 < 10; z1++) {
 		if (eleTR.tagName == "TR") { break; } 
 		eleTR = eleTR.parentElement; 
 	} 
+	**/
 	if (eleTR.tagName != "TR") { return; } 	
 	var elePareTr = eleTR.parentElement; // tbody
 	var eleTr2;
@@ -4247,7 +4278,7 @@ function onclick_saveNewRowTran(this1) {
 	**/
 	for(var t1=0; t1 < elePareTr.children.length; t1++) {
 		eleTr2 = elePareTr.children[t1];	
-		
+		if (eleTr2.id.indexOf("_m") >0) {continue}
 		ixRow2StudyLs = -1;
 		oldTranslation ="";
 		newTranslation = ""; 
