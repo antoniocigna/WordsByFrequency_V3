@@ -530,7 +530,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
                             <button onclick="onclick_mostFreqWordList_require()"  class="tdBut1" >Lista le Parole Più Frequenti</button>
                         </td>
 						<td class="tdV1">
-							<div style="display: flex;align-content:border:1px solid green;" >
+							<div style="display: flex;align-content:border:51px solid green;" >
 								<div style="display:inline-block;vertical-order:middle;border:0px solid red;width:100%; text-align:left; font-size:0.6em;">
 									<span style="font-size:0.8em;margin-left:1em">
 										<select id="id_sel_2_extrRow" onchange="onchange_mostFreqWordList_extrRow()" 
@@ -564,7 +564,6 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
                         <td class="tdV1"  style="vertical-align:top;"> 
 							<div>
                             <button onclick="onclick_require_betweenWordList()" class="tdBut1">Lista le Parole richieste
-								<!-- <br><span  style="font-size:0.4em;">onclick_require_betweenWordList() input "id_inpFromABC" "id_inpToABC" maxNum="id_inpMaxNumABC"</span> -->
 							</button>
                         </td>
                         <td class="tdV1" style="text-align:left; padding-left:0.5em;"> 
@@ -594,7 +593,6 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 					<tr >
                         <td class="tdV1" style="vertical-align:top;"> 
                             <button onclick="onclick_require_betweenLemmaList()" class="tdBut1">Lista i lemma richiesti
-								<!-- <br><span  style="font-size:0.4em;">onclick_require_betweenWordList() input "id_inpFromABC" "id_inpToABC" maxNum="id_inpMaxNumABC"</span> -->
 							</button>
                         </td>
                         <td class="tdV1" style="text-align:left; padding-left:0.5em; "> 
@@ -617,28 +615,8 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 							<span style="font-size:0.4em;line-height: 80%;background-color:lightgrey;"><br>il segno meno indica un prefisso o un suffisso</span> 
 							<br><span id="id_bW0_err" style="display:none;color:red;">non è stata trovato nessun lemma</span>
                         </td>
-                    </tr>			
-
-
-					<!--
-                    <tr>
-                        <td class="tdV1"> 
-                            <button onclick="onclick_require_lemmaWordList()" class="tdBut1">Lista le Parole con il lemma 
-							</button>
-                        </td>
-                        <td class="tdV1" style="text-align:left;"> 
-                            <input id="id_inpLemma" type="text" size="20" placeholder="scrivi il lemma" 
-									style="text-align:left;padding-left:0.5em;  background-color:white;font-size:0.8em; font-weight:bold;">	
-							<span style="margin-left:5em;font-size:0.8em;">								&nbsp;&nbsp;(
-								massimo 
-								<input id="id_inpMaxWordLemma"  type="number" min="1" value="100" style="text-align:right; width:4em; background-color:white;" >
-								&nbsp;
-								parole)
-							</span>
-							<br><span id="id_inpLemma_msg" style="display:none;color:red;">non è stata trovata nessuna parola</span>
-                        </td>
                     </tr>	
-                    -->	
+
 					  <tr>
                         <td  id="id_list_Righe_TD_But" class="tdV1"> 
                             <button onclick="onclick_require_rowList1()" class="tdBut1">Lista le Righe</button>
@@ -711,11 +689,26 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 								</div>
 							</div>
                         </td>
+                    </tr>	
+					
+					 <tr>
+                        <td id="id_list_Righe_conParole" class="tdV1"> 
+                            <button onclick="onclickSelectWord2('0prima0')" class="tdBut1">Lista le Righe con le parole indicate</button>							
+                        </td>                      
+						 <td class="tdV1" style="padding-left:0.5em; text-align:center;">	
+								<div style="border: 2px solid black;">
+									<span>lista1: <textarea id="idwS1_0prima0" cols="50" rows="2" placeholder="ab"></textarea></span>
+									<span style="margin: 0 1em;"> e </span> 
+									<span>lista2: <textarea id="idwS2_0prima0" cols="50" rows="2" placeholder="gebe gebt gab gegeben"></textarea></span>								
+								<br>	
+								<span style="font-size:0.8em;">lista le righe che contengono una parola della lista1 ed una delle lista 2</span> 
+								<span id="err_0prima0" style="display:none;color:red; font-weight:bold;"></span>
+								</div>
+                        </td>
                     </tr>
 					
                 </table>
-				<br><br>
-				<br>
+			
 								
 				<div class="centerXY" style="width:100%;">
 					<div id="id_inpFileList" class="centerXY">
@@ -991,7 +984,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 											<div id="id_model_tSHeadW" style="display:none;"> 
 												<div class="centerXY" style="width:100%;text-align:left;font-size:0.8em;">			
 													<!-- case 2:  one lemma many words  --> 													
-													<table id="tsHead_2" style="display:none;">
+													<table id="tsHead_2" style="display:block;">
 														<tbody id="id_model_tSHead_bdy_2">
 															<tr>
 																<td><span style="font-size:0.5em;">lemma </span></td>
@@ -1018,7 +1011,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 														</tbody>
 													</table>
 													<!-- case 3:  one word many lemmas ---> 
-													<table id="tsHead3" style="display:none;">
+													<table id="tsHead_3" style="display:none;">
 														<tbody id="id_model_tSHead_bdy_13_row2">														
 															<tr><td><span style="font-size:0.5em;">lemma </span></td>
 																<td style="padding-right:0.5em;">																			
@@ -1027,6 +1020,18 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 																<td class="c_tranW">§1tran§</td></tr> 	
 														</tbody>
 													</table>
+													<!-- case 3:  many words,  many lemmas each---> 
+													<table id="tsHead_4">
+														<tbody id="id_model_tSHead_bdy_4">
+															<tr>
+																<td class="c_word" >§4word§</td>																
+																<td class="c_lemma">§4lemma§</td>
+																<td class="c_tranW">§4tran§</td> 
+															</tr>														
+															
+														</tbody>
+													</table>	
+													
 												</div>	
 											</div>		
 												

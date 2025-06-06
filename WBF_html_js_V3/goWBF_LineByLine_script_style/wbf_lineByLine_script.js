@@ -2388,7 +2388,7 @@ function tts_3_spezzaRiga2(orig_riga, tts_riga) {
         let rowclip = word_tr_allclip.replaceAll("§1§", z3).replaceAll("§4txt§", parola1).replaceAll("§ttsWtxt§", paro_tts);
         frase_showTxt += rowclip + "\n";
     } // end of for z3
-
+	
     return frase_showTxt += '</table>\n';
 
 } //  end of  spezzaRiga2()

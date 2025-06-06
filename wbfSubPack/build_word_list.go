@@ -9,7 +9,26 @@ package wbfSubPack
 	)
 
 //------------------------------
+func getAllWords() {
+	//---------------------
+	all_words = make([]string,0, 5*len(inputTextRowSlice) ) 
+	
+	for _, rS2 := range inputTextRowSlice {	//  for each text row 
+		
+		//fmt.Println( " cerca parole loop ixR=", ixR, "  ", rS2);
+		
+		row2   := rS2.rRow1;	
+		if row2 == LAST_WORD { continue }
+		
+		wordA  := regexp.MustCompile(separWord).Split(row2, -1);  // split row into words 
+		all_words = append(all_words, wordA...)
+	}	
+	sort.Strings(all_words)
+	fmt.Println("getAllWords ottenute ", len(all_words), " parole dalle righe di testo") 
+	
+} // end of getAllWords
 
+//----------------------------
 func buildWordList() {
     /*
 	write a line in wordSliceFreq and wordSliceAlpha  for each word in the row 

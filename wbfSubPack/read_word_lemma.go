@@ -93,7 +93,22 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 		}
 		fmt.Println(" read ", len(lineS), " input lemma: format lemma-word")
 	}
-	
+	//------------------------
+	prePa :=""
+	for _, unaParola := range all_words {	// tutte le parole delle righe di testo
+		if unaParola == prePa { continue }
+		prePa = unaParola	
+		parolaZ:= strings.ToLower( strings.TrimSpace( strings.ReplaceAll( unaParola, "\t" , " ") )  ) 			
+		wordLemma1.lWord2   = stdCode( parolaZ ) 		
+		wordLemma1.lLemma   = wordLemma1.lWord2			
+		wordLemma1.lWordSeq = seqCode( wordLemma1.lWord2)
+		wordLemma1.lIxLemma = -1
+		wordLemma1.lL_W     = 9           // indica che l'origine della coppia è il file di testo 	
+			
+		wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
+	}
+	//---------------
+	fmt.Println("aggiunti alle coppie word-lemma ", len(all_words), " coppie ottenute da tutte le parole del testo (nel caso in cui i lemma mancano)")  
 	//-----------------------------------
 	lineS = nil
 	//---------------------------------------	
@@ -105,23 +120,13 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 			if (wordLemmaPairTMP[i].lLemma != wordLemmaPairTMP[j].lLemma) {
 				return wordLemmaPairTMP[i].lLemma < wordLemmaPairTMP[j].lLemma
 			} else {
+				if (wordLemmaPairTMP[i].lWord2 != wordLemmaPairTMP[j].lWord2) {
 					return wordLemmaPairTMP[i].lWord2 < wordLemmaPairTMP[j].lWord2
+				} else {
+					return wordLemmaPairTMP[i].lL_W < wordLemmaPairTMP[j].lL_W
+				}	
 			}
 		} )	 
-	/***
-	sort.Slice(wordLemmaPairTMP, func(i, j int) bool {
-			if (wordLemmaPairTMP[i].lLemma != wordLemmaPairTMP[j].lLemma) {
-				return wordLemmaPairTMP[i].lLemma < wordLemmaPairTMP[j].lLemma
-			} else {
-				if wordLemmaPairTMP[i].lype != wordLemmaPairTMP[j].lype {
-					return wordLemmaPairTMP[i].lype < wordLemmaPairTMP[j].lype 
-				} else {
-					return wordLemmaPairTMP[i].lWord2 < wordLemmaPairTMP[j].lWord2
-				}
-			}
-		} )	 	
-		***/
-	//-------------------------------------
 	
 	wordLemmaPair = make( []wordLemmaPairStruct, 0, len(wordLemmaPairTMP)	)
 	
@@ -132,7 +137,7 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 	fmt.Println( green("lemmaSlice"), "  composto da ", len(lemmaSlice) , " elementi")    
 	
 	//-----------------------------
-	/**
+	/***
 	seq:=""; swerr:=false
 	for  _, lem := range lemmaSlice {
 		if lem.leLemma < seq {
@@ -145,8 +150,6 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 	
 	if swerr == false { fmt.Println( green("lemmaSlice IN SEQUENZA")) 	}
 	**/
-	//---------------------------------
-	
 	//--------------------------------
 	// sort x word , lemma 
 	sort.Slice(wordLemmaPair, func(i, j int) bool {
@@ -171,6 +174,24 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 
 //-------------------------------------------
 
+//-----------------------------
+func addToCurrentLemmaPair(wordLemmaPairTMP []wordLemmaPairStruct ) {
+	sort.Strings(lemmaNotFoundList)
+	preL := ""
+	for _, oneLemma:= range lemmaNotFoundList { 
+		if oneLemma == preL { continue } 
+		preL = oneLemma  
+		var wordLemma1 wordLemmaPairStruct 
+		wordLemma1.lWord2   = stdCode( oneLemma ) 		
+		wordLemma1.lLemma   = wordLemma1.lWord2 
+		if len(wordLemma1.lLemma) < 1 { continue;  } 
+		if ((wordLemma1.lLemma == "-") || (wordLemma1.lLemma[0:1] < "A")) { continue;  }   // ignore number  
+		wordLemma1.lWordSeq = seqCode( wordLemma1.lWord2)
+		wordLemma1.lIxLemma = -1	
+		wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
+	}
+}
+//-----------------------------
 func check_wordLemma_sameCode() {
 	fmt.Println( green("check_wordLemma_sameCode") , "()"  )
 	// check same words  written in diffent way (eg. caesar   and  "cäsar")

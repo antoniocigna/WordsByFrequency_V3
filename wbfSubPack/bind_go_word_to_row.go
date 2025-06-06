@@ -5,7 +5,170 @@ package wbfSubPack
 		"strings"		
 		"strconv"
 		"sort"
+		"slices"
+		"regexp"
 	)
+//--------------------------------------------------------
+func add_wordCombinations( wordL1 []string, wordL2 []string )  []string {
+	wor3List:= []string{} 
+	for _, wor1 := range wordL1 {	
+		if wor1 == "" {continue}
+		for _, wor2 := range wordL2 {
+			if wor2 == "" {continue}
+			wor3List = append(wor3List, wor1 + wor2  ) ;
+			wor3List = append(wor3List, wor2 + wor1  ) ;
+			wor3List = append(wor3List, wor1 + "s" + wor2  ) ;
+			wor3List = append(wor3List, wor2 + "s" + wor1  ) ;			
+		}	
+	}	
+	newWordList:= []string{}
+	for _, wor1 := range wor3List {
+		word1 := checkTheWord( wor1 ) ;
+		if word1 == "" { continue }					
+		wordCod:= seqCode( word1 )	
+		_, ixT:= lookForWordInUniqueAlpha( wordCod)	
+		if (ixT >= 0) { newWordList = append(newWordList, strings.ToLower(word1))	}
+	}	
+	return newWordList
+	
+} // end of add_wordCombinations  
+
+
+//--------------------------------------------------------
+func getRowIndexFromWordIndex( wordA00 []string, swComb bool) ( string, string, []int) {
+	
+	var maxNumRow = 100 
+	
+	listRowIndices := make([]int,0, maxNumRow)
+	listIxRR := make([]int,0, maxNumRow)
+	
+	var listWords, listLemma string
+	//-----------------
+	for _, wor1 := range wordA00 {
+		word1 := checkTheWord( wor1 ) ;
+		if word1 == "" { continue }					
+		wordCod:= seqCode( word1 )	
+		
+		ixF, ixT:= lookForWordInUniqueAlpha( wordCod)	
+		if (ixT < 0) { 
+			if swComb == false {
+				listWords += " " +  word1
+				listLemma += word1 + "|||\n" 
+			}
+			continue 
+		}
+		ixWord:= -1 	
+		for ix:= ixF; ix <= ixT; ix++ {
+			xWordA :=  uniqueWordByAlpha[ix] 			
+			if xWordA.uWordSeq != wordCod { continue } // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
+			ixWord = xWordA.uIxUnW			
+			if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
+			if ixWord < 0 { continue }
+			listRowIndices = getRowIndicesFromIxFreqWord(ixWord, maxNumRow)
+			if len(listRowIndices) < 1 {continue} 
+			listIxRR = append(listIxRR, listRowIndices...)
+		} // end for ix 
+		//------------
+		if ixWord < 0 { 
+			if swComb == false {
+				listWords += " " +  word1
+				listLemma += word1 + "|||\n" 
+			}
+			continue 
+		} 
+		xWordF  := uniqueWordByFreq[ixWord]   
+		listWords += " " +  xWordF.uWord2
+		//--------
+		for z:=0; z < len(xWordF.uLemmaL); z++  {
+			ixL1:= xWordF.uIxLemmaL[z]
+			LeS := lemmaSlice[ixL1]
+			newL:= xWordF.uLemmaL[z]
+			if newL != LeS.leLemma { continue}  // error 			
+			if len(newL) > 1 { if newL[0:1] == "?" { newL = ""} }
+			newT:= LeS.leTran
+			newP:= xWordF.uPara[z]			
+			if newP == "" { newP = newL}
+			if z == 0 {	listLemma += xWordF.uWord2} 
+			listLemma += "|" + newP + "|" + newT + "\n" 
+		} // end for z	
+	} // end of range wordA00		
+	
+	return listWords, listLemma, listIxRR	
+		
+} // end of getRowIndexFromWordIndex
+
+//----------------------------------------
+
+func PROVAbind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_function string) {  
+	
+	//  lista tutte le frasi che contengono le parole con lemma della parola cercata 
+	//fmt.Println("bind_go_passToJs_thisWordLemmaWordRowList() 1  aWord=", aWord )
+  
+	var outS1 string;
+	
+	//---------------------------------------
+	var listWords_str string;
+	var listLemma_str string
+	var listIxRR []int
+	
+	listWords_str, listLemma_str, listIxRR = getRowIndexFromWordIndex( []string{aWord}, false )
+	fmt.Println("listWords_str=", 	listWords_str)
+	fmt.Println("listLemma_str=", 	listLemma_str)
+	
+	sort.Ints(listIxRR) 
+	
+	listWords_pref := ""
+	listWords := ""
+	hd_tr := ""
+	
+	preIxRR_2:= 999999999 
+	ixRR_2:=0
+	ixRR  :=0
+	
+	nOut:=0
+	new_rIdRow :=""
+
+	for n1:= 0; n1 < len(listIxRR); n1++  {
+		ixRR_2 = listIxRR[n1]
+		if (ixRR_2 == preIxRR_2) { continue;} 
+		preIxRR_2 = ixRR_2; 
+		ixRR = ixRR_2 % 100000; 
+			
+		if ixRR >= numberOfRows { continue;} // actually there  must be some error here 		
+		rline := inputTextRowSlice[ixRR]
+		rowX := cleanRow(rline.rRow1)	
+			
+		if ((rowX =="") || (rowX == LAST_WORD)) { 
+			continue 
+		}		
+		
+		if rline.rixGroup < 0 { 
+			new_rIdRow = "- " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		} else {
+			new_rIdRow = lista_gruppiSelectRow[ rline.rixGroup ].rG_group + " " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		}	
+		outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow   + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1; 
+		
+		nOut++
+		if (nOut >= maxNumRow) {
+			break;
+		}
+		
+	} 	// end for n1
+	
+	if (listWords_pref != "") {
+		listWords += PREF_MARKER + listWords_pref 
+	}
+	header:= "<HEADER>\n" + "<WORD>" + aWord + ",L:" + strings.TrimSpace(listWords) + "</WORD>"
+	//header:= "<HEADER>\n" + "<WORD>" + aWord + "</WORD>"
+	header += hd_tr   // 14giugno
+	header += "</HEADER> \n"
+	
+	go_exec_js_function( js_function, header + outS1 ); 	
+				
+} // end of PROVAbind_go_passToJs_thisWordRowList
+
+//-----------------------------------------------------------
 //--------------------------------------------------------
 
 func bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_function string) {  
@@ -156,9 +319,163 @@ func bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_function
 				
 } // end of bind_go_passToJs_thisWordRowList
 
-//-----------------------------------------------------------
-//----------------------------------------------
+//---------------------------------------------------------------------------
 
+func bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string, maxNumRow int, js_function string) {  
+	
+	//  lista tutte le frasi che contengono le parole con lemma della parola cercata 
+	//fmt.Println("bind_go_passToJs_thisWordLemmaWordRowList() 1  aWord=", aWord )
+	swPrt:=false
+	var maxNumRow2 = maxNumRow * 10; 
+	var outS1 string;
+	var wordA1 []string
+	var wordA2 []string
+	
+	// se la seconda lista è vuota, sposta la prima lista sulla seconda e svuota la prima 
+	//    le righe devono contenere una parole della lista2 e se presente anche una parola della lista1	
+	if aWordList2 == "" {
+		aWordList2 = aWordList1
+		aWordList1 = ""
+	}
+	sw1:= (aWordList1 != "")
+	sw2:= (aWordList2 != "") 
+	if sw1 {wordA1 = regexp.MustCompile(separWord).Split(aWordList1, -1) } // split row into words 
+	if sw2 {wordA2 = regexp.MustCompile(separWord).Split(aWordList2, -1) } // split row into words 
+	
+	wordA3:= []string{}
+	
+	/**
+	if ( ( sw1 == false) && (len(wordA2) == 1) ) {
+		bind_go_passToJs_thisWordRowList( wordA2[0], maxNumRow, js_function)  
+		return
+	}
+	**/
+		
+	/*
+	le parole in word1 sono in or: è sufficiente che una di queste sia presente  per estrarre la riga ==> estrae tutte le righe di tutte le parole 
+	le parole in word2 sono in or: è sufficiente che una di queste sia presente  per estrarre la riga ==> estrae tutte le righe di tutte le parole 
+
+	servono le righe che contengono almeno una parola della lista 1 ed almento 1 della lista2 
+			==>  tutte le righe estratte nella prima lista che si trovano anche nella seconda lista
+	*/
+	
+	listIxRR_L1    := make([]int,0, maxNumRow2)  // indici delle righe che contengono una parola della lista1
+	listIxRR_L2    := make([]int,0, maxNumRow2)  // indici delle righe che contengono una parole della lista2
+	listIxRR_L3    := make([]int,0, maxNumRow2)  // indici delle righe che contengono una parole della lista3
+	listIxRR       := make([]int,0, maxNumRow2)  // indici delle righe che contengono una parola della lista1 e della lista2
+	
+	var listWords_str_L1 string; 
+	var listWords_str_L2 string; 
+	var listWords_str_L3 string; 
+	var listLemmas_str_L1 string	
+	var listLemmas_str_L2 string	
+	var listLemmas_str_L3 string	
+	//------------------
+	// per ogni parola della lista1 estrae gli indici alle righe  
+	if sw1 {
+		listWords_str_L1, listLemmas_str_L1, listIxRR_L1 = getRowIndexFromWordIndex( wordA1 ,false)
+		if swPrt { 
+			fmt.Println("le parole listWords_str_L1 = ", listWords_str_L1)
+			fmt.Println("le parole ", aWordList1, " si trovano in ", len(listIxRR_L1), " righe")
+		}		
+	} // end sw1 
+	//-------------
+	// per ogni parola della lista2 estrae gli indici alle righe  
+	listWords_str_L2, listLemmas_str_L2, listIxRR_L2 = getRowIndexFromWordIndex( wordA2 , false)
+	if swPrt {
+		fmt.Println("le parole listWords_str_L2 = ", listWords_str_L2)	
+		fmt.Println("le parole ", aWordList2, " si trovano in ", len(listIxRR_L2), " righe") 
+	}	
+	//-----------
+	if sw1 {
+		wordA3 = add_wordCombinations(wordA1, wordA2)	
+		if len(wordA3) > 0 {
+			listWords_str_L3, listLemmas_str_L3, listIxRR_L3 = getRowIndexFromWordIndex( wordA3 ,true)
+			if swPrt {
+				fmt.Println("sono state ottenute ", len(wordA3) , " parole combinando le parole di lista1 e lista2", 
+					"\n\tqueste parole si trovano in ", len( listIxRR_L3 ), " righe")   
+			}
+		} 	
+	}
+	//---------------------
+	if sw1 {	
+		for _, ind1:= range listIxRR_L2 {
+			// copia gli indici che si trovano anche nella lista1 
+			//   questo significa che la riga puntata dall'indice, contiene almeno una parola della lista1 ed almeno una della lista2
+			if slices.Contains(listIxRR_L1, ind1) { listIxRR = append(listIxRR, ind1 ) }
+		}  
+	} else {
+		listIxRR = make([]int, len(listIxRR_L2), maxNumRow2)
+		copy(listIxRR, listIxRR_L2)
+	}
+	if  len( listIxRR_L3 ) > 0 { listIxRR = append(listIxRR, listIxRR_L3...) }
+	//----------------
+	if swPrt { 
+		fmt.Println( len(listIxRR),  "sono le righe che contengono almeno una parola in ", aWordList1, " ed almeno una parola in ", aWordList2) 
+		if len(listIxRR) > maxNumRow { fmt.Println( "stampate soltanto le prime ", maxNumRow) }
+	}
+	
+	//---------------------------------------
+	
+	sort.Ints(listIxRR) 
+		
+	preIxRR_2:= 999999999 
+	ixRR_2:=0
+	ixRR  :=0
+	
+	nOut:=0
+	new_rIdRow :=""
+	pre_rowX := ""
+	
+	for n1:= 0; n1 < len(listIxRR); n1++  {
+		if n1 >= maxNumRow { break} 
+		ixRR_2 = listIxRR[n1]
+		if (ixRR_2 == preIxRR_2) { continue;} 
+		preIxRR_2 = ixRR_2; 
+		ixRR = ixRR_2 % 100000; 
+			
+		if ixRR >= numberOfRows { continue;} // actually there  must be some error here 		
+		rline := inputTextRowSlice[ixRR]
+		rowX := cleanRow(rline.rRow1)	
+			
+		if ((rowX =="") || (rowX == LAST_WORD) || (rowX == pre_rowX)) { 
+			continue 
+		}	
+		pre_rowX = rowX 	
+		
+		if rline.rixGroup < 0 { 
+			new_rIdRow = "- " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		} else {
+			new_rIdRow = lista_gruppiSelectRow[ rline.rixGroup ].rG_group + " " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		}	
+		outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow   + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1; 
+		
+		nOut++
+		if (nOut >= maxNumRow) {
+			break;
+		}
+		
+	} 	// end for n1
+	//-------------------------
+	header:= "<HEADER>\n" + "<WORD>"
+	if (sw1 && sw2) { 
+		header += aWordList1 + " " + aWordList2  + " " + listWords_str_L3 + "</WORD>\n"	
+		header += "some:" + listLemmas_str_L1 + " + \n" + listLemmas_str_L2  
+		if listLemmas_str_L3 != "" {header += "\n<hr>\n" + listLemmas_str_L3 }
+	} else 			{ 
+		header += aWordList2 + "</WORD>\n" 
+		header += "some:" + listLemmas_str_L2  
+	}
+	header += "</HEADER> \n"
+	
+	go_exec_js_function( js_function, header + outS1 ); 		
+				
+} // end of bind_go_passToJs_someWordsRowList
+
+//------------------------------------------------------
+
+//----------------------------------------------
+/**
 func OLD_bind_go_passToJs_thisWordRowList( aWord string, swOnlyThisWordRows bool, maxNumRow int, js_function string) {    // NEW 
 	
 	//  lista tutte le frasi che contengono le parole con lemma della parola cercata 
@@ -191,12 +508,12 @@ func OLD_bind_go_passToJs_thisWordRowList( aWord string, swOnlyThisWordRows bool
 		
 		if xWordF.uWordSeq != wordCod { continue }            // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
 		
-		/**
+		***
 			if xWordF.uWord2 != aWord { continue; }
 			if swOnlyThisWordRows {
 				if xWordF.uWordSeq != wordCod { continue }            // get only the required word 
 		}
-		**/
+		***
 		ixWord := xWordF.uIxUnW			
 		if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}		
 		xWordF     = uniqueWordByFreq[ixWord] 
@@ -239,12 +556,12 @@ func OLD_bind_go_passToJs_thisWordRowList( aWord string, swOnlyThisWordRows bool
 			wL2 = lemma_word_ix[k]	
 			if swOnlyThisWordRows { 
 				if aWord != wL2.lw_word { continue;}                // get only the required word  
-				/**
+				**
 				if aWord == "schrift" {
 					fmt.Println(" antocontAnto3 lemma ", wL2) 
 					contaAnto3++
 				}
-				***/
+				***
 			}
 			wL2.lw_word = seqCode( wL2.lw_word )
 			lemWordList2 = append( lemWordList2, wL2 )
@@ -258,7 +575,8 @@ func OLD_bind_go_passToJs_thisWordRowList( aWord string, swOnlyThisWordRows bool
 	fun_wordListToRowList_head( aWord, lemWordList2, maxNumRow, js_function) 	
 				
 } // end of OLDbind_go_passToJs_thisWordRowList
-
+**/
+//-----------------------------------------------------------
 //-----------------------------------------------------------
 
 func fun_wordListToRowList_head(aWord string, lemmaList []lemmaWordStruct, maxNumRow int, js_function string) {
@@ -509,11 +827,12 @@ func bind_go_passToJs_rowWordList(numIdOut string, ixRR int, js_function string)
 		ixWord := rowX.rListIxUnF[w] 
 		if ixWord < 0 { continue}
 		xWordF := uniqueWordByFreq[ixWord] 
-		 
-		// ??anto2 uTranL
+		
+		//pLemma:=  lemmaQuestionMark_remove( xWordF.uLemmaL )
+		
 		row11 := xWordF.uWord2 + "," + strconv.Itoa(xWordF.uIxUnW) + "," + 
 			strconv.Itoa(xWordF.uTotRow)  + ";" + 
-			fmt.Sprint( strings.Join(xWordF.uLemmaL, wSep) ) + 
+			fmt.Sprint( strings.Join(xWordF.uLemmaL, wSep) ) +  
 			//";" + fmt.Sprint( strings.Join(xWordF.uTranL, wSep)) + 
 			";" + listStringLemmaSlice_Tran(xWordF) +
 			endOfLine 

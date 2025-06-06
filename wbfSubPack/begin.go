@@ -8,7 +8,6 @@ package wbfSubPack
 	)
 
 //------------------------------
-
 func begin() { 	
 	fmt.Println("func begin"); 
 	
@@ -75,8 +74,6 @@ func build_and_elab_word_list() {
 	
 } // end of build_and_elab_word_list()
  
-//------------------------------------
-
 //--------------------------------
 
 func getPgmArgs( key0, key1 , key2 , key3, key4 string) (string, string, bool, int, string) {  
@@ -114,6 +111,8 @@ func getPgmArgs( key0, key1 , key2 , key3, key4 string) (string, string, bool, i
 //-------------------------------
 func read_all_files() { 
 	
+	fmt.Println( "\n", green("read_all_files") )
+	
 	read_control_file()
 	if sw_stop { endBegin("1"); return }
 	test_all_folder()
@@ -121,7 +120,15 @@ func read_all_files() {
 	
 	read_languageFile(  FOLDER_INPUT, FILE_inputLanguage)
 	if sw_stop { return }
-	//get_separablePrefix()
+	
+	fmt.Println( green("read_all_files read_dictRow_Orig_and_Tran_file") )
+	read_dictRow_Orig_and_Tran_file( FOLDER_IO_lastTRAN,  FILE_last_updated_dict_rows)
+	
+	if sw_stop { return }	
+	
+	getAllWords()
+		
+	fmt.Println( green("read_all_files read_lemma_file") )
 	
 	read_lemma_file( FOLDER_I_lemma, FILE_inpLemma_word_lemma, FILE_inpLemma_lemma_word)
 	if sw_stop { return }
@@ -133,9 +140,6 @@ func read_all_files() {
 	if sw_stop { return }
 	
 	read_dictLemmaTran_file( FOLDER_IO_lastTRAN, FILE_last_updated_dict_words ) 
-	if sw_stop { return }	
-	
-	read_dictRow_Orig_and_Tran_file( FOLDER_IO_lastTRAN,  FILE_last_updated_dict_rows)
 	if sw_stop { return }	
 	
 	read_lastValueSets2()

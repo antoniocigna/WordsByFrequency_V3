@@ -1024,6 +1024,7 @@ function js_go_showBetweenLemmaList(lemmaListStr, js_parm, jsFunc,goFunc) {
 
 //-------------------------------------------------------
 function onclick_require_lemmaWordList2(aLemma) {
+	if (aLemma=="") return; 
 	word_to_underline_list = []
 	
 	var eleMax = document.getElementById("idTabWRLL3")
@@ -1183,8 +1184,9 @@ function onclick_require_rowListWithThisWord2(type,word1, maxNumRow5) {
 		return;
 	}	
 	myPage01.style.display = "none"; 
-	go_passToJs_thisWordRowList(aWord, ""+maxNumRow5, "js_go_showWrdRowList"); 
-		
+	//go_passToJs_thisWordRowList(      aWord, ""+maxNumRow5, "js_go_showWrdRowList"); 
+	go_passToJs_someWordsRowList( "", aWord, ""+maxNumRow5, "js_go_showWrdRowList");   
+	
 } // end of onclick_require_rowListWithThisWord2
 
 
@@ -1238,7 +1240,7 @@ function getInt( sInt ) {
 
 //-------------------------------
 
-function onclick_wordByIndex(sIxWord) {
+function TOGLIonclick_wordByIndex(sIxWord) {
     // triggered by clicking on a word  
  	
     var ixWord = 0;
@@ -1246,14 +1248,14 @@ function onclick_wordByIndex(sIxWord) {
         ixWord = parseInt(sIxWord);
     } catch (err) {}
 	
-    go_passToJs_getWordByIndex(""+ixWord, "999999","js_go_showWrdRowList"); // ask 'go' to give the rows of the word  by the go function js_go...  
+    TOGLIgo_passToJs_getWordByIndex(""+ixWord, "999999","js_go_showWrdRowList"); // ask 'go' to give the rows of the word  by the go function js_go...  
 
-} // end of onclick_wordByIndex
+} // end of TOGLIonclick_wordByIndex
 //----------------------
 
 //-------------------------------
 function onclick_rowsByIxWord(sIxWord) {
-	
+	if (sIxWord == "") return; 
 	var max_num_row4word  = document.getElementById("idTabWRoW1").value  
 	
     go_passToJs_getRowsByIxWord(""+sIxWord, ""+max_num_row4word, "js_go_showWrdRowList"); // ask 'go' to give the rows of the word  by the go function js_go...  
@@ -1262,7 +1264,7 @@ function onclick_rowsByIxWord(sIxWord) {
 
 //-------------------------------
 function onclick_rowsByIxLemma(sIxLemma) {
-	
+	if (sIxLemma == "") return; 
 	var max_num_row4lemma = document.getElementById("idTabWRoL2").value 
 
 	//console.log( green("onclick_rowsByIxLemma"), " sixLemma=", sIxLemma, " max_num_row4lemma=", max_num_row4lemma)
@@ -1273,7 +1275,7 @@ function onclick_rowsByIxLemma(sIxLemma) {
 
 //-------------------------
 //-------------------------------
-function OLDonclick_wordByIndex2(sIxWord, sIxLemma, swOnlyThisWordRows) {
+function TOGLIOLDonclick_wordByIndex2(sIxWord, sIxLemma, swOnlyThisWordRows) {
     // triggered by clicking on a word  
 	
 	var max_num_row4word  = document.getElementById("idTabWRoW1").value 
@@ -1286,9 +1288,9 @@ function OLDonclick_wordByIndex2(sIxWord, sIxLemma, swOnlyThisWordRows) {
 	
 	//console.log("onclick_wordByIndex2() -->  go_passToJs_getWordByIndex2(" , "ixWord=", ixWord, "  swOnlyThisWordRows ",swOnlyThisWordRows, " maxNumRow=", maxNumRow)
 	
-    go_passToJs_getWordByIndex2(""+ixWord, ""+sIxLemma, swOnlyThisWordRows, ""+max_num_row4word, ""+max_num_row4lemma,"js_go_showWrdRowList"); // ask 'go' to give the rows of the word  by the go function js_go...  
+    TOGLIgo_passToJs_getWordByIndex2(""+ixWord, ""+sIxLemma, swOnlyThisWordRows, ""+max_num_row4word, ""+max_num_row4lemma,"js_go_showWrdRowList"); // ask 'go' to give the rows of the word  by the go function js_go...  
 
-} // end of OLDonclick_wordByIndex2
+} // end of TOGLIOLDonclick_wordByIndex2
 //-------------------------
 //-------------------------
 function firstUpper(str1) {	
@@ -1341,11 +1343,57 @@ function splitHeader( inpHeader ) {
 	//console.log("splitHEADER h3=", h3, " h4=", h4, ",   wordTab=", wordTab) 
 	return [wordList, wordTab]
 }
-
+//-------------------------------
+function headerSomeWords(str1) {
+	/*
+	<div id="id_model_tSHeadW" style="display:none;"> 
+		<div class="centerXY" style="width:100%;text-align:left;font-size:0.8em;">						
+			<table id="tsHead_2" style="display:none;"> ...</table>
+			<table id="tsHead_3" style="display:none;"> ...</table>
+			...
+			<table id="tsHead_4" style="display:none;">  
+				<tbody id="id_model_tSHead_bdy_4">
+					<tr>
+						<td class="c_word" >§4word§</td>																
+						<td class="c_lemma">§4lemma§</td>
+						<td class="c_tranW">§4tran§</td> 
+					</tr>														
+			
+		</tbody>
+	</table>	
+	*/
+	/*
+	var ele_model_tSHeadW_bdy;
+	var model_tSHeadW_div;	
+	document.getElementById("tsHead_4").style.display=" ERRORE non usare block per le table metti table-block"; 		
+	ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_4"); 	
+	str2 += ele_model_tSHeadW_bdy.replace("§1lemma§",nuovoLemma).
+											replace("§1tran§",     nuovoTran) + 
+											"\n\n";  		
+	*/
+	
+	document.getElementById("tsHead_4").style.display="block"; 		
+	var ele_model_tSHeadW_bdy_inner = document.getElementById("id_model_tSHead_bdy_4").innerHTML ; 	
+	var head1 = str1.split("\n"); 
+	var str2="";
+	for(var v=0; v < head1.length; v++) {
+		var aLine = head1[v] + "|||";
+		var col1 = aLine.split("|") 
+		str2 += ele_model_tSHeadW_bdy_inner.replace("§4word§",col1[0]).replace("§4lemma§",col1[1]).replace("§4tran§", col1[2]) + "\n";  		
+	} 	
+	var ele_model_tSHeadW_DIV = document.getElementById("id_model_tSHeadW"); 
+	var model_tSHeadW_div = ele_model_tSHeadW_DIV.innerHTML; 	
+	var jBody  = model_tSHeadW_div.indexOf("<tbody");
+	var jBody2 = model_tSHeadW_div.indexOf("<tr", jBody);		
+	var newDiv = model_tSHeadW_div.substr(0, jBody2) +"\n" + str2.trim()  + "\n</tbody></table></div>\n";  
+	
+	return newDiv.replaceAll('display:none', 'display:block');  
+	
+} // end of headerSomeWords
 //---------------------------------------
 function buildHeaderTable( str1 ) {	
 
-	//console.log( green("buildHeaderTable"), " str1=\n", str1);
+	//console.log( green("   buildHeaderTable") );  console.log(str1, "\n");
 	/***
 	buildHeaderTable () str1= 
 		one Lemma, many words 
@@ -1363,8 +1411,9 @@ function buildHeaderTable( str1 ) {
 			:lemma=sein 	:tran=essere	:wordsInLemma=ihren 
 		</HEADER>
 	**/
-	
-	
+	if (str1.indexOf("some:") >= 0) {
+		return headerSomeWords(str1.substring( str1.indexOf("some:") + 5) ); 
+	}
 	var lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
 	if (lineTr[0] == "") {  lineTr = lineTr.slice(1);}
 	
@@ -1408,7 +1457,7 @@ function buildHeaderTable( str1 ) {
 	var ele_model_tSHeadW_bdy;
 	var model_tSHeadW_div;	
 	
-	
+	console.log( "   2 buildHeaderTable", " oneWordOnly  =",oneWordOnly, "  oneLemmaOnly =", oneLemmaOnly ) ;  
 
 	//--------------------------------
 	var type = 0;
@@ -1418,26 +1467,32 @@ function buildHeaderTable( str1 ) {
 		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_13"); 	
 		if (oneLemmaOnly) {
 			type=1;
-			//console.log( green(" CASO 1 "), "1XXXXXXXX ONE WORD Only and ONE LEMMA only XXXXXXXXXX")
+			console.log( green(" CASO 1 "), "1XXXXXXXX ONE WORD Only and ONE LEMMA only XXXXXXXXXX")
 		} else {
 			type=3;
-			//console.log( green(" CASO 3 "), "1XXXXXXXX ONE WORD and many LEMMA XXXXXXXXXX")			
+			console.log( green(" CASO 3 "), "1XXXXXXXX ONE WORD and many LEMMA XXXXXXXXXX")			
 		}	
 	} 
 	if (oneLemmaOnly) {
 		if (oneWordOnly) {
 			type=1;
-			//console.log( green(" CASO 1 "), "2XXXXXXXX ONE WORD Only and ONE LEMMA XXXXXXXXXX")		
+			console.log( green(" CASO 1 "), "2XXXXXXXX ONE WORD Only and ONE LEMMA XXXXXXXXXX")		
 		} else {
 			type=2;
-			//console.log( green(" CASO 2 "), "1XXXXXXXX many WORD  and ONE LEMMA XXXXXXXXXX")
+			console.log( green(" CASO 2 "), "1XXXXXXXX many WORD  and ONE LEMMA XXXXXXXXXX")
 		}	
 		document.getElementById("tsHead_2").style.display="block"; 
 		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_2"); 	
 	}
 	if ((oneWordOnly == false) && (oneLemmaOnly == false)) {
 		type=4;
-		//console.log( green(" CASO 4 "), "3XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX")
+		console.log( green("1 CASO 4 "), "4XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX");
+		
+		document.getElementById("tsHead_4").style.display="block"; 
+		
+		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_4"); 	
+		
+		console.log( green("2 CASO 4 "), "4XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX")
 	}
 	//----------------------------------
 	var model_tSHeadW_lemma  = ele_model_tSHeadW_bdy.innerHTML; 
@@ -1448,17 +1503,18 @@ function buildHeaderTable( str1 ) {
 	
 	//-----
 	switch( type ) {			
-		 case 1: //console.log("caso 1  una parola e un lemma")	
+		 case 1: console.log("caso 1  una parola e un lemma")	
 			case_type1_3(); break;
-		 case 2: //console.log("caso 2  un lemma diverse parole")			
+		 case 2: console.log("caso 2  un lemma diverse parole")			
 			case_type2();
 			break;
 		 case 3: 
-			//console.log("caso 3  una parola e diversi lemma")	
+			console.log("caso 3  una parola e diversi lemma")	
 			case_type1_3(); 		
 			break;
 		 case 4: 
-			//console.log("caso 4  diverse parole con diversi lemma")
+			console.log("caso 4  diverse parole con diversi lemma")
+			case_type4(); 
 			break;
 		 default:
 			break;
@@ -1544,6 +1600,23 @@ function buildHeaderTable( str1 ) {
 	} // end of case_type2
 	//-----------------------------------
 	
+	function case_type4() {
+				console.log("caso 4  diverse parole e diversi lemma")			
+					
+				for(var z1=0; z1 < len1; z1++) {
+					var oneTr1 = lineTr[z1]	
+					var jT = oneTr1.indexOf(":tran=");
+					var jW = oneTr1.indexOf(":wordsInLemma=");
+					var nuovoLemma   = oneTr1.substring(0,jT    ).trim();
+					var nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
+					var nuovoLisWord = oneTr1.substring(jW+14   ).trim();						
+					str2 += ele_model_tSHeadW_bdy.replace("§1lemma§",nuovoLemma).
+											replace("§1tran§",     nuovoTran) + 
+											"\n\n";  									
+				} // end for z1
+	} // end of case_type4
+	//------------------------
+	
 	var ele_model_tSHeadW_DIV = document.getElementById("id_model_tSHeadW"); 
 	var model_tSHeadW_div = ele_model_tSHeadW_DIV.innerHTML; 	
 	var jBody  = model_tSHeadW_div.indexOf("<tbody");
@@ -1593,7 +1666,7 @@ function OLD2buildHeaderTable( str1 ) {
 	
 	/**********
 	
-		<table id="tsHead1" style="display:none;">
+		<table id="tsHead_1" style="display:none;">
 			<tbody id="id_model_tSHeadW_bdy1">
 				<tr><td colspan="2" class="c_lemma">§1lemma§</td> </tr>															
 				<tr><td style="width:1em;">&nbsp;</td><td class="c_word">§1wordXlem§</td></tr> 
@@ -1601,7 +1674,7 @@ function OLD2buildHeaderTable( str1 ) {
 			</tbody>
 		</table>
 		
-		<table id="tsHead2" style="display:none;">
+		<table id="tsHead_2" style="display:none;">
 			<tbody id="id_model_tSHeadW2_bdy">
 				<tr><td colspan="2" class="c_word">§1wordXlem§</td> </tr>															
 				<tr><td style="width:1em;">&nbsp;</td><td class="c_lemma">§1lemma§</td>
@@ -1652,10 +1725,10 @@ function OLD2buildHeaderTable( str1 ) {
 	var model_tSHeadW_div
 	if (oneWordOnly) {	
 		console.log("XXXXXXXX oneWordOnly = true  XXXXXXXXXX")
-		document.getElementById("tsHead2").style.display="block"; 
+		document.getElementById("tsHead_2").style.display="block"; 
 		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHeadW2_bdy"); 				
 	} else {
-		document.getElementById("tsHead1").style.display="block"; 
+		document.getElementById("tsHead_1").style.display="block"; 
 		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHeadW1_bdy"); 	
 	}
 	
@@ -1840,7 +1913,7 @@ function js_go_showWrdRowList(inpstr) {
 
 	// triggered by go ( bild go_passToJs_getWordByIndex )
 	
-	//(console.log(" js_go_showWrdRowList (inpstr=" + inpstr);  
+	//console.log("1 js_go_showWrdRowList "); //  (inpstr=" + inpstr);  
 	
     if (inpstr == undefined) {
 		//console.log(" js_go_showWrdRowList () 1 return inpstr undefined ");  
@@ -1864,14 +1937,16 @@ function js_go_showWrdRowList(inpstr) {
 	}	
 	//document.getElementById("id_inpWordFra_msg").style.display = "none";
 	
+	//console.log("2 js_go_showWrdRowList ");
+	
 	myPage05.style.display = "none";
 	
-	
-	
-	
+		
 	var h_wordListStr = "", h_wordTab = "";
 	var ks = inpstr.indexOf("</HEADER>"); 
 	if (ks < 0) { return } 	
+	
+	//console.log("3 js_go_showWrdRowList ");
 	
 	var inpHeader = inpstr.substring( 0, ks + 9);
 	
@@ -1906,9 +1981,11 @@ function js_go_showWrdRowList(inpstr) {
 		
 	//console.log("ANTONIO _showWordRowList ", "inpReqWord=" + inpReqWord + ",h_wordListStr=" + h_wordListStr + "\n-------------------------------------\n") ;
 	
+	//console.log("4 js_go_showWrdRowList buildHeaderTable");
+	
 	h_wordTab     = buildHeaderTable( col1[1] )
 	
-	
+	//console.log("5 js_go_showWrdRowList");
 	//-------------------
 	
 	word_to_underline_list = h_wordListStr.split(" ")                        
@@ -1919,7 +1996,9 @@ function js_go_showWrdRowList(inpstr) {
 
 	
 	
-	document.getElementById("id_headWord").innerHTML = h_wordTab.replaceAll('display:none','display:block').replaceAll("tsHead1","tsHead00") ;
+	document.getElementById("id_headWord").innerHTML = h_wordTab.replaceAll('display:none','display:block').replaceAll("tsHead_1","tsHead_00") ;
+	
+	//console.log("6 js_go_showWrdRowList");
 	
 	onclick_jumpFromToPage( myPage02,myPage03, myPage04);  //   
 	
@@ -2657,8 +2736,13 @@ function js_go_rowWordList(wordListStr) {
 	[ ixLastEle, table_txt] = tts_3_spezzaRiga3( rowWordList.slice(1) )	 ;   
  	
 	var divWord = "";
-	
+	divWord += `<div style="font-size:0.6em;color: black;text-align:center;margin-top:0.5em;">					
+				clicca su una parola per ottenere la lista di tutte le frasi che la contengono							
+			</div> \n`; 
 	divWord += table_txt;
+	
+	divWord += anyOtherWord();  // $$anto see appl: lineByLine_v3,  file: lbl2_lineByLine_script3_GOHTML.js  function: onclickSelectWord
+	
 	//if (table_txt.indexOf("creazione")>= 0 ) { console.log("table_txt=" , table_txt); }
 	ele_wordset.innerHTML = divWord; 
 	
@@ -3919,6 +4003,7 @@ function js_go_valueFromLastRun( gostr1 ) {
 function onclickDoubleRowTran(this1) {
 	var eleDiv = this1.parentElement;
 	var eleTD  = eleDiv.parentElement; 
+	
 	if (eleTD.children.length >= 2) { return; } 	
 	var ele_tran = eleDiv.children[1];	
 	const newDiv = document.createElement("div");
@@ -3975,9 +4060,14 @@ function onclickDoubleWordTran(this1) {
 	var eleDiv = this1.parentElement;
 	var eleTD  = eleDiv.parentElement; 
 	
+	var eleLemmaTD   = eleTD.nextElementSibling
+	var eleLemmaSpan = eleLemmaTD.children[0]
+	if (eleLemmaSpan.innerHTML == "") return; 
+	
+	
 	//if (eleTD.children.length < 1) { return; } 
 	
-	console.log(red("onclickDoubleWordTran")," () eleTD=", eleTD.outerHTML)
+	//console.log(red("onclickDoubleWordTran")," () eleTD=", eleTD.outerHTML)
 	
 	if (eleTD.children.length >= 2) { return; } 
 	
@@ -3986,7 +4076,7 @@ function onclickDoubleWordTran(this1) {
 	const newDiv = document.createElement("div");
 	newDiv.style.textAlign = "left";
 	eleTD.appendChild(newDiv);
-	console.log(red("medio eleTD="), eleTD.outerHTML) ; 	
+	//console.log(red("medio eleTD="), eleTD.outerHTML) ; 	
 	var newInn=""
 	newInn += '<div  style="font-size:0.6em;width:100%;">add/modify translation</span></div>' + '\n';
 	newInn += '<div  class="c_wordTran" ' +
@@ -3996,7 +4086,7 @@ function onclickDoubleWordTran(this1) {
 	newInn += '<div  style="width:100%;"><button onclick="onclick_saveNewWordTran(this)">Salva tutte le nuove traduzioni</button></div>\n'; 
 	eleTD.children[1].innerHTML = newInn;    	
 	
-	console.log(red("new eleTD="), eleTD.outerHTML) ; 	
+	//console.log(red("new eleTD="), eleTD.outerHTML) ; 	
 	/**
 	new eleTD= 
 	<td style="text-align:center;" class="borderVert_L">					
@@ -4341,3 +4431,280 @@ function onclick_saveNewRowTran(this1) {
 
 
 //-------------------------
+function anyOtherWord() {
+	// vedi lineByLine onclickSelectWord
+	//--------------------
+	let str1 = `
+		<div>
+				<div style="font-size:0.5em;color: black;text-align:left;margin-top:1.5em;">	
+					è possibile ottenere la lista delle frasi che contengono una qualunque parola o combinazione di parole, 
+					inserendo le parole richieste nelle 2 liste e poi premendo il pulsante di ricerca.
+					<br>Per soddisfare il criterio di scelta una parola delle lista1 deve essere presente insieme ad una parola della lista2  (una delle due lista può essere vuota).
+					<br>(es. la prima lista potrebbe contenere il prefisso di un verbi composto tedesco, la seconda le voci di paradigma dello stesso verbo)   
+					<table>								
+						<tbody><tr><td>1) lista di parole</td><td><textarea id="idwS1_§x1§" cols="50" rows="1" placeholder="ab"></textarea></td></tr>
+						<tr><td>2) lista di parole</td><td><textarea id="idwS2_§x1§" cols="50" rows="2" placeholder="gebe gebt gab gegeben"></textarea></td></tr>
+					</tbody></table>
+				</div>	
+				<div style="font-size:0.6em;text-align:center;margin-bottom:1.5em;padding-bottom:2em; border-bottom:1px solid black;">
+					<button class="but_word" style="font-size:1.0em;" onclick="onclickSelectWord2('§x1§')">cerca tutte le frasi che contengono le parole delle liste1 e 2</button>	
+					<br><span id="err_§x1§" +="" style="color:red; font-weight:bold;display:none;"></span>
+				</div>
+		</div> \n`;
+	return "\n" + str1.trim();
+
+} // end of anyOtherWord()
+	
+//-----------------------------------------	
+function onclickSelectWord2(id1) {	
+	//-------------------------
+	//                                          vedi onclick_require_rowListWithThisWord2
+	//                                                    go_passToJs_thisWordRowList(aWord, ""+maxNumRow5, "js_go_showWrdRowList");  
+	//
+	//                   go  bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string,  maxNumRow int, js_function string) 
+	//                        nel file bind_go_word_to_row.go
+	/**
+	word_to_underline_list = []
+	ele_wordList.innerHTML ="";
+	//ele_wRowList.innerHTML = "";
+    //ele_word.innerHTML     = ""; 	 	
+	//ele_wordLisH.style.display = "none";
+	//console.log('document.getElementById("id_inpWordFra") =' , document.getElementById("id_inpWordFra").outerHTML) 
+    var aWord ="";  
+	if (type==2) {
+		aWord = word1; 	
+	} else {		
+		aWord     = document.getElementById("id_inpWordFra").value.trim();  
+	}	
+	if (aWord == "") {
+		ele_wordList.innerHTML ='<span style="color:red;">manca la parola da cercare</span>';
+		return;
+	}	
+	myPage01.style.display = "none"; 
+	go_passToJs_thisWordRowList(aWord, ""+maxNumRow5, "js_go_showWrdRowList"); 
+	
+	**/
+	
+	var maxNumRow5 = 100; 
+	
+	var wordLista1 = "", wordLista2=""; 
+	var ele_lista1 , ele_lista2;  	
+	
+	
+	var id_wordLista1 = "idwS1_" + id1; 
+	var id_wordLista2 = "idwS2_" + id1; 
+	ele_lista1 = document.getElementById(id_wordLista1);  
+	ele_lista2 = document.getElementById(id_wordLista2);  
+	if (ele_lista1) wordLista1 = ele_lista1.value;
+	if (ele_lista2) wordLista2 = ele_lista2.value;	
+	//console.log("%cCERCA  PAROLA "+ wordLista1 + " "+ wordLista2 , "color: green;") 
+		
+	myPage01.style.display = "none"; 
+	go_passToJs_someWordsRowList(wordLista1, wordLista2, ""+maxNumRow5, "js_go_showWrdRowList"); 	
+	
+	
+	return 
+	var idMsg = "err_" + id1;
+	var eleMsg = document.getElementById(idMsg);  
+	if (eleMsg)  eleMsg.style.display ="none";	
+	
+	myPage01.style.display = "none"; 
+	go_passToJs_someWordsRowList(aWord, ""+maxNumRow5, "js_go_showWrdRowList"); 	
+	
+} // end of onclickSelectWord2
+
+//------------------------------------------
+function TOGLIonclickSelectWord(tipo,id1,unaParola) {
+	/*
+	tipo=1,   una sola parola da cercare
+	tipo=2,   unaParola e altreParole sono id di textarea che contengono lista di parole  	
+	*/
+	//console.log("onclickSelectWord(tipo=", tipo, " id1=",id1," unaParola=", unaParola,  "  fromIxToIxLimit = ", fromIxToIxLimit[0] +", " +  fromIxToIxLimit[1] );
+	if (salvaSel_fromIxToIxLimit[0] < 0) salvaSel_fromIxToIxLimit = fromIxToIxLimit.slice(); 
+
+	var wordLista1 = "", wordLista2=""; 
+	var ele_lista1 , ele_lista2;  
+	
+	var idMsg = "err_" + id1;
+	var eleMsg = document.getElementById(idMsg);  
+	if (eleMsg)  eleMsg.style.display ="none";
+	
+	if (tipo == 2) {
+		var id_wordLista1 = "idwS1_" + id1; 
+		var id_wordLista2 = "idwS2_" + id1; 
+		ele_lista1 = document.getElementById(id_wordLista1);  
+		ele_lista2 = document.getElementById(id_wordLista2);  
+		if (ele_lista1) wordLista1 = ele_lista1.value;
+		if (ele_lista2) wordLista2 = ele_lista2.value;	
+	} 
+	if (tipo == 1) {
+		wordLista1 = unaParola; 	
+	} 
+	//console.log("1 wordLista1  = ", wordLista1 , "\n", "1 wordLista2  = ", wordLista2);  
+	/**
+	wordLista1 = wordLista1.toLowerCase().replaceAll("\t"," ").replaceAll("\r"," ").replaceAll("\n"," ").replaceAll(","," ").replace(/\s+/g, " ").trim();  
+	wordLista2 = wordLista2.toLowerCase().replaceAll("\t"," ").replaceAll("\r"," ").replaceAll("\n"," ").replaceAll(","," ").replace(/\s+/g, " ").trim(); 
+	if (wordLista1 == "") paroleDaCercare1 = [];
+	if (wordLista2 == "") paroleDaCercare2 = [];	
+	**/
+	var paroleDaCercare1 = getListOfWords_inText(wordLista1, charList);
+	var paroleDaCercare2 = getListOfWords_inText(wordLista2, charList);		
+	var numParole1 = paroleDaCercare1.length;
+	var numParole2 = paroleDaCercare2.length;
+	//console.log("paroleDaCercare 1:[", paroleDaCercare1.join(". ") , "]  2:[", paroleDaCercare2.join(". ") , "]" ); 
+	
+	var tabBody = document.getElementById("id_tabSub_tbody");
+	var numRows = tabBody.children.length;
+	var numFirst = -1, numLast = -1;
+	var swSomeFound1 = false; var swSomeFound2 = false; 
+	//---------------	
+	for(var v = 0; v < numRows; v++) {
+		//console.log("v=", v); 
+		var eleRow = tabBody.children[v];
+		if (eleRow == null) continue;
+		
+		//eleRow.classList.add("hideForNow");   
+		var idtr1 = eleRow.id; 
+		if (idtr1.substr(0,5) != "idtr_") continue;   
+		var tr_num = idtr1.substring(5);
+		if (tr_num.indexOf("_m") > 0) {
+			eleRow.style.display = "none";
+			continue;
+		}	
+		eleRow.classList.add("hideForNow");   
+		
+		var ele_orText = document.getElementById( "idc_" + tr_num );  
+		var origText = getInner_idc( ele_orText ); 
+		
+		/**
+		var orig_riga3 = origText.toLowerCase().replace(/[.,?!<>()]/g, " ").replace(/\s+/g, " ").trim();  		
+		var paroleDellaFrase = orig_riga3.split(" ");  
+		**/
+		var paroleDellaFrase = getListOfWords_inText(origText, charList);
+	
+		var swFound1=false; var swFound2 = false; 
+		
+		if (numParole1 == 0) {swFound1 = true; swSomeFound1 = true; } 
+		if (numParole2 == 0) {swFound2 = true;; swSomeFound2 = true; }  
+		var targWord1, targWord2; 
+		var w1, w2; var unaParolaDellaFrase;
+		if (swFound1 == false) {
+			for(var p=0; p < paroleDellaFrase.length; p++) {
+				unaParolaDellaFrase = paroleDellaFrase[p]; 			
+				for (w1=0;w1 < numParole1; w1++) {
+					if ( paroleDaCercare1[w1] == unaParolaDellaFrase) {targWord1= unaParolaDellaFrase; swFound1=true; break; }
+				}  
+				if (swFound1) { //console.log(" trovata parola1 ",unaParolaDellaFrase ); 
+					swSomeFound1 = true; 
+					break; 
+				}
+			} 
+		}
+		if (swFound2 == false) {
+			for(var p=0; p < paroleDellaFrase.length; p++) {
+				unaParolaDellaFrase = paroleDellaFrase[p]; 			
+				for (w2=0;w2 < numParole2; w2++) {
+					if ( paroleDaCercare2[w2] == unaParolaDellaFrase) {targWord2 = unaParolaDellaFrase; swFound2=true; break; }
+				} 	
+				if (swFound2) { //console.log(" trovata parola2 ",unaParolaDellaFrase ); 
+					swSomeFound2 = true; 					
+					break; 
+				}
+			} 
+		}
+		//console.log("1 swFound1=", swFound1 , "   ", " swFound2=", swFound2, " swFound1 && swFound2=", (swFound1 && swFound2) ) 
+		if ((swFound1 && swFound2) == false) {
+			if ((numParole1 == 1) && (numParole2 > 0)) {
+				swFound1 = false; 
+				swFound2 = false; 
+				var parola11 = paroleDaCercare1[0]; 
+				for(var p=0; p < paroleDellaFrase.length; p++) {
+					unaParolaDellaFrase = paroleDellaFrase[p]; 	// es. ab + gegangen = abgegangen		
+					for (w2=0;w2 < numParole2; w2++) {
+						if ( parola11 + paroleDaCercare2[w2] == unaParolaDellaFrase) {  
+							//console.log(" trovata parola1+parola2 ",unaParolaDellaFrase , " ( parola1=" + parola11 , " + " + paroleDaCercare2[w2] ); 
+							targWord2 = unaParolaDellaFrase;  
+							swFound2=true; 
+							break; 
+						}
+					} 	
+					if (swFound2) {
+						break; 
+					}
+				} 
+				if (swFound2) {swFound1 = true}  
+			} 
+		}	
+		
+		//console.log("2 swFound1=", swFound1 , "   ", " swFound2=", swFound2, " swFound1 && swFound2=", (swFound1 && swFound2) ) 
+		if (swFound1 && swFound2) {
+			//console.log("la frase ", tr_num, " contiene le parole richieste: ", origText);	
+		} else {
+			continue;
+		}
+		
+		var eleW   = document.getElementById( "idw_" + tr_num );  
+		//console.log("3 swFound1=", swFound1 ,  " swSomeFound1=", swSomeFound1); 
+		
+		var eleW   = document.getElementById( "idw_" + tr_num );  
+	
+		if (eleW) eleW.innerHTML = "";
+		
+		if (swFound1) trovataUnaParola(ele_orText, targWord1);	
+		if (swFound2) trovataUnaParola(ele_orText, targWord2);	
+		
+		//if (eleRow.style.display == "none")  eleRow.style.display = "table-row";
+		if (eleRow.classList.remove("hideForNow")) 
+		ele_orText.style.display = "block"; 	
+		if (numFirst < 0) numFirst = tr_num; 
+		numLast = tr_num;
+		//console.log("5 v=", v, "  idtr1=", idtr1, " tr_num=", tr_num, " numFirst=", numFirst, "  numLast=", numLast); 
+		//var eleRowM2 = document.getElementById( idtr1 + "_m2"); 
+		//var eleRowM1 = document.getElementById( idtr1 + "_m1"); 
+	}	
+	//---------------------
+	var msgErr="";
+	if (swSomeFound1 == false)  {
+		if (wordLista1 != "") 
+			if (ele_lista1){ 
+				ele_lista1.value = wordLista1 + " XXX  NOT FOUND XXX"; 
+				msgErr+=  wordLista1 + "  NOT FOUND "; 
+			}
+	} 
+	if (swSomeFound2 == false)  {
+		if (wordLista2 != "") 
+			if (ele_lista2) { 
+				ele_lista2.value = wordLista2 + " XXX  NOT FOUND XXX"; 
+				msgErr+=  "<br>" + wordLista2 + " NOT FOUND "; 
+			}	
+	} 
+	if (msgErr != "") {		
+		if (eleMsg) {
+			eleMsg.innerHTML = msgErr;
+			eleMsg.style.display ="block";
+		}				
+	}
+	
+	//--------------
+	if (numFirst < 0) {
+		onclickResetHideForNow(-1);
+		return;
+	}		
+	//console.log("numRows=", numRows, "  numFirst=", numFirst, "  numLast=", numLast); 
+	if (document.getElementById("b1_" + numFirst) == null) console.log("errore manca id  b1_" + numFirst); 
+	if (document.getElementById("b2_" + numLast ) == null) console.log("errore manca id  b2_" + numLast ); 
+	onclick_tts_arrowFromIx(  document.getElementById("b1_" + numFirst), numFirst) ; 
+	onclick_tts_arrowToIx(    document.getElementById("b2_" + numLast ), numLast ) ; 
+	
+	//document.getElementById("idtr_" + numFirst).style.display = "table-row"; 
+	document.getElementById("idtr_" + numFirst).classList.remove("hideForNow");  
+	if (document.getElementById("resetHideForNow_" + numFirst) ) {
+		document.getElementById("resetHideForNow_" + numFirst).style.display = "block"; 
+	}
+	
+	document.getElementById( "idtr_" + numFirst + "_m1").scrollIntoView();
+	
+} // end of TOGLIonclickSelectWord
+//--------------------------------
+
+

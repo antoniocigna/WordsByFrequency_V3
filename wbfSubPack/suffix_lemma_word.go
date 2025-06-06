@@ -81,7 +81,7 @@ func getListInverseLemmaIndex(dirLemmaTarg string, maxNum int) []int {
 	fromIx, toIx:= lookForInverse(invLemmaTarg, inverseLemmaSlice)
 	if toIx < fromIx { fromIx = toIx}
 	
-	//fmt.Println("get inverse ", invLemmaTarg,  " fromIx=", fromIx) 	
+	//fmt.Println("get inverse ", invLemmaTarg,  " fromIx=", fromIx, " toIx=", toIx) 	
 	
 	listInverseLemmaIndex:= make([]int,0,200)     
 	lenTarg:= len(dirLemmaTarg)
@@ -96,11 +96,12 @@ func getListInverseLemmaIndex(dirLemmaTarg string, maxNum int) []int {
 		if invLem.inInverse[0:lenCk] < invLemmaTarg { continue}
 		if invLem.inInverse[0:lenCk] > invLemmaTarg { break }		
 	
-		//fmt.Println("      OK append ", invLem.inIx  ) 
+		//fmt.Println("      OK append ", invLem.inIx , "  ", invLem.inInverse , " ==> ",  reverseString(  invLem.inInverse ))  
 		num++
 		if num > maxNum { break }
 		listInverseLemmaIndex = append(listInverseLemmaIndex,  invLem.inIx )  //     lem:= sliceLemma[ invLem.ixLemma ]		
-	}   
+	}  
+	//fmt.Println("    listInverseLemmaIndex =", listInverseLemmaIndex ) 
 	
 	return listInverseLemmaIndex 
 	

@@ -31,6 +31,7 @@ type wordLemmaPairStruct struct {
 	lWordSeq string 
 	lWord2   string 
 	lLemma   string
+	lL_W     int                 // se 1L_W = 0 origine è il file lemma-word, se 1L_W = 9 l'origine è il file di testo    
 	lIxLemma int
 	lIx_einStellenList []int 
 } 

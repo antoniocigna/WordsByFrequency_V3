@@ -11,13 +11,13 @@ package wbfSubPack
 
 func bind_go_passToJs_prefixWordList( numWords int, wordPrefix string, js_function string) {
 	
-	bind_go_passToJs_betweenWordList( numWords, wordPrefix, js_function) 
+	bind_go_passToJs_betweenWordList_V3( numWords, wordPrefix, js_function) 
 			
 } // end of bind_go_passToJs_prefixWordList
 
 //-----------------------------------------
 
-func bind_go_passToJs_betweenWordList( maxNumWords int, fromWordPref string, js_function string) {
+func bind_go_passToJs_betweenWordList_V3( maxNumWords int, fromWordPref string, js_function string) {
 	
 	var onlyThisLevel string = "any" ; // "A0"  // questo deve arrivare da parametro  
 	var outS1 string; 	
@@ -49,6 +49,8 @@ func bind_go_passToJs_betweenWordList( maxNumWords int, fromWordPref string, js_
 	fromIx2 :=0	
 	fromWordTarg := (strings.Split(fromWordCod,"."))[0]
 	lenFrom = len(fromWordTarg)  
+	
+	//fmt.Println( red("1 bind_go_passToJs_betweenWordList_V3"), " fromWord=", fromWord, " from1=", from1, " fromWordTarg=", fromWordTarg)
 	lenCk   :=0
 	//--
 	if from1 < 0 {from1=0}
@@ -68,9 +70,10 @@ func bind_go_passToJs_betweenWordList( maxNumWords int, fromWordPref string, js_
 		fromIx2 = k
 	}	
 	//---------
-	
 	num1:=0	
 	onlyIfExtr := false 
+	
+	//fmt.Println( red("2 bind_go_passToJs_betweenWordList_V3"), " fromIx2=", fromIx2)
 	
 	//----
 	for k:= fromIx2; k < len( uniqueWordByAlpha); k++ {		
@@ -86,8 +89,10 @@ func bind_go_passToJs_betweenWordList( maxNumWords int, fromWordPref string, js_
 			if lenCk > lenFrom { lenCk = lenFrom}		
 			// compare using the length of the prefix, I shall match just the beginning and nothing else    
 			
-			if wAlf.uWordSeq[0:lenCk] < fromWordTarg { fmt.Println(" continue "); continue} 		
-			if wAlf.uWordSeq[0:lenCk] > fromWordTarg { fmt.Println(" break    "); break } 			
+			if wAlf.uWordSeq[0:lenCk] < fromWordTarg { //	fmt.Println(" continue "); 
+				continue} 		
+			if wAlf.uWordSeq[0:lenCk] > fromWordTarg { //fmt.Println(" break    "); 
+				break } 			
 		}
 		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf )  	
 		
@@ -95,14 +100,18 @@ func bind_go_passToJs_betweenWordList( maxNumWords int, fromWordPref string, js_
 		outS1 += rowW 	
 		num1++
 		if num1 >= maxNumWords { break }
-	}
-	if num1 < 1 {	
-		rowW:= notFoundWord_row( fromWordCod, fromWord)		
-		outS1 += rowW 	
 	}	
+	
+	if num1 < 1 {	
+		//rowW:= notFoundWord_row( fromWordCod, fromWord)		
+		//outS1 += rowW  
+		outS1 = ""; //   NONE," + fromWord
+	}	
+	
+	//fmt.Println( red("3 bind_go_passToJs_betweenWordList_V3"), " num1=", num1, "js_function=", js_function, " outS=", outS1)
+	
 	//-----------
 	go_exec_js_function( js_function, outS1 ); 		
-	
 			
 } // end of bind_go_passToJs_betweenWordList
 //------------------
@@ -222,8 +231,10 @@ func bind_go_passToJs_suffixWordList( maxNumWords int, fromWordSuff string, js_f
 		if num1 >= maxNumWords { break }
 	}
 	if num1 < 1 {	
-		rowW:= notFoundWord_row( fromWordSuff,  fromWordSuff)		
-		outS1 += rowW 	
+		//rowW:= notFoundWord_row( fromWordSuff,  fromWordSuff)		
+		//outS1 += rowW 	
+		//outS1 += "NONE," + fromWordSuff
+		outS1 = ""; 
 	}			
 	//------------------
 	

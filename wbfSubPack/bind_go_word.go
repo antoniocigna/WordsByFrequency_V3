@@ -106,7 +106,7 @@ func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords in
 }  // end of bind_go_passToJs_wordList	
 
 //---------------------------------------------------------
-
+/**
 //--------------------
 func bind_go_passToJs_getWordByIndex2( ixWord int, swOnlyThisWordRows bool, maxNumRow int, js_function string) {
 		
@@ -118,7 +118,7 @@ func bind_go_passToJs_getWordByIndex2( ixWord int, swOnlyThisWordRows bool, maxN
 		OLD_bind_go_passToJs_thisWordRowList( aWord, swOnlyThisWordRows, maxNumRow, js_function)
 		
 } // end of bind_go_passToJs_getWordByIndex2
-
+**/
 
 //---------------------------------------------------------------
 func bind_go_passToJs_word_known(ixWord int, yesNo int, knowCtr int, js_function string) {
@@ -149,7 +149,7 @@ func bind_go_passToJs_word_known(ixWord int, yesNo int, knowCtr int, js_function
 
 //---------------------------------------------- 
 //-----------------------------------------------------------
-
+/**
 func bind_go_passToJs_getWordByIndex( ixWord int, maxNumRow int, js_function string) {
 		
 		if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
@@ -162,7 +162,7 @@ func bind_go_passToJs_getWordByIndex( ixWord int, maxNumRow int, js_function str
 		OLD_bind_go_passToJs_thisWordRowList( aWord, swOnlyThisWordRows, maxNumRow, js_function)
 		
 } // end of bind_go_passToJs_getWordByIndex
-
+**/
 //-----------------------------------------------------------
 func bind_go_passToJs_getRowsByIxWord( ixWord int, maxNumRow int, js_function string) {
 	if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	

@@ -39,10 +39,10 @@ func get_all_binds() {
 				bind_go_passToJs_prefixWordList( getInt(s_numWords), wordPrefix, js_function) } )
 		//--------------------------------------		
 		ui.Bind("go_passToJs_betweenWordList", func( s_maxNumWords string, fromWordPref string, js_function string) {
-				bind_go_passToJs_betweenWordList( getInt(s_maxNumWords), fromWordPref, js_function) } ) 	
+				bind_go_passToJs_betweenWordList_V3( getInt(s_maxNumWords), fromWordPref, js_function) } ) 	
 	 	//--------------------------------------		
 		ui.Bind("go_passToJs_betweenLemmaList", func( s_maxNumLemmas string, fromLemmaPref string, js_function string) {
-				bind_go_passToJs_betweenLemmaList( getInt(s_maxNumLemmas), fromLemmaPref, js_function) } ) 		 			
+				bind_go_passToJs_betweenLemmaList_V3( getInt(s_maxNumLemmas), fromLemmaPref, js_function) } ) 		 			
 			
 		//---------------------------------------
 		ui.Bind("go_passToJs_lemmaWordList", func(lemma string, inpMaxWordLemma string, js_function string) {
@@ -54,20 +54,25 @@ func get_all_binds() {
 		ui.Bind("go_passToJs_getRowsByIxLemma", func( sIxLemma string, max_num_row4lemmaS string, js_function string) {
 				bind_go_passToJs_getRowsByIxLemma(  getInt(sIxLemma), getInt(max_num_row4lemmaS), js_function) } ) 
 		//-----------------------------------
-		
+		/**
 		ui.Bind("go_passToJs_getWordByIndex2", func( s_ixWord string, swOnlyThisWordRows bool, s_maxNumRow string,  js_function string) {
 				bind_go_passToJs_getWordByIndex2(   getInt(s_ixWord), swOnlyThisWordRows,      getInt(s_maxNumRow), js_function) } ) 
+		**/		
 		//---------------------------------------
-		ui.Bind("go_passToJs_thisWordRowList", func( aWord string, s_maxNumRow string, js_function string) {				
-				bind_go_passToJs_thisWordRowList( aWord, getInt(s_maxNumRow), js_function) } )
+		
+		ui.Bind("go_passToJs_thisWordRowList", func( aWord string, s_maxNumRow string, js_function string) {
+				bind_go_passToJs_thisWordRowList(  aWord, getInt(s_maxNumRow), js_function) } )			
+		//---------------------------------------		
+		ui.Bind("go_passToJs_someWordsRowList",	func( aWordList1 string, aWordList2 string, s_maxNumRow string, js_function string) {				
+				bind_go_passToJs_someWordsRowList( aWordList1, aWordList2, getInt(s_maxNumRow), js_function) } )	
+				
 		//---------------------------------------
 		ui.Bind("go_passToJs_rowList", func(  s_inpBegRow string,   s_maxNumRow string, js_function string) {	
 				bind_go_passToJs_rowList(     getInt(s_inpBegRow), getInt(s_maxNumRow), js_function) } )
 		//---------------------------------------
-	
 		ui.Bind("go_passToJs_rowWordList", func( numIdOut string, s_ixRR string, js_function string ) {
 				bind_go_passToJs_rowWordList(numIdOut, getInt(s_ixRR), js_function) } ) 	
-		//---------------------------------------	
+		//---------------------------------------			
 		ui.Bind("go_write_lang_dictionary", func( langAndVoiceName string) {
 			bind_go_write_lang_dictionary( langAndVoiceName ) } ) 
 		//---------------------------------------	

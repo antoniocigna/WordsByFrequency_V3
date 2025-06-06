@@ -11,6 +11,8 @@ package wbfSubPack
 
 //------------------------------
 
+//------------------------------
+
 func elabWordList() {	
 
 
@@ -35,8 +37,6 @@ func elabWordList() {
 } // end of elabWordList()
 
 //-----------------
-
-//---------------------------------
 
 func elabWordAlpha_buildWordFreqList() {
 	/*
@@ -491,8 +491,6 @@ func sortWordListByFreq_and_row_priority() {
 	
 } // end of sortWordListByFreq_and_row_priority
 
-//-----------------------------
-
 //===========================================================================
 func addWordLemmaTranLevelParadigma() {
 	
@@ -507,19 +505,12 @@ func addWordLemmaTranLevelParadigma() {
 	
 	list1Level:= ""
 	list1Para := ""
-	list1Exam := ""	
-	
-	//var swMio bool = false
-	
+	list1Exam := ""		
+
 	//--------------------------------------
 	for zz:=0; zz < len(uniqueWordByFreq); zz++ {
 		wF:= uniqueWordByFreq[zz]
-		
-		
-		//swprova:= ((wF.uWord2 == "cäsar") || (wF.uWord2 == "caesar") || (wF.uWord2 == "casar")) 
-		
-		
-		
+			
 		ixLemmaPairFoundList := lookForAllLemmas( wF.uWord2 ) // 
 		
 		//if swprova { fmt.Println("1 loop unique x lemma ", wF.uWord2,  " ixLemmaPairFoundList=",  ixLemmaPairFoundList ) }
@@ -736,7 +727,7 @@ func contains(s []int, e int) bool {
 func build_listOfLemmaForAWord(uWord string, ixLemmaPairFoundList []int) ([]int, []string) {
 	
 	//sw1:= (strings.Index(uWord, "stellen") >= 0)
-	
+		
 		nele := len(ixLemmaPairFoundList)
 		nele += 20
 		
@@ -754,8 +745,8 @@ func build_listOfLemmaForAWord(uWord string, ixLemmaPairFoundList []int) ([]int,
 			
 			if numLerr > maxNumLerr { break}
 			if ixLp < 0 {
-				lemma3 := "?" + uWord	
-				ixLemma = addUnknowToLemma(lemma3) 
+				//lemma3 := "?" + uWord	
+				ixLemma = -1; // addUnknowToLemma(lemma3) 
 			} else {
 				newWL := wordLemmaPair[ixLp]
 				if newWL.lWord2 != uWord { // error 

@@ -179,7 +179,7 @@ func build_one_lemma_row_word( myLem1 lemmaStruct) string {
 		
 		//var myLem2 lemmaStruct	
 		
-		//fmt.Println("build_one_lemma_row_word   target lemma=", myLem1_name)
+		//fmt.Println( green("build_one_lemma_row_word"), "   target lemma=", myLem1_name, " myLem1.leFromIxLW=",myLem1.leFromIxLW, " myLem1.leToIxLW=", myLem1.leToIxLW )
 		
 		
 		myLem2_ix = myLem1.ls_lemma_ix_stellen

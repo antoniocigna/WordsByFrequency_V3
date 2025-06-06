@@ -18,14 +18,23 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 	fromIx:=0
 	toIx:=0
 	numW:=0
+	L_W_doppi:=0
+	L_W_aggiunti:=0
 	//-----------------	
 	for _, lemX := range wordLemmaPairTMP {
+		
 		lemS12 = lemX.lLemma + " " + lemX.lWord2 
-		if preLemS12 == lemS12 {
+		if preLemS12 == lemS12 {   // se c'è il caso lL_W = 9, è questo ad essere scartato  
+			if lemX.lL_W == 9 { L_W_doppi++ }
 			doppi++
 			continue
 		}	
 		preLemS12 = lemS12
+		
+		if preLemma != lemX.lLemma { 	
+			if lemX.lL_W == 9 {  L_W_aggiunti++ }
+		}
+		
 		wordLemmaPair = append( wordLemmaPair, lemX)
 		z++
 		if preLemma != lemX.lLemma { 	
@@ -50,8 +59,11 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 	
 	//------------------------------------
 	if doppi > 0 {
-		fmt.Println(" scartate ", doppi, " entrate doppie in lemma - word ") 
+		fmt.Println(" scartate ", (doppi - L_W_doppi), " entrate doppie in lemma - word ") 
+		fmt.Println("      scartate ", L_W_doppi, " coppie doppie perché L_W (origine parole da righe di testo) ")
 	}
+	fmt.Println(" aggiunte ", L_W_aggiunti , " coppie ottenute dalle parole da righe di testo)")
+	
 	numLemmaDict = len(wordLemmaPair)
 	
 	fmt.Println( "caricate " , numLemmaDict ,  " coppie word-lemma", "\n")
@@ -127,14 +139,18 @@ func appendOneLemma( xLemma string, fromIx int, toIx int, numLemmaOrig int, numL
 	iixLem:=0	
 	leV.leLemma    = xLemma
 	leV.leNumWords = 0 
+	leV.leFromIxLW = -1 
+	leV.leToIxLW   = -2  
 	leV.leTran     = ""
-	
+	leV.leLevel    = ""   
+	leV.lePara     = ""   
+	leV.leExample  = ""   
 	leV.ls_lemma_ix_stellen = -1
 	leV.ls_lemma_stellen    = ""		
 	leV.ls_pref_ein         = "" 
 	leV.ls_pref_tran        = ""	
 	leV.ls_lemma_einStellenList = nil; 
-	
+
 	// eg. einstellen  = ein + stellen 	
 	
 	/**
