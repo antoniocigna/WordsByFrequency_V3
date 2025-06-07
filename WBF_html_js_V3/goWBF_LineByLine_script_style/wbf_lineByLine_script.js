@@ -3935,7 +3935,7 @@ function tts_5_fun_build_all_clip() {
 
     eleTabSub_tbody.innerHTML = clipSub_showTxt;
 
-
+	console.log("wbf_lineByLine_script tts_5_fun_build_all_clip    eleTabSub_tbody.innerHTML  + scroll_1_init()") 
 
     sw_tts = true;
 

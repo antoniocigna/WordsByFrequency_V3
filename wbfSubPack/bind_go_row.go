@@ -9,9 +9,6 @@ package wbfSubPack
 
 func bind_go_passToJs_getIxRowFromGroup( rowGrIndex int,   html_rowGroup_beginNum int, html_rowGroup_numRows int, js_function string)  {
 
-	fmt.Println( green("bind_go_passToJs_getIxRowFromGroup"), 
-		"()  rowGrIndex=", rowGrIndex, ",  html_rowGroup_beginNum=", html_rowGroup_beginNum, ",  html_rowGroup_numRows=", html_rowGroup_numRows	) 
-	
 	if rowGrIndex < 0 { return }
 	
 	/**

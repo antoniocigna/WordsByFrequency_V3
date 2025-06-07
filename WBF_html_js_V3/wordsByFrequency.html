@@ -645,7 +645,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 												text-align:left;background-color:white;
 												color:blue;
 												"
-											onchange="onchange_rowGroupSelectChange(true)" >   								
+											onchange="onchange_rowGroupSelectChange(true,1)" >   								
 									</select>
 									<span style="padding-left:0.5em;">(di <span id="id_gruppo_numTotRow1"></span> righe)</span>
 								</div>
@@ -656,11 +656,11 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 											iniziando dalla riga  
 											<input id="id_gruppi_iBegNum" type="number" min="1" value="1"  
 													style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;" 
-													onchange="onchange_rowGroupSelectChange(false)">
+													onchange="onchange_rowGroupSelectChange(false,2)">
 											 &nbsp;&nbsp; &nbsp;le prime 
 											<input id="id_gruppi_iNumRows"   type="number" min="1" value="4"  
 													style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;" 
-													onchange="onchange_rowGroupSelectChange(false)">	
+													onchange="onchange_rowGroupSelectChange(false,3)">	
 											 righe	
 											 <span id="id_inpRowEmpty"  style="display:none;color:red; font-weight:bold;font-size:1.5em;"> nessuna riga trovata 
 										</div>
@@ -803,7 +803,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 		<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -->
 		
 <div id="id_myPage03" class="onePage1" style="display: none; height:">
-	
+	myPage03
 
 	<div id="dragButt2" class="mydrag_backButton" >
 		<div id="dragButt2_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
@@ -847,6 +847,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 </div>	
 		
         <div id="id_myPage04" class="onePage1" style="display:none;">
+			myPage04
 			<div id="dragButt3" class="mydrag_backButton" >
 				<div id="dragButt3_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
 					<button onclick="onclick_jumpFromToPage( myPage04, 0, myPage01)">
@@ -927,6 +928,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 		<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -->
 		
         <div id="id_myPage05" class="onePage1"  style="display:none;">
+			myPage05
 			<div id="dragButt4" class="mydrag_backButton" >
 				<div id="dragButt4_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
 					<button onclick="onclick_jumpFromTo1_2Page( myPage05, 0,myPage03, myPage01)">
@@ -949,7 +951,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 							display:flex;justify-content: center;   overflow:auto;   height:99%; width:100%;				  
 							border:0px solid blue; ">
 								
-                        <div  class="tableFixHead" style="height:99%; width:100%; border:0px solid cyan; " >							
+                        <div  id="id_div_tabSub" class="tableFixHead" style="height:99%; width:100%; border:0px solid cyan; " >							
 							<!-- Attenzione table-layout fixed utilizza width del TH/TD della prima TR ed ignora quelle delle TR successive -->
                             <table id="id_tabSub" class="orig_txt" 
                                 style="display: block; text-align: left; vertical-align: top;  border:0px solid red; 

@@ -38,7 +38,7 @@ var last_sel_extrRow_freqWord_list = "";
 var sw_somethingChanged	= false;    // resetted  only by onclick_mostFreqWordList_require   
 
 onchange_mostFreqWordList_extrRow(); 
-onchange_rowGroupSelectChange(false); 
+onchange_rowGroupSelectChange(false,10); 
 
 //var sw_rowGroupSelectChange       = false; 	
 //var sw_rowGroupSelectChange_group = false; 	
@@ -2265,6 +2265,8 @@ function js_go_ready( prevRun00) {
     document.getElementById("id_showButt").style.display = "block";
     document.getElementById("id_start_tab").style.display = "none";
 	
+	scroll_1_init() 
+	
 	if (prevRunLanguage != "") { 
 		lastRunLanguage = prevRunLanguage
 		loadPrevLang( prevRunLanguage ) 
@@ -2382,7 +2384,8 @@ function onclick_jumpFromTo1_2Page( fromPage1, fromPage2, toPage, toPage2, block
 			console.log(e1);
 		}
 	}
-}
+} // end of onclick_jumpFromTo1_2Page
+
 //--------------------------------------------------
 
 function onclick_copyTextAreaValue_to_clipboard( this1 ) {
@@ -3307,6 +3310,8 @@ function showRowsAndTranButton(wh) {
 	//---------------------------------------------------
 	eleTabSub_tbody.innerHTML = showList;
 	
+	scroll_1_init()
+	
 	if ( (last - first) > 0) {
 		let eleF = document.getElementById("b1_" + first);
 		let eleT = document.getElementById("b2_" + last);
@@ -3729,7 +3734,8 @@ function keyAlphaCod(inp1) {
 //--------------------------	
 
 
-function onchange_rowGroupSelectChange(sw_newGr) {
+function onchange_rowGroupSelectChange(sw_newGr,where) {
+	
 	// <select ele_gruppi ></select>	
 	var ele_gruppi = document.getElementById("id_gruppi_sel"          )
 	var ele_begNum = document.getElementById("id_gruppi_iBegNum"  )
@@ -3737,7 +3743,8 @@ function onchange_rowGroupSelectChange(sw_newGr) {
 
 	if (ele_gruppi.selectedIndex < 0) { return; }
 	
-	console.log("onchange_rowGroupSelectChange ele_gruppi.selectedIndex=", ele_gruppi.selectedIndex) ;
+	//console.log("%conchange_rowGroupSelectChange", "color:blue;"); console.log("onchange_rowGroupSelectChange ", "sw_newGR=", sw_newGr, " where=", where, "  ele_gruppi.selectedIndex=", ele_gruppi.selectedIndex, " ele_begNum",ele_begNum.id, " ==>", ele_begNum.value  ) ;
+	
 	html_rowGroup_index_gr = ele_gruppi.selectedIndex ;  // indice gruppo 	
     html_rowGroup_beginNum = getInt( ele_begNum.value);  // il gruppo inizia dalla riga in id_gruppi_iBegNum 	
 	html_rowGroup_numRows  = getInt( ele_numRow.value);  // numero di righe richieste in id_gruppi_iNumRows
@@ -3755,7 +3762,7 @@ function onchange_rowGroupSelectChange(sw_newGr) {
 	if (last_html_rowGroup_index_gr == "") {last_html_rowGroup_index_gr = html_rowGroup_index_gr; } 
 	if (last_html_rowGroup_beginNum == "") {last_html_rowGroup_beginNum = html_rowGroup_beginNum; } 
 	if (last_html_rowGroup_numRows  == "") {last_html_rowGroup_numRows  = html_rowGroup_numRows; }  
-		
+	
 	go_passToJs_getIxRowFromGroup( ""+html_rowGroup_index_gr,  ""+html_rowGroup_beginNum, ""+html_rowGroup_numRows, "js_go_gotIxRowFromGroup");
 	
 } // end of onchange_rowGroupSelectChange 
@@ -3838,8 +3845,6 @@ function js_go_gotIxRowFromGroup( gostr1 ) {
 				inputTextRowSlice[  rG.rG_firstIxRowOfGr ].rRow1   )
 	*/
 	
-	console.log("js_go_gotIxRowFromGroup gostr1=", gostr1) 
-
 	var col1 = gostr1.split(",")
 	if ( (col1.length < 12) || ( (col1[0] != "inp") || (col1[4] != "gr") || (col1[9] != "ixr") )  ) {
 		console.log("Errore1 in js_go_gotIxRowFromGroup (gostr1=", gostr1 , "\n\t non inizia con inp il formato deve essere ",  	
@@ -3878,7 +3883,7 @@ function js_go_gotIxRowFromGroup( gostr1 ) {
 			" x_rowGrIndex = ", x_rowGrIndex  , "  x_rG_ixSelGrOption=", x_rG_ixSelGrOption 			
 			) 
 		return; 		
-	}
+	}	
 	
 	document.getElementById("id_gruppi_sel"        ).selectedIndex = html_rowGroup_index_gr;
 	
@@ -4513,198 +4518,119 @@ function onclickSelectWord2(id1) {
 	
 } // end of onclickSelectWord2
 
-//------------------------------------------
-function TOGLIonclickSelectWord(tipo,id1,unaParola) {
-	/*
-	tipo=1,   una sola parola da cercare
-	tipo=2,   unaParola e altreParole sono id di textarea che contengono lista di parole  	
-	*/
-	//console.log("onclickSelectWord(tipo=", tipo, " id1=",id1," unaParola=", unaParola,  "  fromIxToIxLimit = ", fromIxToIxLimit[0] +", " +  fromIxToIxLimit[1] );
-	if (salvaSel_fromIxToIxLimit[0] < 0) salvaSel_fromIxToIxLimit = fromIxToIxLimit.slice(); 
 
-	var wordLista1 = "", wordLista2=""; 
-	var ele_lista1 , ele_lista2;  
-	
-	var idMsg = "err_" + id1;
-	var eleMsg = document.getElementById(idMsg);  
-	if (eleMsg)  eleMsg.style.display ="none";
-	
-	if (tipo == 2) {
-		var id_wordLista1 = "idwS1_" + id1; 
-		var id_wordLista2 = "idwS2_" + id1; 
-		ele_lista1 = document.getElementById(id_wordLista1);  
-		ele_lista2 = document.getElementById(id_wordLista2);  
-		if (ele_lista1) wordLista1 = ele_lista1.value;
-		if (ele_lista2) wordLista2 = ele_lista2.value;	
-	} 
-	if (tipo == 1) {
-		wordLista1 = unaParola; 	
-	} 
-	//console.log("1 wordLista1  = ", wordLista1 , "\n", "1 wordLista2  = ", wordLista2);  
+//=========================================================
+
+/**
+	SCROLL:  segnala quando un elemento da visbile diventa invisibile o vicerversa 
+	---------------------------------------------------------
+	https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
+	https://stackoverflow.com/questions/70452170/how-to-select-only-visible-elements-from-scrollable-container
+	la funzione "onIntersectionChange" è eseguita ogni volta che un elemento dentro l'elemento scrollabile passa da visibile a invisibile
+	Every time one of the observed items changes from "intersecting" to "not intersecting", the API calls my handler method.
+	root: 		the list container.
+	rootMargin: an offset from the actual bounding box of the root.
+	threshold: 	how much of an element (on a scale from 0 to 1.0) must be inside the root to be considered "intersecting". 
+				While 0 is the default, 1 =  all the pixels in the element would have to be in root before it was considered "intersecting"
+	------------------------------------------------------------
+**/
+//----------------------
+
+
+let divConTab1; // vedi scroll_1_init
+let eleTabBody; // vedi scroll_1_init
+let eleTrList ; // vedi scroll_1_init
+//-----------------------------------------
+let scroll_1_options ;  // vedi scroll_1_init
+//---------------
+let scroll_1_observer;                    // inizializzato da scroll_1_init
+let scroll_1_view_elementIndex_list = [];
+//-------------------
+function scroll_1_init() {     
 	/**
-	wordLista1 = wordLista1.toLowerCase().replaceAll("\t"," ").replaceAll("\r"," ").replaceAll("\n"," ").replaceAll(","," ").replace(/\s+/g, " ").trim();  
-	wordLista2 = wordLista2.toLowerCase().replaceAll("\t"," ").replaceAll("\r"," ").replaceAll("\n"," ").replaceAll(","," ").replace(/\s+/g, " ").trim(); 
-	if (wordLista1 == "") paroleDaCercare1 = [];
-	if (wordLista2 == "") paroleDaCercare2 = [];	
+	eseguito all'inizio ( js_go_ready) e ad ogni nuova ricostruzione della table 
+						wbf_lineByLine_script tts_5_fun_build_all_clip    eleTabSub_tbody.innerHTML 
+						wordsByFrequency js  eleTabSub_tbody.innerHTML 			
 	**/
-	var paroleDaCercare1 = getListOfWords_inText(wordLista1, charList);
-	var paroleDaCercare2 = getListOfWords_inText(wordLista2, charList);		
-	var numParole1 = paroleDaCercare1.length;
-	var numParole2 = paroleDaCercare2.length;
-	//console.log("paroleDaCercare 1:[", paroleDaCercare1.join(". ") , "]  2:[", paroleDaCercare2.join(". ") , "]" ); 
-	
-	var tabBody = document.getElementById("id_tabSub_tbody");
-	var numRows = tabBody.children.length;
-	var numFirst = -1, numLast = -1;
-	var swSomeFound1 = false; var swSomeFound2 = false; 
-	//---------------	
-	for(var v = 0; v < numRows; v++) {
-		//console.log("v=", v); 
-		var eleRow = tabBody.children[v];
-		if (eleRow == null) continue;
+	//console.log("scroll_1_init "); 
 		
-		//eleRow.classList.add("hideForNow");   
-		var idtr1 = eleRow.id; 
-		if (idtr1.substr(0,5) != "idtr_") continue;   
-		var tr_num = idtr1.substring(5);
-		if (tr_num.indexOf("_m") > 0) {
-			eleRow.style.display = "none";
-			continue;
-		}	
-		eleRow.classList.add("hideForNow");   
-		
-		var ele_orText = document.getElementById( "idc_" + tr_num );  
-		var origText = getInner_idc( ele_orText ); 
-		
-		/**
-		var orig_riga3 = origText.toLowerCase().replace(/[.,?!<>()]/g, " ").replace(/\s+/g, " ").trim();  		
-		var paroleDellaFrase = orig_riga3.split(" ");  
-		**/
-		var paroleDellaFrase = getListOfWords_inText(origText, charList);
-	
-		var swFound1=false; var swFound2 = false; 
-		
-		if (numParole1 == 0) {swFound1 = true; swSomeFound1 = true; } 
-		if (numParole2 == 0) {swFound2 = true;; swSomeFound2 = true; }  
-		var targWord1, targWord2; 
-		var w1, w2; var unaParolaDellaFrase;
-		if (swFound1 == false) {
-			for(var p=0; p < paroleDellaFrase.length; p++) {
-				unaParolaDellaFrase = paroleDellaFrase[p]; 			
-				for (w1=0;w1 < numParole1; w1++) {
-					if ( paroleDaCercare1[w1] == unaParolaDellaFrase) {targWord1= unaParolaDellaFrase; swFound1=true; break; }
-				}  
-				if (swFound1) { //console.log(" trovata parola1 ",unaParolaDellaFrase ); 
-					swSomeFound1 = true; 
-					break; 
-				}
-			} 
-		}
-		if (swFound2 == false) {
-			for(var p=0; p < paroleDellaFrase.length; p++) {
-				unaParolaDellaFrase = paroleDellaFrase[p]; 			
-				for (w2=0;w2 < numParole2; w2++) {
-					if ( paroleDaCercare2[w2] == unaParolaDellaFrase) {targWord2 = unaParolaDellaFrase; swFound2=true; break; }
-				} 	
-				if (swFound2) { //console.log(" trovata parola2 ",unaParolaDellaFrase ); 
-					swSomeFound2 = true; 					
-					break; 
-				}
-			} 
-		}
-		//console.log("1 swFound1=", swFound1 , "   ", " swFound2=", swFound2, " swFound1 && swFound2=", (swFound1 && swFound2) ) 
-		if ((swFound1 && swFound2) == false) {
-			if ((numParole1 == 1) && (numParole2 > 0)) {
-				swFound1 = false; 
-				swFound2 = false; 
-				var parola11 = paroleDaCercare1[0]; 
-				for(var p=0; p < paroleDellaFrase.length; p++) {
-					unaParolaDellaFrase = paroleDellaFrase[p]; 	// es. ab + gegangen = abgegangen		
-					for (w2=0;w2 < numParole2; w2++) {
-						if ( parola11 + paroleDaCercare2[w2] == unaParolaDellaFrase) {  
-							//console.log(" trovata parola1+parola2 ",unaParolaDellaFrase , " ( parola1=" + parola11 , " + " + paroleDaCercare2[w2] ); 
-							targWord2 = unaParolaDellaFrase;  
-							swFound2=true; 
-							break; 
-						}
-					} 	
-					if (swFound2) {
-						break; 
-					}
-				} 
-				if (swFound2) {swFound1 = true}  
-			} 
-		}	
-		
-		//console.log("2 swFound1=", swFound1 , "   ", " swFound2=", swFound2, " swFound1 && swFound2=", (swFound1 && swFound2) ) 
-		if (swFound1 && swFound2) {
-			//console.log("la frase ", tr_num, " contiene le parole richieste: ", origText);	
-		} else {
-			continue;
-		}
-		
-		var eleW   = document.getElementById( "idw_" + tr_num );  
-		//console.log("3 swFound1=", swFound1 ,  " swSomeFound1=", swSomeFound1); 
-		
-		var eleW   = document.getElementById( "idw_" + tr_num );  
-	
-		if (eleW) eleW.innerHTML = "";
-		
-		if (swFound1) trovataUnaParola(ele_orText, targWord1);	
-		if (swFound2) trovataUnaParola(ele_orText, targWord2);	
-		
-		//if (eleRow.style.display == "none")  eleRow.style.display = "table-row";
-		if (eleRow.classList.remove("hideForNow")) 
-		ele_orText.style.display = "block"; 	
-		if (numFirst < 0) numFirst = tr_num; 
-		numLast = tr_num;
-		//console.log("5 v=", v, "  idtr1=", idtr1, " tr_num=", tr_num, " numFirst=", numFirst, "  numLast=", numLast); 
-		//var eleRowM2 = document.getElementById( idtr1 + "_m2"); 
-		//var eleRowM1 = document.getElementById( idtr1 + "_m1"); 
-	}	
-	//---------------------
-	var msgErr="";
-	if (swSomeFound1 == false)  {
-		if (wordLista1 != "") 
-			if (ele_lista1){ 
-				ele_lista1.value = wordLista1 + " XXX  NOT FOUND XXX"; 
-				msgErr+=  wordLista1 + "  NOT FOUND "; 
-			}
-	} 
-	if (swSomeFound2 == false)  {
-		if (wordLista2 != "") 
-			if (ele_lista2) { 
-				ele_lista2.value = wordLista2 + " XXX  NOT FOUND XXX"; 
-				msgErr+=  "<br>" + wordLista2 + " NOT FOUND "; 
-			}	
-	} 
-	if (msgErr != "") {		
-		if (eleMsg) {
-			eleMsg.innerHTML = msgErr;
-			eleMsg.style.display ="block";
-		}				
-	}
-	
+	divConTab1 = document.getElementById("id_div_tabSub");  // elemento scrollabile che contiene la tabella
+	eleTabBody = document.getElementById("id_tabSub_tbody");
+	eleTrList  = eleTabBody.children;          //righe tabella che possono scomparire/apparire qusndo  il cursore sposta la vista 
+
+	scroll_1_options = { 
+			root: divConTab1,
+			/*rootMargin: '-150px 0px 0px 0px', */
+			threshold: 1
+	};
 	//--------------
-	if (numFirst < 0) {
-		onclickResetHideForNow(-1);
-		return;
-	}		
-	//console.log("numRows=", numRows, "  numFirst=", numFirst, "  numLast=", numLast); 
-	if (document.getElementById("b1_" + numFirst) == null) console.log("errore manca id  b1_" + numFirst); 
-	if (document.getElementById("b2_" + numLast ) == null) console.log("errore manca id  b2_" + numLast ); 
-	onclick_tts_arrowFromIx(  document.getElementById("b1_" + numFirst), numFirst) ; 
-	onclick_tts_arrowToIx(    document.getElementById("b2_" + numLast ), numLast ) ; 
-	
-	//document.getElementById("idtr_" + numFirst).style.display = "table-row"; 
-	document.getElementById("idtr_" + numFirst).classList.remove("hideForNow");  
-	if (document.getElementById("resetHideForNow_" + numFirst) ) {
-		document.getElementById("resetHideForNow_" + numFirst).style.display = "block"; 
+	scroll_1_view_elementIndex_list = [];
+	//------------------------
+	scroll_1_observer = new IntersectionObserver(on_scroll_1_IntersectionChange, scroll_1_options);
+	for (let i = 0; i < eleTrList.length; i++) {
+		scroll_1_observer.observe(eleTrList[i]);
 	}
+} 
+//-----------
+function on_scroll_1_IntersectionChange(entries) {
+	let ix1; let min1= -99999;
+	entries.forEach(entry => {
+		ix1 = entry.target.rowIndex; 
+		if (entry.isIntersecting) 	scroll_1_view_elementIndex_list[ix1] = true;
+		else 						scroll_1_view_elementIndex_list[ix1] = false;
+	  });
+	  
+	for(let v = 0; v < scroll_1_view_elementIndex_list.length; v++) { 
+		if (scroll_1_view_elementIndex_list[v]) {
+			min1 = v;
+			break;  
+		}	
+	}		
 	
-	document.getElementById( "idtr_" + numFirst + "_m1").scrollIntoView();
+	if (min1 < 0) return; // necessario, perchè questa funzione è richiamata anche quando lascio la pagina con le righe sotto osservazione 
 	
-} // end of TOGLIonclickSelectWord
-//--------------------------------
+	if (min1 > 1) min1-=2; 
+	
+	var eleFromNum=document.getElementById("id_gruppi_iBegNum");
+	eleFromNum.value = min1;  	
+	onchange_rowGroupSelectChange(false,11);
+	
+} // end of on_scroll_IntersectionChange
 
+//-----------------------------------
 
+//----------------------------------------------------
+function TOGLIonclick_jumpFromTo1_2PageZ( fromPage1, fromPage2, toPage, toPage2, blockFlex = "flex") {
+	
+	console.log(" onclick_jumpFromTo1_2PageZ fromPage1=", myPage05.id, ",fromPage2=0, toPage=", myPage03.id, ", topage2=", myPage01.id); 
+	
+	//fromPage1.style.display = "none"; 
+	//fromPage1.style.display = "block"; 
+	//return 
+	if (fromPage2 != 0) {	fromPage2.style.display = "none"; }
+	//return 
+	console.log( "ele_wordList.innerHTML =='' ", (ele_wordList.innerHTML == "") )
+	if(ele_wordList.innerHTML == "") {
+		console.log(" 1 onclick_jumpFromTo1_2Page")
+		try {
+			toPage2.style.display = blockFlex;
+			console.log(" 1.1 onclick_jumpFromTo1_2Page")
+		} catch(e1) {
+			console.log("onclick_jumpFromToPage()" + " toPage=" , toPage2);  
+			console.log(e1);
+		}
+		
+	} else {	
+		console.log(" 2 onclick_jumpFromTo1_2Page")
+		try {			
+			toPage.style.display = blockFlex;
+			console.log(" 2.1 onclick_jumpFromTo1_2Page")
+		} catch(e1) {
+			console.log("onclick_jumpFromToPage()" + " toPage=" , toPage);  
+			console.log(e1);
+		}
+	}	
+	
+	fromPage1.style.display = "none"; 
+}  // end of TOGLIonclick_jumpFromTo1_2PageZ 
+//--------------------------------------------------
