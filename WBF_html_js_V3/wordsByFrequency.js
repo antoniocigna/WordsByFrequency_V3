@@ -3321,6 +3321,7 @@ function showRowsAndTranButton(wh) {
 		
 	onclick_jumpFromToPage( myPage04,0, myPage05);  
 	
+	eleTabSub_tbody.scrollIntoView();
 
 } // end of showRowsAndTranButton
 
@@ -4576,8 +4577,11 @@ function on_scroll_1_IntersectionChange(entries) {
 	let ix1; let min1= -99999;
 	entries.forEach(entry => {
 		ix1 = entry.target.rowIndex; 
-		if (entry.isIntersecting) 	scroll_1_view_elementIndex_list[ix1] = true;
-		else 						scroll_1_view_elementIndex_list[ix1] = false;
+		if (entry.isIntersecting) 	{
+				scroll_1_view_elementIndex_list[ix1] = true;
+		} else {
+				scroll_1_view_elementIndex_list[ix1] = false;
+		}		
 	  });
 	  
 	for(let v = 0; v < scroll_1_view_elementIndex_list.length; v++) { 
@@ -4589,48 +4593,27 @@ function on_scroll_1_IntersectionChange(entries) {
 	
 	if (min1 < 0) return; // necessario, perchè questa funzione è richiamata anche quando lascio la pagina con le righe sotto osservazione 
 	
-	if (min1 > 1) min1-=2; 
+	//if (min1 > 1) min1-=2; 
+	var numLine = min1;
+	
+	let scroll_tr = eleTrList[min1];
+	if (scroll_tr) {
+		var cell1 = scroll_tr.children[10] ; 
+		var cell2 = cell1.children[1];
+		var colCell = cell2.innerHTML.split(" "); 
+		if (colCell.length > 1) {
+			numLine = parseInt(colCell[1] )
+		}			
+	} else {
+		console.log("errore scroll 1 eleTrList[", min1,"] non esiste")
+	}		
+	//console.log("on scroll ix1=", ix1, " min1=", min1, " numLine =", numLine )
 	
 	var eleFromNum=document.getElementById("id_gruppi_iBegNum");
-	eleFromNum.value = min1;  	
+	
+	eleFromNum.value = numLine;  	
 	onchange_rowGroupSelectChange(false,11);
 	
 } // end of on_scroll_IntersectionChange
 
 //-----------------------------------
-
-//----------------------------------------------------
-function TOGLIonclick_jumpFromTo1_2PageZ( fromPage1, fromPage2, toPage, toPage2, blockFlex = "flex") {
-	
-	console.log(" onclick_jumpFromTo1_2PageZ fromPage1=", myPage05.id, ",fromPage2=0, toPage=", myPage03.id, ", topage2=", myPage01.id); 
-	
-	//fromPage1.style.display = "none"; 
-	//fromPage1.style.display = "block"; 
-	//return 
-	if (fromPage2 != 0) {	fromPage2.style.display = "none"; }
-	//return 
-	console.log( "ele_wordList.innerHTML =='' ", (ele_wordList.innerHTML == "") )
-	if(ele_wordList.innerHTML == "") {
-		console.log(" 1 onclick_jumpFromTo1_2Page")
-		try {
-			toPage2.style.display = blockFlex;
-			console.log(" 1.1 onclick_jumpFromTo1_2Page")
-		} catch(e1) {
-			console.log("onclick_jumpFromToPage()" + " toPage=" , toPage2);  
-			console.log(e1);
-		}
-		
-	} else {	
-		console.log(" 2 onclick_jumpFromTo1_2Page")
-		try {			
-			toPage.style.display = blockFlex;
-			console.log(" 2.1 onclick_jumpFromTo1_2Page")
-		} catch(e1) {
-			console.log("onclick_jumpFromToPage()" + " toPage=" , toPage);  
-			console.log(e1);
-		}
-	}	
-	
-	fromPage1.style.display = "none"; 
-}  // end of TOGLIonclick_jumpFromTo1_2PageZ 
-//--------------------------------------------------
