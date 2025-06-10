@@ -320,7 +320,25 @@ func bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_function
 } // end of bind_go_passToJs_thisWordRowList
 
 //---------------------------------------------------------------------------
+func getWordList(aWordList0 string, maxNumList int) []string {
+	
+	wordA0 := regexp.MustCompile(separWord).Split(aWordList0, -1)  // split row into words 
+	
+	wordAlist := make([]string,0, 2*maxNumList) 
+	for _, wor00 := range wordA0 {
+		if strings.Index(wor00,"-") < 0 { 
+			wordAlist = append(wordAlist, wor00)
+			continue 
+		}
+		_, wordPrefixIndexList, wordSuffixIndexList := get_word_row_list( maxNumList, wor00) 
+		for _, ixWord:= range wordPrefixIndexList {  if ixWord >= 0 { wordAlist = append(wordAlist, uniqueWordByAlpha[ixWord].uWord2 )  } }
+		for _, ixWord:= range wordSuffixIndexList {  if ixWord >= 0 { wordAlist = append(wordAlist, uniqueWordByAlpha[ixWord].uWord2 )  } } 		
+	} 	
+	return wordAlist
+	
+} // end of getWordList
 
+//-----------------------------------------------
 func bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string, maxNumRow int, js_function string) {  
 	
 	//  lista tutte le frasi che contengono le parole con lemma della parola cercata 
@@ -339,8 +357,14 @@ func bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string, ma
 	}
 	sw1:= (aWordList1 != "")
 	sw2:= (aWordList2 != "") 
+	/**
 	if sw1 {wordA1 = regexp.MustCompile(separWord).Split(aWordList1, -1) } // split row into words 
 	if sw2 {wordA2 = regexp.MustCompile(separWord).Split(aWordList2, -1) } // split row into words 
+	**/
+	if sw1 {wordA1 = getWordList(aWordList1, maxNumRow) } // split row into words  ( also  prefix and suffix as input )
+	if sw2 {wordA2 = getWordList(aWordList2, maxNumRow) } // split row into words  ( also  prefix and suffix as input )	
+	//for _, wor00:= range wordA1 { fmt.Println("word_to_row 1 = ", wor00) }
+	//for _, wor00:= range wordA2 { fmt.Println("word_to_row 2 = ", wor00) }
 	
 	wordA3:= []string{}
 	
@@ -459,11 +483,11 @@ func bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string, ma
 	//-------------------------
 	header:= "<HEADER>\n" + "<WORD>"
 	if (sw1 && sw2) { 
-		header += aWordList1 + " " + aWordList2  + " " + listWords_str_L3 + "</WORD>\n"	
+		header += strings.Join(wordA1, " ") + " " + strings.Join(wordA2, " ")  + " " + listWords_str_L3 + "</WORD>\n"	
 		header += "some:" + listLemmas_str_L1 + " + \n" + listLemmas_str_L2  
 		if listLemmas_str_L3 != "" {header += "\n<hr>\n" + listLemmas_str_L3 }
 	} else 			{ 
-		header += aWordList2 + "</WORD>\n" 
+		header += strings.Join(wordA2, " ") + "</WORD>\n" 
 		header += "some:" + listLemmas_str_L2  
 	}
 	header += "</HEADER> \n"

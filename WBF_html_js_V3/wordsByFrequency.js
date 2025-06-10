@@ -206,7 +206,8 @@ function onchange_mostFreqWordList_extrRow() {
 //---------------------------------
 
 function fun_require_mostFreqWordList( swFromOnChangeExtr , caller) {	
-		
+	//console.log("%c	require_mostFreqWordList", "color:blue;")
+	
 	document.getElementById("id_inpBegError").style.display = "none"; 	
 	
 	word_to_underline_list = []
@@ -225,10 +226,15 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller) {
 	
 	html_sel_extrRow = x2.options[i].id; 
 	
+	//console.log("  require_mostFreqWordList", " html_sel_extrRow =",html_sel_extrRow )
+	
 	if (last_sel_extrRow_freqWord_list == "") {last_sel_extrRow_freqWord_list = html_sel_extrRow; }  
 	
+	//console.log("  require_mostFreqWordList", " last_sel_extrRow_freqWord_list=", last_sel_extrRow_freqWord_list);
 	
 	is_selected_row_only = ( i == index_onlySelRowsWanted); //1 onclick_require_mostFreqWordLi
+	
+	//console.log("  require_mostFreqWordList", " is_selected_row_only =", is_selected_row_only )
 	
 	fun_selRowsWanted_changed();
 	//---	
@@ -376,7 +382,7 @@ genannt.genannt      ;.  genannt    ;.505;.    145;. 123;. 123;. nennen  ;.  nom
 				oneElemToStudy(keyIx)
 			} 		 
 	}
-	//--------------------------------------  ????antoX
+	//-------------------------------------- 
 	if (numButton == 5) {
 		for (var g=0; g < wordToStudy_listStr.length; g++) {
 			var wordLineZ =	wordToStudy_listStr[g]	
@@ -480,7 +486,7 @@ function fun_showWordList(wh, ix1=-1) {
 	var words_to_translate_str = wordTTBegin   //  ; 
 	
 	for (var z=0; z < wordToStudy_list.length; z++) {			
-		//[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList ] ???antoX
+		//[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList ] 
 		[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList ] = wordToStudy_list[z] ; 	
 		
 		//fun_showWordList( 3  ix1= -1 ) wordToStudy_list:  word2=    ixUnW2= -1  wLemmaList= einstellen  wTranList= impostare
@@ -709,7 +715,9 @@ function showWordsAndTranButton(wh) {
 	var sel_extrRow = x2.options[i].id;
 	is_selected_row_only = ( i == index_onlySelRowsWanted);  // 2showWordsAndTranButton(wh) 
 	fun_selRowsWanted_changed();
-	//console.log("require most freq.:  is_selected_row_only =",  is_selected_row_only); 
+	
+	console.log("showWordsAndTranButton is_selected_row_only =",  is_selected_row_only); 
+	
 	if (is_selected_row_only) {
 		showList = showList.replace("§sel2collapse§", "visible");			
 	} else {
@@ -741,8 +749,7 @@ function showWordsAndTranButton(wh) {
 		[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
 				totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList, numButton ] = wordToStudy_list[ixW2StudyLs]; 
 		
-		//??antoX      if (ixUnW2 < 0) {continue}
-		
+				
 		nSpanV =  wLemmaList.length
 		//------------------------	
 		for(var ixixLemma = 0 ; ixixLemma < wLemmaList.length; ixixLemma++) {	
@@ -796,7 +803,7 @@ function write_word_dictionary() {
 	var listNewTranWords = "";
 	
     for (var ixW2StudyLs = 0; ixW2StudyLs < wordToStudy_list.length; ixW2StudyLs++) {
-		//[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList ] ???antoX
+		//[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList ] 
 		[word1, ix1,        nrow, wLemmaList, wTranList, wLevelList, wParaList, 
 				wExampleList, totExtrRow2, knowYesCtr, knowNoCtr, wIxLemmaList ] = wordToStudy_list[ixW2StudyLs]; 
 		word1 = word1.trim(); 
@@ -894,47 +901,17 @@ function onclick_require_betweenWordList() {
 	ele_wordList.innerHTML ="";
 	
 	var eleFromW = document.getElementById("id_inpFromABC");
-	//var eleToW   = document.getElementById("id_inpToABC"  ); 
+	
 	var fromWordPref = eleFromW.value.trim(); 		
-	//var toWordPref   = eleToW.value.trim(); 		
-    /***
-	var sMaxWords = document.getElementById("id_inpMaxNumABC" ).value;							
-    var maxNumWords = 0;
-    try {
-        maxNumWords = parseInt(sMaxWords);
-    } catch (err) {}    
-    if (maxNumWords < 1) {
-        maxNumWords = 1;
-    }	
-	***/
+	
 	var maxNumWords = getInt(  document.getElementById("id_inpMaxNumABC" ).value );	
 	if (maxNumWords < 1) {  maxNumWords = 1; document.getElementById("id_inpMaxNumABC" ).value = 1; }	
 	
 	if (fromWordPref == "") { return; }
-	/**
-	if (toWordPref == "") { 
-		if (fromWordPref == "") { return; }
-		toWordPref = fromWordPref;
-		//document.getElementById("id_inpToABC"  ).value = toWordPref; 	
-	} else {
-		if (fromWordPref == "") { 
-			fromWordPref = toWordPref;
-			document.getElementById("id_inpFromABC").value = fromWordPref; 
-		}
-	} 
-	if (toWordPref < fromWordPref) {
-		document.getElementById("id_inpToABC"  ).value = fromWordPref; 	
-		document.getElementById("id_inpFromABC").value = toWordPref;
-		fromWordPref = document.getElementById("id_inpFromABC").value.trim(); 		
-	    toWordPref   = document.getElementById("id_inpToABC"  ).value.trim(); 		
-	}
-	***/
+	
 	eleFromW.style.color = null;
 	eleFromW.parentElement.style.backgroundColor = null;
-	//var eleLemma = document.getElementById("id_inpLemma");  
-	//eleLemma.style.color = null;
-	//eleLemma.parentElement.style.backgroundColor = null;
-
+	
 	go_passToJs_betweenWordList(""+maxNumWords, fromWordPref, "js_go_showBetweenWordList"); // ask 'go' to give wordlist by js_... function  
 	
 } // end of onclick_require_prefixWordList
@@ -1457,7 +1434,7 @@ function buildHeaderTable( str1 ) {
 	var ele_model_tSHeadW_bdy;
 	var model_tSHeadW_div;	
 	
-	console.log( "   2 buildHeaderTable", " oneWordOnly  =",oneWordOnly, "  oneLemmaOnly =", oneLemmaOnly ) ;  
+	//console.log( "   2 buildHeaderTable", " oneWordOnly  =",oneWordOnly, "  oneLemmaOnly =", oneLemmaOnly ) ;  
 
 	//--------------------------------
 	var type = 0;
@@ -1467,32 +1444,32 @@ function buildHeaderTable( str1 ) {
 		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_13"); 	
 		if (oneLemmaOnly) {
 			type=1;
-			console.log( green(" CASO 1 "), "1XXXXXXXX ONE WORD Only and ONE LEMMA only XXXXXXXXXX")
+			//console.log( green(" CASO 1 "), "1XXXXXXXX ONE WORD Only and ONE LEMMA only XXXXXXXXXX")
 		} else {
 			type=3;
-			console.log( green(" CASO 3 "), "1XXXXXXXX ONE WORD and many LEMMA XXXXXXXXXX")			
+			//console.log( green(" CASO 3 "), "1XXXXXXXX ONE WORD and many LEMMA XXXXXXXXXX")			
 		}	
 	} 
 	if (oneLemmaOnly) {
 		if (oneWordOnly) {
 			type=1;
-			console.log( green(" CASO 1 "), "2XXXXXXXX ONE WORD Only and ONE LEMMA XXXXXXXXXX")		
+			//console.log( green(" CASO 1 "), "2XXXXXXXX ONE WORD Only and ONE LEMMA XXXXXXXXXX")		
 		} else {
 			type=2;
-			console.log( green(" CASO 2 "), "1XXXXXXXX many WORD  and ONE LEMMA XXXXXXXXXX")
+			//console.log( green(" CASO 2 "), "1XXXXXXXX many WORD  and ONE LEMMA XXXXXXXXXX")
 		}	
 		document.getElementById("tsHead_2").style.display="block"; 
 		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_2"); 	
 	}
 	if ((oneWordOnly == false) && (oneLemmaOnly == false)) {
 		type=4;
-		console.log( green("1 CASO 4 "), "4XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX");
+		//console.log( green("1 CASO 4 "), "4XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX");
 		
 		document.getElementById("tsHead_4").style.display="block"; 
 		
 		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_4"); 	
 		
-		console.log( green("2 CASO 4 "), "4XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX")
+		//console.log( green("2 CASO 4 "), "4XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX")
 	}
 	//----------------------------------
 	var model_tSHeadW_lemma  = ele_model_tSHeadW_bdy.innerHTML; 
@@ -1503,17 +1480,19 @@ function buildHeaderTable( str1 ) {
 	
 	//-----
 	switch( type ) {			
-		 case 1: console.log("caso 1  una parola e un lemma")	
+		 case 1: 
+			//console.log("caso 1  una parola e un lemma")	
 			case_type1_3(); break;
-		 case 2: console.log("caso 2  un lemma diverse parole")			
+		 case 2: 
+			//console.log("caso 2  un lemma diverse parole")			
 			case_type2();
 			break;
 		 case 3: 
-			console.log("caso 3  una parola e diversi lemma")	
+			//console.log("caso 3  una parola e diversi lemma")	
 			case_type1_3(); 		
 			break;
 		 case 4: 
-			console.log("caso 4  diverse parole con diversi lemma")
+			//console.log("caso 4  diverse parole con diversi lemma")
 			case_type4(); 
 			break;
 		 default:
@@ -1979,7 +1958,7 @@ function js_go_showWrdRowList(inpstr) {
 		h_wordListStr = h_wordListStr00.substring(jh+3).trim();		
 	}	
 		
-	//console.log("ANTONIO _showWordRowList ", "inpReqWord=" + inpReqWord + ",h_wordListStr=" + h_wordListStr + "\n-------------------------------------\n") ;
+	console.log("ANTONIO _showWordRowList ", "inpReqWord=" + inpReqWord + ",h_wordListStr=" + h_wordListStr + "\n-------------------------------------\n") ;
 	
 	//console.log("4 js_go_showWrdRowList buildHeaderTable");
 	
@@ -4454,6 +4433,9 @@ function anyOtherWord() {
 				</div>	
 				<div style="font-size:0.6em;text-align:center;margin-bottom:1.5em;padding-bottom:2em; border-bottom:1px solid black;">
 					<button class="but_word" style="font-size:1.0em;" onclick="onclickSelectWord2('§x1§')">cerca tutte le frasi che contengono le parole delle liste1 e 2</button>	
+					<span style="font-size:0.8em;">&nbsp;&nbsp; (massimo </span>
+					<input id="idwS3_§x1§"  type="number" min="1" max="400" value="100" style="text-align:right; width:4em; background-color:white;" >
+					<span style="font-size:0.8em;"> righe)</span>
 					<br><span id="err_§x1§" +="" style="color:red; font-weight:bold;display:none;"></span>
 				</div>
 		</div> \n`;
@@ -4499,6 +4481,11 @@ function onclickSelectWord2(id1) {
 	
 	var id_wordLista1 = "idwS1_" + id1; 
 	var id_wordLista2 = "idwS2_" + id1; 
+	var id_maxNum     = "idwS3_" + id1; 
+	if (document.getElementById(id_maxNum)) {
+		var numVal=	getInt( document.getElementById(id_maxNum).value);
+		if (numVal > 0) maxNumRow5 = numVal; 	
+	}
 	ele_lista1 = document.getElementById(id_wordLista1);  
 	ele_lista2 = document.getElementById(id_wordLista2);  
 	if (ele_lista1) wordLista1 = ele_lista1.value;
@@ -4605,7 +4592,8 @@ function on_scroll_1_IntersectionChange(entries) {
 			numLine = parseInt(colCell[1] )
 		}			
 	} else {
-		console.log("errore scroll 1 eleTrList[", min1,"] non esiste")
+		//console.log("errore scroll 1 eleTrList[", min1,"] non esiste")
+		return;
 	}		
 	//console.log("on scroll ix1=", ix1, " min1=", min1, " numLine =", numLine )
 	

@@ -4,6 +4,7 @@ package wbfSubPack
 		"fmt"
 		"strings"		
 		"strconv"
+		"slices"
 		//"regexp"
 		//"sort"
 	)
@@ -17,7 +18,8 @@ func bind_go_passToJs_prefixWordList( numWords int, wordPrefix string, js_functi
 
 //-----------------------------------------
 
-func bind_go_passToJs_betweenWordList_V3( maxNumWords int, fromWordPref string, js_function string) {
+//--------------------------------------------------
+func get_word_row_list( maxNumWords int, fromWordPref string) (string, []int, []int) {
 	
 	var onlyThisLevel string = "any" ; // "A0"  // questo deve arrivare da parametro  
 	var outS1 string; 	
@@ -25,19 +27,27 @@ func bind_go_passToJs_betweenWordList_V3( maxNumWords int, fromWordPref string, 
 	fromWord   := strings.ToLower(strings.TrimSpace( fromWordPref));  
 	lenFrom := len(fromWord) 	
 	sw_oneWord := false 
+	wordPrefixIndexList:= make([]int,0, 2*maxNumWords)
+	wordSuffixIndexList:= make([]int,0, 2*maxNumWords)
+	swThereIsSuffixList := false
 	
 	if fromWord == "" { 
-			go_exec_js_function( js_function, "");
-			return 
+			//go_exec_js_function( js_function, "");
+			return "", wordPrefixIndexList, wordSuffixIndexList
 	}	
 	if fromWord[0:1] == "-" {
 		// this is a suffix request 
-		bind_go_passToJs_suffixWordList( maxNumWords, fromWordPref[1:], js_function)
-		return
+		if fromWord[lenFrom-1:] == "-" {  // the word might be a prefix or a suffix
+			wordSuffixIndexList = getListInverseWordIndex( fromWordPref[1:lenFrom-1], maxNumWords) 
+		} else {	
+			wordSuffixIndexList = getListInverseWordIndex( fromWordPref[1:]         , maxNumWords) 
+		}
+		swThereIsSuffixList = (len(wordSuffixIndexList) > 0)
 	}
 	if fromWord[lenFrom-1:] == "-" {
 		// prefisso 
 		fromWord = fromWord[:lenFrom-1] 
+		if fromWord[0:1] == "-" {fromWord = fromWord[1:] }   // word is a prefix and a suffix  
 	} else {
 		sw_oneWord = true    // fromWord contains the only word to look for,  it's not a prefix neither a suffix 
 	}
@@ -49,32 +59,22 @@ func bind_go_passToJs_betweenWordList_V3( maxNumWords int, fromWordPref string, 
 	fromIx2 :=0	
 	fromWordTarg := (strings.Split(fromWordCod,"."))[0]
 	lenFrom = len(fromWordTarg)  
-	
-	//fmt.Println( red("1 bind_go_passToJs_betweenWordList_V3"), " fromWord=", fromWord, " from1=", from1, " fromWordTarg=", fromWordTarg)
+
 	lenCk   :=0
 	//--
-	if from1 < 0 {from1=0}
-	
-	//fmt.Println( green("bind_go_passToJs_betweenWordList"), " from1=", from1, "   fromWordPref=", fromWordPref, "  fromWordCod=", fromWordCod, " lenFrom=", lenFrom) 
-	
+	if from1 < 0 {from1=0}	
 	//---------
 	fromIx2 = from1 
 	for k:= from1; k >=0; k-- {
-		wAlf   := uniqueWordByAlpha[k]
-		
+		wAlf   := uniqueWordByAlpha[k]		
 		lenCk   = len(wAlf.uWordSeq)
-		if lenCk > lenFrom { lenCk = lenFrom }
-		
-		if wAlf.uWordSeq[0:lenCk] < fromWordTarg {  break } 
-		
+		if lenCk > lenFrom { lenCk = lenFrom }		
+		if wAlf.uWordSeq[0:lenCk] < fromWordTarg {  break } 		
 		fromIx2 = k
 	}	
 	//---------
 	num1:=0	
 	onlyIfExtr := false 
-	
-	//fmt.Println( red("2 bind_go_passToJs_betweenWordList_V3"), " fromIx2=", fromIx2)
-	
 	//----
 	for k:= fromIx2; k < len( uniqueWordByAlpha); k++ {		
 		wAlf   := uniqueWordByAlpha[k]
@@ -94,23 +94,49 @@ func bind_go_passToJs_betweenWordList_V3( maxNumWords int, fromWordPref string, 
 			if wAlf.uWordSeq[0:lenCk] > fromWordTarg { //fmt.Println(" break    "); 
 				break } 			
 		}
-		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf )  	
-		
+		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf )		
 		if sw == false { continue }
+		wordPrefixIndexList = append(wordPrefixIndexList, k)
+		if swThereIsSuffixList {
+			sufix:= slices.Index(wordSuffixIndexList, k)
+			if sufix >=0 {wordSuffixIndexList[sufix] = -1; } // remove index of suffix index list if the word has been already got here			
+		}
 		outS1 += rowW 	
 		num1++
 		if num1 >= maxNumWords { break }
-	}	
+	} // end for k	
 	
+	//--------------------	
+	
+	for z, ixWord:= range wordSuffixIndexList {
+		//fmt.Println("wordSuffixIndexList ixWord=",ixWord)
+		if (ixWord < 0) {continue} 
+		wAlf := uniqueWordByAlpha[ixWord] 
+		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf )  	
+		//fmt.Println("    wordSuffixIndexList sw=", sw, " wAlf=", wAlf.uWordSeq) 
+		if sw == false {
+			wordSuffixIndexList[z] = -1; 
+			continue 
+		}
+		outS1 += rowW 	
+		num1++
+		if num1 >= maxNumWords { break }
+	}
+	//-----------------------------
 	if num1 < 1 {	
 		//rowW:= notFoundWord_row( fromWordCod, fromWord)		
 		//outS1 += rowW  
 		outS1 = ""; //   NONE," + fromWord
 	}	
 	
-	//fmt.Println( red("3 bind_go_passToJs_betweenWordList_V3"), " num1=", num1, "js_function=", js_function, " outS=", outS1)
+	return outS1, wordPrefixIndexList, wordSuffixIndexList
 	
-	//-----------
+} // end of get_word_row_list
+//--------------------------------------
+func bind_go_passToJs_betweenWordList_V3( maxNumWords int, fromWordPref string, js_function string) {
+	
+	outS1, _, _ := get_word_row_list( maxNumWords, fromWordPref) 
+	
 	go_exec_js_function( js_function, outS1 ); 		
 			
 } // end of bind_go_passToJs_betweenWordList
