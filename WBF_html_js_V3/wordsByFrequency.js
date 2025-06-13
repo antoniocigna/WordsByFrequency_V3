@@ -1892,7 +1892,7 @@ function js_go_showWrdRowList(inpstr) {
 
 	// triggered by go ( bild go_passToJs_getWordByIndex )
 	
-	//console.log("1 js_go_showWrdRowList "); //  (inpstr=" + inpstr);  
+	//console.log("%cjs_go_showWrdRowList ","color:red;"); console.log("  inpstr=" + inpstr);  
 	
     if (inpstr == undefined) {
 		//console.log(" js_go_showWrdRowList () 1 return inpstr undefined ");  
@@ -1958,7 +1958,7 @@ function js_go_showWrdRowList(inpstr) {
 		h_wordListStr = h_wordListStr00.substring(jh+3).trim();		
 	}	
 		
-	console.log("ANTONIO _showWordRowList ", "inpReqWord=" + inpReqWord + ",h_wordListStr=" + h_wordListStr + "\n-------------------------------------\n") ;
+	//console.log("ANTONIO _showWordRowList ", "inpReqWord=" + inpReqWord + ",h_wordListStr=" + h_wordListStr + "\n-------------------------------------\n") ;
 	
 	//console.log("4 js_go_showWrdRowList buildHeaderTable");
 	
@@ -1967,9 +1967,9 @@ function js_go_showWrdRowList(inpstr) {
 	//console.log("5 js_go_showWrdRowList");
 	//-------------------
 	
-	word_to_underline_list = h_wordListStr.split(" ")                        
+	word_to_underline_list = h_wordListStr.trim().split(" ")                        
 	
-	//console.log("1word_to_underline_list=", word_to_underline_list) 
+	//console.log("1word_to_underline_list=", word_to_underline_list.length, " parole") 
 	
 	var word3, ixUnW3, totRow3, wLemma3, wTran3;
 
@@ -4486,10 +4486,13 @@ function onclickSelectWord2(id1) {
 		var numVal=	getInt( document.getElementById(id_maxNum).value);
 		if (numVal > 0) maxNumRow5 = numVal; 	
 	}
+	
 	ele_lista1 = document.getElementById(id_wordLista1);  
 	ele_lista2 = document.getElementById(id_wordLista2);  
 	if (ele_lista1) wordLista1 = ele_lista1.value;
 	if (ele_lista2) wordLista2 = ele_lista2.value;	
+	
+	//console.log("%conclickSelectWord2 ", "color:red;"); console.log("maxNumRow5=", maxNumRow5, " wordLista1=", wordLista1, " wordLista2=", wordLista2); 
 	//console.log("%cCERCA  PAROLA "+ wordLista1 + " "+ wordLista2 , "color: green;") 
 		
 	myPage01.style.display = "none"; 

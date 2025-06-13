@@ -35,9 +35,7 @@ func add_wordCombinations( wordL1 []string, wordL2 []string )  []string {
 
 
 //--------------------------------------------------------
-func getRowIndexFromWordIndex( wordA00 []string, swComb bool) ( string, string, []int) {
-	
-	var maxNumRow = 100 
+func getRowIndexFromWordIndex( wordA00 []string, swComb bool, maxNumRow int) ( string, string, []int) {
 	
 	listRowIndices := make([]int,0, maxNumRow)
 	listIxRR := make([]int,0, maxNumRow)
@@ -111,7 +109,7 @@ func PROVAbind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_fun
 	var listLemma_str string
 	var listIxRR []int
 	
-	listWords_str, listLemma_str, listIxRR = getRowIndexFromWordIndex( []string{aWord}, false )
+	listWords_str, listLemma_str, listIxRR = getRowIndexFromWordIndex( []string{aWord}, false, maxNumRow )
 	fmt.Println("listWords_str=", 	listWords_str)
 	fmt.Println("listLemma_str=", 	listLemma_str)
 	
@@ -326,6 +324,7 @@ func getWordList(aWordList0 string, maxNumList int) []string {
 	
 	wordAlist := make([]string,0, 2*maxNumList) 
 	for _, wor00 := range wordA0 {
+		if len(wordAlist) >= maxNumList { return wordAlist }
 		if strings.Index(wor00,"-") < 0 { 
 			wordAlist = append(wordAlist, wor00)
 			continue 
@@ -334,7 +333,9 @@ func getWordList(aWordList0 string, maxNumList int) []string {
 		for _, ixWord:= range wordPrefixIndexList {  if ixWord >= 0 { wordAlist = append(wordAlist, uniqueWordByAlpha[ixWord].uWord2 )  } }
 		for _, ixWord:= range wordSuffixIndexList {  if ixWord >= 0 { wordAlist = append(wordAlist, uniqueWordByAlpha[ixWord].uWord2 )  } } 		
 	} 	
-	return wordAlist
+	if len(wordAlist) <= maxNumList { return wordAlist }
+	
+	return wordAlist[0:maxNumList]
 	
 } // end of getWordList
 
@@ -365,6 +366,8 @@ func bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string, ma
 	if sw2 {wordA2 = getWordList(aWordList2, maxNumRow) } // split row into words  ( also  prefix and suffix as input )	
 	//for _, wor00:= range wordA1 { fmt.Println("word_to_row 1 = ", wor00) }
 	//for _, wor00:= range wordA2 { fmt.Println("word_to_row 2 = ", wor00) }
+	
+	//fmt.Println("_someWordsRowList wordA1=", strings.Join(wordA1," "), " sw1=", sw1, " sw2=", sw2,  " maxNumRow=", maxNumRow   )
 	
 	wordA3:= []string{}
 	
@@ -397,7 +400,7 @@ func bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string, ma
 	//------------------
 	// per ogni parola della lista1 estrae gli indici alle righe  
 	if sw1 {
-		listWords_str_L1, listLemmas_str_L1, listIxRR_L1 = getRowIndexFromWordIndex( wordA1 ,false)
+		listWords_str_L1, listLemmas_str_L1, listIxRR_L1 = getRowIndexFromWordIndex( wordA1 ,false, maxNumRow2)
 		if swPrt { 
 			fmt.Println("le parole listWords_str_L1 = ", listWords_str_L1)
 			fmt.Println("le parole ", aWordList1, " si trovano in ", len(listIxRR_L1), " righe")
@@ -405,7 +408,7 @@ func bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string, ma
 	} // end sw1 
 	//-------------
 	// per ogni parola della lista2 estrae gli indici alle righe  
-	listWords_str_L2, listLemmas_str_L2, listIxRR_L2 = getRowIndexFromWordIndex( wordA2 , false)
+	listWords_str_L2, listLemmas_str_L2, listIxRR_L2 = getRowIndexFromWordIndex( wordA2 , false, maxNumRow2)
 	if swPrt {
 		fmt.Println("le parole listWords_str_L2 = ", listWords_str_L2)	
 		fmt.Println("le parole ", aWordList2, " si trovano in ", len(listIxRR_L2), " righe") 
@@ -414,10 +417,12 @@ func bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string, ma
 	if sw1 {
 		wordA3 = add_wordCombinations(wordA1, wordA2)	
 		if len(wordA3) > 0 {
-			listWords_str_L3, listLemmas_str_L3, listIxRR_L3 = getRowIndexFromWordIndex( wordA3 ,true)
+			listWords_str_L3, listLemmas_str_L3, listIxRR_L3 = getRowIndexFromWordIndex( wordA3 ,true, maxNumRow2)
 			if swPrt {
-				fmt.Println("sono state ottenute ", len(wordA3) , " parole combinando le parole di lista1 e lista2", 
-					"\n\tqueste parole si trovano in ", len( listIxRR_L3 ), " righe")   
+				if len( listIxRR_L3 ) > 0 {	
+					fmt.Println("sono state ottenute ", len(wordA3) , " parole combinando le parole di lista1 e lista2 (.es. A e B possono formare AB e BA, es. ein e steigen formano einsteigen e steigenein)", 
+						"\n\tqueste parole si trovano in ", len( listIxRR_L3 ), " righe")   
+				}	
 			}
 		} 	
 	}
@@ -435,7 +440,7 @@ func bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string, ma
 	if  len( listIxRR_L3 ) > 0 { listIxRR = append(listIxRR, listIxRR_L3...) }
 	//----------------
 	if swPrt { 
-		fmt.Println( len(listIxRR),  "sono le righe che contengono almeno una parola in ", aWordList1, " ed almeno una parola in ", aWordList2) 
+		fmt.Println( len(listIxRR),  "sono le righe che contengono almeno una parola della lista (", aWordList1, ") ed almeno una della lista(", aWordList2, ")" ) 
 		if len(listIxRR) > maxNumRow { fmt.Println( "stampate soltanto le prime ", maxNumRow) }
 	}
 	
