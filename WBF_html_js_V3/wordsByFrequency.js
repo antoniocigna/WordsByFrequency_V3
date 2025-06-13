@@ -2244,7 +2244,7 @@ function js_go_ready( prevRun00) {
     document.getElementById("id_showButt").style.display = "block";
     document.getElementById("id_start_tab").style.display = "none";
 	
-	scroll_1_init() 
+	//scroll_1_init() 
 	
 	if (prevRunLanguage != "") { 
 		lastRunLanguage = prevRunLanguage
@@ -3289,7 +3289,7 @@ function showRowsAndTranButton(wh) {
 	//---------------------------------------------------
 	eleTabSub_tbody.innerHTML = showList;
 	
-	scroll_1_init()
+	//scroll_1_init()
 	
 	if ( (last - first) > 0) {
 		let eleF = document.getElementById("b1_" + first);
@@ -4506,102 +4506,51 @@ function onclickSelectWord2(id1) {
 	
 } // end of onclickSelectWord2
 
-
 //=========================================================
 
-/**
-	SCROLL:  segnala quando un elemento da visbile diventa invisibile o vicerversa 
-	---------------------------------------------------------
-	https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API
-	https://stackoverflow.com/questions/70452170/how-to-select-only-visible-elements-from-scrollable-container
-	la funzione "onIntersectionChange" è eseguita ogni volta che un elemento dentro l'elemento scrollabile passa da visibile a invisibile
-	Every time one of the observed items changes from "intersecting" to "not intersecting", the API calls my handler method.
-	root: 		the list container.
-	rootMargin: an offset from the actual bounding box of the root.
-	threshold: 	how much of an element (on a scale from 0 to 1.0) must be inside the root to be considered "intersecting". 
-				While 0 is the default, 1 =  all the pixels in the element would have to be in root before it was considered "intersecting"
-	------------------------------------------------------------
-**/
-//----------------------
-
-
-let divConTab1; // vedi scroll_1_init
-let eleTabBody; // vedi scroll_1_init
-let eleTrList ; // vedi scroll_1_init
-//-----------------------------------------
-let scroll_1_options ;  // vedi scroll_1_init
-//---------------
-let scroll_1_observer;                    // inizializzato da scroll_1_init
-let scroll_1_view_elementIndex_list = [];
-//-------------------
-function scroll_1_init() {     
-	/**
-	eseguito all'inizio ( js_go_ready) e ad ogni nuova ricostruzione della table 
-						wbf_lineByLine_script tts_5_fun_build_all_clip    eleTabSub_tbody.innerHTML 
-						wordsByFrequency js  eleTabSub_tbody.innerHTML 			
-	**/
-	//console.log("scroll_1_init "); 
-		
-	divConTab1 = document.getElementById("id_div_tabSub");  // elemento scrollabile che contiene la tabella
-	eleTabBody = document.getElementById("id_tabSub_tbody");
-	eleTrList  = eleTabBody.children;          //righe tabella che possono scomparire/apparire qusndo  il cursore sposta la vista 
-
-	scroll_1_options = { 
-			root: divConTab1,
-			/*rootMargin: '-150px 0px 0px 0px', */
-			threshold: 1
-	};
-	//--------------
-	scroll_1_view_elementIndex_list = [];
-	//------------------------
-	scroll_1_observer = new IntersectionObserver(on_scroll_1_IntersectionChange, scroll_1_options);
+function get_first_tr_visible() {	
+	var divConTab1 = document.getElementById("id_div_tabSub");  // elemento scrollabile che contiene la tabella
+	var eleTabBody = document.getElementById("id_tabSub_tbody");
+	var eleTrList  = eleTabBody.children;          //righe tabella che possono scomparire/apparire qusndo  il cursore sposta la vista 
+	var container  =  document.getElementById("id_div_tabSub");  // elemento scrollabile che contiene la tabella
+	
+	const containerTop = container.scrollTop;
+	const containerBottom = containerTop + container.clientHeight;
+	var first_visible_tr_id = -1;
 	for (let i = 0; i < eleTrList.length; i++) {
-		scroll_1_observer.observe(eleTrList[i]);
-	}
-} 
-//-----------
-function on_scroll_1_IntersectionChange(entries) {
-	let ix1; let min1= -99999;
-	entries.forEach(entry => {
-		ix1 = entry.target.rowIndex; 
-		if (entry.isIntersecting) 	{
-				scroll_1_view_elementIndex_list[ix1] = true;
-		} else {
-				scroll_1_view_elementIndex_list[ix1] = false;
-		}		
-	  });
-	  
-	for(let v = 0; v < scroll_1_view_elementIndex_list.length; v++) { 
-		if (scroll_1_view_elementIndex_list[v]) {
-			min1 = v;
-			break;  
-		}	
-	}		
-	
-	if (min1 < 0) return; // necessario, perchè questa funzione è richiamata anche quando lascio la pagina con le righe sotto osservazione 
-	
-	//if (min1 > 1) min1-=2; 
-	var numLine = min1;
-	
-	let scroll_tr = eleTrList[min1];
-	if (scroll_tr) {
-		var cell1 = scroll_tr.children[10] ; 
-		var cell2 = cell1.children[1];
-		var colCell = cell2.innerHTML.split(" "); 
-		if (colCell.length > 1) {
-			numLine = parseInt(colCell[1] )
-		}			
+		var ele = eleTrList[i]
+		const eleTop = ele.offsetTop;
+		const eleBottom = eleTop + ele.clientHeight;
+		if (eleTop >= containerTop && eleBottom <= containerBottom) { // The element is fully visible in the container
+			 first_visible_tr_id = i;
+			 break; 
+		}
+	} // end for i 
+	if (first_visible_tr_id < 0) {
+		//console.log("%cnessuna tr è visibile", "color:red;")
 	} else {
-		//console.log("errore scroll 1 eleTrList[", min1,"] non esiste")
-		return;
-	}		
-	//console.log("on scroll ix1=", ix1, " min1=", min1, " numLine =", numLine )
+		//console.log("%cLa prima tr visibile è " + first_visible_tr_id, "color:blue;")
+		var eleFromNum=document.getElementById("id_gruppi_iBegNum");  
+		eleFromNum.value = parseInt(eleFromNum.value) + first_visible_tr_id;  	               // set on first page
+		onchange_rowGroupSelectChange(false,11);
+	}
 	
-	var eleFromNum=document.getElementById("id_gruppi_iBegNum");
 	
-	eleFromNum.value = numLine;  	
-	onchange_rowGroupSelectChange(false,11);
-	
-} // end of on_scroll_IntersectionChange
-
+} // end of get_first_tr_visible	
 //-----------------------------------
+function back_from_listaRighe(  myPage05, zero,myPage03, myPage01) {
+	 
+	get_first_tr_visible() 
+	 
+	onclick_jumpFromTo1_2Page( myPage05, 0,myPage03, myPage01)
+	
+} // end of back_fromn_listaRighe
+
+//-------------------------
+window.onbeforeunload = function(){
+	get_first_tr_visible();
+	//return 'Are you sure you want to leave?';
+};
+
+
+//----------------------------------------
