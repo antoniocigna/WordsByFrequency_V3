@@ -1091,6 +1091,9 @@ function onclick_require_PrefWordFromRowList(word1) {
 	if (word1 == "") {
 		return;
 	}	
+	
+	//get_first_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
+	
 	var eleFromW = document.getElementById("id_inpFromABC");
 	//var eleToW   = document.getElementById("id_inpToABC"  ); 
 	//eleToW.value = ""; 
@@ -1160,6 +1163,9 @@ function onclick_require_rowListWithThisWord2(type,word1, maxNumRow5) {
 		ele_wordList.innerHTML ='<span style="color:red;">manca la parola da cercare</span>';
 		return;
 	}	
+	
+	//get_first_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
+	
 	myPage01.style.display = "none"; 
 	//go_passToJs_thisWordRowList(      aWord, ""+maxNumRow5, "js_go_showWrdRowList"); 
 	go_passToJs_someWordsRowList( "", aWord, ""+maxNumRow5, "js_go_showWrdRowList");   
@@ -1996,8 +2002,8 @@ function js_go_rowList( inpstr, js_parm, jsFunc,goFunc) {
 	
 	// triggered by go ( go_passToJs_rowList and js_go_showWrdRowList)
 	
-	//console.log("function js_go_rowList() <-- " + goFunc + " <-- " + jsFunc ) 
-	//console.log("inpstr=" +inpstr ) 
+	//console.log("function js_go_rowList() js_parm=" + js_parm + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc ) 
+	//console.log("	inpstr=" +inpstr ) 
 	
 	rowToStudy_list = [];
 	newRowTran = [];
@@ -2638,6 +2644,8 @@ function onclick_tts_seeWordsGO1(numTr, ixRow) {
 		return
 	}
 	
+	get_first_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
+	
 	ele_wordset.innerHTML = ""; 
 		
 	go_passToJs_rowWordList(""+numTr,""+ixRow, "js_go_rowWordList"); // ask 'go' to give wordlist by js_... function  
@@ -3129,6 +3137,8 @@ function onclick_showRowsButton(type) {
 
 function showRowsAndTranButton(wh) {	
 	
+	//console.log("showRowsAndTranButton  (wh=",wh)
+	
 	var showList = ''    ;
     var word1, ix1, nrow, wLemma1;
 	var riga;
@@ -3185,7 +3195,7 @@ function showRowsAndTranButton(wh) {
 		}	
     }  // end for i1
 	
-	
+	//console.log("showRowsAndTranButton 2")
 	//---------------------------
 	//var endLine1 = "_endLine1_" 
 	//newRowList1.push(endLine1);
@@ -3289,6 +3299,8 @@ function showRowsAndTranButton(wh) {
 	//---------------------------------------------------
 	eleTabSub_tbody.innerHTML = showList;
 	
+	//console.log("showRowsAndTranButton 3", " first=", first,  " last=", last)
+	
 	//scroll_1_init()
 	
 	if ( (last - first) > 0) {
@@ -3297,11 +3309,14 @@ function showRowsAndTranButton(wh) {
 		onclick_tts_arrowFromIx(eleF, first, 5);
 		onclick_tts_arrowToIx(  eleT, last , "3showRowsAndTranButton" );		
 	}
-		
+	//console.log("showRowsAndTranButton 4")
+	
 	onclick_jumpFromToPage( myPage04,0, myPage05);  
 	
-	eleTabSub_tbody.scrollIntoView();
-
+	//eleTabSub_tbody.scrollIntoView(true);  // non sempre l'elemento risulta preciso al top , forzo invece zero  direttamente sull'elemento scrollabile  
+	
+	eleTabSub_tbody.parentElement.parentElement.scrollTop = 0;
+	
 } // end of showRowsAndTranButton
 
 //-------------------------------------------------
@@ -4495,6 +4510,8 @@ function onclickSelectWord2(id1) {
 	//console.log("%conclickSelectWord2 ", "color:red;"); console.log("maxNumRow5=", maxNumRow5, " wordLista1=", wordLista1, " wordLista2=", wordLista2); 
 	//console.log("%cCERCA  PAROLA "+ wordLista1 + " "+ wordLista2 , "color: green;") 
 		
+	//get_first_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
+	
 	myPage01.style.display = "none"; 
 	go_passToJs_someWordsRowList(wordLista1, wordLista2, ""+maxNumRow5, "js_go_showWrdRowList"); 	
 	
