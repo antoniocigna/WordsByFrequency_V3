@@ -774,7 +774,7 @@ function onclick_tts_arrowToIx( this1, z3, wh ) {
 //------------------------------------------
 
 function onclick_tts_playSynthVoice_row2(this1, ixTD123, swPause,swNewVoice) {
-	
+	if (this1 == null) { return; }	
 	if (this1 == false) { return; }	
 		
 
@@ -1245,7 +1245,7 @@ function onclick_tts_text_to_speech_ix(id_pref, ixWord, swLoop, this1) {
 //----------------------------------
 
 function onclick_tts_show_rowOrig(this1, z3) {
-	
+	if (this1 == null) { return; }	
 	if (this1 == false) { return; }	
 	
 	if (this1.children[0].style.display == "none") {  // no openbook   
@@ -1286,7 +1286,7 @@ function tts_5_show_hideORIG2(z3, showHideStyle) {
 //-------------------------------------------------
 
 function onclick_tts_show_rowTran(this1, z3) {
-	
+	if (this1 == null) { return; }	
 	if (this1 == false) { return; }	
 	
 	if (this1.children[0].style.display == "none") {  // no openbook   
@@ -1305,7 +1305,7 @@ function onclick_tts_show_rowTran(this1, z3) {
 //-------------------------------------------------------------------------
 
 function onclick_tts_word_show_one_row(this1, z3) {
-	
+	if (this1 == null) { return; }	
 	if (this1 == false) { return; }	
 	
 	if (this1.children[0].style.display == "none") {  // no openbook   
@@ -1327,7 +1327,7 @@ function onclick_tts_word_show_one_row(this1, z3) {
 //----------------------------
 
 function onclick_showHide_orig_row_group( this1 ) {
-	
+	if (this1 == null) { return; }	
 	if (this1 == false) { return; }
 		
 	if (this1.children[0].style.display == "none") {  // no openbook   
@@ -1349,9 +1349,11 @@ function onclick_showHide_orig_row_group( this1 ) {
 	var ele_idb, ele_idc;
 	for(var g=begix; g <= endix; g++) {
 		ele_idb = document.getElementById("idb_" + g);      // book opened/closed
+		if (ele_idb == null) { continue; }	
 		ele_idb.children[0].style.display = style0;  	
 		ele_idb.children[1].style.display = style1;  
 		ele_idc = document.getElementById("idc_" + g);      // row (orig) visible or hided  
+		if (ele_idc == null) { continue; }	
 		ele_idc.style.display = style0;  		
         ele_idc.style.backgroundColor = null;
 		ele_idc.classList.remove("boldLine");
@@ -1362,7 +1364,7 @@ function onclick_showHide_orig_row_group( this1 ) {
 //-----------------------------------------------------
 
 function onclick_showHide_tran_row_group( this1 ) {
-	
+	if (this1 == null) { return; }	
 	if (this1 == false) { return; }
 		
 	if (this1.children[0].style.display == "none") {  // no openbook   
@@ -1393,6 +1395,7 @@ function onclick_showHide_tran_row_group( this1 ) {
 	var ele_idb, ele_idt;
 	for(var g=begix; g <= endix; g++) {
 		ele_idb = document.getElementById("idbT_" + g);      // T / t?
+		if (ele_idb == null) { continue; }	
 		ele_idb.children[0].style.display = style0;  	
 		ele_idb.children[1].style.display = style1;  
 		ele_idt = document.getElementById("idt_" + g);      // translation visible (T) or hided (t?) 
@@ -1405,7 +1408,7 @@ function onclick_showHide_tran_row_group( this1 ) {
 //----------------------------------------------
 
 function onclick_showHide_orig_word_group( this1 ) {
-	
+	if (this1 == null) { return; }	
 	if (this1 == false) { return; }
 		
 	if (this1.children[0].style.display == "none") {  // no openbook   
@@ -1427,9 +1430,11 @@ function onclick_showHide_orig_word_group( this1 ) {
 	var ele_idb, ele_idc;
 	for(var g=begix; g <= endix; g++) {
 		ele_idb = document.getElementById("widb_" + g);      // book opened/closed
+		if (ele_idb == null) { continue; }	
 		ele_idb.children[0].style.display = style0;  	
 		ele_idb.children[1].style.display = style1;  
 		ele_idc = document.getElementById("widc_" + g);      // row (orig) visible or hided  
+		if (ele_idc == null) { continue; }	
 		ele_idc.style.display = style0;  		
         ele_idc.style.backgroundColor = null;
 		ele_idc.classList.remove("boldLine");
@@ -1595,7 +1600,7 @@ function onclick_tts_word_arrowToIx(ele_td_arrow, z3, isWord, is_m1) {
 //------------------------------------------
 
 function onclick_tts_word_OneClipRow_showHide_sub( ele_idb, sw_allSel, swAllAll, isWord, is_m1) {	
-	
+	if (ele_idb == null) { return;}
 	if (ele_idb == false) { return; }		
 	
 	//console.log("onclick_tts_word_OneClipRow_showHide_sub() 1 ele_idb ", ele_idb.id); 
@@ -1644,6 +1649,7 @@ function onclick_tts_word_OneClipRow_showHide_sub( ele_idb, sw_allSel, swAllAll,
 	} 	
 	//--------------
 	function word_fun_oneRow00() {
+		if (ele_idb == null) { return;}
 		if (ele_idb == false) { return; }
 		
 		if (ele_idb.children[0].style.display == "none") {  // no openbook   
@@ -1658,7 +1664,7 @@ function onclick_tts_word_OneClipRow_showHide_sub( ele_idb, sw_allSel, swAllAll,
 	//-------------------  
 	function word_fun_oneRow22(nn) {	// 2 onclick_tts_word_OneClipRow_showHide_sub
 		
-		
+		if (ele_idb == null) { return; }
 		if (ele_idb == false) { return; }
 		
 		ele_idb.children[0].style.display = style0;         // show/hide  opened book image  
@@ -2533,6 +2539,7 @@ function tts_3_word_fun_copyHeaderSelected(begix, endix) {
 
     id1 = "widb_" + begix + "_m";
     var ele_idb = document.getElementById(id1);
+	if (ele_idb == null) { return;}
     if (ele_idb == false) {
         return;
     }
@@ -2555,6 +2562,7 @@ function tts_3_word_fun_copyHeaderSelected(begix, endix) {
 
     //--------------
     function tts_3_fun_oneRowZZ1() {
+		if (ele_idb == null) { return;}
         if (ele_idb == false) {
             return;
         }
@@ -2568,6 +2576,7 @@ function tts_3_word_fun_copyHeaderSelected(begix, endix) {
     }
     //--------------
     function tts_3_word_fun_oneRow11(ele_idb) {
+		if (ele_idb == null) { return;}
         if (ele_idb == false) {
             return;
         }
@@ -2578,6 +2587,7 @@ function tts_3_word_fun_copyHeaderSelected(begix, endix) {
             return;
         }
         let ele_idc = document.getElementById(subid_idc);
+		if (ele_idc == null) return;
         if (ele_idc == false) return;
         if (style0 == "block") {
             tts_3_word_fun_makeTextVisible(ele_idc);
@@ -2867,6 +2877,7 @@ function tts_3_remove_last_bold(id_pref, isWord) {
 
     for (var v = lastBold_ix1; v <= lastBold_ix2; v++) {
         var ele1 = document.getElementById(id_pref + v);
+		if (ele1 == null) continue;
         if (ele1 == false) continue;
         var ele1_tr = ele1.parentElement.parentElement;
         ele1.classList.remove("boldLine");
@@ -4052,7 +4063,7 @@ function tts_5_fun_copyHeaderSelected() {
 
     id1 = "idb_" + begix + "_m";
     var thisX = document.getElementById(id1);
-    if (thisX == false) {
+    if (thisX == null) {
         return;
     }
 
@@ -4075,7 +4086,7 @@ function tts_5_fun_copyHeaderSelected() {
 
     //--------------
     function tts_5_fun_oneRowZZ() {
-        if (thisX == false) {
+        if (thisX == null) {
             return;
         }
 		if ( thisX.children.length < 1) { return; }
@@ -4089,12 +4100,19 @@ function tts_5_fun_copyHeaderSelected() {
     }
     //--------------
     function tts_5_fun_oneRow11H() {
+		if (thisX == null) { return; }
         if (thisX == false) {
             return;
         }
+		try {
 		if ( thisX.children.length < 1) { return; }
-        thisX.children[0].style.display = style0; // show/hide  opened book image  
-        thisX.children[1].style.display = style1; // show/hide closed book image 
+			thisX.children[0].style.display = style0; // show/hide  opened book image  
+			thisX.children[1].style.display = style1; // show/hide closed book image 
+		} catch(e1) {
+			console.log("%cErrore in tts_5_fun_oneRow11H()", "color:red;"); console.log("thisX=", thisX)
+			console.log(e1);
+			return;
+		}
         let subid = thisX.id.replace("idb", "idc");
 
         if (subid.substring(subid.length - 2) == "_m") {
