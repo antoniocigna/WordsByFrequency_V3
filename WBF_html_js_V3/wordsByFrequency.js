@@ -716,7 +716,7 @@ function showWordsAndTranButton(wh) {
 	is_selected_row_only = ( i == index_onlySelRowsWanted);  // 2showWordsAndTranButton(wh) 
 	fun_selRowsWanted_changed();
 	
-	console.log("showWordsAndTranButton is_selected_row_only =",  is_selected_row_only); 
+	//console.log("showWordsAndTranButton is_selected_row_only =",  is_selected_row_only); 
 	
 	if (is_selected_row_only) {
 		showList = showList.replace("§sel2collapse§", "visible");			
@@ -2639,7 +2639,7 @@ function onclick_tts_seeWordsGO1(numTr, ixRow) {
 	
 	var id_analWords = "idw_" + numTr;
 	var ele_wordset = document.getElementById(id_analWords);   
-	if (ele_wordset == false) {
+	if ((ele_wordset == null) || (ele_wordset == false) ) {
 			console.log("onclick_tts_seeWordsGO1(this1," , numId00, ") ==> ", eleTR.outerHTML, "\n\tid_analWords=" + id_analWords , " ERROR ele_wordset == false" )
 		return
 	}
@@ -3117,7 +3117,7 @@ function onclick_showRowsButton(type) {
 	
 	document.getElementById("id_notTranNumRow").innerHTML = numeroTS_NoTran; 
 	
-	write_row_dictionary(); 
+	write_row_dictionary(1); 
 	
 	if (numeroTS_NoTran > 0) {
 		if (sw_ignore_missTranRow == false) {
@@ -3321,7 +3321,7 @@ function showRowsAndTranButton(wh) {
 
 //-------------------------------------------------
 
-function write_row_dictionary() {
+function write_row_dictionary(wh) {
 	var nfileW,ixRowW, rowW, tranW; 
 	var word1, ix1, nrow, wLemma1, wordTran, col1;
 	
@@ -3362,7 +3362,7 @@ function write_row_dictionary() {
 		//console.log("write_row_dictionary",  " nessuna nuova traduzione"); 	
 		return;
 	}
-	console.log("write_row_dictionary ",  newTranRow, " righe tradotte"); 	
+	console.log("write_row_dictionary (",wh,") ",  newTranRow, " righe tradotte"); 	
 	
 	go_write_row_dictionary(  listNewTranRows );  		
 	
@@ -3586,12 +3586,18 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 		}
 		ele_tr = ele_tbody.children[ix1]; 		
 		if (ele_tr) {
-			gg++
-			newTd = '<td style="text-align:center;">' + gg + '</td>' ; 
-			ele_tr.children[0].outerHTML = newTd; 			
-			
-			newBodyInner += ele_tr.outerHTML + "\n"; 
-			
+			if (ele_tr.children.length > 0) { 
+				var child0 = ele_tr.children[0]; 
+				if (child0.children) {
+					if (child0.children.length > 0) {						
+						gg++
+						child0.children[0].innerHTML = gg;						
+						//newTd = '<td style="text-align:center;">' + gg + '</td>' ; 
+						//ele_tr.children[0].outerHTML = newTd; 	
+					}					
+				}
+			}				
+			newBodyInner += ele_tr.outerHTML + "\n"; 			
 		} 
 		
 	} 
@@ -4130,13 +4136,20 @@ function onclick_saveNewWordTran(this1) {
 	}
 	**/
 	// =================
+	//console.log("1 onclick_saveNewWordTran"); 
+	if (this1 == null) return; 
 	var eleTR = this1.parentElement; 
 	for(var z1=0; z1 < 10; z1++) {
+		if (eleTR == null) break; 
 		if (eleTR.tagName == "TR") { break; } 
 		eleTR = eleTR.parentElement; 
 	} 
+	if (eleTR == null) return; 
 	if (eleTR.tagName != "TR") { return; } 	
+	//console.log("2 onclick_saveNewWordTran",  " TR outerHTML=", eleTR.outerHTML ); 
 	var elePareTr = eleTR.parentElement; // tbody
+	if (elePareTr == null) return; 
+	
 	var eleTr2;
 
 	let word1, ixW2StudyLs, ix1, ixLemma; 
@@ -4152,6 +4165,8 @@ function onclick_saveNewWordTran(this1) {
 	var newUp = 0; 
 	
 	/*
+	il primo TD contiene il numero d'ordine visibile seguito da parola, 2 indici, indice lemma (visbile per mouse over)  es:  6  die 3 1 1 4472   
+	
 	<tr> 
 		<td style="text-align:center;font-size:0.8em;font-weight:100;">   eleTD_0
 			<span>§one-numTR§</span>
@@ -4182,10 +4197,15 @@ function onclick_saveNewWordTran(this1) {
 			</div>
 		</td>		
 	*/
+	//console.log("3 onclick_saveNewWordTran"  , "  elePareTr.children.length=", elePareTr.children.length ); 
+	
 	for(var t1=0; t1 < elePareTr.children.length; t1++) {
 		eleTr2 = elePareTr.children[t1];	// scan su tutti  i TR ( tutte le righe )
+		if (eleTr2 == null) { continue; }
 		eleTD_0 = eleTr2.children[0]; 
+		if (eleTD_0 == null) {continue; }
 		eleTD0_val = eleTD_0.children[1]; 
+		if (eleTD0_val == null) {continue; }
 		word1       = eleTD0_val.children[0].innerHTML; 
 		ixW2StudyLs = eleTD0_val.children[1].innerHTML; // indice wordToStudy_List
 		ix1         = eleTD0_val.children[2].innerHTML; // indice word (in go) 
@@ -4195,6 +4215,7 @@ function onclick_saveNewWordTran(this1) {
 		swChg=false
 		
 		eleTD_5 = eleTr2.children[5];          // colonna WORD 
+		if (eleTD_5 == null) {console.log("4 cont"); continue; }
 			/*
 				<td style="text-align:center;" class="borderVert_L">				
 					<div class="hpad top left1"  >
@@ -4216,15 +4237,14 @@ function onclick_saveNewWordTran(this1) {
 				</td>	
 			*/
 		
-		oldDivTran = eleTD_5.children[0]
-		
+		oldDivTran = eleTD_5.children[0];
 		if (oldDivTran) {
 			eleOldTran = oldDivTran.children[1];  
 			if (eleOldTran) {
 				oldTranslation = eleOldTran.innerHTML ;
 			}	
 		}
-		newDivTran = eleTD_5.children[1]
+		newDivTran = eleTD_5.children[1];
 		if (newDivTran) {
 			eleNewTran = newDivTran.children[1]; 
 			if (eleNewTran) {
@@ -4284,10 +4304,10 @@ function onclick_saveNewWordTran(this1) {
 		}	
 	}	
 	//---------------------
-
+	//console.log("9 onclick_saveNewWordTran" , "   newUp=", newUp ); 
 	
 	if (newUp > 0) {
-		console.log( red(" onclick_saveNewWordTran	call  write_word_dictionary"))
+		//console.log( red(" onclick_saveNewWordTran	call  write_word_dictionary"))
 		
 		write_word_dictionary()
 	}
@@ -4424,7 +4444,7 @@ function onclick_saveNewRowTran(this1) {
 
 	
 	if (newUp > 0) {
-		write_row_dictionary()
+		write_row_dictionary(2)
 	}
 	
 } // end of onclick_saveNewWordTran	
