@@ -13,9 +13,10 @@ const PREF_MARKER = " :PREF: "
 
 func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords int, onlyThisLevel string, 
 						sel_extrRow string, sel_toBeLearned string,  js_function string) {
-					
-		//fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
-		//				" from=",  fromWord, " numWords=", numWords )
+		/**			
+		fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
+						" from=",  fromWord, " numWords=", numWords )
+		**/
 		var from1, to1 int; 
 		from1 = fromWord; //   - 1; 
 		if (from1 < 1) {
@@ -35,7 +36,7 @@ func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords in
 		}
 		//---------------------------
 		sw_tobeLearnedOnly := ( sel_toBeLearned == "toBeLearned" )                //     ( 0 = 'allWords'   1 = 'toBeLearned' )
-			
+		//fmt.Println(red("bind_go_passToJs_wordList"), 	" sel_toBeLearned=", sel_toBeLearned, "  sw_tobeLearnedOnly=", sw_tobeLearnedOnly)
 		//----------------
 		if (isChange_extrRow) {			
 			//write_lastValueSets_wordList( fromWord, numWords, onlyThisLevel, sel_extrRow, isAlpha)
@@ -83,18 +84,27 @@ func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords in
 		
 		if from1 == 1 { from1=0; }
 		numOut:=0
-		for i:= from1; i < numberOfUniqueWords; i++ { 
+		for i:= 0; i < numberOfUniqueWords; i++ { 
+			//if (i < 20) {fmt.Println("uniqueWordByFreq[",i,"] = ",  uniqueWordByFreq[i] )  }
+			/**
+			if (uniqueWordByFreq[i].uWord2== "zuverlässig") { fmt.Println( red(" 2 bind_go_passToJs_wordList "),
+					" i=", i,  uniqueWordByFreq[i].uWord2, " learned=",  uniqueWordByFreq[i].uLearnedYN, "  LEARNED_YES=",LEARNED_YES  ) 
+			}
+			**/
 			if sw_tobeLearnedOnly {
-				if uniqueWordByFreq[i].uKnow_no_ctr < 1 { 
+				if uniqueWordByFreq[i].uLearnedYN == LEARNED_YES {  				
 					continue
 				} 
 			}	
+		
 			//fmt.Println("call 3  loop  i=", i, "   ", uniqueWordByFreq[i]);
 			
 			sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel, uniqueWordByFreq[i] )  
 			if sw {	
-				outS1 += rowW 						  	
 				numOut++
+				if (numOut < from1) {continue}   // July7, 2025  
+				//if (i < 20) {fmt.Println("     rowW=", rowW)  }	
+				outS1 += rowW 						
 				if numOut >= numWords { 
 					break
 				}
@@ -121,8 +131,35 @@ func bind_go_passToJs_getWordByIndex2( ixWord int, swOnlyThisWordRows bool, maxN
 **/
 
 //---------------------------------------------------------------
-func bind_go_passToJs_word_known(ixWord int, yesNo int, knowCtr int, js_function string) {
+func bind_go_passToJs_word_known2(ixWord int, YES_cfr string, yesNoStr string, js_function string) {
+	
+	if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
+		
+	var xWordF = uniqueWordByFreq[ixWord]  
+	aWord:= xWordF.uWord2; 
+	ixFreq := xWordF.uIxUnW     
+	ixAlpha:= xWordF.uIxUnW_al   
+	if ixFreq != ixWord { fmt.Println("ERRORE in bind_go_passToJs_word_known() ixWord not equal to ixFreq ", aWord, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
+	
+	if YES_cfr == yesNoStr {
+		uniqueWordByFreq[ixWord].uLearnedYN = LEARNED_YES  // uniqueWordByFreq[ixWord].uKnow_yes_ctr = knowCtr
+	} else {
+		uniqueWordByFreq[ixWord].uLearnedYN = LEARNED_NOT  // uniqueWordByFreq[ixWord].uKnow_no_ctr  = knowCtr 
+	} 
+	uniqueWordByAlpha[ixAlpha].uLearnedYN    = uniqueWordByFreq[ixWord].uLearnedYN 
+	//uniqueWordByAlpha[ixAlpha].uKnow_yes_ctr = uniqueWordByFreq[ixWord].uKnow_yes_ctr 
+	//uniqueWordByAlpha[ixAlpha].uKnow_no_ctr  = uniqueWordByFreq[ixWord].uKnow_no_ctr 
+	
+	
+	outS1 := fmt.Sprint("ixWord=", ixWord, " ", aWord, ", \t yesNo=", yesNoStr, " learned=", uniqueWordByFreq[ixWord].uLearnedYN  )  
+	//fmt.Println(green("word_known "), outS1)
+	go_exec_js_function( js_function, outS1 ); 	
+	
+} // end of bind_go_passToJs_word_known2
 
+//---------------------------------------------------------------
+func bind_go_passToJs_word_known(ixWord int, yesNo int, knowCtr int, js_function string) {
+	
 	if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
 		
 	var xWordF = uniqueWordByFreq[ixWord]  
@@ -132,17 +169,17 @@ func bind_go_passToJs_word_known(ixWord int, yesNo int, knowCtr int, js_function
 	if ixFreq != ixWord { fmt.Println("ERRORE in bind_go_passToJs_word_known() ixWord not equal to ixFreq ", aWord, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
 	
 	if yesNo == 0 {	
-		uniqueWordByFreq[ixWord].uKnow_yes_ctr = knowCtr
+		uniqueWordByFreq[ixWord].uLearnedYN = LEARNED_YES  // uniqueWordByFreq[ixWord].uKnow_yes_ctr = knowCtr
 	} else {
-		uniqueWordByFreq[ixWord].uKnow_no_ctr  = knowCtr 
+		uniqueWordByFreq[ixWord].uLearnedYN = LEARNED_NOT  // uniqueWordByFreq[ixWord].uKnow_no_ctr  = knowCtr 
 	} 
+	uniqueWordByAlpha[ixAlpha].uLearnedYN    = uniqueWordByFreq[ixWord].uLearnedYN 
+	//uniqueWordByAlpha[ixAlpha].uKnow_yes_ctr = uniqueWordByFreq[ixWord].uKnow_yes_ctr 
+	//uniqueWordByAlpha[ixAlpha].uKnow_no_ctr  = uniqueWordByFreq[ixWord].uKnow_no_ctr 
 	
-	uniqueWordByAlpha[ixAlpha].uKnow_yes_ctr = uniqueWordByFreq[ixWord].uKnow_yes_ctr 
-	uniqueWordByAlpha[ixAlpha].uKnow_no_ctr  = uniqueWordByFreq[ixWord].uKnow_no_ctr 
 	
-	
-	outS1 := fmt.Sprint("ixWord=", ixWord, " ", aWord, ", \t yesNo=", yesNo, ", knownYes=", xWordF.uKnow_yes_ctr,  ", knownNo=", xWordF.uKnow_no_ctr )  
-
+	outS1 := fmt.Sprint("ixWord=", ixWord, " ", aWord, ", \t yesNo=", yesNo, " learned=", uniqueWordByFreq[ixWord].uLearnedYN  )  
+	fmt.Println(green("word_known "), outS1)
 	go_exec_js_function( js_function, outS1 ); 	
 	
 } // end of bind_go_passToJs_word_known

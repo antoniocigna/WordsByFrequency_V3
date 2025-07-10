@@ -235,6 +235,7 @@ func split_ALL_word_dict_row(  strRows string) string {
 			dL_lemma2    string  
 			dL_numDict   int	  
 			dL_tran      string
+			dL_knownYesNo string
 		} 
 	**/
 	
@@ -311,7 +312,8 @@ func split_ALL_word_dict_row(  strRows string) string {
 			ele1.dL_lemmaSeq = seqCode(lemmaLis[newL] )                  //  lemmaTranStruct struct   .dL...
 			ele1.dL_lemma2   = lemmaLis[newL] 
 			ele1.dL_numDict  = lastNumDict
-			ele1.dL_tran     = tranLis[newL]    
+			ele1.dL_tran     = tranLis[newL]   
+			
 			
 			//fmt.Println("       split_ALL_word_dict_row 6 for 4 ")
 			
@@ -362,22 +364,30 @@ func bind_go_passToJs_write_WordsToLearn(js_function string)  {
 	
 	numOut:=0
 	for i:= 0; i < len(uniqueWordByFreq); i++ { 
-		var xWordF     = uniqueWordByFreq[i]
-		if ( (xWordF.uKnow_yes_ctr < 1 ) && (xWordF.uKnow_no_ctr < 1 ))  { continue }
-		lines = append( lines,   fmt.Sprintf( "%s|%d|%d",  xWordF.uWord2, xWordF.uKnow_yes_ctr,  xWordF.uKnow_no_ctr) ) 
+		var xWordF     = uniqueWordByFreq[i]		
+		//if ( (xWordF.uKnow_yes_ctr < 1 ) && (xWordF.uKnow_no_ctr < 1 ))  { continue }
+		//lines = append( lines,   fmt.Sprintf( "%s|%d|%d",  xWordF.uWord2, xWordF.uKnow_yes_ctr,  xWordF.uKnow_no_ctr) ) 
+		lines = append( lines,  xWordF.uWord2 + "|" + xWordF.uLearnedYN  ) 
 		numOut++	
-	}		
-	writeList( outFile, lines )
-	//--------
-	currentTime := time.Now()	
-	outF1 		:= FOLDER_O_arc_TO_learn + string(os.PathSeparator)  
-	outFile2    := outF1 + "wordsToLearn_"  + currentTime.Format("20060102150405") + ".txt"	
-	writeList( outFile2, lines )	
+	}	
+
+	fmt.Println("write_WordsToLearn   num=", numOut); 
+	if (numOut > 0) { 	
+		writeList( outFile, lines )
+		//--------
+		currentTime := time.Now()	
+		outF1 		:= FOLDER_O_arc_TO_learn + string(os.PathSeparator)  
+		outFile2    := outF1 + "wordsToLearn_"  + currentTime.Format("20060102150405") + ".txt"	
+		writeList( outFile2, lines )	
+	}
 	//-----------------	
 	
-	if (js_function == "") { return }
 	outS1:= fmt.Sprintf("scritti %d words to learn nel file %s", numOut,  FILE_words_to_learn)
 	
+	if (js_function == "") { 
+		fmt.Println(outS1) 
+		return 
+	}
 	go_exec_js_function( js_function, outS1 ); 	
 	
 } // end of  bind_go_passToJs_write_WordsToLearn

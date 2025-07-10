@@ -11,6 +11,8 @@ var list_level_str = " " + level_other + " A0 A1 A2 B1 B2 C1 C2 "
 var list_level          = make([]string,0, 0) 
 var only_level_numWords = make([]int,   0, 0)  
 var perc_level          = make([]int,   0, 0)  
+const LEARNED_YES = "y"
+const LEARNED_NOT = "n"
 //-------------------------------------------
 var separRow   = "[\r\n.;:?!]";
 //var separRowFalse = "[\r\n]";

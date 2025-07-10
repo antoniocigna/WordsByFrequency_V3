@@ -158,8 +158,8 @@ func lemma_word_to_row( myLem1_name string, myLem2_name string, lw_lemma2 string
 			xWordF2.uLevel[ix2]               + ";." +  
 			xWordF2.uPara[ix2]                + ";." +  
 			xWordF2.uExample[ix2]             + ";." +  
-			strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  					
-			strconv.Itoa(xWordF2.uKnow_yes_ctr)  + ";." + strconv.Itoa(xWordF2.uKnow_no_ctr)  + ";." + 				
+			strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  	
+			xWordF2.uLearnedYN                + ";." + 						
 			"ixLemma" + ";." + fmt.Sprint( xWordF2.uIxLemmaL[ix2] ) + ";." + 	
 			endOfLine 				
 			 

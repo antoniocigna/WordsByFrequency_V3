@@ -396,8 +396,8 @@
 		.textfile1 {  color:blue; font-size:bold; }
 		.textfile2 {  color:black; }
 	
-	#idTableWordList_tbody tr:hover {border:3px solid red;}               /*   riga table tr cambia colore se mouse sopra  */
-	#id_tabSub_tbody       tr:hover {border:3px solid red;}               /*   riga table tr cambia colore se mouse sopra  */ 
+	#idTableWordList_tbody tr:hover {border:3px solid red;border-left:0px solid blue;}   /*   riga table tr cambia colore se mouse sopra  */
+	#id_tabSub_tbody       tr:hover {border:3px solid red;border-left:0px solid blue;}   /*   riga table tr cambia colore se mouse sopra  */ 
 	
 #idTableWordList_thead {
 	background-color: #d3d3d3;
@@ -412,7 +412,7 @@
   background-color: rgb(243, 243, 243);  
 }
 	.borderVert_L {	border-left:  1px solid black; }
-	.borderVert_R {	border-right:  1px solid black; }
+	.borderVert_R {	border-right: 1px solid black; }
 	.borderTop  {	border-top:  1px solid black; }
 	.borderBott {	border-bottom:  1px solid black; }	
 	
@@ -460,6 +460,31 @@
 .seleRow1{
 }
 
+.divCont_table1_header {
+	overflow-y:scroll;
+	width:100%; 
+	border:0px solid green;
+}
+
+.divCont_table1_list {
+	max-height:73%; 	overflow-y:auto;
+	width:100%; 
+	
+	border:0px solid red;
+}
+.fixWordTdWidth {
+	width:25%; 
+	max-width:25%; 
+	min-width:25%; 
+}
+.notYetLearnedButt {
+	background-color: red; 
+	color:blue; 
+}
+.learnedButt {
+	background-color:white; 
+	color:black; 
+}
         </style>
     </head>
     <body onload="js_call_go()">
@@ -814,35 +839,15 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 						<span style="font-size:2.0em;font-weight:bold;width:8em;">&#8656;</span>indietro
 				</button>			
 		</div>	
-		<div style="font-size:0.7em;color:black;width:100%; text-align:right;">&#9875;</div>  <!-- anchor -->	
 	</div>
 	
 	<div class="centerXY" style="height:95%;width:98%;border:0px solid violet;text-align:center; padding:1em;">
-		<div style="border:0px solid green;height:98%;width:100%;" >
-			<div style="width:100%; text-align:center;border:0px solid red;" class="center">
-				<div style="text-align:center;border:0px solid green;width:20%;">
-				<div id="dragWLsTip5" class="mydrag_backButton " >
-					<div id="dragWLsTip5_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
-						<span style="font-size:0.7em;">	
-							Sposta il mouse sul <span style="color:blue;font-weight:bold;">lemma</span> per leggere la <span style="color:green;font-weight:bold;">traduzione</span> 
-							<br>Per listare le righe che contengono la <span style="color:blue;font-weight:bold;">parola</span> 
-							o il <span style="color:blue;font-weight:bold;">lemma</span> 
-							<br>
-							clicca su un pulsante delle ultime tre colonne,		
-							<br>
-							doppio click sulla parola per cambiare la traduzione o inserirla se manca 
-							
-						</span>	
-					</div>								
-					<div style="font-size:0.7em;color:black;width:100%; text-align:right;">&#9875;</div>  <!-- anchor -->	
-				</div>
-				</div>
-			</div>	
+		
 			
-			<div id="id_wordList1" class="tableFixHead" style="border:0px solid red;width:100%;height:100%;">
+			<div id="id_wordList1" class="00tableFixHead" style="border:0px solid red;width:100%;height:100%;">
 				una table  inserita qui da wordsByFrequency.js  
 			</div>
-		</div>	
+		
 	</div>	
 	<div style="min-width:5%;border:0px solid blue;text-align:right;vertical-align:middle;">
 	</div>
@@ -1169,6 +1174,6 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 		<script src="./wordsByFrequency.js"                       ></script>		
 		<script src="./wordByFrequency_start_linkgo.js"></script>			
 		
-		<script src="./wordByFrequency_dragDiv.js"></script>		
+		<!-- <script src="./wordByFrequency_dragDiv.js"></script>		-->
     </body>
 </html>

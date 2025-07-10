@@ -3,7 +3,7 @@ package wbfSubPack
 import (  
 	"fmt"
     "strings"
-	"strconv"
+	//"strconv"
 )
 
 //---------------------------
@@ -22,27 +22,13 @@ func read_wordsToLearn() {
 	for z:=0; z< len(lineD); z++ { 
 		fields:= strings.Split( lineD[z] ,"|") 
 		
-		/***
-		if len(fields) == 4 {
-			field01 := strings.TrimSpace(fields[0])[0:1]
-			if z < 10 { fmt.Println( "1 toLearn ", fields) }
-			if ((field01 >="0") && (field01 <="9")) { // si tratta della vecchia versione con indice nella prima posizione  
-				fields = fields[1:]
-				swWrite = true
-			}	
-			if z < 10 { fmt.Println( "2 toLearn ", fields) 	}
-		}
 		
-		if swWrite {
-			outLearn = append( outLearn, ( fields[0] + "|" +  fields[1] + "|" + fields[2] ) )   
-		}
-		****/
-		
-		if len(fields) < 3 { continue}
+		if len(fields) < 2 { continue}
 		 
 		r_word2          := strings.TrimSpace( fields[0] ) 	
-		known_yes_ctr, _ := strconv.Atoi( strings.TrimSpace( fields[1] ) ) 
-		known_no_ctr , _ := strconv.Atoi( strings.TrimSpace( fields[2] ) ) 
+		yesNo:= strings.TrimSpace( fields[1] ) 	 
+		if len(yesNo) > 1  { yesNo = yesNo[0:1]}
+		if yesNo != LEARNED_YES { yesNo = LEARNED_NOT }	
 		
 		wordCod:= seqCode( r_word2)		
 	
@@ -56,8 +42,7 @@ func read_wordsToLearn() {
 			uIxWordFreq int            // index of this word in the wordSliceFreq	
 			uSwSelRowG  int
 			uSwSelRowR   int  
-			uKnow_yes_ctr int 
-			uKnow_no_ctr  int 
+			uLearnedYN   string  
 		**/
 		
 		// ignoro l'indice dell'input (potrebbero esserci state delle variazioni nella freq. delle parole) e lo ricalcolo ( ottengo in realtà un range di indici che dovrebbero coincidere)
@@ -70,19 +55,16 @@ func read_wordsToLearn() {
 			xWordA :=  uniqueWordByAlpha[ixA]
 			if xWordA.uWordSeq != wordCod {
 				continue
-			}			
-			uniqueWordByAlpha[ixA].uKnow_yes_ctr = known_yes_ctr
-			uniqueWordByAlpha[ixA].uKnow_no_ctr  = known_no_ctr
+			}
+			uniqueWordByAlpha[ixA].uLearnedYN = yesNo;
+			
 			if (ixA != xWordA.uIxUnW_al) {  
 				fmt.Println( red("error in" + "wordToLearn "), r_word2 , " z=",z," fields=", fields, " ixA=", ixA, " xWordA.uIxUnW_al=",xWordA.uIxUnW_al);  
 				continue
 			}
 			ix1 := xWordA.uIxUnW
-			uniqueWordByFreq[ix1].uKnow_yes_ctr = known_yes_ctr
-			uniqueWordByFreq[ix1].uKnow_no_ctr  = known_no_ctr 		
-
-			//if nread < 10 { fmt.Println( "word to learn ", uniqueWordByFreq[ix1] , " no_ctr=", uniqueWordByFreq[ix1].uKnow_no_ctr) }
-			
+			uniqueWordByFreq[ix1].uLearnedYN = yesNo
+	
 			nread++	
 		}
 	}

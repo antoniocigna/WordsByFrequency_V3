@@ -12,25 +12,27 @@ license MIT: you can share and modify the software, but you must include the lic
 	//   onclick_sortWordBy_ixField(nField,ndeep,isNumber,ascending); 
 	
 	let prototype_tableWordList_Header = `  
-		<table id="idTableWordList"   style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n	
-			<colgroup id="idwcol2">
-				<col id="idwcol2_0" span="1">
-				<col id="idwcol2_1" span="1">
-				<col id="idwcol2_2" span="1" style="visibility: §sel2collapse§;">  
-				<col id="idwcol2_3" span="1">
-				<col id="idwcol2_4" span="1">
-				<col id="idwcol2_5" span="1">
-				<col id="idwcol2_6" span="1">
-				<col id="idwcol2_7" span="1">
-				<col id="idwcol2_8" span="1">
-				<col id="idwcol2_9" span="1">
+	
+		<div style="width:100%;border:0px solid black;" class="divCont_table1_header"> 	 	
+		<table id="1idTableWordList"   style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n			
+			<colgroup id="Hidwcol2">	
+				<col id="Hidwcol2_0" span="1" style="width:5.1%;">
+				<col id="Hidwcol2_1" span="1" style="width:5.1%;">
+				<col id="Hidwcol2_2" span="1" style="width:5.1%;visibility: §sel2collapse§;">  
+				<col id="Hidwcol2_3" span="1" style="width:5.1%;">
+				<col id="Hidwcol2_4" span="1" style="width:29;" >
+				<col id="Hidwcol2_5" span="1" style="width:29;" >
+				<col id="Hidwcol2_6" span="1" style="width:3.0%;">
+				<col id="Hidwcol2_7" span="1" style="width:3.0%;">
+				<col id="Hidwcol2_8" span="1" style="width:3.0%;">
+				<col id="Hidwcol2_9" span="1" style="width:4.2%;">
+				<col id="Hidwcol2_9" span="1" style="width:4.2%;">
+				<col id="Hidwcol2_9" span="1" style="width:4.2%;">
 			</colgroup>	
-			
-			<thead   id="idTableWordList_thead" style="position: sticky;top: 0;">  				
-				
+			<thead   id="idTableWordList_thead" style="position: sticky;top:">
 				<tr class="tabWhead_r1">  
-					<th style="text-align:center;width:5%;">
-						<span style="display:none;">numTR</span>
+					<th style="text-align:center;"
+						<span style="display:none;">num.</span>
 						<span style="display:none;">
 							<span>word</span>    
 							<span>ixW2StudyLs</span>
@@ -38,100 +40,104 @@ license MIT: you can share and modify the software, but you must include the lic
 							<span>ixLemma</span>	
 						</span>						
 					</th>  				
-					<th  rowspan="3" style="text-align:center; vertical-align:middle; width:1em; font-size:0.8em;" >
+					<th  rowspan="3" style="text-align:center; vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">frequenza in<br> tutte le righe</div>
 					</th>
 					
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+					<th  rowspan="3" style="text-align:center;vertical-align:middle;  font-size:0.8em;" >
 						<div  class="c_verticalText">frequenza nelle<br> righe scelte</div>
-					</th>
-					<th  rowspan="3" style="text-align:center; vertical-align:middle; width:1em;  font-size:0.8em;" >
-						<div  class="c_verticalText">learned <br><span style="font-size:0.8em;">(reset next column)</span></div>
-					</th>
+					</th>					
 					
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
-						<div  class="c_verticalText">to be studied</div>
+					<th rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;">
+						<div class="c_verticalText">do you know it?</div>
 					</th>
 					
-					
-					<th style="text-align:center;width:25%;border-right:0px solid black;" >	
+					<th style="text-align:center;" class="fixWordTdWidth">	
 						
 						<div class="hpad top left1">
 							parola 
 						</div>
 					</th>	
-					<th style="text-align:center;border-left:0px solid black;">	
+					<th style="text-align:center;" class="fixWordTdWidth">	
 						<div class="hpad top left1">	
-							lemma paradigma 						
+							lemma paradigma 	
+							<div id="dragWLsTip5_Header"  class="gradientColor" 
+										style="resize:both;overflow:auto; height:1em;width:100%;">
+								<div style="width:100%; text-align:right;font-size:0.7em;">help</div>
+								<span style="font-size:0.7em;">	
+									Sposta il mouse sul <span style="color:blue;font-weight:bold;">lemma</span> per leggere la <span style="color:green;font-weight:bold;">traduzione</span> 
+									<br>Per listare le righe che contengono la <span style="color:blue;font-weight:bold;">parola</span> 
+									o il <span style="color:blue;font-weight:bold;">lemma</span> 
+									<br>
+									clicca su un pulsante delle ultime tre colonne,		
+									<br>
+									doppio click sulla parola per cambiare la traduzione o inserirla se manca 						
+								</span>	
+							</div>	
 						</div>
 					</th>	
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">Play Voce Preferita</div>
 					</th>
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">Play a new voice</div>
 					</th>
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">Spelling della parola</div>
 					</th>	
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">lista le righe con <br>questa parola</div>
 					</th>
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">lista le righe con <br>questo lemma</div>
 					</th>
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;" >
+					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">lista le parole con<br>questo lemma</div>
 					</th>					
 				</tr>   
 				
 				<tr class="tabWhead_r2">   	
-					<th style="text-align:center;width:5%;"></th>  
+					<th style="text-align:center;"></th>  
 									
 					<!--    2 th  rowspanned 3-->		
 					<!--    2 th  rowspanned 3-->		
-					<th style="text-align:center;width:25%;border-right:0px solid black;" ></th>	
-					<th style="text-align:center;border-left:0px solid black;" >	</th>	  	
+					<th style="text-align:center;" class="fixWordTdWidth"></th>	
+					<th style="text-align:center;" class="fixWordTdWidth"></th>	  	
 					<!--    3 th  rowspanned 3-->		
 					<!--    3 th  rowspanned 3-->					
 				</tr>  
 				
 				<tr class="tabWhead_r3">   
-					<th style="text-align:center;width:5%;"></th>  
-					<!--    2 th  rowspanned 3-->		
-					<!--    2 th  rowspanned 3-->						
-					<th style="text-align:center;width:25%;border-right:0px solid black;" >	
-						<div class="hpad top left1">
-							<span style="color:red;font-size:0.6em;" id="id_w_to_learn_written"></span>
-							<br>
-							<button onclick="onclick_write_words_to_learn()">Scrivi le parole da imparare</button>
-							<br>
-							
-							<button onclick="onclick_remove_words_already_known()">Estrai solo le parole da studiare</button>
-						</div>
+					<th style="text-align:center;"></th>  
+					<!--    2 th  rowspanned 3-->			
+					<th style="text-align:center;" class="fixWordTdWidth borderVert_L">	
+						<div span id="id_buttLearnDiv"  style="display:none;border:5px solid red;style="width:100%;"">
+							<button id="id_buttScriviLearn" onclick="onclick_write_words_to_learn()"  style="font-weight:bold;">Aggiorna la lista delle parole da imparare</button>
+							<span style="font-size:0.7em;font-weight:normal;">&nbsp;(<span id="id_buttLearnNumW"></span>&nbsp;variaz.) </span>
+						</div>				
 					</th>				
-					<th style="text-align:center;border-left:0px solid black;" ></th>	  	
+					<th style="text-align:center;" class="fixWordTdWidth borderVert_L borderVert_R"></th>	  	
+					<!--    3 th  rowspanned 3-->
 					<!--    3 th  rowspanned 3-->	
-					<!--    3 th  rowspanned 3-->	
-				</tr>   
+				</tr>  
+				
 				
 				<tr class="tabWhead_r4">   
 					<!--                     onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1, nChild2,ndeep2,isNumber2,ascending2)  -->
-					<th style="text-align:center;width:5%;"></th>  
-					<th style="text-align:center;width:5%;"><button onclick="onclick_sortWordBy_ixField(1,0,true,'d', 5,1,false,'a')">sort</button></th> 					
-					<th style="text-align:center;width:5%;"><button onclick="onclick_sortWordBy_ixField(2,0,true,'d', 1,0,true, 'd')">sort</button></th> 					
-					<th style="text-align:center;width:5%;"></th> 					
-					<th style="text-align:center;width:5%;"><button onclick="onclick_sortWordBy_ixField(4,1,true,'d', 1,0,true,'d')">sort</button></th>  	
-					<th style="text-align:center;width:25%;border-right:0px solid black;" >	
+					<th style="text-align:center;"></th>  
+					<th style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(1,0,true,'d', 5,1,false,'a')">sort</button></th> 					
+					<th style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(2,0,true,'d', 1,0,true, 'd')">sort</button></th> 					
+					<th style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(3,1,false,'a', 2,0,true,'d')">sort</button></th>  	
+					<th style="text-align:center;"  class="fixWordTdWidth">	
 						<div class="hpad top left1">
-							<button onclick="onclick_sortWordBy_ixField(5,1,false,'a', 6,1,false,'a')">sort</button></th>
+							<button onclick="onclick_sortWordBy_ixField(4,1,false,'a', 5,1,false,'a')">sort</button></th>
 						</div>
 					</th>	
 					
 					
-					<th style="text-align:center;border-left:0px solid black;" >	
+					<th style="text-align:center;"  class="fixWordTdWidth">	
 						<div class="hpad top left1">
-							<button onclick="onclick_sortWordBy_ixField(6,1,false,'a', 5,1,false,'a')">sort</button></th>
+							<button onclick="onclick_sortWordBy_ixField(5,1,false,'a', 4,1,false,'a')">sort</button></th>
 						</div>
 					</th>	  	
 					
@@ -159,14 +165,18 @@ license MIT: you can share and modify the software, but you must include the lic
 				</tr>
 			
 				<tr>
-					<th  style="padding:1.5px; background-color:black;" colspan="13"></th>
+					<th  style="background-color:black;" colspan="12"></th>
 				</tr>
-				
-				
-			</thead>    
+			</thead>\n	
+	</table>
+</div>	
+<div style="width:100%;border:0px solid black;" class="divCont_table1_list"> 	
+	<table           style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n	 
+			<colgroup id="Didwcol2">				
+			</colgroup>				
 			<tbody id="idTableWordList_tbody">   \n 
 		 ` ; // end of prototype_tableWordList_Header ; 
-		
+	
 	let prototype_oneTR_lemma = `\n  
 		<tr> 
 			<td style="text-align:center;font-size:0.8em;font-weight:100;">
@@ -181,22 +191,18 @@ license MIT: you can share and modify the software, but you must include the lic
 			</td>  
 			<td style="text-align:center;"  class="borderVert_L"  >§one-nrow§</td> 
 			<td style="text-align:center;color:blue;" class="borderVert_L" >§one-n_extr_row§</td> 
-			<td style="text-align:center;" class="borderVert_L"  ><button onclick="onclick_word_known(\'§one-ix1§\',0,this)">§known_yes§</button></td>
-			<td style="text-align:center;"><button onclick="onclick_word_known(\'§one-ix1§\',1,this)">§known_no§</button></td>
-			<td style="text-align:center;" class="borderVert_L" >				
+
+			<td style="text-align:center;" class="borderVert_L"  ><button §learnedClass§ onclick="onclick_word_known2(\'§one-ix1§\',this)">§YESorNOT§</button></td>		
+			<td style="text-align:center;" class="fixWordTdWidth borderVert_L" >				
 				<div class="hpad top left1"  >
 					<span ondblclick="onclickDoubleWordTran(this)"> 
 						<span class="c_wordOrig"><b>§one-word1§</b></span>						
 					</span> 					
 					<span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
-				</div>
-				
-				
-				
-				
+				</div>				
 			</td>	
 	
-			<td style="text-align:center;" class="borderVert_R">					
+			<td style="text-align:center;"  class="fixWordTdWidth borderVert_L borderVert_R">					
 				<span style="display:none;">§one-f_lemma§</span>
 				<div class="hpad top left1">
 					<details>
@@ -252,11 +258,11 @@ license MIT: you can share and modify the software, but you must include the lic
 	}
 	**/
 	//--------------------------------------------------------------------
-	
+
 	function newTr_from_prototype( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, word1, f_lemma, x_level, 
 					f_para, f_tran, x_para1,x_example1, showAltre, m, 
 					n_extr_row, 
-					knowYesCtr, knowNoCtr, numButton) {  
+					uLearnedYN, numButton) {  
 	    
 		//if (word1=="schrift") { console.log("newTr_from_prototype( numeroTR=", numeroTR, " ", word1, " nrow=", nrow, " ix1=", ix1, " m=",m , "  n_extr_row=",   n_extr_row  ) }
 		
@@ -272,22 +278,26 @@ license MIT: you can share and modify the software, but you must include the lic
 		var wordvisib = "";
 		if (numButton == "5") {  wordvisib = ' style="visibility:hidden;" ' ;}
 	
-		if ( (1*knowNoCtr) > 0) { 
-			//newTr = newTr.replaceAll("§notKnowBackSty","border:2px solid black;");
-			newTr = newTr.replaceAll("§notKnowBackSty",' style="border:5px solid black;' );
-		} else {			
-			newTr = newTr.replaceAll("§notKnowBackSty","");
-		}
-		
 		var displayNone = "";
 		if (nrow == 0) {
 			displayNone = 'style="display:none;"';
+		} else {
+			displayNone = "";
 		} 
 		/**
 		if (word1 == "$lemmalist$") {
 			word1 = buttonWordList( f_lemma )
 		}
 		**/
+		var yesOrNot;
+		var learnedClass;
+		if (uLearnedYN == "y") {
+			yesOrNot = YES1; 
+			learnedClass = '';	
+		} else { 
+			yesOrNot = NOT_YET1;
+			learnedClass = ' class="notYetLearnedButt" '
+		}
 		
 		//console.log(word1 , "  nrow=", nrow,  " displayNone=>" + displayNone, "<==")
 		newTr = newTr.
@@ -307,9 +317,9 @@ license MIT: you can share and modify the software, but you must include the lic
 			replaceAll("§one-x_para1§"   , ""+x_para1  ). 
 			replaceAll("§one-x_example1§", ""+x_example1 ). 
 			replaceAll("§one-showAltre§",  ""+ showAltre). 	
-			replaceAll("§one-n_extr_row§", ""+ n_extr_row).
-			replaceAll("§known_yes§"     , ""+knowYesCtr).		
-			replaceAll("§known_no§"      , ""+knowNoCtr)  			
+			replaceAll("§one-n_extr_row§", ""+ n_extr_row).	
+			replaceAll("§YESorNOT§"      , ""+yesOrNot).  		
+			replaceAll("§learnedClass§", learnedClass)	
 			;  
 		return newTr;	
 		

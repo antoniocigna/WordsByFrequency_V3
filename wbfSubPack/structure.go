@@ -104,8 +104,9 @@ type wordIxStruct struct {
     uIxWordFreq int            // index of this word in the wordSliceFreq	
 	uSwSelRowG  int
 	uSwSelRowR   int  
-	uKnow_yes_ctr int 
-	uKnow_no_ctr  int         // a value > 0  means that this is a word that I don't know, ie. it's to be learned   
+	uLearnedYN   string         // y n ( ie.yes,I learned / not yet  
+	//uKnow_yes_ctr int 
+	//uKnow_no_ctr  int         // a value > 0  means that this is a word that I don't know, ie. it's to be learned   
 	uIxLemmaL  []int  
 	uLemmaL    []string       // list of lemma 
 	//uTranL     []string       // list of translation    
@@ -132,11 +133,10 @@ type statStruct struct {
 //--------------------------
 var lastNumDict = 0;   
 type lemmaTranStruct struct {
-	dL_lemmaSeq  string 
-	dL_lemma2    string 
-	dL_numDict   int	
-	dL_tran      string         //
-	
+	dL_lemmaSeq   string 
+	dL_lemma2     string 
+	dL_numDict    int	
+	dL_tran       string    
 } 
 //---------------
 type paraStruct struct {

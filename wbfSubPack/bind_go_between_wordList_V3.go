@@ -182,8 +182,8 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 				xWordF2.uLevel[ix2]               + ";." +  
 				xWordF2.uPara[ix2]                + ";." +  
 				xWordF2.uExample[ix2]             + ";." +  
-				strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  					
-				strconv.Itoa(xWordF2.uKnow_yes_ctr)  + ";." + strconv.Itoa(xWordF2.uKnow_no_ctr)  + ";." + 				
+				strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  		
+				xWordF2.uLearnedYN                + ";." + 	
 				"ixLemma" + ";." + fmt.Sprint( xWordF2.uIxLemmaL[ix2] ) + ";." + 	
 				endOfLine 		
 		}
@@ -200,8 +200,8 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 				fmt.Sprint( strings.Join(xWordF2.uLevel,   wSep)  ) + ";." +  
 				fmt.Sprint( strings.Join(xWordF2.uPara,    wSep)  ) + ";." +  
 				fmt.Sprint( strings.Join(xWordF2.uExample, wSep)  ) + ";." +  
-				strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  					
-				strconv.Itoa(xWordF2.uKnow_yes_ctr)  + ";." + strconv.Itoa(xWordF2.uKnow_no_ctr)  + ";." + 				
+				strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  			
+				xWordF2.uLearnedYN              + ";." + 			
 				"ixLemma" + ";." + intSliceToString( xWordF2.uIxLemmaL,wSep )  + ";." + 		
 				endOfLine 
 				 

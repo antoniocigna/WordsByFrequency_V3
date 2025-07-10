@@ -30,6 +30,8 @@ func elabWordList() {
 	
 	build_lemma_word_ix()
 	
+	//bind_go_passToJs_write_WordsToLearn("") 
+	
 	//antoList_wordSchrift_anto()
 	
 	fmt.Println("\n", green("end elabWordList"), "\n")
@@ -262,10 +264,8 @@ func build_uniqueWord_byFreqAlpha() {
 			xWordF.uSwSelRowR = wS1.wSwSelRowR 
 			xWordF.uSwSelRowG = wS1.wSwSelRowG
 			xWordF.uIxWordFreq = n1
-			
-			//if wS1.wWord2=="von" { if  wS1.wTotExtrRow>0 { fmt.Println("build_uniqueWord_byFreqAlpha() extr ", wS1.wWord2, " xWordF.uTotExtrRow =", xWordF.uTotExtrRow) }  }
-			
-			
+			xWordF.uLearnedYN  = LEARNED_NOT 
+	
 			//xWordF.wTran = "" 
 			xWordF.uIxUnW     = len(uniqueWordByFreq)  
 			uniqueWordByFreq = append( uniqueWordByFreq, xWordF);  
@@ -307,9 +307,8 @@ func build_uniqueWord_byFreqAlpha() {
 	xWordF.uTotRow = 1 ; // the lowest frequency
 	xWordF.uTotExtrRow = 0               
 	xWordF.uIxWordFreq = len(uniqueWordByFreq)   
-	xWordF.uIxUnW      = len(uniqueWordByFreq)  	
-	xWordF.uKnow_yes_ctr = 0 
-	xWordF.uKnow_no_ctr  = 0 	
+	xWordF.uIxUnW      = len(uniqueWordByFreq)  
+	xWordF.uLearnedYN  = LEARNED_NOT
 	//xWordF.uTranL      = []string{ xWordF.uWord2 }        // ??anto8 .uTranL
 	uniqueWordByFreq   = append( uniqueWordByFreq, xWordF);  
 	
@@ -457,14 +456,13 @@ func sortWordListByFreq_and_row_priority() {
 	//fmt.Println(" sortWordListByFreq_and_row_priority()")
 	
 	sort.Slice(wordSliceFreq, func(i, j int) bool {
-	
-		if wordSliceFreq[i].wTotExtrRow !=  wordSliceFreq[j].wTotExtrRow {
-		   return wordSliceFreq[i].wTotExtrRow > wordSliceFreq[j].wTotExtrRow  // wTotExtrRow  descending order ( number of extracted rows  if id_sel_2_extrRow option = id="extrRow", else =0) 	
-		}
 		
 		if wordSliceFreq[i].wTotRow !=  wordSliceFreq[j].wTotRow {
 		   return wordSliceFreq[i].wTotRow > wordSliceFreq[j].wTotRow         // totRow    descending order (how many rows contain the word)  	  		   
 		}	
+		if wordSliceFreq[i].wTotExtrRow !=  wordSliceFreq[j].wTotExtrRow {
+		   return wordSliceFreq[i].wTotExtrRow > wordSliceFreq[j].wTotExtrRow  // wTotExtrRow  descending order ( number of extracted rows  if id_sel_2_extrRow option = id="extrRow", else =0) 	
+		}
 		
 		if wordSliceFreq[i].wWordSeq !=  wordSliceFreq[j].wWordSeq {
 		   return wordSliceFreq[i].wWordSeq < wordSliceFreq[j].wWordSeq            // word      ascending order	  		   
