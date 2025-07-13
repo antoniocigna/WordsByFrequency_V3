@@ -4812,7 +4812,7 @@ function onclick_word_known2(sIxWord, this1) {
 	numWordsKnownChanged++; 
 	document.getElementById("id_buttLearnNumW").innerHTML = numWordsKnownChanged;
 	
-	go_passToJs_word_known2(""+ixWord, yes_not1, "js_go_word_known2"); // ask 'go' to update yes/no word known ctr  
+	go_passToJs_word_known2(""+ixWord, yes_not_len1, "js_go_word_known2"); // ask 'go' to update yes/no word known ctr  
 	
 } // end of onclick_word_know_yes		
 
