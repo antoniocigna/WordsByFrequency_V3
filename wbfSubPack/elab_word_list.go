@@ -3,7 +3,7 @@ package wbfSubPack
 	import (
 		"fmt"
 		"strconv"
-	    //"strings"
+	    "strings"
 		"sort"
 		"encoding/hex"
 		"os"
@@ -500,11 +500,11 @@ func addWordLemmaTranLevelParadigma() {
 		
 	lemma_word_ix = make([]lemmaWordStruct, 0,  len(uniqueWordByFreq)  )  
 	var LW lemmaWordStruct
-	
+	/**
 	list1Level:= ""
 	list1Para := ""
 	list1Exam := ""		
-
+	**/
 	//--------------------------------------
 	for zz:=0; zz < len(uniqueWordByFreq); zz++ {
 		wF:= uniqueWordByFreq[zz]
@@ -580,6 +580,7 @@ func addWordLemmaTranLevelParadigma() {
 		// each word can have many lemmas 
 		//                       each lemma can have many levels, paradigmas, translations ( they are separated by "|", eg "A1|A2|B1" ) 
 		//---------------
+		/***
 		for n1, ixLemma2:= range lis_ixLemma { 
 			lem := lemmaSlice[ixLemma2].leLemma 
 			lis_lemmaName   = append( lis_lemmaName,  lem )  			
@@ -588,13 +589,63 @@ func addWordLemmaTranLevelParadigma() {
 			
 			lemmaSlice[ixLemma2].leNumWords++
 			
-			list1Level, list1Para, list1Exam = fromLemmaTo3List( lem )  // ogni list può contenere più elementi separati da |   ( lo stesso num.di elementi per tutte le liste: A1|A2,par1|par2, ex1|ex2 )  
+			//list1Level, list1Para, list1Exam = fromLemmaTo3List( lem )  // ogni list può contenere più elementi separati da |   ( lo stesso num.di elementi per tutte le liste: A1|A2,par1|par2, ex1|ex2 )  
 			
 			list1Exam = compound_lemma(lemmaSlice[ixLemma2] )
 	
 			lis_level = append( lis_level, list1Level )
 			lis_para  = append( lis_para , list1Para  )
 			lis_exam  = append( lis_exam , list1Exam  )
+			ixTra := lookForAllTran( lem ) 
+			if ixTra >= 0 { 
+				wP = dictLemmaTran[ixTra] 
+				lis_tran = append( lis_tran, wP.dL_tran ) 		////cigna1	
+				if ixLemma2 >=0 {	lemmaSlice[ixLemma2].leTran = wP.dL_tran } 
+												// lab_word_list.go   wP.dL_tran= eindhoven   lemmaSlice[ixLemma2].leTran = eindhoven
+				//if lem == "eindhoven" { fmt.Println("elab_word_list.go ", " wP.dL_tran=",wP.dL_tran,"  lemmaSlice[ixLemma2].leTran =",  lemmaSlice[ixLemma2].leTran ) }
+			} else {
+				lis_tran = append( lis_tran, ""         ) 	
+				if ixLemma2 >=0 {	lemmaSlice[ixLemma2].leTran = "" }  
+				//if lem == "eindhoven" { fmt.Println("elab_word_list.go ", " NO NO   lemmaSlice[ixLemma2].leTran =",  lemmaSlice[ixLemma2].leTran ) }
+		
+			}	
+			if sw_rewrite_wordLemma_dict { 
+				newWL.lLemma = lem 
+				newWordLemmaPair = append( newWordLemmaPair, newWL ) 				
+			}			
+			//--			
+			LW.lw_lemma2     = lem                                 
+			LW.lw_lemmaSeq   = seqCode( lem )			
+			LW.lw_word       = wF.uWord2 
+			LW.lw_ixLemma    = ixLemma2
+			LW.lw_origLemma  = lis_origLemma[n1] 
+			if LW.lw_origLemma == LW.lw_lemma2 { LW.lw_origLemma = "" }
+			LW.lw_ixWordUnFr = wF.uIxUnW
+			lemma_word_ix  = append( lemma_word_ix, LW )		
+			
+		} // end of for , lem 
+		***/
+		//-----------------------
+		for n1, ixLemma2:= range lis_ixLemma { 
+			lemStru := lemmaSlice[ixLemma2] 
+			lem := lemmaSlice[ixLemma2].leLemma 
+			lis_lemmaName   = append( lis_lemmaName,  lem )  			
+			
+			//if sw1 {  fmt.Println(" xxx word=",wF.uWord2,  sPrintOneLemma( ixLemma2,   lemmaSlice[ixLemma2] )) }
+			
+			lemmaSlice[ixLemma2].leNumWords++
+			
+			//list1Level, list1Para, list1Exam = fromLemmaTo3List( lem )  // ogni list può contenere più elementi separati da |   ( lo stesso num.di elementi per tutte le liste: A1|A2,par1|par2, ex1|ex2 )  
+			
+			listExam0 := compound_lemma(lemmaSlice[ixLemma2] )
+			if strings.TrimSpace(listExam0) != "" { lemStru.leExample += "|" + strings.TrimSpace(listExam0) }
+		
+			lis_level = append( lis_level, lemStru.leLevel   )
+			lis_para  = append( lis_para , lemStru.lePara    )
+			lis_exam  = append( lis_exam , lemStru.leExample )
+			
+			
+			//---------------------------
 			ixTra := lookForAllTran( lem ) 
 			if ixTra >= 0 { 
 				wP = dictLemmaTran[ixTra] 
@@ -801,7 +852,7 @@ func add_ixWord_to_WordSliceFreq() {
 	tot:=0
 	for ixWord:=0; ixWord < len(uniqueWordByFreq); ixWord++ {		
 		xWordF := uniqueWordByFreq[ixWord] 			
-		stat_level( xWordF.uLevel, xWordF.uTotRow)		
+		//stat_level( xWordF.uLevel, xWordF.uTotRow)		
 		tot+=  xWordF.uTotRow
 		ixFromList = xWordF.uIxWordFreq 
 		ixToList   = ixFromList + xWordF.uTotRow;
@@ -827,7 +878,7 @@ func add_ixWord_to_WordSliceFreq() {
 		"\n num. words B1 = ", only_B1,    " \t", percB1 , "%" ,        
 		"\n num. words altro= ", only_Ot, " \t", percOth, "%"  ) 
 	****/	
-	
+	/**
 	for f:=1; f < len( only_level_numWords ) ; f++ {
 		if only_level_numWords[f] == 0 { continue }
 		perc_level[f] = only_level_numWords[f] * 100 / tot ;     
@@ -838,7 +889,7 @@ func add_ixWord_to_WordSliceFreq() {
 		perc_level[0] = only_level_numWords[0] * 100 / tot ;     
 		//fmt.Println(" num. words ", list_level[0], " = ", only_level_numWords[0],    " \t", perc_level[0] , "%" ) 	
 	}
-
+	**/
 	
 } // end of add_index_toWordSliceFreq
 
@@ -862,7 +913,9 @@ func addUnknowToLemma( lemma1 string) int {
 
 //-----------------------------------------
 
-func fromLemmaTo3List( lemma string) (string, string, string) { 
+
+//-----------------------------------------
+func TOGLIfromLemmaTo3List( lemma string) (string, string, string) { 
 
 		fromIx, toIx  := lookForAllParadigma( lemma ) 
 		
@@ -890,6 +943,6 @@ func fromLemmaTo3List( lemma string) (string, string, string) {
 		}
 		return listLev, listPara, listExam 
 		
-} // end of fromLemmaTo3List 		
+} // end of TOGLIfromLemmaTo3List 		
 
 //-----------------------------------------

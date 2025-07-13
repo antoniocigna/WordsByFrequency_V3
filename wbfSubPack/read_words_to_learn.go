@@ -26,7 +26,7 @@ func read_wordsToLearn() {
 		if len(fields) < 2 { continue}
 		 
 		r_word2          := strings.TrimSpace( fields[0] ) 	
-		yesNo:= strings.TrimSpace( fields[1] ) 	 
+		yesNo:= strings.ToLower( strings.TrimSpace( fields[1] ) )	 
 		if len(yesNo) > 1  { yesNo = yesNo[0:1]}
 		if yesNo != LEARNED_YES { yesNo = LEARNED_NOT }	
 		

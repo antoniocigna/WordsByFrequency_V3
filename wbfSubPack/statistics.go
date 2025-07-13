@@ -2,7 +2,7 @@ package wbfSubPack
 
 import (  
 	"fmt"
-    "strings"
+    //"strings"
 	"strconv"	
 )
 
@@ -11,7 +11,7 @@ func buildStatistics() {
 		//var rows []string
 		var result string = ""
 		
-		if len( only_level_numWords ) < 1 { return }
+		//if len( only_level_numWords ) < 1 { return }
 		
 		/***	
 		msgLevelStat = "" 		
@@ -24,6 +24,7 @@ func buildStatistics() {
 		**/
 		
 		msgLevelStat = "" 
+		/**
 		for f:=1; f < len( only_level_numWords ) ; f++ {
 			//if only_level_numWords[f] == 0 { continue }
 			if perc_level[f] == 0 { continue }
@@ -32,6 +33,7 @@ func buildStatistics() {
 		if only_level_numWords[0] > 0 {  
 			msgLevelStat += ", " + list_level[0] + ": " + strconv.Itoa( perc_level[0] ) + "%"  
 		}
+		**/
 		if len(msgLevelStat) > 1 {msgLevelStat = msgLevelStat[2:] } 
 
 		result += "livello " + msgLevelStat //  + "..endLevel ";  
@@ -52,7 +54,7 @@ func buildStatistics() {
 }	
 
 //----------------------------------------
-
+/**
 func stat_level( lemmaLevel []string, numWords int) {	
 	
 	// get the first level of the first lemma 
@@ -78,7 +80,7 @@ func stat_level( lemmaLevel []string, numWords int) {
 	}
 	
 }
-
+***/
 //-----------------------------------
 
 func stat_useWord() {

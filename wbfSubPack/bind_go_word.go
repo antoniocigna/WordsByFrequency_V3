@@ -131,7 +131,7 @@ func bind_go_passToJs_getWordByIndex2( ixWord int, swOnlyThisWordRows bool, maxN
 **/
 
 //---------------------------------------------------------------
-func bind_go_passToJs_word_known2(ixWord int, YES_cfr string, yesNoStr string, js_function string) {
+func bind_go_passToJs_word_known2(ixWord int, yesNot_len1  string, js_function string) {
 	
 	if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
 		
@@ -141,17 +141,14 @@ func bind_go_passToJs_word_known2(ixWord int, YES_cfr string, yesNoStr string, j
 	ixAlpha:= xWordF.uIxUnW_al   
 	if ixFreq != ixWord { fmt.Println("ERRORE in bind_go_passToJs_word_known() ixWord not equal to ixFreq ", aWord, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
 	
-	if YES_cfr == yesNoStr {
-		uniqueWordByFreq[ixWord].uLearnedYN = LEARNED_YES  // uniqueWordByFreq[ixWord].uKnow_yes_ctr = knowCtr
-	} else {
-		uniqueWordByFreq[ixWord].uLearnedYN = LEARNED_NOT  // uniqueWordByFreq[ixWord].uKnow_no_ctr  = knowCtr 
-	} 
+	uniqueWordByFreq[ixWord].uLearnedYN = yesNot_len1 // uniqueWordByFreq[ixWord].uKnow_yes_ctr = knowCtr
+	
 	uniqueWordByAlpha[ixAlpha].uLearnedYN    = uniqueWordByFreq[ixWord].uLearnedYN 
 	//uniqueWordByAlpha[ixAlpha].uKnow_yes_ctr = uniqueWordByFreq[ixWord].uKnow_yes_ctr 
 	//uniqueWordByAlpha[ixAlpha].uKnow_no_ctr  = uniqueWordByFreq[ixWord].uKnow_no_ctr 
 	
 	
-	outS1 := fmt.Sprint("ixWord=", ixWord, " ", aWord, ", \t yesNo=", yesNoStr, " learned=", uniqueWordByFreq[ixWord].uLearnedYN  )  
+	outS1 := fmt.Sprint("ixWord=", ixWord, " ", aWord, ", \t yesNo=", yesNot_len1, " learned=", uniqueWordByFreq[ixWord].uLearnedYN  )  
 	//fmt.Println(green("word_known "), outS1)
 	go_exec_js_function( js_function, outS1 ); 	
 	

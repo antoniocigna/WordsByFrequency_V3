@@ -19,6 +19,7 @@ type lemmaStruct struct {
 	leLevel     string  
 	lePara      string  
 	leExample   string  
+	leNumPara   int
 	ls_lemma_ix_stellen  int	
 	ls_lemma_stellen     string
 	ls_pref_ein          string

@@ -86,8 +86,8 @@ func get_all_binds() {
 			bind_go_passToJs_word_known(       getInt(s_ixWord), getInt(s_yesNo), getInt(s_knowCtr), js_function)  } )  
 		//---------------------
 												
-		ui.Bind("go_passToJs_word_known2", func( s_ixWord string, s_YES string, s_yesNo string,  js_function string) {
-			bind_go_passToJs_word_known2(       getInt(s_ixWord), s_YES, s_yesNo, js_function)  } )  
+		ui.Bind("go_passToJs_word_known2", func( s_ixWord string, s_yesNot_len1 string,  js_function string) {
+			bind_go_passToJs_word_known2(       getInt(s_ixWord), s_yesNot_len1, js_function)  } )  
 				
 		//----------------------------------------------------------------
 		/**

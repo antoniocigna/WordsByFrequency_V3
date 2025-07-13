@@ -258,7 +258,7 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller) {
 		return; 
 	}
 	
-	//console.log("onclick_mostFreqWordList_require " , " isExtrRowChanged=", swChg , " go_passToJs_wordList --> js_go_showWordList_lev2( , button=1)");	
+	//console.log("onclick_mostFreqWordList_require " , " isExtrRowChanged=", swChg , " go_passToJs_wordList --> js_go_showWordList_lev2  ( , button=1)");	
 	
 	//var caller = "HTML page onclick_require_rowList1" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
 	//if (caller == undefined) { caller = ""; }
@@ -328,6 +328,7 @@ function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc=""
 	// numButton=1 default ==> from onclick most frequent word list  
 	// numButton=2         ==> from onclick BetweenWordList or prefix wordlist   
 	// numButton=3         ==> from onclick Lemma word list   
+	// numButton=5         ==> from onclick Lemma list   
 	// numButton=0         ==> from word list from word, lemma, ?   
 	if (numButton==1 ) {
 		sw_somethingChanged = false; 
@@ -356,7 +357,7 @@ function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc=""
     }
 	
 	//console.log("function js_go_showWordList_lev2 3 ")
-		
+
 	var wLemmaListU, wTranListU, wLevelListU,	wParaListU, wExampleListU, wIxLemmaListU;   
 	var wLemmaList,  wTranList,  wLevelList,    wParaList,  wExampleList , wIxLemmaList ;
 	var word2, ixUnW2, totRow2, totExtrRow2 
@@ -397,9 +398,10 @@ genannt.genannt      ;.  genannt    ;.505;.    145;. 123;. 123;. nennen  ;.  nom
 			var ww0 = ((wordLineZ + ";.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.").split(";.") ).slice(0,15);
 			
 			[wordCod, word2, chk_ix, ixUnW2, totRow2, wLemmaList, wTranList,	wLevelList,	wParaList, wExampleList,
-						   totExtrRow2, uLearnedYN,   chk_ixLemma, wIxLemmaList] = ww0;  				
+						   totExtrRow2, uLearnedYN,   chk_ixLemma, wIxLemmaList] = ww0;  	
+					
 			wordToStudy_list.push(  [word2, ixUnW2, totRow2, [wLemmaList], [wTranList], [wLevelList], [wParaList], [wExampleList], 
-									totExtrRow2, uLearnedYN, [wIxLemmaList],"5" ] ); 
+									totExtrRow2, uLearnedYN, [wIxLemmaList], numButton] ); 
 		}
 	}
 	//------------------	
@@ -429,22 +431,22 @@ genannt.genannt      ;.  genannt    ;.505;.    145;. 123;. 123;. nennen  ;.  nom
 		
 		//oneElemToStudy( 0 ) wordToStudy_list =  eindhoven;.eindhoven;.ix;.12471;.1;.eindhoven;.§;.;.;.;.0;.0;.0;.ixLemma;.3970§;.
 													   
-	/**
-	return sw, xWordF2.uWordSeq + ";." + xWordF2.uWord2 + ";." + 
-				"ix" + ";." + 
-				strconv.Itoa(xWordF2.uIxUnW) + ";." + strconv.Itoa(xWordF2.uTotRow)  + ";." +
-				fmt.Sprint( strings.Join(xWordF2.uLemmaL,  wSep)  ) + ";." + 
-				//fmt.Sprint( strings.Join(xWordF2.uTranL,   wSep)  ) + ";." +  
-				listStringLemmaSlice_Tran(xWordF2) + ";." +  
-				fmt.Sprint( strings.Join(xWordF2.uLevel,   wSep)  ) + ";." +  
-				fmt.Sprint( strings.Join(xWordF2.uPara,    wSep)  ) + ";." +  
-				fmt.Sprint( strings.Join(xWordF2.uExample, wSep)  ) + ";." +  
-				strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  			
-				xWordF2.uLearnedYN              + ";." + 			
-				"ixLemma" + ";." + intSliceToString( xWordF2.uIxLemmaL,wSep )  + ";." + 		
-				endOfLine 
-	
-	**/
+		/**
+		return sw, xWordF2.uWordSeq + ";." + xWordF2.uWord2 + ";." + 
+					"ix" + ";." + 
+					strconv.Itoa(xWordF2.uIxUnW) + ";." + strconv.Itoa(xWordF2.uTotRow)  + ";." +
+					fmt.Sprint( strings.Join(xWordF2.uLemmaL,  wSep)  ) + ";." + 
+					//fmt.Sprint( strings.Join(xWordF2.uTranL,   wSep)  ) + ";." +  
+					listStringLemmaSlice_Tran(xWordF2) + ";." +  
+					fmt.Sprint( strings.Join(xWordF2.uLevel,   wSep)  ) + ";." +  
+					fmt.Sprint( strings.Join(xWordF2.uPara,    wSep)  ) + ";." +  
+					fmt.Sprint( strings.Join(xWordF2.uExample, wSep)  ) + ";." +  
+					strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  			
+					xWordF2.uLearnedYN              + ";." + 			
+					"ixLemma" + ";." + intSliceToString( xWordF2.uIxLemmaL,wSep )  + ";." + 		
+					endOfLine 
+		
+		**/
 		 
 		[wordCod, word2, chk_ix, ixUnW2, totRow2, wLemmaListU, wTranListU,	wLevelListU,	wParaListU, wExampleListU,
 					   totExtrRow2, 
@@ -478,7 +480,7 @@ genannt.genannt      ;.  genannt    ;.505;.    145;. 123;. 123;. nennen  ;.  nom
 		if (trattini.indexOf( word2.substring(0,1) ) >=0) return;
 		
 		wordToStudy_list.push(  [word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
-									totExtrRow2, uLearnedYN, wIxLemmaList,"1"  ] ); 
+									totExtrRow2, uLearnedYN, wIxLemmaList, numButton ] ); 
 			
 	}  // end of oneElemToStudy
 	
@@ -544,7 +546,7 @@ function sortWordFreqFirst( wordToStudy_listStr ) {
 
 //----------------
 	
-function fun_showWordList(wh, ix1=-1) {	
+function TOGLIfun_showWordList(wh, ix1=-1) {	
 	
 	var numNoTran = 0; // -1 
 	var word2, ixUnW2, totRow2, totExtrRow2, wLemmaList, wTranList , wLevelList, wParaList, wExampleList, uLearnedYN, wIxLemmaList  ; 
@@ -586,13 +588,38 @@ function fun_showWordList(wh, ix1=-1) {
 	onclick_jumpFromToPage( myPage01,0,myPage02);  
 	
 
-} // end of fun_showWordList
+} // end of TOGLIfun_showWordList
 
 //------------------------------
 
 function sentenceOneRow( str1 ) {
 	if (str1 == undefined)  { return str2; }
 	var str2 = (""+str1).replaceAll("\n"," ")
+	str2 = str2.replaceAll(". ",".<br>").replaceAll("? ","?<br>").replaceAll("! ","!<br>"); 
+	/**
+	str2 = str2.replaceAll(" 1.","<br>1.").
+			replaceAll(" 2.","<br>1."). 	
+			replaceAll(" 3.","<br>2."). 	
+			replaceAll(" 4.","<br>3."). 	
+			replaceAll(" 5.","<br>4."). 	
+			replaceAll(" 6.","<br>5."). 	
+			replaceAll(" 7.","<br>6."). 	
+			replaceAll(" 8.","<br>7."). 	
+			replaceAll(" 9.","<br>8.")  ;
+	**/		
+	str2 = str2.
+			replaceAll("1.<br>", "1. "). 	
+			replaceAll("2.<br>", "2. "). 	
+			replaceAll("3.<br>", "3. "). 	
+			replaceAll("4.<br>", "4. "). 	
+			replaceAll("5.<br>", "5. "). 	
+			replaceAll("6.<br>", "6. "). 	
+			replaceAll("7.<br>", "7. "). 	
+			replaceAll("8.<br>", "8. ").
+			replaceAll("9.<br>", "9. ").
+			replaceAll("0.<br>", "0. ") ;		
+	
+	/**
 	str2 = str2.replaceAll(" 1.","<br>1.").
 			replaceAll(" 2.","<br>1."). 	
 			replaceAll(" 3.","<br>2."). 	
@@ -603,7 +630,7 @@ function sentenceOneRow( str1 ) {
 			replaceAll(" 8.","<br>7."). 	
 			replaceAll(" 9.","<br>8.")  ;
 	str2 = str2.replaceAll(". ",".<br>").replaceAll("? ","?<br>").replaceAll("! ","!<br>"); 
-	
+	**/
 	//if (str1.indexOf("Hund") >= 0) { console.log("ANTONIO str1=" + str1 + "\nstr2=" + str2) }
 	
 	return str2	
@@ -611,7 +638,7 @@ function sentenceOneRow( str1 ) {
 
 //-------------------------------------------
 
-function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
+function TOGLIoneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
 					totExtrRow2, uLearnedYN, wIxLemmaList, numButton) {	
 			
 			var wLemma1;
@@ -625,6 +652,8 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, wLemmaList,
 			
 			var showList = ""; 
 		
+			if (wExampleList.length == 0)  wExampleList[0] = "";
+			
 			var f_lemma   = wLemmaList[  ixLemma ];
 			var f_ixLemma = wIxLemmaList[ixLemma ];
 			var f_tran    = wTranList[   ixLemma ]; 
@@ -632,6 +661,11 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, wLemmaList,
 			var f_level   = wLevelList[  ixLemma ]; 
 			var f_para    = wParaList[   ixLemma ]; 
 			var f_example = wExampleList[ixLemma ]; 
+			if (word1== "Xabfahren") { console.log("word1=", word1, " wParaList=", wParaList, " wExampleList=", wExampleList,
+					" ixLemma=", ixLemma, " f_para=", f_para, "  f_example=" +  f_example + "<==")
+					if (f_example = "") f_example = "||||";	
+				}
+	
 			
 			var nn_level   = f_level.split("|")	
 			var nn_para    = f_para.split("|")	
@@ -660,13 +694,24 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, wLemmaList,
 			//-----------------------	
 			var key="",	pKey=""
 			var numLev = nn_level.length;
+			/**
+			if (word1=="Xabfahren") {
+				if (nn_example=="") {	
+					nn_example = ["esempio1", "esempio2","esempio3"]; 
+					console.log(" nn_example=>" + nn_example + "<== .length=",  nn_example.length) ;
+				}
+			}
+			**/
 			
+			if (word1=="Xabfahren") console.log(" len nn_example=", nn_example.length,  "  nn_example=",nn_example  ) ;
+				
 			var num1=0
-			
+			if (word1=="Xabfahren") console.log(" numLev = ", numLev) ;
 			for (var m=0; m < numLev; m++) {	
+				if (word1=="Xabfahren") console.log("  m=", m,  "  nn_example[m]=", nn_example[m]) ;
 				pKey = key
 				x_level = nn_level[m]; 
-				x_para  = nn_para[m];
+				x_para  = nn_para[m];				
 				x_example = nn_example[m]; 
 				key = x_level + " " + x_para + " " + x_example 
 				if (key == pKey) {continue; }	
@@ -682,7 +727,7 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, wLemmaList,
 				x_level = nn_level[m]; 
 				x_para    = sentenceOneRow( nn_para[m] );
 				x_example = sentenceOneRow( nn_example[m] ); 
-				
+				if (word1=="Xabfahren") console.log("x_example=", x_example,   " m=", m ,"  nn_example[m]=",nn_example[m]) ;
 				//key = x_level + " " + x_para + " " + x_example 
 				//if (key == pKey) {continue; }				
 				
@@ -735,7 +780,7 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, wLemmaList,
 					}  else {						
 						showAltre = '<span onclick="show_altreRighe(this,' + (numLev - 1) + ')">&hellip;</span><span style="display:none;">none</span> ' ;							
 					}
-				
+			if (Xword1=="Xabfahren") console.log("x_example1=", x_example1);
 				numeroWord_TR++;				
 				var newTr = newTr_from_prototype( numeroWord_TR, clas1, XixW2StudyLs, ""+f_ixLemma, ixLemma, Xnrow, 
 					Xix1, Xword1, Xf_lemma, x_level, Xf_para, Xf_tran, x_para1, x_example1,showAltre, m, 
@@ -767,7 +812,7 @@ function fun_selRowsWanted_changed() {
 	
 } // end of fun_selRowsWanted_changed
 //-------------------------------------------
-function showWordsAndTranButton(wh) {
+function TOGLIshowWordsAndTranButton(wh) {
 		
 	
 	var showList = prototype_tableWordList_Header;  
@@ -779,12 +824,13 @@ function showWordsAndTranButton(wh) {
 	fun_selRowsWanted_changed();
 	
 	//console.log("showWordsAndTranButton is_selected_row_only =",  is_selected_row_only); 
-	
+	/**
 	if (is_selected_row_only) {
 		showList = showList.replace("§sel2collapse§", "visible");			
 	} else {
 		showList = showList.replace("§sel2collapse§", "collapse"); 
 	}
+	**/
 	//console.log("showWordsAdTran:  is_selected_row_only=", is_selected_row_only, " showList=", showList.substr(0,300));  
 	
     var word2, ix1,ixUnW2, totRow2, nrow, totExtrRow2, wLemma1;
@@ -810,7 +856,7 @@ function showWordsAndTranButton(wh) {
 
 		[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
 				totExtrRow2, uLearnedYN, wIxLemmaList, numButton ] = wordToStudy_list[ixW2StudyLs]; 
-		
+		if (word2== "Xabfahren") { console.log("word2=", word2, " wParaList=", wParaList, " wExampleList=", wExampleList)}
 				
 		nSpanV =  wLemmaList.length
 		//------------------------	
@@ -832,6 +878,7 @@ function showWordsAndTranButton(wh) {
 	
 } // end of showWordsAndTranButton
 //-------------------------
+/**
 function allinea_colGroupTabWord() {
 	return;	
 	console.log("allinea_colGroupTabWord");
@@ -885,7 +932,7 @@ function allinea_colGroupTabWord() {
 	
 	
 } // end of allinea_colGroupTabWord()
-
+**/
 //---------------------
 
 function writeLanguageChoise() {
@@ -929,6 +976,8 @@ function write_word_dictionary() {
             continue;
         }  		
 		if (ix1 < 0) continue; 
+		
+		if (word1== "Xabfahren") { console.log("word1=", word1, " wParaList=", wParaList, " wExampleList=", wExampleList)}
 		
 		if (newTran[ixW2StudyLs]==1) {
 			if (ix1 == -1) { continue; }	
@@ -987,16 +1036,16 @@ function onclick_require_prefixWordList() {
 //---------------------------------------------------------
 
 //------------------------------------
-function js_go_showPrefixWordList(wordListStr, js_parm, jsFunc,goFunc) { 
+function TOGLIjs_go_showPrefixWordList(wordListStr, js_parm, jsFunc,goFunc) { 
 
 	
 	// triggered by go ( go_passToJs_rowList and js_go_showWrdRowList)
 	
-	console.log("function js_go_showPrefixWordList() ", " js_parm=", js_parm, " <-- " + goFunc + " <-- " + jsFunc) 
+	console.log("function js_go_showPrefixWordList () ", " js_parm=", js_parm, " <-- " + goFunc + " <-- " + jsFunc) 
 	//console.log("inpstr=" +inpstr ) 
 
     // triggered by go func  (go_passToJs_prefixWordList)
-	console.log( "js_go_showPrefixWordList(wordListStr = " + wordListStr)
+	console.log( "js_go_showPrefixWordList (wordListStr = " + wordListStr)
 	
 	if (wordListStr.substring(0,5) == "NONE,") {
 			document.getElementById("id_inpPref_msgWord").innerHTML = wordListStr.substring(5) 
@@ -1008,9 +1057,9 @@ function js_go_showPrefixWordList(wordListStr, js_parm, jsFunc,goFunc) {
 	document.getElementById("id_inpPref_msg").style.display = "none"
 	onclick_jumpFromToPage( myPage01,0, myPage02);  
 	
-	js_go_showWordList_lev2(wordListStr, 2);
+	js_go_showWordList_lev2(wordListStr, 2); //1 TOGLIjs_go_showPrefixWordList
 
-} // end of js_go_showPrefixWordList
+} // end of TOGLIjs_go_showPrefixWordList
 
 //------------------------------------------------------
 
@@ -1037,7 +1086,7 @@ function onclick_require_betweenWordList() {
 
 //------------------------------------
 function js_go_showBetweenWordList(wordListStr, js_parm, jsFunc,goFunc) {
-	//console.log("function js_go_showBetweenWordList() ", " js_parm=", js_parm, " <-- " + goFunc + " <-- " + jsFunc) ;
+	//console.log("function js_go_showBetweenWordList () ", " js_parm=", js_parm, " <-- " + goFunc + " <-- " + jsFunc) ;
 	//console.log("wordListStr=\n"+wordListStr +"\n--------------------------\n")
 	
 	if (wordListStr == "") {
@@ -1048,7 +1097,7 @@ function js_go_showBetweenWordList(wordListStr, js_parm, jsFunc,goFunc) {
 	
 	onclick_jumpFromToPage( myPage01,0, myPage02);  //myPage01
 	
-	js_go_showWordList_lev2(wordListStr,2, jsFunc, goFunc)
+	js_go_showWordList_lev2(wordListStr, 2,jsFunc, goFunc) //2 js_go_showBetweenWordList  onclick_require_prefixWordList
 
 } // end of js_go_showBetweenWordList
 
@@ -1056,7 +1105,7 @@ function js_go_showBetweenWordList(wordListStr, js_parm, jsFunc,goFunc) {
 //------------------------------------------------------
 
 function onclick_require_betweenLemmaList() {
-	return;
+	
 	
 	word_to_underline_list = []
 	ele_wordList.innerHTML ="";
@@ -2576,7 +2625,7 @@ function onclick_showWordsButton(type) {
 		}
 		[word1, ixUnWtS, nrow, wLemmaList,   wTranList, wLevelList, 
 				wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList  ] = wordToStudy_list[ixzNum]; 
-		
+		if (word1== "Xabfahren") { console.log("word1=", word1, " wParaList=", wParaList, " wExampleList=", wExampleList)}
 		//console.log("\n------------------------\nwordToStudy_list[ixzNum=", ixzNum,"]= ",  wordToStudy_list[ixzNum] , " ==> ", [word1, ixUnWtS, nrow, wLemmaList, wTranList] ) 
 		
 		//console.log(" wordTranList[z]=", wT, " ===> wList= [ixzNum, ixUnTrad, numf, newTran_f]=", [ixzNum, ixUnTrad, numf, newTran_f] ); 
@@ -2623,6 +2672,7 @@ function onclick_showWordsButton(type) {
 	for (var i = 0; i < wordToStudy_list.length; i++) {
 		[word1, ixUnWtS, nrow,   wLemmaList, wTranList, 
 					wLevelList, wParaList, wExampleList, totExtrRow2, uLearnedYN , wIxLemmaList  ] = wordToStudy_list[i];  
+		if (word1== "Xabfahren") { console.log("word1=", word1, " wParaList=", wParaList, " wExampleList=", wExampleList)}			
 		//console.log("onclick_showWordsButton() 3 i=",i, " wordToStudy_list[i]=" , wordToStudy_list[i])
 		if (word1 == "") { continue; }
 				
@@ -2647,7 +2697,8 @@ function onclick_showWordsButton(type) {
 	if (sw_Minus1) {
 		for (var i = 0; i < wordToStudy_list.length; i++) {  
 			[word1, ixUnWtS, nrow,   wLemmaList, wTranList, wLevelList, 
-						wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList ] = wordToStudy_list[i];  
+						wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList ] = wordToStudy_list[i]; 
+			if (word1== "Xabfahren") { console.log("word1=", word1, " wParaList=", wParaList, " wExampleList=", wExampleList)}				
 			if (ixUnWtS < 0) {
 				wordToStudy_list[i] = [word1, 0, nrow,   wLemmaList, wTranList, wLevelList, 
 							wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList  ] 
@@ -3529,17 +3580,17 @@ function show_altreRighe(this1,numRows) {
 } // end of show_altreRighe
 //---------------------------------	
 
-function mouseOverWord(this1) {
-	if (this1.parentElement.children.length > 1) { 
-		this1.parentElement.children[1].style.display = "inline-block";
+function mouseOverWord(this1,nch) {
+	if (this1.parentElement.children.length > nch) { 
+		this1.parentElement.children[nch].style.display = "inline-block";
 	}
 }
 //---------------------
-function mouseOutWord(this1) {
-	if (this1.parentElement.children.length < 1) { 
+function mouseOutWord(this1,nch) {
+	if (this1.parentElement.children.length <= nch) { 
 		return;
 	}
-	var ele_tran = this1.parentElement.children[1];	
+	var ele_tran = this1.parentElement.children[nch];	
 	//if (ele_tran.contentEditable == true) { return; }		
 	try {
 		ele_tran.style.display = "none";
@@ -3616,7 +3667,7 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 	var num_tr = ele_tbody.children.length; 
 	var ele_tr, ele_td, ele_butt ; 
 	var num_td =0; 
-	
+	/**
 	var colgr = document.getElementById("Didwcol2"); 
 	var colgrX
 	for(var f=0; f < colgr.children.length; f++) {
@@ -3631,7 +3682,7 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 			}
 		}
 	}  
-	
+	**/
 		
 	//document.getElementById("idwcol2_" + nField).style.backgroundColor =  "gray"; // "#c4e8db";  //"#b2bbcb";  // "#33ffcc" ; //"#33ff99" ; //"#ccfff2";   
 	
@@ -4386,7 +4437,8 @@ function onclick_saveNewWordTran(this1) {
 			[wordx, ix12,  nrow, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2,uLearnedYN, wIxLemmaList  ] = wordToStudy_list[ixW2StudyLs]; 
 			if (wTranList[ixLemma] == oldTranslation) {
 				wTranList[ixLemma] = newTranslation;
-				
+			
+			if (wordx== "Xabfahren") { console.log("wordx=", wordx, " wParaList=", wParaList, " wExampleList=", wExampleList)}	
 				
 				wordToStudy_list[ixW2StudyLs] = [wordx, ix12, nrow, 
 						wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList   ] ;
@@ -4741,7 +4793,7 @@ function get_first_word_tr_visible() {
 //-----------------------------------	
 //--------------------------------------------
 function onclick_word_known2(sIxWord, this1) {
-	var ixWord = 0;
+	var ixWord = 0, yes_not_len1;
     try {
         ixWord = parseInt(sIxWord);
     } catch (err) {}	
@@ -4750,15 +4802,17 @@ function onclick_word_known2(sIxWord, this1) {
   
 	if (sw_yesNo) {
 		this1.innerHTML = YES1;		
+		yes_not_len1= "y";
 		this1.className = "learnedButt";			
 	} else {
 		this1.innerHTML = NOT_YET1;		
+		yes_not_len1= "n";
 		this1.className = "notYetLearnedButt";			
 	}	
 	numWordsKnownChanged++; 
 	document.getElementById("id_buttLearnNumW").innerHTML = numWordsKnownChanged;
 	
-	go_passToJs_word_known2(""+ixWord, YES1, this1.innerHTML,"js_go_word_known2"); // ask 'go' to update yes/no word known ctr  
+	go_passToJs_word_known2(""+ixWord, yes_not1, "js_go_word_known2"); // ask 'go' to update yes/no word known ctr  
 	
 } // end of onclick_word_know_yes		
 

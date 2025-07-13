@@ -14,24 +14,10 @@ license MIT: you can share and modify the software, but you must include the lic
 	let prototype_tableWordList_Header = `  
 	
 		<div style="width:100%;border:0px solid black;" class="divCont_table1_header"> 	 	
-		<table id="1idTableWordList"   style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n			
-			<colgroup id="Hidwcol2">	
-				<col id="Hidwcol2_0" span="1" style="width:5.1%;">
-				<col id="Hidwcol2_1" span="1" style="width:5.1%;">
-				<col id="Hidwcol2_2" span="1" style="width:5.1%;visibility: §sel2collapse§;">  
-				<col id="Hidwcol2_3" span="1" style="width:5.1%;">
-				<col id="Hidwcol2_4" span="1" style="width:29;" >
-				<col id="Hidwcol2_5" span="1" style="width:29;" >
-				<col id="Hidwcol2_6" span="1" style="width:3.0%;">
-				<col id="Hidwcol2_7" span="1" style="width:3.0%;">
-				<col id="Hidwcol2_8" span="1" style="width:3.0%;">
-				<col id="Hidwcol2_9" span="1" style="width:4.2%;">
-				<col id="Hidwcol2_9" span="1" style="width:4.2%;">
-				<col id="Hidwcol2_9" span="1" style="width:4.2%;">
-			</colgroup>	
+		<table id="1idTableWordList"   style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n				
 			<thead   id="idTableWordList_thead" style="position: sticky;top:">
 				<tr class="tabWhead_r1">  
-					<th style="text-align:center;"
+					<th class="fixWordTdWidth5" style="text-align:center;"
 						<span style="display:none;">num.</span>
 						<span style="display:none;">
 							<span>word</span>    
@@ -40,25 +26,25 @@ license MIT: you can share and modify the software, but you must include the lic
 							<span>ixLemma</span>	
 						</span>						
 					</th>  				
-					<th  rowspan="3" style="text-align:center; vertical-align:middle; font-size:0.8em;" >
+					<th class="fixWordTdWidth5" rowspan="3" style="text-align:center; vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">frequenza in<br> tutte le righe</div>
 					</th>
 					
-					<th  rowspan="3" style="text-align:center;vertical-align:middle;  font-size:0.8em;" >
+					<th class="fixWordTdWidth5" rowspan="3" style="text-align:center;vertical-align:middle;  font-size:0.8em;" >
 						<div  class="c_verticalText">frequenza nelle<br> righe scelte</div>
 					</th>					
 					
-					<th rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;">
+					<th class="fixWordTdWidth5" rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;">
 						<div class="c_verticalText">do you know it?</div>
 					</th>
 					
-					<th style="text-align:center;" class="fixWordTdWidth">	
+					<th style="text-align:center;" class="fixWordTdWidthN">	
 						
 						<div class="hpad top left1">
 							parola 
 						</div>
 					</th>	
-					<th style="text-align:center;" class="fixWordTdWidth">	
+					<th style="text-align:center;" class="fixWordTdWidthL">	
 						<div class="hpad top left1">	
 							lemma paradigma 	
 							<div id="dragWLsTip5_Header"  class="gradientColor" 
@@ -76,47 +62,47 @@ license MIT: you can share and modify the software, but you must include the lic
 							</div>	
 						</div>
 					</th>	
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
+					<th class="fixWordTdWidth3" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">Play Voce Preferita</div>
 					</th>
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
+					<th class="fixWordTdWidth3" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">Play a new voice</div>
 					</th>
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
+					<th class="fixWordTdWidth3" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">Spelling della parola</div>
 					</th>	
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
+					<th class="fixWordTdWidth4" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">lista le righe con <br>questa parola</div>
 					</th>
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
+					<th class="fixWordTdWidth4" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">lista le righe con <br>questo lemma</div>
 					</th>
-					<th  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
+					<th class="fixWordTdWidth4"  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
 						<div  class="c_verticalText">lista le parole con<br>questo lemma</div>
 					</th>					
 				</tr>   
 				
 				<tr class="tabWhead_r2">   	
-					<th style="text-align:center;"></th>  
+					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
 									
 					<!--    2 th  rowspanned 3-->		
 					<!--    2 th  rowspanned 3-->		
-					<th style="text-align:center;" class="fixWordTdWidth"></th>	
-					<th style="text-align:center;" class="fixWordTdWidth"></th>	  	
+					<th style="text-align:center;" class="fixWordTdWidthN"></th>	
+					<th style="text-align:center;" class="fixWordTdWidthL"></th>	  	
 					<!--    3 th  rowspanned 3-->		
 					<!--    3 th  rowspanned 3-->					
 				</tr>  
 				
 				<tr class="tabWhead_r3">   
-					<th style="text-align:center;"></th>  
+					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
 					<!--    2 th  rowspanned 3-->			
-					<th style="text-align:center;" class="fixWordTdWidth borderVert_L">	
-						<div span id="id_buttLearnDiv"  style="display:none;border:5px solid red;style="width:100%;"">
+					<th style="text-align:center;" class="fixWordTdWidthN borderVert_L">	
+						<div id="id_buttLearnDiv"  style="display:none;border:5px solid red; width:100%;">
 							<button id="id_buttScriviLearn" onclick="onclick_write_words_to_learn()"  style="font-weight:bold;">Aggiorna la lista delle parole da imparare</button>
 							<span style="font-size:0.7em;font-weight:normal;">&nbsp;(<span id="id_buttLearnNumW"></span>&nbsp;variaz.) </span>
 						</div>				
 					</th>				
-					<th style="text-align:center;" class="fixWordTdWidth borderVert_L borderVert_R"></th>	  	
+					<th style="text-align:center;" class="fixWordTdWidthL borderVert_L borderVert_R"></th>	  	
 					<!--    3 th  rowspanned 3-->
 					<!--    3 th  rowspanned 3-->	
 				</tr>  
@@ -124,39 +110,39 @@ license MIT: you can share and modify the software, but you must include the lic
 				
 				<tr class="tabWhead_r4">   
 					<!--                     onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1, nChild2,ndeep2,isNumber2,ascending2)  -->
-					<th style="text-align:center;"></th>  
-					<th style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(1,0,true,'d', 5,1,false,'a')">sort</button></th> 					
-					<th style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(2,0,true,'d', 1,0,true, 'd')">sort</button></th> 					
-					<th style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(3,1,false,'a', 2,0,true,'d')">sort</button></th>  	
-					<th style="text-align:center;"  class="fixWordTdWidth">	
+					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
+					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(1,0,true,'d', 5,1,false,'a')">sort</button></th> 					
+					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(2,0,true,'d', 1,0,true, 'd')">sort</button></th> 					
+					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(3,1,false,'a', 2,0,true,'d')">sort</button></th>  	
+					<th class="fixWordTdWidthN" style="text-align:center;" >	
 						<div class="hpad top left1">
 							<button onclick="onclick_sortWordBy_ixField(4,1,false,'a', 5,1,false,'a')">sort</button></th>
 						</div>
 					</th>	
 					
 					
-					<th style="text-align:center;"  class="fixWordTdWidth">	
+					<th style="text-align:center;"  class="fixWordTdWidthL">	
 						<div class="hpad top left1">
 							<button onclick="onclick_sortWordBy_ixField(5,1,false,'a', 4,1,false,'a')">sort</button></th>
 						</div>
 					</th>	  	
 					
-					<th style="text-align:center;" ></th>					
-					<th style="text-align:center;" ></td>     
-					<th style="text-align:center;" ></th>						
-					<th style="text-align:center;font-size:0.8em;">
+					<th class="fixWordTdWidth3" style="text-align:center;" ></th>					
+					<th class="fixWordTdWidth3" style="text-align:center;" ></td>     
+					<th class="fixWordTdWidth3" style="text-align:center;" ></th>						
+					<th class="fixWordTdWidth4" style="text-align:center;font-size:0.8em;">
 						<label>max<br> 
 							<input type="number"  min="1" value="100" id="idTabWRoW1" 
 								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
 						</label>					
 					</th>
-					<th style="text-align:center;font-size:0.8em;">
+					<th class="fixWordTdWidth4" style="text-align:center;font-size:0.8em;">
 						<label>max<br> 
 							<input type="number"  min="1" value="100" id="idTabWRoL2"
 								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
 						</label>					
 					</th>
-					<th style="text-align:center;font-size:0.8em;">
+					<th class="fixWordTdWidth4" style="text-align:center;font-size:0.8em;">
 						<label>max<br> 
 							<input type="number"  min="1" value="100" id="idTabWRLL3"
 								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
@@ -171,15 +157,29 @@ license MIT: you can share and modify the software, but you must include the lic
 	</table>
 </div>	
 <div style="width:100%;border:0px solid black;" class="divCont_table1_list"> 	
-	<table           style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n	 
-			<colgroup id="Didwcol2">				
-			</colgroup>				
+	<table           style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n	 					
 			<tbody id="idTableWordList_tbody">   \n 
 		 ` ; // end of prototype_tableWordList_Header ; 
+
+//------------------------------------------------------------
+	
+	let prototype_lemmaTD = `
+				<div style="display:none;">§one-f_lemma§</div>
+				<div class="hpad top left1 §topBorder§"  style="resize:vertical; overflow-y:auto; width:100%;">										
+					<span §displayNoneL§  class="c_paradigma" onmouseover='mouseOverWord(this,3)' onmouseout='mouseOutWord(this,3)'><b>§one-f_lemma§</b></span>
+					<span  class="c_paradigma" onmouseover='mouseOverWord(this,3)' onmouseout='mouseOutWord(this,3)'>§one-x_para1§</span>						
+					<br   class="c_paradigma"  >	
+					<span class="c_wordTran" style="display:none;">§one-f_tran§</span>		
+					<div   class="c_example"  >§one-x_example1§</div>
+				</div> \n					
+		`; 	// end of prototype_lemmaTD
+		
+		
+//------------------------------------------------	
 	
 	let prototype_oneTR_lemma = `\n  
 		<tr> 
-			<td style="text-align:center;font-size:0.8em;font-weight:100;">
+			<td class="fixWordTdWidth5" style="text-align:center;font-size:0.8em;font-weight:100;">
 					<span onmouseover="mouseOverWord(this)" onmouseout="mouseOutWord(this)"  >§one-numTR§</span>					
 					<span style="display:none;">
 						<span>§one-word1§</span>    
@@ -189,11 +189,11 @@ license MIT: you can share and modify the software, but you must include the lic
 						<span>§one-ixLemma§</span>	
 					</span>	
 			</td>  
-			<td style="text-align:center;"  class="borderVert_L"  >§one-nrow§</td> 
-			<td style="text-align:center;color:blue;" class="borderVert_L" >§one-n_extr_row§</td> 
+			<td class="fixWordTdWidth5" style="text-align:center;"  class="borderVert_L"  >§one-nrow§</td> 
+			<td class="fixWordTdWidth5" style="text-align:center;color:blue;" class="borderVert_L" >§one-n_extr_row§</td> 
 
-			<td style="text-align:center;" class="borderVert_L"  ><button §learnedClass§ onclick="onclick_word_known2(\'§one-ix1§\',this)">§YESorNOT§</button></td>		
-			<td style="text-align:center;" class="fixWordTdWidth borderVert_L" >				
+			<td class="fixWordTdWidth5" style="text-align:center;" class="borderVert_L"  ><button §learnedClass§ onclick="onclick_word_known2(\'§one-ix1§\',this)">§YESorNOT§</button></td>		
+			<td style="text-align:center;" class="fixWordTdWidthN borderVert_L" >				
 				<div class="hpad top left1"  >
 					<span ondblclick="onclickDoubleWordTran(this)"> 
 						<span class="c_wordOrig"><b>§one-word1§</b></span>						
@@ -201,50 +201,35 @@ license MIT: you can share and modify the software, but you must include the lic
 					<span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
 				</div>				
 			</td>	
-	
-			<td style="text-align:center;"  class="fixWordTdWidth borderVert_L borderVert_R">					
-				<span style="display:none;">§one-f_lemma§</span>
-				<div class="hpad top left1">
-					<details>
-						<summary §summarystyle§> 				
-								 <span onmouseover='mouseOverWord(this)' onmouseout='mouseOutWord(this)' "> 								 
-										<b>§one-f_lemma§</b>
-								 </span>
-								 <span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
-						</summary>
-						<div> 								
-							<span  class="c_level"    >§one-x_level§</span>
-							<span  class="c_paradigma">§one-x_para1§</span>
-							<div   class="c_example"  >§one-x_example1§</div>
-						</div>
-					</details>
-				</div>				
+			
+			<td style="text-align:center;"  class="fixWordTdWidthL borderVert_L borderVert_R">		
+				§tdLemma§							
 			</td>
 		
-			<td>
+			<td class="fixWordTdWidth3">
 				<button class="buttonWhite" onclick="onclick_tts_playSynthVoice_word3Freq(this,'§one-word1§', false,false)"> 
 					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span>
 				</button>
             </td>
-			<td class="c_m0">
+			<td  class="fixWordTdWidth3 c_m0">
                 <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_word3Freq(this,'§one-word1§', false,true )">
 					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">&plus;</span>
                 </button>
             </td>
-            <td class="c_m0">
+            <td  class="fixWordTdWidth3 c_m0">
                 <button class="buttonWhite" onclick="onclick_tts_playSynthVoice_word3Freq(this,'§one-word1§', true, false)">
 					<span style="font-size:2em;height:1.4em;">${speakinghead_symb}</span><span style="font-size:0.9em;">${word_pause_symb}</span>
                 </button>
             </td>    
 			
-			<td style="text-align:center;" class="borderVert_L"  >
-				<button §displaNone§ onclick="onclick_rowsByIxWord(\'§one-ix1§\')">W</button>
+			<td class="fixWordTdWidth4"style="text-align:center;" class="borderVert_L"  >
+				<button §displayNone1§ onclick="onclick_rowsByIxWord(\'§one-ix1§\')">W</button>
 			</td> \n
-			<td style="text-align:center;" class="borderVert_L"  >	
-				<button §displaNone§ onclick="onclick_rowsByIxLemma(\'§one-ixLemma§\')">L</button>
+			<td class="fixWordTdWidth4" style="text-align:center;" class="borderVert_L"  >	
+				<button §displayNone§ onclick="onclick_rowsByIxLemma(\'§one-ixLemma§\')">L</button>
 			</td> \n			
-			<td style="text-align:center;" class="borderVert_L"  >
-				<button §displaNone§ onclick="onclick_require_lemmaWordList2(\'§one-f_lemma§\')">WL</button>	
+			<td class="fixWordTdWidth4" style="text-align:center;" class="borderVert_L"  >
+				<button §displayNone§ onclick="onclick_require_lemmaWordList2(\'§one-f_lemma§\')">WL</button>	
 			</td> \n 			
 		</tr> \n
 		
@@ -261,29 +246,48 @@ license MIT: you can share and modify the software, but you must include the lic
 
 	function newTr_from_prototype( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, word1, f_lemma, x_level, 
 					f_para, f_tran, x_para1,x_example1, showAltre, m, 
-					n_extr_row, 
+					n_extr_row1, 
 					uLearnedYN, numButton) {  
-	    
-		//if (word1=="schrift") { console.log("newTr_from_prototype( numeroTR=", numeroTR, " ", word1, " nrow=", nrow, " ix1=", ix1, " m=",m , "  n_extr_row=",   n_extr_row  ) }
+	    /**
+		if (word1=="gehen") { 
+			console.log("newTr_from_prototype( numeroTR=", numeroTR, " ", word1, " nrow=", nrow, " ix1=", ix1, " m=",m ,
+				"  n_extr_row=",   n_extr_row1," numButton=", numButton  ) 
+		}
+		**/
+		var displayNone  = "";
+		var displayNone1 = "";
+		var displayNoneL = "";
 		
 		var newTr = prototype_oneTR_lemma.trim(); 
 		
-		if (x_level != "")    { x_level    = "<br>" + "(lev." + x_level + ")"; }
-		if (x_para1 != "")    { x_para1    = "<br>" + x_para1    ; }		
-		if (x_example1 != "") { x_example1 = "<br>" + x_example1 ; }
+		//if (x_level != "")    { x_level    = "(lev." + x_level + ")"; }
+		if (x_para1 != "")    {
+			displayNoneL = 'style="display:none;"'
+		}		
+		if (x_example1 == undefined) console.log("x_example1=", x_example1);
+		if (x_example1 != "") { x_example1 = x_example1 ; }
 		var summarystyle = ' style="list-style-position: outside;" ' 
 		if ((x_level == "") && ( x_para1=="") && (x_example1=="") ) {
 			summarystyle= ' style="display:block;" '  // in <detail><summary></summary> other staff </details> if other stuff is empty hide the arrow (default is display:list-item) 
 		}
-		var wordvisib = "";
-		if (numButton == "5") {  wordvisib = ' style="visibility:hidden;" ' ;}
-	
-		var displayNone = "";
+		
 		if (nrow == 0) {
-			displayNone = 'style="display:none;"';
-		} else {
-			displayNone = "";
+			displayNone  = 'style="display:none;"';
+			displayNone1 = 'style="display:none;"';
 		} 
+		
+		var wordvisib = "";
+		if (numButton == "5") {  
+			//wordvisib = ' style="visibility:hidden;" ' ;
+			word1 = "";
+			displayNone1 = 'style="display:none;"';
+		} else if (numButton == "2") {  
+			n_extr_row1 = "";
+		} else if (numButton == "3") {  
+			n_extr_row1 = "";
+		}
+	
+		
 		/**
 		if (word1 == "$lemmalist$") {
 			word1 = buttonWordList( f_lemma )
@@ -303,7 +307,9 @@ license MIT: you can share and modify the software, but you must include the lic
 		newTr = newTr.
 			replaceAll("§summarystyle§"  , summarystyle).
 			replaceAll(" §wordvisib§"    , wordvisib   ). 
-			replaceAll("§displaNone§"    , displayNone ).    
+			replaceAll("§displayNone§"    , displayNone ).  
+			replaceAll("§displayNone1§"   , displayNone1 ).  
+			replaceAll("§displayNoneL§"   , displayNoneL ).  
 			replaceAll("§ixW2StudyLs§"      , ""+ixW2StudyLs ). 
 			replaceAll("§one-ixLemma§"   , ""+ixLemma   ). 
 			replaceAll("§one-ixixLemma§" , ""+ixixLemma ). 
@@ -317,7 +323,7 @@ license MIT: you can share and modify the software, but you must include the lic
 			replaceAll("§one-x_para1§"   , ""+x_para1  ). 
 			replaceAll("§one-x_example1§", ""+x_example1 ). 
 			replaceAll("§one-showAltre§",  ""+ showAltre). 	
-			replaceAll("§one-n_extr_row§", ""+ n_extr_row).	
+			replaceAll("§one-n_extr_row§", ""+ n_extr_row1).	
 			replaceAll("§YESorNOT§"      , ""+yesOrNot).  		
 			replaceAll("§learnedClass§", learnedClass)	
 			;  
