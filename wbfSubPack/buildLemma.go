@@ -3,13 +3,118 @@ package wbfSubPack
 import (  
 	"fmt"
     "strings"
+	"sort"
 )
 //--------------------------------------------------------------------------
 
 func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 	
-	preLemS12:=  ""
-	lemS12:= ""		
+	//preLemS12:=  ""
+	//lemS12:= ""		
+	
+	sw_WW00:= false
+	sw_WW11:= false
+	//--------------------------------------
+	// sort x lemma, L_W, l_Word2               	
+	sort.Slice(wordLemmaPairTMP, func(i, j int) bool {
+			if (wordLemmaPairTMP[i].lWordSeq != wordLemmaPairTMP[j].lWordSeq) {
+				return wordLemmaPairTMP[i].lWordSeq < wordLemmaPairTMP[j].lWordSeq
+			} else {
+				if (wordLemmaPairTMP[i].lL_W != wordLemmaPairTMP[j].lL_W) {
+					return wordLemmaPairTMP[i].lL_W < wordLemmaPairTMP[j].lL_W
+				} else {
+					return wordLemmaPairTMP[i].lLemma < wordLemmaPairTMP[j].lLemma
+				}	
+			}
+		} )	 
+	//---------------
+	/**
+	for z1, lemX := range wordLemmaPairTMP {
+		fmt.Println("XXXXXXXX   lista wordLemmaPair TMP z1=", z1, " => ", lemX)
+	}	
+	**/
+	/***
+	esempio 		
+		antoniocigna antoniocigna _lemma_is_missing 0 -1 []}
+		antoniocigna antoniocigna _lemma_is_missing 9 -1 []}
+		
+		mut          mut          mut               1 -1 []}
+		 
+		personen     personen     _lemma_is_missing 0 -1 []}
+		personen     personen     person            1 -1 []}
+		personen     personen     person            1 -1 []}
+		personen     personen     _lemma_is_missing 9 -1 []}
+	**/
+	//------------------
+	preWord:=""	
+	//-----------------
+	nnOut:=0
+	//-------------------------------------
+	preTutto:=""
+	tuttoCodice := ""
+	for _, lemX := range wordLemmaPairTMP {
+		//fmt.Println("leggo " , lemX)
+		//-------------------------------------
+		if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " leggo wordLemmaPairTMP ", lemX) }
+		if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " leggo wordLemmaPairTMP ", lemX) }
+		tuttoCodice = fmt.Sprint( lemX.lWordSeq , "-" , lemX.lL_W , "-" , lemX.lLemma) 
+		if tuttoCodice == preTutto { continue }
+		preTutto = tuttoCodice 
+		if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " 2leggo wordLemmaPairTMP ", lemX) }
+		if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " 2leggo wordLemmaPairTMP ", lemX) }
+		
+		if lemX.lWordSeq > preWord {
+			sw_WW00 = false
+			sw_WW11 = false
+			if lemX.lL_W == 0 { 
+				sw_WW00 = true;  // significa che è presente almeno un 'word' del testo
+				preWord = lemX.lWordSeq	
+				continue 
+			}
+		}
+		preWord = lemX.lWordSeq	
+		if lemX.lL_W == 1 { 
+			if sw_WW00 == false { // non è presente nemmeno una 'word' , allora ignora tutte le coppia word-lemma 
+				//fmt.Println("  sw_WW00=", sw_WW00, "   ignoro appena letto") 
+				continue
+			}
+			sw_WW11 = true   // è presente almeno una coppia word-lemma
+		}
+		if lemX.lL_W == 9 {
+			if sw_WW11 == true { // esiste alemeno una coppia word-lemma, non serve aggiungere un lemma false '_lemma_i_missing_'			
+				//fmt.Println("  sw_WW11=", sw_WW11, "   ignoro appena letto") 
+				continue 
+			}
+		}		
+		//fmt.Println("SCRIVO " , lemX, "     xxx   sw_WW00=", sw_WW00, " sw_WW11=", sw_WW11)
+		nnOut++
+		wordLemmaPair = append( wordLemmaPair, lemX)
+		
+		//fmt.Println("caricate wordLemmaPair ", lemX)
+		
+	}	
+	//-------------------------------------
+	for _, lemX := range wordLemmaPair {
+		if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " prima del sort LEGGO wordLemmaPair ", lemX) }
+		if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " prima del sort LEGGO wordLemmaPair ", lemX) }
+	}	
+	//------------------
+	fmt.Println("nnOut=", nnOut,  " len( wordLemmaPair)=", len( wordLemmaPair))
+	//--------------------------------------------------------------
+	// sort x lemma, L_W, l_Word2               	
+	sort.Slice(wordLemmaPair, func(i, j int) bool {
+			if (wordLemmaPair[i].lLemma != wordLemmaPair[j].lLemma) {
+				return wordLemmaPair[i].lLemma < wordLemmaPair[j].lLemma
+			} else {
+				if (wordLemmaPair[i].lWord2 != wordLemmaPair[j].lWord2) {
+					return wordLemmaPair[i].lWord2 < wordLemmaPair[j].lWord2
+				} else {
+					return wordLemmaPair[i].lL_W < wordLemmaPair[j].lL_W
+				}	
+			}
+		} )	 
+	//------------------------------	
+	
 	preLemma:=  ""
 	numLemmaAdded:=0
 	numLemmaOrig:=0 
@@ -20,22 +125,31 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 	numW:=0
 	L_W_doppi:=0
 	L_W_aggiunti:=0
-	//-----------------	
-	for _, lemX := range wordLemmaPairTMP {
-		
+	//------------------------------
+	fmt.Println("  2    len( wordLemmaPair)=", len( wordLemmaPair))
+	//-----------------------------------
+	//zz:=0
+	
+	for _, lemX := range wordLemmaPair {
+		if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " LEGGO wordLemmaPair ", lemX) }
+		if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " LEGGO wordLemmaPair ", lemX) }
+		//fmt.Println(zz, " LEGGO wordLemmaPair ", lemX)
+		/**
 		lemS12 = lemX.lLemma + " " + lemX.lWord2 
 		if preLemS12 == lemS12 {   // se c'è il caso lL_W = 9, è questo ad essere scartato  
 			if lemX.lL_W == 9 { L_W_doppi++ }
 			doppi++
 			continue
+			
 		}	
 		preLemS12 = lemS12
-		
+				
 		if preLemma != lemX.lLemma { 	
 			if lemX.lL_W == 9 {  L_W_aggiunti++ }
 		}
+		**/
 		
-		wordLemmaPair = append( wordLemmaPair, lemX)
+		//wordLemmaPair = append( wordLemmaPair, lemX)
 		z++
 		if preLemma != lemX.lLemma { 	
 			if numW > 0 {
@@ -49,7 +163,7 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 		toIx=z	
 		preLemma = lemX.lLemma		
 
-	} // end for wordLemmaPairTMP
+	} // end for wordLemmaPair
 	//------------------------------
 	
 	if numW > 0 {

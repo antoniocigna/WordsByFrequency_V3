@@ -43,6 +43,8 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 	
 	var wordLemmaPairTMP = make( []wordLemmaPairStruct, 0, numEleMax)
 	
+	//soloQueste := "  familie personen mutter natürlich  mein  gehören  "  
+	
 	if (sw_stop == false) {	
 		// read word lemma
 		for z:=0; z< len(lineS); z++ { 
@@ -55,18 +57,19 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 			wordLemma1.lWord2   = stdCode( cols[0] ) 		
 			wordLemma1.lLemma   = stdCode( cols[1] )	
 			
+			//if strings.Index(soloQueste, strings.ToLower(wordLemma1.lWord2) ) < 0 { continue }			
 			if len(wordLemma1.lLemma) < 1 { continue;  } 
 			if ((wordLemma1.lLemma == "-") || (wordLemma1.lLemma[0:1] < "A")) { continue;  }   // ignore number  
 			
 			wordLemma1.lWordSeq = seqCode( wordLemma1.lWord2)
 			wordLemma1.lIxLemma = -1	
-			
+			wordLemma1.lL_W     = 1 
 			wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
 			numLemmaDict++		
 		}
 		fmt.Println(" read ", len(lineS), " input lemma: format word-lemma")
 	}
-	
+	fmt.Println(" 1 wordLemmaPairTMP  len=", len(wordLemmaPairTMP) )
 	//----------------
     lineS = rowListFromFile( path1, inpLemmaFile_lemmaWord, "2assoc. lemma-word", "read_lemma_file", bytesPerRow)  		
 	
@@ -81,32 +84,38 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 			if len(cols) < 2 { continue } 	
 			wordLemma1.lWord2   = stdCode( cols[0] ) 		
 			wordLemma1.lLemma   = stdCode( cols[1] )	
-			
+			//if strings.Index(soloQueste, strings.ToLower(wordLemma1.lWord2) ) < 0 [ continue ]
+			//if strings.Index(soloQueste, strings.ToLower(wordLemma1.lWord2) ) < 0 { continue }			
 			if len(wordLemma1.lLemma) < 1 { continue;  } 
 			if ((wordLemma1.lLemma == "-") || (wordLemma1.lLemma[0:1] < "A")) { continue;  } 
 			
 			wordLemma1.lWordSeq = seqCode( wordLemma1.lWord2)
 			wordLemma1.lIxLemma = -1
-				
+			wordLemma1.lL_W     = 1 	
 			wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
 			numLemmaDict++		
 		}
 		fmt.Println(" read ", len(lineS), " input lemma: format lemma-word")
 	}
+	fmt.Println(" 2 wordLemmaPairTMP  len=", len(wordLemmaPairTMP) )
 	//------------------------
 	prePa :=""
 	for _, unaParola := range all_words {	// tutte le parole delle righe di testo
 		if unaParola == prePa { continue }
+		//fmt.Println("parola ", unaParola); 
 		prePa = unaParola	
 		parolaZ:= strings.ToLower( strings.TrimSpace( strings.ReplaceAll( unaParola, "\t" , " ") )  ) 			
 		wordLemma1.lWord2   = stdCode( parolaZ ) 		
-		wordLemma1.lLemma   = wordLemma1.lWord2			
+		//wordLemma1.lLemma   = wordLemma1.lWord2			
+		wordLemma1.lLemma   = "_lemma_is_missing"            // segnala che il lemma è mancante  (questo wordLemma1 struct sarà ignorato se esiste un'entrata valida   		
 		wordLemma1.lWordSeq = seqCode( wordLemma1.lWord2)
 		wordLemma1.lIxLemma = -1
-		wordLemma1.lL_W     = 9           // indica che l'origine della coppia è il file di testo 	
-			
+		wordLemma1.lL_W     = 9           // indica che l'origine della coppia è il file di testo 				
+		wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
+		wordLemma1.lL_W     = 0           // indica che l'origine della coppia è il file di testo 	
 		wordLemmaPairTMP = append(wordLemmaPairTMP, wordLemma1 ) 
 	}
+	fmt.Println(" 3 wordLemmaPairTMP  len=", len(wordLemmaPairTMP) )
 	//---------------
 	fmt.Println("aggiunti alle coppie word-lemma ", len(all_words), " coppie ottenute da tutte le parole del testo (nel caso in cui i lemma mancano)")  
 	//-----------------------------------
@@ -116,6 +125,7 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 	fmt.Println( "lette " , numLemmaDict ,  " coppie word-lemma", "\n")
 	//-----	
 	// sort x lemma, word
+	/***
 	sort.Slice(wordLemmaPairTMP, func(i, j int) bool {
 			if (wordLemmaPairTMP[i].lLemma != wordLemmaPairTMP[j].lLemma) {
 				return wordLemmaPairTMP[i].lLemma < wordLemmaPairTMP[j].lLemma
@@ -127,8 +137,23 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 				}	
 			}
 		} )	 
-	
+		***/
+	/**
+	// sort x lemma, L_W, l_Word2               	
+	sort.Slice(wordLemmaPairTMP, func(i, j int) bool {
+			if (wordLemmaPairTMP[i].lLemma != wordLemmaPairTMP[j].lLemma) {
+				return wordLemmaPairTMP[i].lLemma < wordLemmaPairTMP[j].lLemma
+			} else {
+				if (wordLemmaPairTMP[i].lWord2 != wordLemmaPairTMP[j].lL_W) {
+					return wordLemmaPairTMP[i].lWord2 < wordLemmaPairTMP[j].lL_W
+				} else {
+					return wordLemmaPairTMP[i].lL_W < wordLemmaPairTMP[j].lWord2
+				}	
+			}
+		} )	 	
+	**/
 	wordLemmaPair = make( []wordLemmaPairStruct, 0, len(wordLemmaPairTMP)	)
+	
 	
 	buildListLemmaSlice(wordLemmaPairTMP)
 	
