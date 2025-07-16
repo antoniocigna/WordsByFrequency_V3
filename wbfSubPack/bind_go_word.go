@@ -144,6 +144,12 @@ func bind_go_passToJs_word_known2(ixWord int, yesNot_len1  string, js_function s
 	uniqueWordByFreq[ixWord].uLearnedYN = yesNot_len1 // uniqueWordByFreq[ixWord].uKnow_yes_ctr = knowCtr
 	
 	uniqueWordByAlpha[ixAlpha].uLearnedYN    = uniqueWordByFreq[ixWord].uLearnedYN 
+	
+
+	if aWord == "ich" { fmt.Println( green("bind_go_passToJs_word_known2"),  
+					" alpha:  ", uniqueWordByAlpha[ixAlpha].uWordSeq, " ", uniqueWordByAlpha[ixAlpha].uLearnedYN , 
+					" byFreq: ", uniqueWordByFreq[ ixWord ].uWordSeq, " ", uniqueWordByFreq[ ixWord ].uLearnedYN ) } 
+	
 	//uniqueWordByAlpha[ixAlpha].uKnow_yes_ctr = uniqueWordByFreq[ixWord].uKnow_yes_ctr 
 	//uniqueWordByAlpha[ixAlpha].uKnow_no_ctr  = uniqueWordByFreq[ixWord].uKnow_no_ctr 
 	
@@ -171,6 +177,13 @@ func bind_go_passToJs_word_known(ixWord int, yesNo int, knowCtr int, js_function
 		uniqueWordByFreq[ixWord].uLearnedYN = LEARNED_NOT  // uniqueWordByFreq[ixWord].uKnow_no_ctr  = knowCtr 
 	} 
 	uniqueWordByAlpha[ixAlpha].uLearnedYN    = uniqueWordByFreq[ixWord].uLearnedYN 
+	
+	
+	if aWord == "ich" { fmt.Println( green("bind_go_passToJs_word_known"),  
+					" alpha:  ", uniqueWordByAlpha[ixAlpha].uWordSeq, " ", uniqueWordByAlpha[ixAlpha].uLearnedYN , 
+					" byFreq: ", uniqueWordByFreq[ ixWord ].uWordSeq, " ", uniqueWordByFreq[ ixWord ].uLearnedYN ) } 
+	
+	
 	//uniqueWordByAlpha[ixAlpha].uKnow_yes_ctr = uniqueWordByFreq[ixWord].uKnow_yes_ctr 
 	//uniqueWordByAlpha[ixAlpha].uKnow_no_ctr  = uniqueWordByFreq[ixWord].uKnow_no_ctr 
 	

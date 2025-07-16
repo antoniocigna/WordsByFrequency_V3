@@ -64,7 +64,11 @@ func read_wordsToLearn() {
 			}
 			ix1 := xWordA.uIxUnW
 			uniqueWordByFreq[ix1].uLearnedYN = yesNo
-	
+			
+			if xWordA.uWordSeq == "ich" { fmt.Println( green("read_wordsToLearn"), "caricato word learn ", xWordA.uWordSeq, 
+					" alpha:  ", uniqueWordByAlpha[ixA].uWordSeq, " ", uniqueWordByAlpha[ixA].uLearnedYN , 
+					" byFreq: ", uniqueWordByFreq[ ix1].uWordSeq, " ", uniqueWordByFreq[ ix1].uLearnedYN ) } 
+					
 			nread++	
 		}
 	}

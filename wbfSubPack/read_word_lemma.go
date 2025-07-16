@@ -50,12 +50,12 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 		for z:=0; z< len(lineS); z++ { 
 			lineZ0 := strings.TrimSpace(lineS[z])   //  format:     word   lemma		
 			if lineZ0 == "" {continue}
-			lineZ := strings.ReplaceAll( lineZ0, "\t" , " ")			
+			//lineZ := strings.ReplaceAll( lineZ0, "\t" , " ")			
 			
-			cols:= strings.Fields( strings.ToLower( lineZ ) )   // Fields   split using whitespace,  treats consecutive whitespace characters as a single separator		
+			cols:= strings.Split( strings.ToLower( lineZ0 ), "|" )   // Fields   split using whitespace,  treats consecutive whitespace characters as a single separator		
 			if len(cols) < 2 { continue } 
-			wordLemma1.lWord2   = stdCode( cols[0] ) 		
-			wordLemma1.lLemma   = stdCode( cols[1] )	
+			wordLemma1.lWord2   = stdCode( strings.TrimSpace( cols[0] ) ) 		
+			wordLemma1.lLemma   = stdCode( strings.TrimSpace( cols[1] )	)
 			
 			//if strings.Index(soloQueste, strings.ToLower(wordLemma1.lWord2) ) < 0 { continue }			
 			if len(wordLemma1.lLemma) < 1 { continue;  } 
@@ -107,7 +107,7 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 		parolaZ:= strings.ToLower( strings.TrimSpace( strings.ReplaceAll( unaParola, "\t" , " ") )  ) 			
 		wordLemma1.lWord2   = stdCode( parolaZ ) 		
 		//wordLemma1.lLemma   = wordLemma1.lWord2			
-		wordLemma1.lLemma   = "_lemma_is_missing"            // segnala che il lemma è mancante  (questo wordLemma1 struct sarà ignorato se esiste un'entrata valida   		
+		wordLemma1.lLemma   = LEMMA_MISSING            // segnala che il lemma è mancante  (questo wordLemma1 struct sarà ignorato se esiste un'entrata valida   		
 		wordLemma1.lWordSeq = seqCode( wordLemma1.lWord2)
 		wordLemma1.lIxLemma = -1
 		wordLemma1.lL_W     = 9           // indica che l'origine della coppia è il file di testo 				
@@ -226,7 +226,7 @@ func check_wordLemma_sameCode() {
 	pre_z := -1
 	
 	for z, wordPair := range wordLemmaPair {	
-			//if ((  wordPair.lWord2 == "cäsar") || (wordPair.lWord2 == "caesar") || (wordPair.lWord2 == "casar") ) { fmt.Println(" check 222 Lemma ", z,  " wordPair=" , wordPair) }
+		if ((  wordPair.lWord2 == "abgehauen") || (wordPair.lLemma == "abhauen") ) { fmt.Println(green("check_wordLemma_sameCode abhauen "), "z=", z,  " wordPair=" , wordPair) }
 	
 		if (wordPair.lWordSeq != pre_wordCod) {
 			pre_wordCod = wordPair.lWordSeq 

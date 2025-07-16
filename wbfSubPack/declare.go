@@ -15,6 +15,7 @@ var perc_level          = make([]int,   0, 0)
 **/
 const LEARNED_YES = "y"
 const LEARNED_NOT = "n"
+const LEMMA_MISSING = "_lemma_is_missing"
 //-------------------------------------------
 var separRow   = "[\r\n.;:?!]";
 //var separRowFalse = "[\r\n]";
@@ -101,6 +102,7 @@ var wordSliceFreq  = make([]wordStruct, 0, 0)
 var uniqueWordByFreq  []wordIxStruct;   // elenco delle parole in ordine di frequenza
 var uniqueWordByAlpha []wordIxStruct;   // elenco delle parole in ordine alphabetico
 
+var wordToLearnTextSlice []string;   // elenco delle parole col flag se sono già note o ancora da imparare 
 
 var dictLemmaTran []lemmaTranStruct ;  // dictionary lemma translation  
 

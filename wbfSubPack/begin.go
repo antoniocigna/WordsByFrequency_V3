@@ -20,11 +20,11 @@ func begin() {
 	//stat_useWord();	
 	if sw_stop { endBegin("3"); return }	
 	
-	if sw_rewrite_wordLemma_dict { rewrite_word_lemma_dictionary() }
+	//if sw_rewrite_wordLemma_dict { rewrite_word_lemma_dictionary() }
 	
 	if sw_stop { endBegin("4"); return }	
 	
-	read_wordsToLearn()	
+	//read_wordsToLearn()	
 	
 	endBegin("6")
 	
@@ -140,6 +140,9 @@ func read_all_files() {
 	if sw_stop { return }
 	
 	read_dictLemmaTran_file( FOLDER_IO_lastTRAN, FILE_last_updated_dict_words ) 
+	if sw_stop { return }	
+	
+	//read_wordToLearnFile() 
 	if sw_stop { return }	
 	
 	read_lastValueSets2()

@@ -25,6 +25,8 @@ func elabWordList() {
 	loadInverseWordSlice()
 	
 	putWordFrequenceInRowArray()
+	
+	read_wordsToLearn()
 
 	//addRowTranslation() 
 	
@@ -265,7 +267,10 @@ func build_uniqueWord_byFreqAlpha() {
 			xWordF.uSwSelRowG = wS1.wSwSelRowG
 			xWordF.uIxWordFreq = n1
 			xWordF.uLearnedYN  = LEARNED_NOT 
-	
+			
+	if xWordF.uWord2 == "ich" { fmt.Println( green("1build_uniqueWord_byFreqAlpha"),  
+					" freq:  learned= ", xWordF.uLearnedYN  ) } 
+					
 			//xWordF.wTran = "" 
 			xWordF.uIxUnW     = len(uniqueWordByFreq)  
 			uniqueWordByFreq = append( uniqueWordByFreq, xWordF);  
@@ -312,6 +317,9 @@ func build_uniqueWord_byFreqAlpha() {
 	//xWordF.uTranL      = []string{ xWordF.uWord2 }        // ??anto8 .uTranL
 	uniqueWordByFreq   = append( uniqueWordByFreq, xWordF);  
 	
+	if xWordF.uWord2 == "ich" { fmt.Println( green("2build_uniqueWord_byFreqAlpha"),  
+					" freq:  learned= ", xWordF.uLearnedYN  ) } 
+					
 	//--------------------------
 	
 	addWordLemmaTranLevelParadigma()   
@@ -801,6 +809,7 @@ func build_listOfLemmaForAWord(uWord string, ixLemmaPairFoundList []int) ([]int,
 				if newWL.lWord2 != uWord { // error 
 					continue; 
 				}
+				if newWL.lLemma == LEMMA_MISSING { lemmaNotFoundList = append( lemmaNotFoundList, uWord ) } 
 				ixLemma = newWL.lIxLemma 
 			}
 			if ixLemma < 0 { continue } // error
