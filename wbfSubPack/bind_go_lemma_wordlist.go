@@ -72,7 +72,7 @@ func bind_go_passToJs_lemmaWordList(lemmaToFind0 string, inpMaxWordLemma int, js
 		
 					servono solo le parole con lemma stellen, es. stellt, gestellt 
 		**/
-		
+		/**
 		myLem2_ix = myLem1.ls_lemma_ix_stellen
 		if myLem2_ix >= 0 {
 			myLem2_name = myLem1.ls_lemma_stellen
@@ -81,6 +81,7 @@ func bind_go_passToJs_lemmaWordList(lemmaToFind0 string, inpMaxWordLemma int, js
 			myLem2 = lemmaSlice[myLem2_ix]
 			//fmt.Println("\t", " myLem2_name=", myLem2_name , "myLem2=", myLem2,    "  lem1_prefix =", lem1_prefix, " tran=", lem1_prefix_tran) 
 		}
+		**/
 		//---------------------------------
 		//  .leFromIxLW / .leToIxLW    are indicies of element in "lemma_word_ix"
 		listaIxLemmaWordIx:= make([]int, 0, 200 ) 
@@ -175,17 +176,18 @@ func build_one_lemma_row_word( myLem1 lemmaStruct) string {
 		myLem1_name      := myLem1.leLemma
 
 		myLem2_name      := ""
-		myLem2_ix        := -1
+		//myLem2_ix        := -1
 		
 		//var myLem2 lemmaStruct	
 		
 		//fmt.Println( green("build_one_lemma_row_word"), "   target lemma=", myLem1_name, " myLem1.leFromIxLW=",myLem1.leFromIxLW, " myLem1.leToIxLW=", myLem1.leToIxLW )
 		
-		
+		/**
 		myLem2_ix = myLem1.ls_lemma_ix_stellen
 		if myLem2_ix >= 0 {
 			myLem2_name = myLem1.ls_lemma_stellen
 		}
+		**/
 		//---------------------------------
 		//  .leFromIxLW / .leToIxLW    are indicies of element in "lemma_word_ix"
 		

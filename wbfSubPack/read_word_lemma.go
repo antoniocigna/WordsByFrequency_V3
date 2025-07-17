@@ -156,8 +156,11 @@ func read_lemma_file( path1 string, inpLemmaFile_wordLemma, inpLemmaFile_lemmaWo
 	
 	
 	buildListLemmaSlice(wordLemmaPairTMP)
-	
-	
+	/**
+	for _, wD:= range wordLemmaPair {
+		if wD.lWord2 == "am" {  fmt.Println( "dopo buildListLemmaSlice  wordLemmaPair=", wD) }
+	}
+	**/
 	//-------------------------------------
 	fmt.Println( green("lemmaSlice"), "  composto da ", len(lemmaSlice) , " elementi")    
 	

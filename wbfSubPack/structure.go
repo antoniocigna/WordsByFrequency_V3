@@ -20,11 +20,11 @@ type lemmaStruct struct {
 	lePara      string  
 	leExample   string  
 	leNumPara   int
-	ls_lemma_ix_stellen  int	
-	ls_lemma_stellen     string
-	ls_pref_ein          string
-	ls_pref_tran         string 
-	ls_lemma_einStellenList []int 
+	//ls_lemma_ix_stellen  int	
+	//ls_lemma_stellen     string
+	//ls_pref_ein          string
+	//ls_pref_tran         string 
+	//ls_lemma_einStellenList []int 
 } 
 //-------------------------------
 
@@ -34,7 +34,7 @@ type wordLemmaPairStruct struct {
 	lLemma   string
 	lL_W     int                 // se 1L_W = 0 origine è il file lemma-word, se 1L_W = 9 l'origine è il file di testo    
 	lIxLemma int
-	lIx_einStellenList []int 
+	//lIx_einStellenList []int 
 } 
 //---
 

@@ -3,7 +3,7 @@ package wbfSubPack
 	import (
 		"fmt"
 		"strconv"
-	    "strings"
+	    //"strings"
 		"sort"
 		"encoding/hex"
 		"os"
@@ -519,7 +519,7 @@ func addWordLemmaTranLevelParadigma() {
 			
 		ixLemmaPairFoundList := lookForAllLemmas( wF.uWord2 ) // 
 		
-		//if swprova { fmt.Println("1 loop unique x lemma ", wF.uWord2,  " ixLemmaPairFoundList=",  ixLemmaPairFoundList ) }
+		//if wF.uWord2 == "am" { fmt.Println("1 loop unique x lemma ", wF.uWord2,  " ixLemmaPairFoundList=",  ixLemmaPairFoundList ) }
 
 				/**
 						//
@@ -563,6 +563,16 @@ func addWordLemmaTranLevelParadigma() {
 
 
 		lis_ixLemma, lis_origLemma:= build_listOfLemmaForAWord(wF.uWord2, ixLemmaPairFoundList)
+		
+		/**
+			for _, ixLemma2:= range lis_ixLemma { 
+				
+				lemXX := lemmaSlice[ixLemma2]
+				if ((wF.uWord2 == "am") || (lemXX.leLemma == "wochenende")){ 
+						fmt.Println("2 loop unique x lemma ", wF.uWord2,   " lemma=", lemXX )
+				}
+			}
+		**/
  		
 		nele := len( lis_ixLemma )
 			
@@ -639,15 +649,15 @@ func addWordLemmaTranLevelParadigma() {
 			lem := lemmaSlice[ixLemma2].leLemma 
 			lis_lemmaName   = append( lis_lemmaName,  lem )  			
 			
-			//if sw1 {  fmt.Println(" xxx word=",wF.uWord2,  sPrintOneLemma( ixLemma2,   lemmaSlice[ixLemma2] )) }
+			//if wF.uWord2 == "am"  {  fmt.Println( red("3 loop unique x lemma  word=" +wF.uWord2) , " ",  sPrintOneLemma( ixLemma2,   lemmaSlice[ixLemma2] )) }
 			
 			lemmaSlice[ixLemma2].leNumWords++
 			
 			//list1Level, list1Para, list1Exam = fromLemmaTo3List( lem )  // ogni list può contenere più elementi separati da |   ( lo stesso num.di elementi per tutte le liste: A1|A2,par1|par2, ex1|ex2 )  
-			
+			/**
 			listExam0 := compound_lemma(lemmaSlice[ixLemma2] )
 			if strings.TrimSpace(listExam0) != "" { lemStru.leExample += "|" + strings.TrimSpace(listExam0) }
-		
+			**/
 			lis_level = append( lis_level, lemStru.leLevel   )
 			lis_para  = append( lis_para , lemStru.lePara    )
 			lis_exam  = append( lis_exam , lemStru.leExample )
@@ -679,7 +689,8 @@ func addWordLemmaTranLevelParadigma() {
 			LW.lw_origLemma  = lis_origLemma[n1] 
 			if LW.lw_origLemma == LW.lw_lemma2 { LW.lw_origLemma = "" }
 			LW.lw_ixWordUnFr = wF.uIxUnW
-			lemma_word_ix  = append( lemma_word_ix, LW )		
+			lemma_word_ix  = append( lemma_word_ix, LW )	
+			//if ((LW.lw_lemma2 == "am") || (LW.lw_lemma2 == "wochenende")){ fmt.Println("3 loop unique x lemma ", LW) } 	
 			
 		} // end of for , lem 
 		//-----------
@@ -723,7 +734,7 @@ func addWordLemmaTranLevelParadigma() {
 } // end of addWordLemmaTranLevelParadigma
 
 //---------------------------------------------
-
+/****
 func compound_lemma( leS lemmaStruct)  string { 
 
 	  str1:= ""
@@ -742,12 +753,12 @@ func compound_lemma( leS lemmaStruct)  string {
 	  if  len(str1) < 4 {return str1} 	  
 	  return str1[4:]
 }						
-
+***/
 //----------------------------
 func sPrintOneLemma( ix int, leS lemmaStruct)  string { 
 
 	  str1:= fmt.Sprint(" ixLemma=", ix, " lemma=", leS.leLemma ,  leS.leTran) 
-	  
+	  /**
 	  if leS.ls_lemma_ix_stellen >=0 {
 		str1 += fmt.Sprint(" composto da ",  leS.ls_lemma_stellen, "(", leS.ls_lemma_ix_stellen,") + ", leS.ls_pref_ein , "(" +   leS.ls_pref_tran+")" )
 	  }
@@ -758,7 +769,7 @@ func sPrintOneLemma( ix int, leS lemmaStruct)  string {
 				str1 += "\n\t\t" + lemmaSlice[ixle2].leLemma 
 			}
 	  } 
-	  
+	  **/
 	  return str1	
 		/***
 		return fmt.Sprint(" ixLemma=", ix, " lemma=", leS.leLemma , 
@@ -798,6 +809,8 @@ func build_listOfLemmaForAWord(uWord string, ixLemmaPairFoundList []int) ([]int,
 		ixLemma:=-1
 		numLerr:=0; maxNumLerr:=100; 
 		
+		//if uWord == "am" {  fmt.Println(green("0 build_listOfLemmaForAWord") ,  " uWord=", uWord, " ixLemmaPairFoundList " ,ixLemmaPairFoundList) }
+		
 		for  _, ixLp := range ixLemmaPairFoundList { 
 			
 			if numLerr > maxNumLerr { break}
@@ -818,14 +831,16 @@ func build_listOfLemmaForAWord(uWord string, ixLemmaPairFoundList []int) ([]int,
 			
 			lis_ixLemma1   = append(  lis_ixLemma1, ixLemma      )  
 			lis_origLemma1 = append(lis_origLemma1, leSL.leLemma )  
-			
-			//if sw1 {  fmt.Println(" lemma1 ", lemmaSlice[ixLemma], " ixLemma=",ixLemma, " orig=", leSL.leLemma) }
-			
+			/**
+			if uWord == "am" {  fmt.Println("1 build_listOfLemmaForAWord" ,  " uWord=", uWord, 
+				" ixLp=", ixLp, " wordLemmaPair[ixLp]=", wordLemmaPair[ixLp], " ixLemma=", ixLemma,  
+				" lemmaSlice[ixLemma]=", lemmaSlice[ixLemma], " ixLemma=",ixLemma, " orig=", leSL.leLemma) }
+			***/
 			// add lemma in case of lemma made of prefix plus other lemma 
 			 
 
 			if leSL.leLemma == uWord {  continue } 
-			
+			/***
 			if leSL.ls_lemma_ix_stellen >= 0 {
 				newIxLemma00 := leSL.ls_lemma_ix_stellen 
 				lis_ixLemma2   = append(  lis_ixLemma2, newIxLemma00 ) 	
@@ -837,7 +852,7 @@ func build_listOfLemmaForAWord(uWord string, ixLemmaPairFoundList []int) ([]int,
 					lis_origLemma3 = append(lis_origLemma3, leSL.leLemma )  	
 				}
 			} 
-				
+			***/	
 		}	
 		for n2, ix2:= range lis_ixLemma2{
 			if contains(lis_ixLemma1, ix2) { continue } 
@@ -911,8 +926,8 @@ func addUnknowToLemma( lemma1 string) int {
 	leV.leLemma    = lemma1
 	leV.leNumWords = 0; 
 	leV.leTran     = ""
-	leV.ls_lemma_ix_stellen = -1 	
-	leV.ls_lemma_einStellenList = nil
+	//leV.ls_lemma_ix_stellen = -1 	
+	//leV.ls_lemma_einStellenList = nil
 
 	lemmaSlice = append(lemmaSlice, leV ); 
 

@@ -234,12 +234,12 @@ func bind_go_passToJs_getRowsByIxWord( ixWord int, maxNumRow int, js_function st
 	ls_pref_ein          string
 	
 	**/
-	lemmaPrefList:=""
+	//lemmaPrefList:=""
 	//-------------
 	for z:=0; z < len(xWordF.uLemmaL); z++  {
 		ixL1:= xWordF.uIxLemmaL[z]
 		LeS := lemmaSlice[ixL1]  
-		lemmaPrefList +=  " " + LeS.ls_pref_ein		
+		//lemmaPrefList +=  " " + LeS.ls_pref_ein		
 		newL:= xWordF.uLemmaL[z]
 		if newL != LeS.leLemma {
 			continue;  // error 
@@ -267,10 +267,11 @@ func bind_go_passToJs_getRowsByIxWord( ixWord int, maxNumRow int, js_function st
 		} 			
 	} // end for z
 	
-	
+	/**
 	if lemmaPrefList != "" {
 		listWords += PREF_MARKER + lemmaPrefList
 	}
+	**/
 	//-------
 	
 	hd_tr += "\n"
@@ -410,10 +411,12 @@ func bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, js_f
 
 			listWords += " " +  xWordF.uWord2	
 			hd_tr += " :lemma="  + lemmaToFind0 
+			/**
 			if leS.ls_pref_ein != "" {	
 				listWords_pref += " " + leS.ls_pref_ein
 				hd_tr += " = " + leS.ls_pref_ein +"(" + leS.ls_pref_tran+ ")" + " + " +  leS.ls_lemma_stellen  
 			}	
+			**/
 			
 			hd_tr +=  " :tran=" + lemmaTran + " :wordsInLemma=" +	xWordF.uWord2 + " "
 			

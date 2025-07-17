@@ -55,13 +55,13 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 	for _, lemX := range wordLemmaPairTMP {
 		//fmt.Println("leggo " , lemX)
 		//-------------------------------------
-		if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " leggo wordLemmaPairTMP ", lemX) }
-		if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " leggo wordLemmaPairTMP ", lemX) }
+		//if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " leggo wordLemmaPairTMP ", lemX) }
+		//if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " leggo wordLemmaPairTMP ", lemX) }
 		tuttoCodice = fmt.Sprint( lemX.lWordSeq , "-" , lemX.lL_W , "-" , lemX.lLemma) 
 		if tuttoCodice == preTutto { continue }
 		preTutto = tuttoCodice 
-		if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " 2leggo wordLemmaPairTMP ", lemX) }
-		if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " 2leggo wordLemmaPairTMP ", lemX) }
+		//if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " 2leggo wordLemmaPairTMP ", lemX) }
+		//if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " 2leggo wordLemmaPairTMP ", lemX) }
 		
 		if lemX.lWordSeq > preWord {
 			sw_WW00 = false
@@ -200,7 +200,7 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 	fmt.Println("---------------------------------\n")
 	
 	//----------------
-	lemmaSliceUpdateSubLemma()
+	//lemmaSliceUpdateSubLemma()
 	
 	/**
 	fmt.Println("\n------  ix update ---------------------------")
@@ -215,7 +215,7 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 	***/
 	//-----------------------------	
 	
-	//------------------------
+	/**
 	// update  einStellenList
 	for z2, wD:= range wordLemmaPair {
 
@@ -227,7 +227,7 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 		wordLemmaPair[z2] = wD 
 		//if strings.Index(wD.lLemma,"stellen") >=0  { fmt.Println( "??anto2 buildLemma ",  wD) }
 	}  
-	//-----------
+	**/
 	
 	//-----------------------------	
 	fmt.Println("") 
@@ -258,18 +258,21 @@ func appendOneLemma( xLemma string, fromIx int, toIx int, numLemmaOrig int, numL
 	leV.leTran     = ""
 	leV.leLevel    = ""   
 	leV.lePara     = ""   
-	leV.leExample  = ""   
+	leV.leExample  = "" 
+	/**	
 	leV.ls_lemma_ix_stellen = -1
 	leV.ls_lemma_stellen    = ""		
 	leV.ls_pref_ein         = "" 
 	leV.ls_pref_tran        = ""	
 	leV.ls_lemma_einStellenList = nil; 
+	**/
 
 	// eg. einstellen  = ein + stellen 	
 	
 	/**
 	works even with multibyte characters: eg. if prefix="日本"  then   lemma="日本語語語"  is broken down into:  "日本" + "語語語"   
 	**/
+	/**
 	for _, p:= range separPrefList {
 		//fmt.Println("separable prefix ", p.sPrefix , " \t ", p.sPrefTran)
 	
@@ -283,13 +286,15 @@ func appendOneLemma( xLemma string, fromIx int, toIx int, numLemmaOrig int, numL
 			break
 		}
 	}
+	**/
 	
 	numLemmaOrig++
 	lemmaSlice = append(lemmaSlice, leV ) 
 	iixLem = len(lemmaSlice) -1 
 	for h:=fromIx; h<= toIx; h++ {
 		wordLemmaPair[h].lIxLemma = iixLem    
-		wordLemmaPair[h].lIx_einStellenList = nil 
+		//wordLemmaPair[h].lIx_einStellenList = nil 
+		//if ((leV.leLemma == "am") || (leV.leLemma == "wochenende"))  { fmt.Println("appendOneLemma lemmaSlice=",  leV ,  " wordLemmaPair=", wordLemmaPair[h] ) }
 	}	
 	return numLemmaOrig, numLemmaAdded			
 } // end of appendOneLemma 
@@ -299,6 +304,7 @@ func appendOneLemma( xLemma string, fromIx int, toIx int, numLemmaOrig int, numL
  lista lemmaSlice =  {herstellen -1 stellen her avanti 0 0 0    }
  lista lemmaSlice =  {meile -1    0 0 0    }		
 **/
+/****
 func lemmaSliceUpdateSubLemma() {
 	
 	for z1, lem1:= range lemmaSlice {	
@@ -323,5 +329,5 @@ func lemmaSliceUpdateSubLemma() {
 	}	
 
 } // end of  lemmaSliceUpdateSubLemma
-
+*****/
 //-------------------------------------------------------------

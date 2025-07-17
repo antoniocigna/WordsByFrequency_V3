@@ -115,6 +115,11 @@ func buildWordList() {
 			wS1.wIxPosRow = z;    // position of the word in the row 
 			wordSliceAlpha = append(wordSliceAlpha, wS1);	
 			/**
+			if wS1.wWord2 == "am" { 
+				fmt.Println("build_word_list.go word=", wS1.wWord2, " wordSliceAlpha=", wS1);
+			}
+			**/
+			/**
 			if swTEST {  
 				fmt.Println( "\t ANTO ", "word2=", wS1.wWord2, " wIxRow =ixR=", strconv.Itoa( ixR), " wordSliceAlpha=", wS1) 
 				antoCtr_wordSchrift++

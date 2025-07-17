@@ -166,7 +166,7 @@ license MIT: you can share and modify the software, but you must include the lic
 	let prototype_lemmaTD = `
 				<div style="display:none;">§one-f_lemma§</div>
 				<div class="hpad top left1 §topBorder§"  style="resize:vertical; overflow-y:auto; width:100%;">										
-					<span §displayNoneL§  class="c_paradigma" onmouseover='mouseOverWord(this,3)' onmouseout='mouseOutWord(this,3)'><b>§one-f_lemma§</b></span>
+					<span §displayNoneL§  class="c_lemma" onmouseover='mouseOverWord(this,3)' onmouseout='mouseOutWord(this,3)'><b>§one-f_lemma§</b></span>
 					<span  class="c_paradigma" onmouseover='mouseOverWord(this,3)' onmouseout='mouseOutWord(this,3)'>§one-x_para1§</span>						
 					<br   class="c_paradigma"  >	
 					<span class="c_wordTran" style="display:none;">§one-f_tran§</span>		

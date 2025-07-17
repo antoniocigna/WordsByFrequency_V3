@@ -21,7 +21,7 @@ func bind_go_passToJs_prefixWordList( numWords int, wordPrefix string, js_functi
 //--------------------------------------------------
 func get_word_row_list( maxNumWords int, fromWordPref string) (string, []int, []int) {
 	
-	fmt.Println( red("\n 0 get_word_row_list" + fromWordPref) )  
+	//fmt.Println( red("\n 0 get_word_row_list" + fromWordPref) )  
 	
 	var onlyThisLevel string = "any" ; // "A0"  // questo deve arrivare da parametro  
 	var outS1 string; 	
@@ -97,7 +97,7 @@ func get_word_row_list( maxNumWords int, fromWordPref string) (string, []int, []
 				break } 			
 		}
 		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf )	
-		fmt.Println( green("  2 get_word_row_list "), " k=", k, "  rowW=", rowW)  
+		//fmt.Println( green("  2 get_word_row_list "), " k=", k, "  rowW=", rowW, " \nwAlf=", wAlf)  
 		
 		if sw == false { continue }
 		wordPrefixIndexList = append(wordPrefixIndexList, k)
@@ -117,7 +117,7 @@ func get_word_row_list( maxNumWords int, fromWordPref string) (string, []int, []
 		if (ixWord < 0) {continue} 
 		wAlf := uniqueWordByAlpha[ixWord] 
 		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf )  	
-		fmt.Println( green(" 3 get_word_row_list" ), " z=" , z, " ixWord=", ixWord ,  " rowW=", rowW)  
+		//fmt.Println( green(" 3 get_word_row_list" ), " z=" , z, " ixWord=", ixWord ,  " rowW=", rowW)  
 		//fmt.Println("    wordSuffixIndexList sw=", sw, " wAlf=", wAlf.uWordSeq) 
 		if sw == false {
 			wordSuffixIndexList[z] = -1; 

@@ -235,12 +235,14 @@ func bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_function
 		if newL != LeS.leLemma {
 			continue;  // error 
 		}
+		/**
 		if LeS.ls_pref_ein == "" { 
 			newL2=""
 		} else {
 			listWords_pref += " " + LeS.ls_pref_ein
 			newL2= " = ??anto3 " + LeS.ls_pref_ein +"(" + LeS.ls_pref_tran+ ")" + " + " +  LeS.ls_lemma_stellen 
 		}
+		**/
 		newT:= LeS.leTran
 		newP:= xWordF.uPara[z]
 		if newL == preL { 
@@ -640,7 +642,7 @@ func fun_wordListToRowList_head(aWord string, lemmaList []lemmaWordStruct, maxNu
 		if ixToList > numberOfWords { ixToList = numberOfWords; }		
 		
 		listWords += " " +  xWordF.uWord2
-		
+		newPref:=""
 		for z:=0; z < len(xWordF.uLemmaL); z++  {
 			ixL1:= xWordF.uIxLemmaL[z]
 			LeS := lemmaSlice[ixL1]
@@ -648,13 +650,15 @@ func fun_wordListToRowList_head(aWord string, lemmaList []lemmaWordStruct, maxNu
 			if newL != LeS.leLemma {
 				continue;  // error 
 			}
-			newPref:=""
+			/**
+			newPref:=""			
 			if (LeS.ls_pref_ein == "") { 
 				newPref = ""
 			} else {
 				listWords_pref += LeS.ls_pref_ein
 				newPref = " = " + LeS.ls_pref_ein +"(" + LeS.ls_pref_tran+ ")" + " + " +  LeS.ls_lemma_stellen 
 			}
+			**/
 			if newL != lemmaX.lw_lemma2 { continue }   //     seqCode   ( sto cercando frasi doppie 
 			//newT:= xWordF.uTranL[z]		//	anto1  .uTranL
 			newT:= LeS.leTran
