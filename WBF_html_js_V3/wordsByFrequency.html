@@ -547,62 +547,161 @@
                     <span style="font-size:1.2em; color:blue;">Words by Frequency V3</span>
                     <br> <span style="font-size:0.6em;">Antonio Cigna 2023</span>
                 </div>
-				<div style="font-size:0.6em;">
-Le parole del testo sono mostrate in ordine decrescente di frequenza di utilizzo, prima quelle più usate.<br>
-Per ogni parola è possibile listare le righe che le contengono e per ognuna a richiesta ascoltarne la lettura e leggerne la traduzione. 
-<br>
-Se la traduzione delle parole o delle righe richieste manca, può essere copiata da un traduttore automatico e così sarà disponibile anche nei run seccessivi 
+				<div style="font-size:0.6em;display:none;">
+					Le parole del testo sono mostrate in ordine decrescente di frequenza di utilizzo, prima quelle più usate.<br>
+					Per ogni parola è possibile listare le righe che le contengono e per ognuna a richiesta ascoltarne la lettura e leggerne la traduzione. 
+					<br>
+					Se la traduzione delle parole o delle righe richieste manca, può essere copiata da un traduttore automatico e così sarà disponibile anche nei run seccessivi 
 
-</div>  
-                <br>
+				</div>  
+				<br>
 				<div id="id_divVoice" style="text-align:center;width:100%;"></div>
-                <div id="id_divVoiceX" style="text-align:center;width:100%;">
-                    <label for="id_voices">
-                    <b><span id="m135X" class="f_blue">Lingua</span></b>	
-                    </label> 
-                    <br>
-                    <select id="id_voices" onchange="onchange_tts_get_oneLangVoice(this)">    
-                    </select>
-                    <div style="display:none">
-                        <span id="id_myLang"></span>
-                        <br>
-                        <span id="id_lang2"></span>
-                        <br>
-                        <span id="m002">language</span>
-                        <span id="m003">voice</span>					  
-                    </div>
-                   
-                </div>
+				<div id="id_divVoiceX" style="text-align:center;width:100%;">
+					<label for="id_voices">
+					<b><span id="m135X" class="f_blue">Lingua</span></b>	
+					</label> 
+					<br>
+					<select id="id_voices" onchange="onchange_tts_get_oneLangVoice(this)">    
+					</select>
+					<div style="display:none">
+						<span id="id_myLang"></span>
+						<br>
+						<span id="id_lang2"></span>
+						<br>
+						<span id="m002">language</span>
+						<span id="m003">voice</span>					  
+					</div>
+		   
+				</div>
 				 <div id="id_ext_language" style="margin-top:0.5em;"></div>
                     <br>
 					
-				
-                <table style="border:0px solid green; ">
+			<div  style="width:100%; border:3px solid green;">
+				<div id="id_list_Righe_TD_Num"  class="centerXY" style="width:100%;">
+                  <div>
+                     <script>
+                        function onclick_showHiddenRowData() {
+                        	e_rowHid1 = document.getElementById("id_rowHid1");
+                        	e_rowHid2 = document.getElementById("id_rowHid2");
+                        	if (e_rowHid1.style.display == "none" ) {
+                        		e_rowHid1.style.display = "block";
+                        		e_rowHid2.style.display = "block";
+                        	} else {
+                        		e_rowHid1.style.display = "none";
+                        		e_rowHid2.style.display = "none";
+                        	}
+                        }
+                     </script>
+                     <div style="font-size:1.2em;font-weight:bold;text-align:center;width:100%;">Soltanto il Testo scelto</div>
+                     
+                     <select id="id_gruppi_sel" style="display:inline-block; 
+                        font-size:1.0em; font-weight:bold;
+                        text-align:left;background-color:white;
+                        color:blue;
+                        " onchange="onchange_rowGroupSelectChange(true,1)">		
+					 </select>
+                     <span style="padding-left:0.5em;">(di <span id="id_gruppo_numTotRow1">145</span> righe)</span>
+                  </div>
+               </div>
+               <div class="centerXY" style="width:100%; margin-top:0.5em;">
+                  <div>
+                     <div style="font-size:0.8em;">
+						<span style="padding-left:2em;">le prime 
+                        <input id="id_gruppi_iNumRows" type="number" min="1" value="4" style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;" onchange="onchange_rowGroupSelectChange(false,3)">	
+                        righe, 
+                        iniziando dalla riga  
+                        <input id="id_gruppi_iBegNum" type="number" min="1" value="1" style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;" onchange="onchange_rowGroupSelectChange(false,2)">
+                       	
+                        <span id="id_inpRowEmpty" style="display:none;color:red; font-weight:bold;font-size:1.5em;"> nessuna riga trovata 
+                        </span>
+                     </div>
+                     <div id="id_rowHid1" style="display:none;border:0.6px solid black;"> 	
+                        il gruppo selezionato <span id="id_gruppo_val">15</span>    ha indice  <span id="id_gruppi_oSelIx">14</span>
+                        <br>
+                        comprende le righe di testo dalla <span id="id_inizioGruppo">19950</span>, 
+                        alla <span id="id_fineGruppo">20094</span> (in tutto <span id="id_gruppo_numTotRow2">145</span>)    
+                        <br><br>la prima riga richiesta la n.<span id="id_gruppi_oBegNum">88</span> del gruppo è la riga di testo n.<span id="id_ixTextAskedRow">20037</span>   
+                        <span style="display:none;">
+                        <br>prima riga del gruppo:<br>
+                        <span id="id_gruppi_firstRow">140 verbi irregolari</span>	
+                        </span>
+                     </div>
+                     <div id="id_rowHid2" style="display:none;">
+                        le righe del testo richieste vanno dal numero
+                        <span id="id_fromIx_row" style="text-align:right; width:5em;background-color:white;">20037</span>												
+                        al numero 
+                        <span id="id_toIx_row" style="text-align:right; width:5em;background-color:white;">20094</span>
+                        e sono 
+                        <span id="id_inpNumRow" style="text-align:right; width:5em;background-color:white;">58</span>	
+                     </div>
+                  </div>
+               </div>
+               <div class="centerXY" style="width:100%;margin-top:1em;margin-bottom:1em;">
+                  <div style="width:100%;">				
+                     <button onclick="onclick_require_rowList1(1)" class="tdBut1" style="margin-left:50%;width:40%;">Lista le Righe</button><br>
+                     <button onclick="onclick_require_rowList1(2)" class="tdBut1" style="margin-left:50%;width:40%;">Lista Le Parole</button><br>
+                     <button onclick="onclick_require_rowList1(3)" class="tdBut1" style="margin-left:50%;width:40%;">Lista Soltanto le parole non ancora imparate</button>
+                  </div>
+               </div>
+            </div>
+            <div class="centerXY" style="width:100%;margin-top:1em; border:2px solid green;">
+				<div style="text-align:center;width:100%;">
+					<div style="text-align:center;width:100%;">
+						<span style="font-size:1.2em;font-weight:bold;text-align:center;width:100%;">Tutti i Testi presenti					  </span>
+						<br>					  
+						<span id="id_inpFileList"  style="font-size:0.8em;">
+					</div>
+					 <div id="id_start002" style="display: flex;  justify-content: center;">
+					   <div>
+							<div id="id_showButt" style="text-align:center;display:none;">			
+							 <button onclick="onclick_show_or_hide_statistics()">show/hide statistics</button>  							
+							</div>
+							<table  style="display:none;">
+								<tr id="id_start_trModel">
+									<td style="text-align:right;vertical-align:top;">tdNum</td>
+									<td style="vertical-align:top; white-space:nowrap;">lines file </td>
+									<td style="font-size:1.2em;vertical-align:top;">tdName</td>
+								</tr>
+							</table>
+							<table id="id_start_tab" style="display:none;"></table>
+							<div id="id_frequenze" style="display:none;">	
+							</div>
+						</div>
+					</div>
+				  
+                  <table style="border:0px solid green;">                    
                     <tr>
                         <td class="tdV1"> 
-                            <button onclick="onclick_mostFreqWordList_require()"  class="tdBut1" >Lista le Parole Più Frequenti</button>
+                            <button onclick="onclick_mostFreqWordList_require('anyRow','allWords')"  class="tdBut1" >Lista le Parole di tutti i testi</button>
                         </td>
-						<td class="tdV1">
+						<td class="tdV1" rowspan="2">
 							<div style="display: flex;align-content:border:51px solid green;" >
 								<div style="display:inline-block;vertical-order:middle;border:0px solid red;width:100%; text-align:left; font-size:0.6em;">
-									<span style="font-size:0.8em;margin-left:1em">
+									
+									<span style="font-size:0.8em;margin-left:1em;   display:none;">
 										<select id="id_sel_2_extrRow" onchange="onchange_mostFreqWordList_extrRow()" 
 												style="width:24em;padding-left:0.5em;font-size:1.5em; font-weight:bold;">
 											<option id="extrRow" >nelle righe scelte in "Lista Le Righe"</option>											
-											<option id="anyRow"  >in tutte le righe del testo</option>	
+											<option id="anyRow" selected >in tutte le righe del testo</option>	
 										</select>										
 									</span> 
 									
-									<span style="font-size:0.8em;margin-left:1em">
+									<span style="font-size:0.8em;margin-left:1em; display:none;">
 										<select id="id_sel_tblwords"  
 												style="width:24em;padding-left:0.5em;font-size:1.5em; font-weight:bold;">
-											<option id="allWords"   >tutte le parole</option>											
-											<option id="toBeLearned">soltanto le parole to be learned</option>	
+											<option id="allWords"   selected>tutte le parole</option>											
+											<option id="toBeLearned" >soltanto le parole to be learned</option>	
 										</select>										
 									</span> 
-									<input id="id_inpMaxNumWords" type="number"  min="1" value="4" style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;">
-									parole iniziando dalla numero
-									<input id="id_inpBegFreqWList" type="number" min="1" value="1" style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;">	
+									<span style="font-size:0.8em;">
+										<span style="padding-left:2em;">al massimo </span>	
+										<input id="id_inpMaxNumWords" type="number"  min="1" value="200" 
+											<span style="padding-left:2em; text-align:right; width:4em; background-color:white;font-size:1.2em; 
+													font-weight:bold;">
+												parole iniziando dalla numero</span>
+										<input id="id_inpBegFreqWList" type="number" min="1" value="1" 
+											style="text-align:right; width:4em;background-color:white;font-size:1.2em; font-weight:bold;">									
+									</span>
 									<span id="id_inpBegError"  style="display:none;color:red; font-weight:bold;font-size:1.5em;"> nessuna parola trovata 
 										<span id="id_inpBegErrMsg"></span>										
 									</span>  
@@ -612,7 +711,47 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 							</div>
                         </td>
                     </tr>
-					
+					<tr>
+                        <td class="tdV1"> 
+                            <button onclick="onclick_mostFreqWordList_require('anyRow','toBeLearned')"  class="tdBut1" >Lista le Parole da imparare</button>
+                        </td>
+						<!--
+						<td class="tdV1">
+							<div style="display: flex;align-content:border:51px solid green;" >
+								<div style="display:inline-block;vertical-order:middle;border:0px solid red;width:100%; text-align:left; font-size:0.6em;">
+									
+									<span style="font-size:0.8em;margin-left:1em;   display:none;">
+										<select id="id_sel_2_extrRow" onchange="onchange_mostFreqWordList_extrRow()" 
+												style="width:24em;padding-left:0.5em;font-size:1.5em; font-weight:bold;">
+											<option id="extrRow" >nelle righe scelte in "Lista Le Righe"</option>											
+											<option id="anyRow"  selected >in tutte le righe del testo</option>	
+										</select>										
+									</span> 
+									
+									<span style="font-size:0.8em;margin-left:1em; display:none;">
+										<select id="id_sel_tblwords"  
+												style="width:24em;padding-left:0.5em;font-size:1.5em; font-weight:bold;">
+											<option id="allWords"            >tutte le parole</option>											
+											<option id="toBeLearned" selected>soltanto le parole to be learned</option>	
+										</select>										
+									</span> 
+									<span style="padding-left:2em;">al massimo </span>	
+									<input id="id_inpMaxNumWords" type="number"  min="1" value="100" 
+									<span style="padding-left:2em;">parole iniziando dalla numero</span>
+									<input id="id_inpBegFreqWList" type="number" min="1" value="1" 
+											style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;">	
+									
+										style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;">
+											<span id="id_inpBegError"  style="display:none;color:red; font-weight:bold;font-size:1.5em;"> nessuna parola trovata 
+										<span id="id_inpBegErrMsg"></span>										
+									</span>  
+									
+									
+								</div> 							
+							</div>
+                        </td>
+						-->
+                    </tr>
                     <tr>
                         <td class="tdV1"  style="vertical-align:top;"> 
 							<div>
@@ -670,79 +809,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
                         </td>
                     </tr>	
 
-					  <tr>
-                        <td  id="id_list_Righe_TD_But" class="tdV1"> 
-                            <button onclick="onclick_require_rowList1()" class="tdBut1">Lista le Righe</button>
-                        </td>                      
-						 <td  class="tdV1"  style="padding-left:0.5em;" >
-							<div id="id_list_Righe_TD_Num"  style="padding: 2px 4px 6px 0px;font-size:0.8em;">
-								<div  class="centerXY" style="width:100%; ">
-								<div>
-								<script>
-									function onclick_showHiddenRowData() {
-										e_rowHid1 = document.getElementById("id_rowHid1");
-										e_rowHid2 = document.getElementById("id_rowHid2");
-										if (e_rowHid1.style.display == "none" ) {
-											e_rowHid1.style.display = "block";
-											e_rowHid2.style.display = "block";
-										} else {
-											e_rowHid1.style.display = "none";
-											e_rowHid2.style.display = "none";
-										}
-									}
-								</script>
-									<span ><button  class="buttonPhantom" onclick="onclick_showHiddenRowData()">del brano</button></span> 
-									<select  id="id_gruppi_sel"  
-											style="display:inline-block; 
-												font-size:1.2em; font-weight:bold;
-												text-align:left;background-color:white;
-												color:blue;
-												"
-											onchange="onchange_rowGroupSelectChange(true,1)" >   								
-									</select>
-									<span style="padding-left:0.5em;">(di <span id="id_gruppo_numTotRow1"></span> righe)</span>
-								</div>
-								</div>
-								<div  class="centerXY" style="width:100%; ">
-									<div>
-										<div style="font-size:0.8em;">
-											iniziando dalla riga  
-											<input id="id_gruppi_iBegNum" type="number" min="1" value="1"  
-													style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;" 
-													onchange="onchange_rowGroupSelectChange(false,2)">
-											 &nbsp;&nbsp; &nbsp;le prime 
-											<input id="id_gruppi_iNumRows"   type="number" min="1" value="4"  
-													style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;" 
-													onchange="onchange_rowGroupSelectChange(false,3)">	
-											 righe	
-											 <span id="id_inpRowEmpty"  style="display:none;color:red; font-weight:bold;font-size:1.5em;"> nessuna riga trovata 
-										</div>
-										<div id="id_rowHid1" style="display:block;border:0.6px solid black"> 	
-											il gruppo selezionato <span id="id_gruppo_val"></span>    ha indice  <span id="id_gruppi_oSelIx">0</span>
-											<br>
-												comprende le righe di testo dalla <span  id="id_inizioGruppo"></span>, 
-													alla <span  id="id_fineGruppo"></span> (in tutto <span id="id_gruppo_numTotRow2"> </span>)    
-											<br><br>la prima riga richiesta la n.<span id="id_gruppi_oBegNum">1</span> del gruppo è la riga di testo n.<span id="id_ixTextAskedRow"></span>   
-											
-											<span style="display:none;">
-												<br>prima riga del gruppo:<br>
-												<span id="id_gruppi_firstRow"></span>	
-											</span>
-										</div>
-										<div  id="id_rowHid2" style="display:block;">
-												le righe del testo richieste vanno dal numero
-												<span id="id_fromIx_row" style="text-align:right; width:5em;background-color:white;" ></span>												
-												al numero 
-												<span id="id_toIx_row" style="text-align:right; width:5em;background-color:white;" ></span>
-												 e sono 
-												<span id="id_inpNumRow"  style="text-align:right; width:5em;background-color:white;" ></span>	
-																			
-										</div>	
-									</div>
-								</div>
-							</div>
-                        </td>
-                    </tr>	
+					 
 					
 					 <tr>
                         <td id="id_list_Righe_conParole" class="tdV1"> 
@@ -762,34 +829,14 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 								</div>
                         </td>
                     </tr>
-					
-                </table>
-			
-								
-				<div class="centerXY" style="width:100%;">
-					<div id="id_inpFileList" class="centerXY">
-					</div>
-				</div>	
-				<div id="id_start002"  style="display: flex;  justify-content: center;">
-                    <div>
-                        <div id="id_showButt"  style="text-align:center;display:none;">			
-                            <button onclick="onclick_show_or_hide_statistics()">show/hide statistics</button>  						
-                        </div>
-                        <table  style="display:none;">
-                            <tr id="id_start_trModel">
-                                <td style="text-align:right;vertical-align:top;">tdNum</td>
-                                <td style="vertical-align:top; white-space:nowrap;">lines file </td>
-                                <td style="font-size:1.2em;vertical-align:top;">tdName</td>
-                            </tr>
-                        </table>
-                        <table id="id_start_tab"></table>
-                        <div id="id_frequenze" style="display:none;">	
-                        </div>
-                    </div>
-                </div>
-							
+                  </table>
+               </div>
             </div>
+         
+           
+							
         </div>
+     </div>
 		
 		<!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -->
 		
@@ -841,9 +888,8 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 							<div style="text-align:center;border:0px solid black;"> 
 								&nbsp;<span>there are </span><span id="id_notTranNum">10</span>&nbsp;<span> words without translation</span>								
 								<ul>
-								<li><button onclick="onclick_showWordsButton(1)" style="width:100%;">Ignore missing translations and continue</button></li>
-								<br>
-								<li><button onclick="onclick_showWordsButton(2)" style="width:100%;" >Translations added, check again</button></li>		
+									<li><button onclick="onclick_showWordsButton(1)" style="width:100%;">Ignore missing translations and continue</button></li>
+									<li><button onclick="onclick_showWordsButton(2)" style="width:100%;" >Translations added, check again</button></li>		
 								</ul>				
 							</div>		
 						</div>		
@@ -941,9 +987,8 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 							<div style="text-align:center;border:0px solid black;"> 
 								&nbsp;<span>there are </span><span id="id_notTranNumRow"></span>&nbsp;<span> rows without translation</span>								
 								<ul>
-								<li><button onclick="onclick_showRowsButton(1)" style="width:100%;">Ignore missing translations and continue</button></li>
-								<br>
-								<li><button onclick="onclick_showRowsButton(2)" style="width:100%;" >Translations added, check again</button></li>		
+									<li><button onclick="onclick_showRowsButton(1)" style="width:100%;">Ignore missing translations and continue</button></li>
+									<li><button onclick="onclick_showRowsButton(2)" style="width:100%;" >Translations added, check again</button></li>		
 								</ul>				
 							</div>		
 						</div>	
@@ -1003,7 +1048,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
                                     <col id="col_ttsWordPause"   span="1">
                                     <col id="col_ttsVoice0"      span="1">
                                     <col id="col_ttsInf"         span="1">
-                                    <col id="col_numSub"         span="1">
+                                    <col id="col_numSub"         span="2">
                                 </colgroup>
                                 <thead id="id_tabSub_th" style="position: sticky;top: 0;" >
                                     <tr id="id_tr_row_zero">
@@ -1030,6 +1075,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 																	<span class="c_lemma">§1lemma§</span>
 																	<span class="c_tranW" style="padding-left:0.5em;">§1tran§</span> 
 																</td> 
+																<td></td>
 															</tr>															
 															<tr>
 																<td style="visibility:hidden;">&nbsp;</td>
@@ -1037,10 +1083,12 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 															</tr> 
 														</tbody>
 													</table>	
-													<!-- case 1:  one lemma one word ---> 
+													<!-- case 1:  one lemma one word --> 
 													<table id="tsHead_1_3" style="display:none;">
 														<tbody id="id_model_tSHead_bdy_13">
-															<tr><td colspan="2" class="c_word">§1wordXlem§</td> </tr>															
+															<tr><td colspan="2" class="c_word">§1wordXlem§</td>
+																<td></td>
+															</tr>															
 															<tr><td><span style="font-size:0.5em;">lemma </span></td>
 																<td style="padding-right:0.5em;">																
 																	<span class="c_lemma">§1lemma§</span>
@@ -1048,7 +1096,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 																<td class="c_tranW">§1tran§</td></tr> 
 														</tbody>
 													</table>
-													<!-- case 3:  one word many lemmas ---> 
+													<!-- case 3:  one word many lemmas --> 
 													<table id="tsHead_3" style="display:none;">
 														<tbody id="id_model_tSHead_bdy_13_row2">														
 															<tr><td><span style="font-size:0.5em;">lemma </span></td>
@@ -1058,7 +1106,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
 																<td class="c_tranW">§1tran§</td></tr> 	
 														</tbody>
 													</table>
-													<!-- case 3:  many words,  many lemmas each---> 
+													<!-- case 3:  many words,  many lemmas each--> 
 													<table id="tsHead_4">
 														<tbody id="id_model_tSHead_bdy_4">
 															<tr>
@@ -1116,7 +1164,7 @@ Se la traduzione delle parole o delle righe richieste manca, può essere copiata
                             </table>
 						
 							<div>
-								<div style="font-size:0.8em;"><b>voce preferita</div> 
+								<div style="font-size:0.8em;"><b>voce preferita</b></div> 
 								<select id="id_selectFirstLanguage" style="font-size:0.5em;"  >
 								</select>
 							</div>

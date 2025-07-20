@@ -8,6 +8,7 @@ import (
 
 //------------------------------
 func buildStatistics() {		
+		//fmt.Println(cyan("buildStatistics"))
 		//var rows []string
 		var result string = ""
 		
@@ -38,9 +39,11 @@ func buildStatistics() {
 
 		result += "livello " + msgLevelStat //  + "..endLevel ";  
 		
+		//fmt.Println("statistcs len(wordStatistic_tx)=", len(wordStatistic_tx) )
+		
 		for _, sS:= range wordStatistic_tx {	
 			if sS.totWords == 0 { continue; }
-			if sS.uniqueWords < 100 { continue}
+			//if sS.uniqueWords < 100 { continue}
 			//fmt.Println( sS.uniqueWords , " words (",  sS.uniquePerc, "%), found ", 
 			//	sS.totWords,  " times in the text(", sS.totPerc,"%)" ) 
 			
@@ -49,6 +52,9 @@ func buildStatistics() {
 			result += "<br>" + fmt.Sprintln( sS.uniqueWords, ",", sS.uniquePerc, ",", sS.totPerc, ",", sS.totWords) 	
 		}  		
 		result += "<br>" 
+		
+		//fmt.Println("statistics ", result); 
+		
 		go_exec_js_function("js_go_updateStatistics", result )		
 	
 }	

@@ -26,7 +26,7 @@ func go_exec_js_function(js_function0 string, inpstr string) {
 	if k1 > 0 {
 		js_parm     = strings.ReplaceAll(  js_function[k1+1:], ")","")			
 		js_function = strings.TrimSpace(js_function[0:k1] )
-	} 
+	}	
 	/**
 	fmt.Println("  js_function=" + js_function)
 	fmt.Println("      js_parm=" + js_parm)
@@ -46,9 +46,12 @@ func go_exec_js_function(js_function0 string, inpstr string) {
 	inpstr = strings.ReplaceAll( inpstr, "`", " "   ); 	   	 
 	inpstr = strings.ReplaceAll( inpstr, "$", "&dollar;"); 
 	
+	//fmt.Println(cyan("go_exec_js_function "), "js_function=", js_function, "js_parm=", js_parm, " jsInpFunction=", jsInpFunction, " gofunc=", "go=" + goFunc)
+	//fmt.Println("go_exec_js_function ", "	inpstr=", inpstr)
+	
 	evalStr := fmt.Sprintf( "%s(`%s`,`%s`,`%s`,`%s`);",  js_function, inpstr, js_parm, "js=" + jsInpFunction, "go=" + goFunc ) ; 
 	
-	//fmt.Println("evalStr=" + evalStr); 
+	//fmt.Println(cyan("go_exec_js_function "), "evalStr=" + evalStr); 
 	
 	ui.Eval(evalStr)
 	

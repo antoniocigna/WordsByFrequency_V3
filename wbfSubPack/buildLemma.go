@@ -2,7 +2,7 @@ package wbfSubPack
 
 import (  
 	"fmt"
-    "strings"
+    //"strings"
 	"sort"
 )
 //--------------------------------------------------------------------------
@@ -94,10 +94,12 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 		
 	}	
 	//-------------------------------------
+	/**
 	for _, lemX := range wordLemmaPair {
 		if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " prima del sort LEGGO wordLemmaPair ", lemX) }
 		if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " prima del sort LEGGO wordLemmaPair ", lemX) }
-	}	
+	}
+	**/	
 	//------------------
 	fmt.Println("nnOut=", nnOut,  " len( wordLemmaPair)=", len( wordLemmaPair))
 	//--------------------------------------------------------------
@@ -131,8 +133,8 @@ func buildListLemmaSlice( wordLemmaPairTMP []wordLemmaPairStruct) {
 	//zz:=0
 	
 	for _, lemX := range wordLemmaPair {
-		if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " LEGGO wordLemmaPair ", lemX) }
-		if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " LEGGO wordLemmaPair ", lemX) }
+		//if strings.ToLower(lemX.lWord2) == "abend"    {fmt.Println( " LEGGO wordLemmaPair ", lemX) }
+		//if strings.ToLower(lemX.lWord2) == "antonio"  {fmt.Println( " LEGGO wordLemmaPair ", lemX) }
 		//fmt.Println(zz, " LEGGO wordLemmaPair ", lemX)
 		/**
 		lemS12 = lemX.lLemma + " " + lemX.lWord2 

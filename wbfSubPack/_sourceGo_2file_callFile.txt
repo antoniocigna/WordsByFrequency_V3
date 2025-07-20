@@ -1,0 +1,130 @@
+lista file
+-no func -
+begin.go
+  calls file build_word_list.go
+  calls file elab_word_list.go
+  calls file go_exec_js_function.go
+  calls file myMain.go
+  calls file read_any_text_file.go
+  calls file read_control_file.go
+  calls file read_lastValueSets2.go
+  calls file read_numbered_row_text.go
+  calls file read_paradigma.go
+  calls file read_translation.go
+  calls file read_word_lemma.go
+  calls file separablePrefixes.go
+  calls file statistics.go
+  calls file write_and_rewrite.go
+bind_go__passToJS_.go
+  calls file begin.go
+  calls file bind_go_between_lemmaList.go
+  calls file bind_go_between_wordList_V3.go
+  calls file bind_go_lemma_wordlist.go
+  calls file bind_go_row.go
+  calls file bind_go_word.go
+  calls file bind_go_word_to_row.go
+  calls file bind_go_write.go
+  calls file go_exec_js_function.go
+bind_go_between_lemmaList.go
+  calls file bind_go_between_wordList_V3.go
+  calls file bind_go_lemma_wordlist.go
+  calls file go_exec_js_function.go
+  calls file lookFor.go
+  calls file suffix_lemma_word.go
+bind_go_between_wordList_V3.go
+  calls file bind_go_word_to_row.go
+  calls file encode_word.go
+  calls file go_exec_js_function.go
+  calls file lookFor.go
+  calls file suffix_lemma_word.go
+bind_go_lemma_wordlist.go
+  calls file bind_go_word_to_row.go
+  calls file go_exec_js_function.go
+  calls file lookFor.go
+bind_go_row.go
+  calls file begin.go
+  calls file go_exec_js_function.go
+  calls file write_and_rewrite.go
+bind_go_word.go
+  calls file begin.go
+  calls file bind_go_between_wordList_V3.go
+  calls file bind_go_row.go
+  calls file bind_go_word_to_row.go
+  calls file encode_word.go
+  calls file go_exec_js_function.go
+bind_go_word_to_row.go
+  calls file bind_go_between_wordList_V3.go
+  calls file bind_go_word.go
+  calls file build_word_list.go
+  calls file encode_word.go
+  calls file go_exec_js_function.go
+  calls file lookFor.go
+bind_go_write.go
+  calls file encode_word.go
+  calls file go_exec_js_function.go
+  calls file myMain.go
+  calls file read_translation.go
+  calls file write_and_rewrite.go
+buildLemma.go
+  calls file lookFor.go
+  calls file suffix_lemma_word.go
+build_word_list.go
+  calls file encode_word.go
+  calls file go_exec_js_function.go
+color.go
+declare.go
+  calls file html_env.go
+elab_word_list.go
+  calls file encode_word.go
+  calls file lookFor.go
+  calls file read_words_to_learn.go
+  calls file suffix_lemma_word.go
+  calls file write_and_rewrite.go
+encode_word.go
+file_and_folder.go
+go_exec_js_function.go
+html_env.go
+lookFor.go
+  calls file encode_word.go
+myMain.go
+  calls file begin.go
+  calls file bind_go__passToJS_.go
+  calls file html_env.go
+  calls file read_any_text_file.go
+read_any_text_file.go
+  calls file bind_go__passToJS_.go
+read_control_file.go
+  calls file bind_go__passToJS_.go
+  calls file read_any_text_file.go
+read_lastValueSets2.go
+  calls file go_exec_js_function.go
+  calls file read_any_text_file.go
+read_numbered_row_text.go
+  calls file go_exec_js_function.go
+  calls file read_any_text_file.go
+read_paradigma.go
+  calls file lookFor.go
+  calls file read_any_text_file.go
+read_translation.go
+  calls file encode_word.go
+  calls file read_any_text_file.go
+read_word_lemma.go
+  calls file buildLemma.go
+  calls file encode_word.go
+  calls file read_any_text_file.go
+read_words_to_learn.go
+  calls file encode_word.go
+  calls file lookFor.go
+  calls file read_any_text_file.go
+  calls file write_and_rewrite.go
+separablePrefixes.go
+  calls file read_any_text_file.go
+statistics.go
+  calls file go_exec_js_function.go
+structure.go
+suffix_lemma_word.go
+  calls file encode_word.go
+write_and_rewrite.go
+------------------------
+scritto dal programma xrefManyFile.go
+-------------------------

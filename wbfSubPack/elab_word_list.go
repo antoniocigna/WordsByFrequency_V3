@@ -5,8 +5,9 @@ package wbfSubPack
 		"strconv"
 	    //"strings"
 		"sort"
-		"encoding/hex"
+		//"encoding/hex"
 		"os"
+		//"slices"
 	)
 
 //------------------------------
@@ -125,10 +126,15 @@ func putWordFrequenceInRowArray() {
 	//-------------------	
 	
 	for _, wS1 := range wordSliceFreq {	
-		//fmt.Println("ANTO putWordFrequenceInRowArray() wS1 ", wS1)  
+		
 		
 		ix = wS1.wIxRow; 
 		ixPos := wS1.wIxPosRow; 
+		/**
+		fmt.Println("ANTO putWordFrequenceInRowArray() wS1 ", cyan(wS1.wWord2), " wS1.wIxUniq=", wS1.wIxUniq, " wS1.wTotRow=",   wS1.wTotRow ,
+			" ix =", wS1.wIxRow, " ixPos = ", wS1.wIxPosRow); 
+		if ((ix < 0) || (ixPos < 0)) { fmt.Println( red("ERRORE ix, ixPos < 0") ) }
+		**/  
 		/****
 		num2 := len(inputTextRowSlice[ix].rListFreq) 
 		if (num2 <= ixPos) {		
@@ -146,7 +152,7 @@ func putWordFrequenceInRowArray() {
 			fmt.Println("errore in func ", red( "putWordFrequenceInRowArray"), " row n.", ix, " word pos=", ixPos, " num words in row=",  
 				inputTextRowSlice[ix].rNumWords, " word=", wS1.wWord2, " row=", inputTextRowSlice[ix].rRow1)
 		}	
-	}
+	} // end for wS1 range 
 	
 	//---------------------------
 } // end of putWordFrequenceInRowArray
@@ -249,9 +255,25 @@ func build_uniqueWord_byFreqAlpha() {
 	}
 	***/
 	//---------
+	/**
+	highestValueByte, err := hex.DecodeString("ffff")   
+	if err != nil { panic(err) }
+	var highestValue = string( highestValueByte ) + "end_of_list"	
+	xWordF.uWordSeq = highestValue 
+	xWordF.uWord2   = highestValue 	
 	
-	//fmt.Println( "build_uniqueWord_byFreqAlpha() loop 1 ");
+	xWordF.uTotRow = 1 ; // the lowest frequency
+	xWordF.uTotExtrRow = 0               
+	xWordF.uIxWordFreq = len(uniqueWordByFreq)   
+	xWordF.uIxUnW      = len(uniqueWordByFreq)  
+	xWordF.uLearnedYN  = LEARNED_NOT
+	//xWordF.uTranL      = []string{ xWordF.uWord2 }        // ??anto8 .uTranL
+	pos_last:= len(wordSliceFreq)
+	wordSliceFreq  = append(wordSliceFreq, xWordF);  
 	
+	fmt.Println( "build_uniqueWord_byFreqAlpha() last=" ,  wordSliceFreq[ pos_last ].uWord2 , " pos_last=", pos_last );
+	**/
+	//---------------------------
 	for n1, wS1 := range wordSliceFreq {	
 		if wS1.wWordSeq != preW {
 			preW = wS1.wWordSeq;
@@ -268,8 +290,8 @@ func build_uniqueWord_byFreqAlpha() {
 			xWordF.uIxWordFreq = n1
 			xWordF.uLearnedYN  = LEARNED_NOT 
 			
-	if xWordF.uWord2 == "ich" { fmt.Println( green("1build_uniqueWord_byFreqAlpha"),  
-					" freq:  learned= ", xWordF.uLearnedYN  ) } 
+			//if xWordF.uWord2 == "ich" { fmt.Println( green("1build_uniqueWord_byFreqAlpha"),  
+			//		" freq:  learned= ", xWordF.uLearnedYN  ) } 
 					
 			//xWordF.wTran = "" 
 			xWordF.uIxUnW     = len(uniqueWordByFreq)  
@@ -286,6 +308,7 @@ func build_uniqueWord_byFreqAlpha() {
 			sS.uniquePerc  = percIx 
 			sS.totPerc     = int(numWordRi * 100 / numberOfWords);
 			
+			//fmt.Println("statistic ", "sS.totWords=", sS.totWords, " numWordRi=",numWordRi, "  sS.totPerc=",  sS.totPerc )
 			//if sS.totPerc > 100 {  fmt.Println("AN TONIO4 n1=", n1, " len(wordSliceFreq)=",  len(wordSliceFreq) , " wS1.wWord2=" + wS1.wWord2 + " wS1.totRow=", wS1.totRow, " numWordRi=", numWordRi ) }
 			
 			/**
@@ -301,8 +324,22 @@ func build_uniqueWord_byFreqAlpha() {
 			//fmt.Println("STAT. ", n1, " ", xWordF.word, " numWordUn=", numWordUn,  " numWordRi=", numWordRi, " percIx=", percIx, " ", sS.uniquePerc,  " sS.totPerc=" ,  sS.totPerc); 
 		} 			
 	}
+	//----------------------
+	/**
+	fmt.Println( "1 len(wordSliceFreq) =",  len(wordSliceFreq) )
+	if pos_last > 1 {
+		if pos_last != ( len(wordSliceFreq) -1) {  fmt.Println("ERRORE ") }
+			fmt.Println( "AAA len(wordSliceFreq) =",  len(wordSliceFreq) )
+			
+			wordSliceFreq = slices.Delete(wordSliceFreq, pos_last, len(wordSliceFreq) )
+			
+			fmt.Println( "BBB len(wordSliceFreq) =",  len(wordSliceFreq) )
+		
+	}
+	**/
+	fmt.Println( "2 len(wordSliceFreq) =",  len(wordSliceFreq) )
 	//---------
-	
+	/**
 	highestValueByte, err := hex.DecodeString("ffff")   
 	if err != nil { panic(err) }
 	var highestValue = string( highestValueByte ) + "end_of_list"	
@@ -316,9 +353,9 @@ func build_uniqueWord_byFreqAlpha() {
 	xWordF.uLearnedYN  = LEARNED_NOT
 	//xWordF.uTranL      = []string{ xWordF.uWord2 }        // ??anto8 .uTranL
 	uniqueWordByFreq   = append( uniqueWordByFreq, xWordF);  
-	
-	if xWordF.uWord2 == "ich" { fmt.Println( green("2build_uniqueWord_byFreqAlpha"),  
-					" freq:  learned= ", xWordF.uLearnedYN  ) } 
+	**/
+	//if xWordF.uWord2 == "ich" { fmt.Println( green("2build_uniqueWord_byFreqAlpha"),  
+	//				" freq:  learned= ", xWordF.uLearnedYN  ) } 
 					
 	//--------------------------
 	

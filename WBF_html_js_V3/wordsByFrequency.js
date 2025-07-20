@@ -193,9 +193,9 @@ function js_go_updateStatistics( data, js_parm, jsFunc, goFunc) {
 //---------------------------------
 //---------------------------------------------------------
 
-function onclick_mostFreqWordList_require() {	
+function onclick_mostFreqWordList_require(anyRow,toLearn) {	
 	
-	fun_require_mostFreqWordList( false , "HTML page onclick_mostFreqWordList_require");
+	fun_require_mostFreqWordList( false , "HTML page onclick_mostFreqWordList_require", anyRow, toLearn);
 	
 } // end of onclick_mostFreqWordList_require
 
@@ -203,14 +203,16 @@ function onclick_mostFreqWordList_require() {
 
 function onchange_mostFreqWordList_extrRow() {	
 	
-	fun_require_mostFreqWordList( true , "HTML page onchange_mostFreqWordList_extrRow");
+	fun_require_mostFreqWordList( true , "HTML page onchange_mostFreqWordList_extrRow",'','');
 	
 } // end of onchange_mostFreqWordList_require
 
 //---------------------------------
 
-function fun_require_mostFreqWordList( swFromOnChangeExtr , caller) {	
-	//console.log("%c	require_mostFreqWordList", "color:blue;")
+function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", toLearn="") {	
+	
+	console.log("%c	require_mostFreqWordList", "color:blue;")
+	console.log("anyRow=", anyRow,  " toLearn=", toLearn); 
 	
 	document.getElementById("id_inpBegError").style.display = "none"; 	
 	
@@ -229,6 +231,8 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller) {
     var i = x2.selectedIndex;
 	
 	html_sel_extrRow = x2.options[i].id; 
+	if (anyRow != "") { html_sel_extrRow = anyRow; }
+	console.log("html_sel_extrRow=", html_sel_extrRow)
 	
 	//console.log("  require_mostFreqWordList", " html_sel_extrRow =",html_sel_extrRow )
 	
@@ -245,6 +249,11 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller) {
 	var xTbl = document.getElementById("id_sel_tblwords");
     var i2 = xTbl.selectedIndex;
 	var sel_toBeLearned = xTbl.options[i2].id;    //( 0 = 'allWords'   1 = 'toBeLearned' )
+	if (toLearn != "") {
+		sel_toBeLearned = toLearn; 
+	}
+	console.log("sel_toBeLearned=" ,sel_toBeLearned); 
+	
 	//--
 	swChg = isExtrRowChanged() 
 	if (swChg) {
@@ -263,7 +272,9 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller) {
 	//var caller = "HTML page onclick_require_rowList1" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
 	//if (caller == undefined) { caller = ""; }
 	
-	//go_passToJs_rowList(""+inpBegRow, ""+numRows, "js_go_rowList," + caller); 
+	console.log("%cfun_require_mostFreqWordList fun_require_mostFreqWordList", "color:green;"); 
+	console.log("go_passToJs_rowList ", "swChg=", swChg, " fromWord=", fromWord, " numWords=", numWords, " sel_level=", sel_level, 
+			" html_sel_extrRow=", html_sel_extrRow, " sel_toBeLearned=", sel_toBeLearned ); 
 	
 	go_passToJs_wordList( swChg, ""+fromWord, ""+numWords, sel_level, html_sel_extrRow, sel_toBeLearned, "js_go_showWordList_lev2(1)," + caller);
 	
@@ -322,7 +333,7 @@ function errorNoWord1() {
 //----------------------
 function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc="") {
 		
-	//console.log("function js_go_showWordList_lev2 ", "wordListStr.length=",wordListStr00.length  ," numButton=", numButton, " <-- " + goFunc + " <-- " + jsFunc) ;
+	console.log("function js_go_showWordList_lev2 ", "wordListStr.length=",wordListStr00.length  ," numButton=", numButton, " <-- " + goFunc + " <-- " + jsFunc) ;
 	//console.log("           wordListStr00=\n", wordListStr00)
 	
 	// numButton=1 default ==> from onclick most frequent word list  
@@ -796,18 +807,18 @@ function TOGLIoneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, wLemma
 function fun_selRowsWanted_changed() {
 	var ele_sel = document.getElementById("id_sel_2_extrRow");
 	//var ele_listBut = document.getElementById("id_list_Righe_TD_But") 
-	var ele_listNum = document.getElementById("id_list_Righe_TD_Num") 
+	//var ele_listNum = document.getElementById("id_list_Righe_TD_Num") 
 
 	if (is_selected_row_only) {
 		ele_sel.style.border = "4px solid blue"; 
 		ele_sel.style.color  = "blue"; 
 		//ele_listBut.style.border = "4px solid blue";
-		ele_listNum.style.border = "4px solid blue"; 
+		//ele_listNum.style.border = "4px solid blue"; 
 	} else {
 		ele_sel.style.border     = null; 
 		ele_sel.style.color      = null; 
 		//ele_listBut.style.border = null;
-		ele_listNum.style.border = null; 
+		//ele_listNum.style.border = null; 
 	}
 	
 } // end of fun_selRowsWanted_changed
@@ -1344,7 +1355,7 @@ function onclick_require_rowListWithThisWord2(type,word1, maxNumRow5) {
 
 //--------------------------
 
-function onclick_require_rowList1() {	
+function onclick_require_rowList1(selFrasiParole12) {	
 	
 	//console.log("onclick_require_rowList1 ")
 	
@@ -1365,7 +1376,7 @@ function onclick_require_rowList1() {
 		
 	var caller = "HTML page onclick_require_rowList1" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
 	if (caller == undefined) { caller = ""; }
-	go_passToJs_rowList(""+inpBegRow, ""+numRows, "js_go_rowList," + caller); 
+	go_passToJs_rowList(""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2(1)", caller); 
 		
 } // end of onclick_require_rowList1
 
@@ -2288,10 +2299,12 @@ function js_go_showReadFile( str1 ) {
 	numberOf_uniW = numUniW;
 	numberOf_totW = numTotW;
 	numberOf_Row  = numRow;
-	str1 = parseInt(numUniW).toLocaleString() + " parole diverse" + 
-			"<br>in totale " + parseInt(numTotW).toLocaleString() + " parole " + 
+	str1 = parseInt(numUniW).toLocaleString() + " parole diverse, " + 
+			" in totale " + parseInt(numTotW).toLocaleString() + " parole " + 
 			"su un testo di " + parseInt(numRow).toLocaleString() + " righe"  ;
-
+			
+	document.getElementById("id_inpFileList").innerHTML	= "(" + str1 + ")" ; 	
+	/**
 	//console.log("js_go_showReadFile  levelStats=", levelStats)
 	
 	if (levelStats.indexOf("-oth-: 99%") < 0)  {		
@@ -2319,6 +2332,7 @@ function js_go_showReadFile( str1 ) {
 	var str0 = '<div style="border:1px solid black; padding:1em;">';
 	
 	document.getElementById("id_inpFileList").innerHTML = str0 + str1 + ""+ str2 + "</div>";
+	***/
 	
 }
 //---------------

@@ -797,8 +797,12 @@ func fun_wordListToRowList_dett( ixWord int, maxNumRow int) []int {
 
 //-----------------------------------------------------
 
-func bind_go_passToJs_rowList(inpBegRow int, maxNumRow int, js_function string) {
+func bind_go_passToJs_rowList(inpBegRow int, maxNumRow int, selFrasiParole12 int, js_function1R string, js_function2W string, caller string) {
 	// lista tutte le frasi richieste ( numero della prima frase, numero di frasi) 
+	
+	swLIST_WORD := (selFrasiParole12 != 1)    // 1 = list chosen rows,  2 = list words in the chosen rows  3 = list toBeLearned words in the chosen rows 
+	swLIST_TOLEARN := (selFrasiParole12 == 3)  // only to be learned words
+	
 	var ixFromList = inpBegRow 
 	
 		
@@ -806,11 +810,16 @@ func bind_go_passToJs_rowList(inpBegRow int, maxNumRow int, js_function string) 
 	numOut:=0 
 	
 	new_rIdRow :=""
+	wordIxList:= make([]int, 0, 10000)
 	
+	//fmt.Println("bind_go_passToJs_rowList  selFrasiParole12=",  selFrasiParole12, " len=",  len(inputTextRowSlice) ) 
+		
 	for ixRR := ixFromList; ixRR < len(inputTextRowSlice); ixRR++  {
 		rline := inputTextRowSlice[ixRR]
 		
 		rowX := cleanRow(rline.rRow1)	
+		
+		//fmt.Println("bind_go_passToJs_rowList  rline=", rline)
 		
 		if ((rowX =="") || (rowX == LAST_WORD)) { 
 			continue 
@@ -822,12 +831,75 @@ func bind_go_passToJs_rowList(inpBegRow int, maxNumRow int, js_function string) 
 			new_rIdRow = "- " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		} else {
 			new_rIdRow = lista_gruppiSelectRow[ rline.rixGroup ].rG_group + " " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		}
+		if swLIST_WORD {  
+			//fmt.Println("leggi riga=", rowX,  " rNumWords=", rline.rNumWords, " .rListIxUnF=", rline.rListIxUnF, " freq=", rline.rListFreq)
+			wordIxList = append(wordIxList, rline.rListIxUnF...)
+		} else {	
+			outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1; 
 		}	
+	} // end for ixRR
+	//------------------------------
+	if swLIST_WORD {
+		sort.Ints(wordIxList)
+		wordIxList = append(wordIxList, -1)  // serve per scrivere l'ultimo dell'elenco 
+		   
+		//fmt.Println("bind_go_passToJs_rowList  wordIxList=", wordIxList)
 		
-		outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1; 
-	} 
-	
-	go_exec_js_function( js_function, outS1 ); 	
+		preW:=-1
+		numRw:=-999
+		outS1 = ""
+		//var highestValue = string( highestValueByte ) + "end_of_list"	
+		//fmt.Println("bind_go_passToJs_rowList len(uniqueWordByFreq)=",  len(uniqueWordByFreq), " last word=",  uniqueWordByFreq[ len(uniqueWordByFreq)-1 ].uWord2 ) 
+		//----------------
+		/**
+		for ix1,WF := range(uniqueWordByFreq) { 
+			fmt.Println(" tutti    uniqueWordByFreq[",ix1, "]=", WF.uWord2) 
+		}
+		**/
+		//------------------------------------
+		swElab:=false; 
+		var WS wordIxStruct  
+		
+		for _,ixWF := range(wordIxList) {
+			
+			//fmt.Println("bind_go_passToJs_rowList  ixWF =", ixWF,  "  preW=", preW, "   numRw=", numRw )
+			
+			if ixWF == preW {
+				numRw++
+				continue
+			}  	
+			swElab = false
+			if ((numRw > 0) && (preW >= 0)) { 
+				swElab = true
+				WS= uniqueWordByFreq[preW] 
+				//fmt.Println("preW=", preW, " WORD ", cyan(WS.uWord2), " WS.uLearnedYN=", WS.uLearnedYN, "  swLIST_TOLEARN=", swLIST_TOLEARN)
+				if swLIST_TOLEARN {
+					if WS.uLearnedYN == LEARNED_YES { swElab = false }
+				}
+			}
+			if swElab {	
+				//fmt.Println("    uniqueWordByFreq[",preW, "]=",cyan( uniqueWordByFreq[preW].uWord2 ) , " numRw=", numRw)     	
+				sw, rowW := word_to_row("", false, "anyRow", WS, numRw)  
+				if sw {	
+					numOut++
+					//if (numOut < from1) {continue}   // July7, 2025  
+					outS1 += "<br>" + rowW 						
+					//if numOut >= numWords { 
+					//	break
+					//}
+				}
+			}
+			preW = ixWF	
+			numRw = 1
+		} // end for ixWf range
+		//fmt.Println("bind_go_passToJs_rowList  ", numOut, " words  --> js function=",js_function2W )  
+		if len(outS1) == 0 { outS1 = "<br>" }
+		go_exec_js_function( js_function2W+","+caller, outS1 ); 			
+	} else {	
+		if len(outS1) == 0 { outS1 = "<br>" }
+		go_exec_js_function( js_function1R+","+caller, outS1 ); 	
+	}
 			
 } // end of bind_go_passToJs_rowList
 

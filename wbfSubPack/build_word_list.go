@@ -24,8 +24,13 @@ func getAllWords() {
 		all_words = append(all_words, wordA...)
 	}	
 	sort.Strings(all_words)
-	fmt.Println("getAllWords ottenute ", len(all_words), " parole dalle righe di testo") 
-	
+	//fmt.Println("getAllWords ottenute ", len(all_words), " parole dalle righe di testo") 
+	/**
+	for nn, myW := range(all_words) { 
+		if nn > 20 {break}
+		fmt.Println( "getAllWords ", nn, "  ", myW)
+	}
+	**/
 } // end of getAllWords
 
 //----------------------------
@@ -61,7 +66,7 @@ func buildWordList() {
 	
 	thisR_SelRow := SEL_NO_EXTR_ROW
 	
-	fmt.Println("buildWordList() fromN=", fromN,  "  toN=", toN , " len=" ,len(inputTextRowSlice), " sw_list_Word_if_in_ExtrRow =", sw_list_Word_if_in_ExtrRow )
+	//fmt.Println("buildWordList() fromN=", fromN,  "  toN=", toN , " len=" ,len(inputTextRowSlice), " sw_list_Word_if_in_ExtrRow =", sw_list_Word_if_in_ExtrRow )
 	
 	//antoCtr_rowSchrift :=0 ;
 	//antoCtr_wordSchrift:=0; 
@@ -82,14 +87,14 @@ func buildWordList() {
 		wordA  := regexp.MustCompile(separWord).Split(row2, -1);  // split row into words 
 		
 		tot1:= len(wordA) 
-		
+		/**
 		rS2.rNumWords  = tot1      // number of words in the row 
-		rS2.rListIxUnF = make( []int, tot1, tot1 )	
+		rS2.rListIxUnF = make( []int, 0, tot1 )	
 		
-		rS2.rListFreq  = make( []int, tot1, tot1 )	
+		rS2.rListFreq  = make( []int, 0, tot1 )	
 		
 		inputTextRowSlice[ixR] = rS2
-	
+		**/
         z:= -1;
 		thisR_SelRow = SEL_NO_EXTR_ROW
 		if (sw_list_Word_if_in_ExtrRow) {
@@ -105,6 +110,8 @@ func buildWordList() {
 		//if swTEST {  fmt.Println( " row2=", row2); antoCtr_rowSchrift++; } 
 		
 		for _, wor1 := range wordA {
+			//if nn < 20 { fmt.Println( "buildWordList ", nn, "  ", wor1)}
+			
 			wS1.wWord2 = checkTheWord( wor1 ) ;
 			if wS1.wWord2 == "" { continue }					
 			z++;
@@ -132,6 +139,13 @@ func buildWordList() {
 			}
 			***/
 		}
+		tot1 = 1+z 
+		rS2.rNumWords  = tot1      // number of words in the row 
+		rS2.rListIxUnF = make( []int, tot1, tot1 )			
+		rS2.rListFreq  = make( []int, tot1, tot1 )	
+		
+		inputTextRowSlice[ixR] = rS2
+		
 	} // end of for_ixR 
 	
 	//fmt.Println("anto3 antoCtr_rowSchrift=", antoCtr_rowSchrift, " antoCtr_wordSchrift=", antoCtr_wordSchrift)

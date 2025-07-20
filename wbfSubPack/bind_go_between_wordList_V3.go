@@ -96,7 +96,7 @@ func get_word_row_list( maxNumWords int, fromWordPref string) (string, []int, []
 			if wAlf.uWordSeq[0:lenCk] > fromWordTarg { //fmt.Println(" break    "); 
 				break } 			
 		}
-		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf )	
+		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf, -1 )	
 		//fmt.Println( green("  2 get_word_row_list "), " k=", k, "  rowW=", rowW, " \nwAlf=", wAlf)  
 		
 		if sw == false { continue }
@@ -116,7 +116,7 @@ func get_word_row_list( maxNumWords int, fromWordPref string) (string, []int, []
 		//fmt.Println("wordSuffixIndexList ixWord=",ixWord)
 		if (ixWord < 0) {continue} 
 		wAlf := uniqueWordByAlpha[ixWord] 
-		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf )  	
+		sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf,-1 )  	
 		//fmt.Println( green(" 3 get_word_row_list" ), " z=" , z, " ixWord=", ixWord ,  " rowW=", rowW)  
 		//fmt.Println("    wordSuffixIndexList sw=", sw, " wAlf=", wAlf.uWordSeq) 
 		if sw == false {
@@ -151,7 +151,7 @@ func bind_go_passToJs_betweenWordList_V3( maxNumWords int, fromWordPref string, 
 
 //------------------------------------------------------
 
-func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xWordF2 wordIxStruct) (bool, string)  {
+func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xWordF2 wordIxStruct, numRowsInW int) (bool, string)  {
 	
 	//fmt.Println("\nXXXXXXX word_to_row ( onlyThisLevel=" + onlyThisLevel + 
 	//  	"<==   onlyThisLevel=" + level_other +  "<==" + "  sw_list_Word_if_in_ExtrRow=" , sw_list_Word_if_in_ExtrRow); 
@@ -160,7 +160,8 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 	
 	if onlyIfExtr {
 		if (sw_list_Word_if_in_ExtrRow) {
-			if (xWordF2.uSwSelRowG == SEL_NO_EXTR_ROW) {
+			if (xWordF2.uSwSelRowG == SEL_NO_EXTR_ROW) {   //    1 or 2: 1 SEL_EXTR_ROW, 2 SEL_NO_EXTR_ROW  
+				//             xWordF2.uSwSelRowG è stato impostato nell'ultima esecuzione di "Lista le Righe" dove è stato scelto il gruppo di righe ed il range da-a
 				sw = false
 				//fmt.Println("word to row " , xWordF2.uWord2, " da ignorare")
 				return sw, ""
@@ -169,6 +170,10 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 	}
 	//fmt.Println("word to row " , xWordF2.uWord2, " \t\t\t XXXXXXXXXXXX (xWordF2.uTotExtrRow =" ,xWordF2.uTotExtrRow , " xxxxxxxxxxxxxxxxxxx   accettato")
 	//-----------
+	totNumRow:= numRowsInW
+	if totNumRow < 1 {
+		totNumRow = xWordF2.uTotExtrRow
+	}
 	
 	if onlyThisLemma != "" {
 		ix2 := -1
@@ -179,6 +184,7 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 			}  	
 		}
 		if ix2 >=0 {
+			//fmt.Println("word to row 1 " , xWordF2.uWord2, " ix2=", ix2, " onlyIfExtr=", onlyIfExtr,  "    WordF2.uTotExtrRow =" ,xWordF2.uTotExtrRow	)
 			return sw, xWordF2.uWordSeq + ";." + xWordF2.uWord2 + ";." + 
 				"ix" + ";." + 
 				strconv.Itoa(xWordF2.uIxUnW) + ";." + strconv.Itoa(xWordF2.uTotRow)  + ";." + 
@@ -187,7 +193,7 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 				xWordF2.uLevel[ix2]               + ";." +  
 				xWordF2.uPara[ix2]                + ";." +  
 				xWordF2.uExample[ix2]             + ";." +  
-				strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  		
+				strconv.Itoa(totNumRow) + ";." +  		
 				xWordF2.uLearnedYN                + ";." + 	
 				"ixLemma" + ";." + fmt.Sprint( xWordF2.uIxLemmaL[ix2] ) + ";." + 	
 				endOfLine 		
@@ -195,7 +201,7 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 	}
 	
 	//---------------------------	
-	
+	//fmt.Println("word to row 2 " , xWordF2.uWord2, "  onlyIfExtr=", onlyIfExtr,  "    WordF2.uTotExtrRow =" ,xWordF2.uTotExtrRow	)
 	return sw, xWordF2.uWordSeq + ";." + xWordF2.uWord2 + ";." + 
 				"ix" + ";." + 
 				strconv.Itoa(xWordF2.uIxUnW) + ";." + strconv.Itoa(xWordF2.uTotRow)  + ";." +
@@ -205,7 +211,7 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 				fmt.Sprint( strings.Join(xWordF2.uLevel,   wSep)  ) + ";." +  
 				fmt.Sprint( strings.Join(xWordF2.uPara,    wSep)  ) + ";." +  
 				fmt.Sprint( strings.Join(xWordF2.uExample, wSep)  ) + ";." +  
-				strconv.Itoa(xWordF2.uTotExtrRow) + ";." +  			
+				strconv.Itoa(totNumRow) + ";." +  			
 				xWordF2.uLearnedYN              + ";." + 			
 				"ixLemma" + ";." + intSliceToString( xWordF2.uIxLemmaL,wSep )  + ";." + 		
 				endOfLine 
@@ -254,7 +260,7 @@ func bind_go_passToJs_suffixWordList( maxNumWords int, fromWordSuff string, js_f
 	for _,k:= range listInverseWordIndex { 
 		myAlf := uniqueWordByAlpha[k]
 
-		sw, rowW := word_to_row("", false, "any",  myAlf )  	
+		sw, rowW := word_to_row("", false, "any",  myAlf , -1)  	
 		
 		if sw == false { continue }
 		outS1 += rowW 	

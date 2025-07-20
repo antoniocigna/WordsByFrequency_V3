@@ -13,10 +13,10 @@ const PREF_MARKER = " :PREF: "
 
 func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords int, onlyThisLevel string, 
 						sel_extrRow string, sel_toBeLearned string,  js_function string) {
-		/**			
-		fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
-						" from=",  fromWord, " numWords=", numWords )
-		**/
+					
+		//fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
+		//				" from=",  fromWord, " numWords=", numWords )
+		
 		var from1, to1 int; 
 		from1 = fromWord; //   - 1; 
 		if (from1 < 1) {
@@ -29,7 +29,7 @@ func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords in
 		if (from1 >= numberOfUniqueWords) {
 			from1 = numberOfUniqueWords - 1;	
 			if from1 < 0 {
-				fmt.Println("error in bind_go_passToJs_wordList() numberOfUniqueWords=", numberOfUniqueWords)
+				fmt.Println("error in bind_go_passToJs_wordList () numberOfUniqueWords=", numberOfUniqueWords)
 				go_exec_js_function( js_function, ""); 	
 				return
 			}
@@ -49,14 +49,14 @@ func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords in
 			if (sel_extrRow != last_run_extrRow) {
 				fmt.Println("on the word list button,  an option has been changed from \"" + last_run_extrRow + "\" to \"" + sel_extrRow + "\", this causes a rebuild of wordlist data")
 				last_run_extrRow = sel_extrRow
-				fmt.Println("bind_go_passToJs_wordList() sel_extrRow != last_run_extrRow call build_and_elab_word_list() ")
+				fmt.Println("bind_go_passToJs_wordList () sel_extrRow != last_run_extrRow call build_and_elab_word_list() ")
 				
 				build_and_elab_word_list()
 				
-				fmt.Println("bind_go_passToJs_wordList() end of build_and_elab_word_list() ")
+				fmt.Println("bind_go_passToJs_wordList () end of build_and_elab_word_list() ")
 				
 			}	
-			//fmt.Println("bind_go_passToJs_wordList() return ")	
+			//fmt.Println("bind_go_passToJs_wordList () return ")	
 			//return // this func has been called only to set the mainPage values 
 		}
 		//--------------------		
@@ -77,7 +77,7 @@ func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords in
 		//var row11 string;
 		//var numNoTran = 0
 		
-		//fmt.Println("bind_go_passToJs_wordList() 0  from1 m=", from1 ) 
+		//fmt.Println("bind_go_passToJs_wordList () 0  from1 m=", from1 ) 
 		
 		onlyIfExtr := true 
 		
@@ -85,12 +85,12 @@ func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords in
 		if from1 == 1 { from1=0; }
 		numOut:=0
 		for i:= 0; i < numberOfUniqueWords; i++ { 
-			//if (i < 20) {fmt.Println("uniqueWordByFreq[",i,"] = ",  uniqueWordByFreq[i] )  }
-			/**
-			if (uniqueWordByFreq[i].uWord2== "zuverlässig") { fmt.Println( red(" 2 bind_go_passToJs_wordList "),
-					" i=", i,  uniqueWordByFreq[i].uWord2, " learned=",  uniqueWordByFreq[i].uLearnedYN, "  LEARNED_YES=",LEARNED_YES  ) 
+			
+			if strings.Index(" was tun werden sehen ", uniqueWordByFreq[i].uWord2) > 0 { fmt.Println( red(" 2 bind_go_passToJs_wordList "),
+					" i=", i,  uniqueWordByFreq[i].uWord2, " learned=",  uniqueWordByFreq[i].uLearnedYN)
+					print_wordIx(uniqueWordByFreq[i]) 
 			}
-			**/
+			
 			if sw_tobeLearnedOnly {
 				if uniqueWordByFreq[i].uLearnedYN == LEARNED_YES {  				
 					continue
@@ -99,11 +99,11 @@ func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords in
 		
 			//fmt.Println("call 3  loop  i=", i, "   ", uniqueWordByFreq[i]);
 			
-			sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel, uniqueWordByFreq[i] )  
+			sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel, uniqueWordByFreq[i],-1 )  
 			if sw {	
 				numOut++
 				if (numOut < from1) {continue}   // July7, 2025  
-				//if (i < 20) {fmt.Println("     rowW=", rowW)  }	
+				//if (numOut < 20) {fmt.Println("     rowW=", rowW)  }	
 				outS1 += rowW 						
 				if numOut >= numWords { 
 					break
@@ -116,6 +116,37 @@ func bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords in
 }  // end of bind_go_passToJs_wordList	
 
 //---------------------------------------------------------
+func print_wordIx( w1 wordIxStruct ) {
+	fmt.Println("\t", cyan(w1.uWord2), " ix UniqueByFreq=",w1.uIxUnW, " byAlfa=",w1.uIxUnW_al, " totR=", w1.uTotRow, " totExR=", w1.uTotExtrRow,
+		 " uIxWordFreq=", w1.uIxWordFreq, " uSwSelRowG=", w1.uSwSelRowG, " uSwSelRowR=", w1.uSwSelRowR, " uLearnedYN=", w1.uLearnedYN, 
+		 " uIxLemmaL=", w1.uIxLemmaL, " uLemmaL=", w1.uIxLemmaL) 
+	
+	/**		
+		type wordIxStruct struct {
+			uWordSeq    string	
+		    uWord2      string	
+			uIxUnW      int            // index of this word in the uniqueWordByFreq	
+			uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
+			uTotRow     int 
+			uTotExtrRow int
+		    uIxWordFreq int            // index of this word in the wordSliceFreq	
+			uSwSelRowG  int
+			uSwSelRowR   int  
+			uLearnedYN   string         // y n ( ie.yes,I learned / not yet  
+			//uKnow_yes_ctr int 
+			//uKnow_no_ctr  int         // a value > 0  means that this is a word that I don't know, ie. it's to be learned   
+			uIxLemmaL  []int  
+			uLemmaL    []string       // list of lemma 
+			//uTranL     []string       // list of translation    
+			uLevel     []string  
+			uPara      []string  
+			uExample   []string  		
+		}
+	**/ 	
+} // end of print_wordIx
+
+
+
 /**
 //--------------------
 func bind_go_passToJs_getWordByIndex2( ixWord int, swOnlyThisWordRows bool, maxNumRow int, js_function string) {

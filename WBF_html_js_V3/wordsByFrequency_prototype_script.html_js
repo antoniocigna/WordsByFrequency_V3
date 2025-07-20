@@ -99,7 +99,7 @@ license MIT: you can share and modify the software, but you must include the lic
 					<th style="text-align:center;" class="fixWordTdWidthN borderVert_L">	
 						<div id="id_buttLearnDiv"  style="display:none;border:5px solid red; width:100%;">
 							<button id="id_buttScriviLearn" onclick="onclick_write_words_to_learn()"  style="font-weight:bold;">Aggiorna la lista delle parole da imparare</button>
-							<span style="font-size:0.7em;font-weight:normal;">&nbsp;(<span id="id_buttLearnNumW"></span>&nbsp;variaz.) </span>
+							<br><span style="font-size:0.7em;font-weight:normal;">&nbsp;(<span id="id_buttLearnNumW"></span>&nbsp;variaz.) </span>
 						</div>				
 					</th>				
 					<th style="text-align:center;" class="fixWordTdWidthL borderVert_L borderVert_R"></th>	  	
