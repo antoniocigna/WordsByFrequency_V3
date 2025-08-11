@@ -1,0 +1,177 @@
+package wbfSubPack
+
+	import (
+		"fmt"
+		//"strconv"
+	    //"strings"
+		//"sort"
+		//"encoding/hex"
+		//"os"
+		//"slices"
+	)
+
+//------------------------------
+
+func elabWordList_11() {	
+
+
+	fmt.Println("\n", green("elabWordList_11"), "\n")
+	
+	elabWordAlpha_buildWordFreqList() 		
+		
+	build_uniqueWord_byFreqAlpha(); 
+	
+	
+	
+} // end of elabWordList11
+
+//-----------------
+
+
+func elabWordAlpha_buildWordFreqList() {
+	
+	fmt.Println( green("elabWordAlpha_buildWordFreqList"), "  mette frequenza in wordSliceAlpha e crea wordSliceAlpha" )
+	/*
+	put in each row of the inputTextRowSlice the number of its words  
+	from wordSliceAlpha list obtain a new list by sorting it by occurrence of the words (totRow) 
+	*/
+	//preW  := ""; // wordSliceAlpha[0].word;	
+	//ix:=0;
+	//removeIxWord :=-1 
+		/******************** rimosso il 15/11/2023
+	
+	for nn, wS1 := range wordSliceAlpha {	
+		if wS1.wWordSeq == LAST_WORD  { wordSliceAlpha[nn].totRow = LAST_WORD_FREQ }
+		//fmt.Println("ANTO elab...FreqList() ", nn, "  alpha=",  wordSliceAlpha[nn]);  	
+		//fmt.Println("ANTO elab...FreqList() nn=", nn, ", preW=" + preW + ",  wS1 ", wS1)  
+		
+		if (wS1.wWordSeq != preW) {		
+			removeIxWord = -1
+			preW = wS1.wWord2; 
+		}
+		ix =  wS1.ixRow
+		inputTextRowSlice[ix].numWords ++; 		// how many words contains the row (eg. the row "the cat is on the table"  contains 6 words --> .numWords = 6 
+		if removeIxWord >= 0 {
+			//fmt.Println("\t ANTO 2elab" , "  removeIxWord=" , removeIxWord , " wordSliceAlpha[ removeIxWord ].word=" + wordSliceAlpha[ removeIxWord ].word  )
+			
+		    if wS1.wWordSeq == wordSliceAlpha[ removeIxWord ].wWordSeq {
+				wordSliceAlpha[ nn ].sw_ignore = true 
+			}	
+		}	
+		//fmt.Println("\t ANTO XXXelab"  , "  wS1.sw_ignore = ", wS1.sw_ignore)  
+	}
+	*****************************/
+	
+	//----------------
+	// inserisce in ogni riga di testo il numero di parole
+	/***
+	for nn, wS1 := range wordSliceAlpha {	
+		if wS1.wWordSeq == LAST_WORD  { wordSliceAlpha[nn].wTotRow = LAST_WORD_FREQ }	
+		inputTextRowSlice[ wS1.wIxRow ].rNumWords ++; 		// number of words in a row (eg. the row "the cat is on the table"  contains 6 words --> .numWords = 6 
+	}
+	***/
+	//------------
+	// build WordList by frequence in the text
+	// the slice is sorted in descending order of frequency   ( ie. firstly the most used)   
+	//-----------------------------------
+	/**
+	wordSliceFreq  = make([]wordStruct, len(wordSliceAlpha),  len(wordSliceAlpha) ) 	 // la slice destinazione del 'copy' deve avere la stessa lunghezza di quella input  
+	
+	copy(wordSliceFreq , wordSliceAlpha);
+	
+	
+	// le parole eguali si trovano in righe contigue perchè hanno la stessa frequenza
+	
+	sort.Slice(wordSliceFreq, func(i, j int) bool {
+			if wordSliceFreq[i].wTotRow !=  wordSliceFreq[j].wTotRow {
+			   return wordSliceFreq[i].wTotRow > wordSliceFreq[j].wTotRow        // totRow    descending order (how many row contain the word) 
+			} else {
+				if wordSliceFreq[i].wWordSeq != wordSliceFreq[j].wWordSeq {
+					return wordSliceFreq[i].wWordSeq < wordSliceFreq[j].wWordSeq            // word  ascending order (eg.   a before b ) 
+				} else {
+					return wordSliceFreq[i].wWord2 < wordSliceFreq[j].wWord2  			
+				}
+			}
+		})
+	**/	
+} // end of elabWordAlpha_buildWordFreqList
+
+//--------------------------------------
+
+func putWordFrequenceInRowArray2() {
+
+	ix:=0;
+
+	//-------------------------	
+	/***
+	//  in each element of inputTextRowSlice define an empty slice to contain the frequence of each of its words
+	for k, _ := range inputTextRowSlice {	
+		tot1 := inputTextRowSlice[k].rNumWords;
+		inputTextRowSlice[k].rListIxUnF =  make( []int, tot1, tot1 )		
+		inputTextRowSlice[k].rListFreq  =  make( []int, tot1, tot1 )			
+	}
+	***/
+	//---------------------------------
+	//  fill each row with the frequence of its words
+	//-------------------	
+	
+	for _, wS1 := range wordSliceAlpha {	
+		
+		
+		ix = wS1.wIxRow; 
+		ixPos := wS1.wIxPosRow; 
+		/**
+		fmt.Println("ANTO putWordFrequenceInRowArray() wS1 ", cyan(wS1.wWord2), " wS1.wIxUniq=", wS1.wIxUniq, " wS1.wTotRow=",   wS1.wTotRow ,
+			" ix =", wS1.wIxRow, " ixPos = ", wS1.wIxPosRow); 
+		if ((ix < 0) || (ixPos < 0)) { fmt.Println( red("ERRORE ix, ixPos < 0") ) }
+		**/  
+		/****
+		num2 := len(inputTextRowSlice[ix].rListFreq) 
+		if (num2 <= ixPos) {		
+			fmt.Println("error " , wS1.wWord2, " ix=" , ix  ," ixPos=",   ixPos, " row ", " num2=", num2, " tot1=",  
+				inputTextRowSlice[ix].rNumWords, " list=" , inputTextRowSlice[ix].rListFreq , " " , inputTextRowSlice[ix].rRow1); 			
+		}
+		if ((ixPos<1) || (ix<1)) {
+			fmt.Println( "ERRORe  putWordFrequenceInRowArray() nx=", nx, " WS1=", wS1, "\n\t", "ix=", ix, ", ixPos=", ixPos)  
+		}
+		***/
+		if ixPos < inputTextRowSlice[ix].rNumWords { 
+			inputTextRowSlice[ix].rListIxUnF[ixPos] = wS1.wIxUniq_fr // index of the word in the uniqueWordByFreq  	
+			inputTextRowSlice[ix].rListFreq[ ixPos] = wS1.wTotRow // for each word in the row  set its frequence of use (how many times the word is used in the whole text)  
+		} else {
+			fmt.Println("errore in func ", red( "putWordFrequenceInRowArray"), " row n.", ix, " word pos=", ixPos, " num words in row=",  
+				inputTextRowSlice[ix].rNumWords, " word=", wS1.wWord2, " row=", inputTextRowSlice[ix].rRow1)
+		}	
+	} // end for wS1 range 
+	
+	//---------------------------
+} // end of putWordFrequenceInRowArray1
+
+//------------------------------------------------
+
+func put_a_priority_to_the_row_of_each_word() {
+	
+	swProva:= true 
+	if swProva {return} 
+	
+	//fmt.Println("put_a_priority_to_the_row_of_each_word()")
+	
+	//the row importance is assigned by the number of its unknown words	
+		
+	for k, wS1 := range wordSliceAlpha {	
+		
+		ix := wS1.wIxRow; 
+		numMinor :=0 	
+		wordFreq := wS1.wTotRow; 		
+		for _, frw:= range   inputTextRowSlice[ix].rListFreq {
+			if frw < wordFreq { numMinor++; }
+		} 
+		wordSliceAlpha[k].wTotMinRow = numMinor;	             // number of words with frequency < this word   	
+		wordSliceAlpha[k].wTotWrdRow = inputTextRowSlice[ix].rNumWords   // number of words in this row    
+	}		
+	
+	sortWordListByFreq_and_row_priority() 
+		
+} // end of put_a_priority
+
+//--------------------------------------

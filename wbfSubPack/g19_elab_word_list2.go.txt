@@ -1,0 +1,284 @@
+package wbfSubPack
+
+	import (
+		"fmt"
+		"strconv"
+	    "strings"
+		"sort"
+		//"encoding/hex"
+		//"os"
+		//"slices"
+	)
+
+//------------------------------
+
+
+//--------------------------------------
+func build_uniqueWord_byFreqAlpha() {
+	fmt.Println("\n", green("build_uniqueWord_byFreqAlpha"),  " crea uniqueWordByFreq" )
+		
+	put_a_priority_to_the_row_of_each_word() 	
+	
+	
+	
+	preW := ""
+	numWordUn := 0
+	numWordRi := 0	
+	num_word:=0
+	
+	numWordUn_0 := 0
+	numWordRi_0 := 0	
+	num_word_0 :=0 
+	//--------------------		
+	for _, wS1 := range wordSliceAlpha {	
+		num_word++
+		//if wS1.sw_ignore == false { 
+		num_word_0++
+		//}
+		
+		if wS1.wWordSeq != preW {
+			preW = wS1.wWordSeq;
+			numWordUn += 1 
+			numWordRi += wS1.wTotRow 
+			//if wS1.sw_ignore == false { 
+			numWordUn_0 += 1 
+			numWordRi_0 += wS1.wTotRow 
+			//}
+		}  
+	}
+	//------------
+	if num_word_0 != num_word {
+		fmt.Println( "PAROLE SINGOLE File0= ", numWordUn_0, ", PAROLE Totale=", numWordRi_0,  "  numberOfWords=" , num_word_0 , " "  );
+	}
+	fmt.Println( "PAROLE SINGOLE tutti= ", numWordUn, ", PAROLE Totale=", numWordRi,  "  numberOfWords=" , num_word , "\n");
+		//--
+	//numberOfUniqueWords = numWordUn;
+	numberOfUniqueWords = numWordUn_0;
+	preW      = ""
+	numWordUn = 0
+	numWordRi = 0	
+	
+	percIx := 0; 	
+
+	//result_word2 ="";
+	
+	var xWordF wordIxStruct;   
+	var sS  statStruct;
+	
+	//numWordUn = -1
+	numWordUn = 0
+	
+	//-----------------------------
+	/**** removed 2023_11_15
+	// remove elements to ignore  ( those of the files after the first )
+	wrk := wordSliceFreq[:0]
+	for _, wS1 := range wordSliceFreq {				
+			if wS1.sw_ignore { continue }
+			wrk = append( wrk, wS1) 
+	}
+	wordSliceFreq = wrk		
+	**/
+	//--------------------
+	/**
+	for n0, wS1 := range wordSliceFreq {	
+		if n0 > 20 {fmt.Println("ANTONIO1 build_uniqueWord_byFreqAlpha() ", "... continua");  break;  }
+		fmt.Println("ANTONIO1 build_uniqueWord_byFreqAlpha() ", wS1) 
+	}
+	***/
+	//---------
+	/**
+	highestValueByte, err := hex.DecodeString("ffff")   
+	if err != nil { panic(err) }
+	var highestValue = string( highestValueByte ) + "end_of_list"	
+	xWordF.uWordSeq = highestValue 
+	xWordF.uWord2   = highestValue 	
+	
+	xWordF.uTotRow = 1 ; // the lowest frequency
+	xWordF.uTotExtrRow = 0               
+	xWordF.uIxWordFreq = len(uniqueWordByFreq)   
+	xWordF.uIxUnW_fr      = len(uniqueWordByFreq)  
+	xWordF.uLearnedYN  = LEARNED_NOT
+	//xWordF.uTranL      = []string{ xWordF.uWord2 }        // ??anto8 .uTranL
+	pos_last:= len(wordSliceFreq)
+	wordSliceFreq  = append(wordSliceFreq, xWordF);  
+	
+	fmt.Println( "build_uniqueWord_byFreqAlpha() last=" ,  wordSliceFreq[ pos_last ].uWord2 , " pos_last=", pos_last );
+	**/
+	//---------------------------
+	for n1, wS1 := range wordSliceAlpha {	
+		if wS1.wWordSeq != preW {
+			preW = wS1.wWordSeq;
+			
+			if wS1.wTotRow >= LAST_WORD_FREQ {
+				wS1.wTotRow = 0
+			}
+			xWordF.uWordSeq  = wS1.wWordSeq;
+			xWordF.uWord2    = wS1.wWord2;
+			xWordF.uTotRow   = wS1.wTotRow
+			xWordF.uTotExtrRow = wS1.wTotExtrRow  
+			xWordF.uSwSelRowR = wS1.wSwSelRowR 
+			xWordF.uSwSelRowG = wS1.wSwSelRowG
+			xWordF.uIxUnW_al = n1
+			xWordF.uIxUnW_fr = -1
+			xWordF.uLearnedYN  = LEARNED_NOT 
+			//------------------------------
+			ixLemmaPairFoundList := lookForAllLemmas( xWordF.uWord2,0 ) 
+			//lis_ixLemma, lis_origLemma:= build_listOfLemmaForAWord(wF.uWord2, ixLemmaPairFoundList)
+			_, lis_origLemma:= build_listOfLemmaForAWord(xWordF.uWord2, ixLemmaPairFoundList)
+			for _,aLemma := range lis_origLemma {
+				if len(wS1.wListPref) > 0 {
+					for _, unPref := range strings.Fields(wS1.wListPref) {
+						newLemma := unPref + aLemma  
+						ixAF := binarySearch_string(listAllLemmaFromFile, newLemma) 
+						if ixAF < 0 {continue}						
+						xWordF.uWordSeq  = wS1.wWordSeq + "..." + unPref;
+						xWordF.uWord2    = wS1.wWord2   + "..." + unPref;
+						xWordF.uIxUnW_fr     = len(uniqueWordByFreq)  
+						uniqueWordByFreq = append( uniqueWordByFreq, xWordF);  					
+					}					
+				} 
+			} // for ,aLemma	
+			
+ 		
+ 	
+		//----------------------
+			
+			
+			//if xWordF.uWord2 == "ich" { fmt.Println( green("1build_uniqueWord_byFreqAlpha"),  
+			//		" freq:  learned= ", xWordF.uLearnedYN  ) } 
+					
+			//xWordF.wTran = "" 
+			xWordF.uIxUnW_fr     = len(uniqueWordByFreq)  
+			uniqueWordByFreq = append( uniqueWordByFreq, xWordF);  
+			
+			if len(wS1.wListPref) > 0 {
+				for _, unPref := range strings.Fields(wS1.wListPref) {
+					xWordF.uWordSeq  = wS1.wWordSeq + "..." + unPref;
+					xWordF.uWord2    = wS1.wWord2   + "..." + unPref;
+					xWordF.uIxUnW_fr     = len(uniqueWordByFreq)  
+					uniqueWordByFreq = append( uniqueWordByFreq, xWordF);  					
+				}					
+			} 
+			
+			numWordUn += 1 
+						
+			numWordRi += wS1.wTotRow 
+			percIx = int(numWordUn * 100 / numberOfUniqueWords); 
+			
+			//fmt.Println( "   n1=", n1, " \t ", xWordF.uWord2, " \t xWordF.uSwSelRow =" , xWordF.uSwSelRow)
+			
+			sS.uniqueWords = numWordUn 
+			sS.totWords    = numWordRi
+			sS.uniquePerc  = percIx 
+			sS.totPerc     = int(numWordRi * 100 / numberOfWords);
+			
+			//fmt.Println("statistic ", "sS.totWords=", sS.totWords, " numWordRi=",numWordRi, "  sS.totPerc=",  sS.totPerc )
+			//if sS.totPerc > 100 {  fmt.Println("AN TONIO4 n1=", n1, " len(wordSliceFreq)=",  len(wordSliceFreq) , " wS1.wWord2=" + wS1.wWord2 + " wS1.totRow=", wS1.totRow, " numWordRi=", numWordRi ) }
+			
+			/**
+			if strconv.Itoa(1000 + percIx)[3:] == "0" {  
+				wordStatistic_un[percIx] = sS; 	
+			}
+			***/				
+			if sS.totPerc <= 200 {   // esistono perc > 100%,  probabilmente c'è un errore di logica 
+				if strconv.Itoa(1000 + sS.totPerc)[3:] == "0" {				
+					wordStatistic_tx[sS.totPerc] = sS; 
+				}
+			}
+			//fmt.Println("STAT. ", n1, " ", xWordF.word, " numWordUn=", numWordUn,  " numWordRi=", numWordRi, " percIx=", percIx, " ", sS.uniquePerc,  " sS.totPerc=" ,  sS.totPerc); 
+		} 			
+	}
+	//----------------------		
+	
+	for _, uW := range uniqueWordByFreq {
+		fmt.Println( green("uniqueWordByFreq "), uW.uWord2, " ==> ", uW)
+	}
+	
+	
+	//----------------------
+	/**
+	fmt.Println( "1 len(wordSliceFreq) =",  len(wordSliceFreq) )
+	if pos_last > 1 {
+		if pos_last != ( len(wordSliceFreq) -1) {  fmt.Println("ERRORE ") }
+			fmt.Println( "AAA len(wordSliceFreq) =",  len(wordSliceFreq) )
+			
+			wordSliceFreq = slices.Delete(wordSliceFreq, pos_last, len(wordSliceFreq) )
+			
+			fmt.Println( "BBB len(wordSliceFreq) =",  len(wordSliceFreq) )
+		
+	}
+	**/
+	fmt.Println( "2 len(wordSliceFreq) =",  len(wordSliceAlpha) )
+	//---------
+	/**
+	highestValueByte, err := hex.DecodeString("ffff")   
+	if err != nil { panic(err) }
+	var highestValue = string( highestValueByte ) + "end_of_list"	
+	xWordF.uWordSeq = highestValue 
+	xWordF.uWord2   = highestValue 	
+	
+	xWordF.uTotRow = 1 ; // the lowest frequency
+	xWordF.uTotExtrRow = 0               
+	xWordF.uIxWordFreq = len(uniqueWordByFreq)   
+	xWordF.uIxUnW_fr      = len(uniqueWordByFreq)  
+	xWordF.uLearnedYN  = LEARNED_NOT
+	//xWordF.uTranL      = []string{ xWordF.uWord2 }        // ??anto8 .uTranL
+	uniqueWordByFreq   = append( uniqueWordByFreq, xWordF);  
+	**/
+	//if xWordF.uWord2 == "ich" { fmt.Println( green("2build_uniqueWord_byFreqAlpha"),  
+	//				" freq:  learned= ", xWordF.uLearnedYN  ) } 
+					
+	//------------------------------
+	build_uniqueWord_byFreqAlpha_part2() 
+
+} // end of build_uniqueWord_byFreqAlpha 	
+	
+//-------------------------------------------------------	
+func build_uniqueWord_byFreqAlpha_part2() {	
+
+	//addWordLemmaTranLevelParadigma()   
+		 
+	add_ixWord_to_WordSliceAlpha()
+	
+	
+	//addWordTranslation()		
+	
+	//---------------------
+	uniqueWordByAlpha = make([]wordIxStruct, len(uniqueWordByFreq),  len(uniqueWordByFreq))	 // la slice destinazione del 'copy' deve avere la stessa lunghezza di quella input  
+	
+	//stat_useWord();
+	
+	copy( uniqueWordByAlpha, uniqueWordByFreq); 
+	
+	
+	//fmt.Println("build_uniqueWord_byFreqAlpha() PROVA len unique Freq() = ", len(uniqueWordByFreq)   )
+	
+	//------------
+	sort.Slice(uniqueWordByAlpha, func(i, j int) bool {
+		if uniqueWordByAlpha[i].uWordSeq != uniqueWordByAlpha[j].uWordSeq {
+			return uniqueWordByAlpha[i].uWordSeq < uniqueWordByAlpha[j].uWordSeq            // word  ascending order (eg.   a before b ) 
+		} else {
+			return uniqueWordByAlpha[i].uWord2 < uniqueWordByAlpha[j].uWord2  			
+		}
+	})
+	//---------
+
+	//console( "\nlista uniqueWordByAlpha")	
+	// update alpha index  // ixUnW,  ixUnW_al	
+	
+	//fmt.Println("\n build_uniqueWord_byFreqAlpha() PROVA len unique alpha() = ", len(uniqueWordByAlpha)   )
+	
+	for u:=0; u < len(uniqueWordByAlpha); u++ {
+		f:= uniqueWordByAlpha[u].uIxUnW_fr
+		uniqueWordByFreq[f].uIxUnW_al  = u; 		
+		uniqueWordByAlpha[u].uIxUnW_al = u
+				
+	}
+ 	//console( "------------------\n")
+	
+	//fmt.Println("\n---------------- build_uniqueWord_byFreqAlpha() end  \n")
+	
+
+} // end of build_uniqueWord_byFreqAlpha_part2
+
+//--------------------------

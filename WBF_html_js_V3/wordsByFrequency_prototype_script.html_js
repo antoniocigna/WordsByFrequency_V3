@@ -15,9 +15,9 @@ license MIT: you can share and modify the software, but you must include the lic
 	
 		<div style="width:100%;border:0px solid black;" class="divCont_table1_header"> 	 	
 		<table id="1idTableWordList"   style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n				
-			<thead   id="idTableWordList_thead" style="position: sticky;top:">
+			<thead   id="idTableWordList_thead" >
 				<tr class="tabWhead_r1">  
-					<th class="fixWordTdWidth5" style="text-align:center;"
+					<th class="fixWordTdWidth5" style="text-align:center;">
 						<span style="display:none;">num.</span>
 						<span style="display:none;">
 							<span>word</span>    
@@ -48,7 +48,7 @@ license MIT: you can share and modify the software, but you must include the lic
 						<div class="hpad top left1">	
 							lemma paradigma 	
 							<div id="dragWLsTip5_Header"  class="gradientColor" 
-										style="resize:both;overflow:auto; height:1em;width:100%;">
+										style="height:1em;width:100%;">
 								<div style="width:100%; text-align:right;font-size:0.7em;">help</div>
 								<span style="font-size:0.7em;">	
 									Sposta il mouse sul <span style="color:blue;font-weight:bold;">lemma</span> per leggere la <span style="color:green;font-weight:bold;">traduzione</span> 
@@ -118,14 +118,18 @@ license MIT: you can share and modify the software, but you must include the lic
 						<div class="hpad top left1">
 							<button onclick="onclick_sortWordBy_ixField(4,1,false,'a', 5,1,false,'a')">sort</button></th>
 						</div>
-					</th>	
+					</th>						
 					
-					
-					<th style="text-align:center;"  class="fixWordTdWidthL">	
+					<th style="text-align:center;" class="fixWordTdWidthL">	
 						<div class="hpad top left1">
-							<button onclick="onclick_sortWordBy_ixField(5,1,false,'a', 4,1,false,'a')">sort</button></th>
+							<button onclick="onclick_sortWordBy_ixField(5,1,false,'a', 4,1,false,'a')">sort</button>
+							<span style="margin: 6em 0;visibility:hidden;">y</span>
+							<button onclick="onclick_hideShowWordTran(this)"    >show/hide translation</button>
+							<button onclick="onclick_vertResizeLemma(this)"     >mostra tutte le righe</button>
+							<button onclick="onclick_listNoParadigmaWords(this)">lemma senza paradigma</button>
+							<button onclick="onclick_listNoTranWords(this)"     >lemma senza traduzione</button>
 						</div>
-					</th>	  	
+					</th>
 					
 					<th class="fixWordTdWidth3" style="text-align:center;" ></th>					
 					<th class="fixWordTdWidth3" style="text-align:center;" ></td>     
@@ -165,16 +169,14 @@ license MIT: you can share and modify the software, but you must include the lic
 	
 	let prototype_lemmaTD = `
 				<div style="display:none;">§one-f_lemma§</div>
-				<div class="hpad top left1 §topBorder§"  style="resize:vertical; overflow-y:auto; width:100%;">										
+				<div class="hpad top left1 §topBorder§"  style="width:100%;">										
 					<span §displayNoneL§  class="c_lemma" onmouseover='mouseOverWord(this,3)' onmouseout='mouseOutWord(this,3)'><b>§one-f_lemma§</b></span>
 					<span  class="c_paradigma" onmouseover='mouseOverWord(this,3)' onmouseout='mouseOutWord(this,3)'>§one-x_para1§</span>						
 					<br   class="c_paradigma"  >	
-					<span class="c_wordTran" style="display:none;">§one-f_tran§</span>		
+					<div  class="c_wordTran" style="visibility: hidden;">§one-f_tran§</div>						
 					<div   class="c_example"  >§one-x_example1§</div>
 				</div> \n					
 		`; 	// end of prototype_lemmaTD
-		
-		
 //------------------------------------------------	
 	
 	let prototype_oneTR_lemma = `\n  
@@ -189,21 +191,26 @@ license MIT: you can share and modify the software, but you must include the lic
 						<span>§one-ixLemma§</span>	
 					</span>	
 			</td>  
-			<td class="fixWordTdWidth5" style="text-align:center;"  class="borderVert_L"  >§one-nrow§</td> 
-			<td class="fixWordTdWidth5" style="text-align:center;color:blue;" class="borderVert_L" >§one-n_extr_row§</td> 
-
-			<td class="fixWordTdWidth5" style="text-align:center;" class="borderVert_L"  ><button §learnedClass§ onclick="onclick_word_known2(\'§one-ix1§\',this)">§YESorNOT§</button></td>		
-			<td style="text-align:center;" class="fixWordTdWidthN borderVert_L" >				
-				<div class="hpad top left1"  >
-					<span ondblclick="onclickDoubleWordTran(this)"> 
-						<span class="c_wordOrig"><b>§one-word1§</b></span>						
-					</span> 					
-					<span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
-				</div>				
+			<td class="fixWordTdWidth5" style="text-align:center;"  class="borderVert_L"  >         <span §dyNoneTD234§>§one-nrow§</span></td> 
+			<td class="fixWordTdWidth5" style="text-align:center;color:blue;" class="borderVert_L" ><span §dyNoneTD234§>§one-n_extr_row§</span></td> 
+			<td class="fixWordTdWidth5" style="text-align:center;" class="borderVert_L"  >	        <span §dyNoneTD234§>
+				<button §learnedClass§ onclick="onclick_word_known2(\'§one-ix1§\',this)">§YESorNOT§</button></span>
+			</td>		
+			<td style="text-align:center;" class="fixWordTdWidthN borderVert_L" >
+				<div class="c_size_1_line">
+					<div class="hpad top left1"  >
+						<span ondblclick="onclickDoubleWordTran(this)"> 
+							<span class="c_wordOrig"><b>§one-word1§</b></span>						
+						</span> 					
+						<span  class="c_wordTran" style="display:none;">§one-f_tran§</span>		
+					</div>	
+				</div>	
 			</td>	
 			
-			<td style="text-align:center;"  class="fixWordTdWidthL borderVert_L borderVert_R">		
-				§tdLemma§							
+			<td style="text-align:center;"  class="fixWordTdWidthL borderVert_L borderVert_R">
+				<div class="c_size_1_line">
+				§tdLemma§			
+				</div>
 			</td>
 		
 			<td class="fixWordTdWidth3">
@@ -244,19 +251,15 @@ license MIT: you can share and modify the software, but you must include the lic
 	**/
 	//--------------------------------------------------------------------
 
-	function newTr_from_prototype( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, word1, f_lemma, x_level, 
+	function TOGLInewTr_from_prototype( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, word1, f_lemma, x_level, 
 					f_para, f_tran, x_para1,x_example1, showAltre, m, 
 					n_extr_row1, 
 					uLearnedYN, numButton) {  
-	    /**
-		if (word1=="gehen") { 
-			console.log("newTr_from_prototype( numeroTR=", numeroTR, " ", word1, " nrow=", nrow, " ix1=", ix1, " m=",m ,
-				"  n_extr_row=",   n_extr_row1," numButton=", numButton  ) 
-		}
-		**/
+	   
 		var displayNone  = "";
 		var displayNone1 = "";
 		var displayNoneL = "";
+		var dyNoneTD234  = ""; 
 		
 		var newTr = prototype_oneTR_lemma.trim(); 
 		
@@ -302,15 +305,29 @@ license MIT: you can share and modify the software, but you must include the lic
 			yesOrNot = NOT_YET1;
 			learnedClass = ' class="notYetLearnedButt" '
 		}
+		if (ix1 < 0) {			
+			displayNone  = 'style="display:none;"';
+			displayNone1 = 'style="display:none;"';
+			dyNoneTD234  = "visibility:hidden;"
+		} 
+		
+		 
+		if (f_lemma=="gehen") { 
+			console.log("newTr_from_prototype( numeroTR=", numeroTR, " ", word1, " nrow=", nrow, " ix1=", ix1, "  dyNoneTD234=",dyNoneTD234	)
+		}
+		
+		
+		
 		
 		//console.log(word1 , "  nrow=", nrow,  " displayNone=>" + displayNone, "<==")
 		newTr = newTr.
-			replaceAll("§summarystyle§"  , summarystyle).
-			replaceAll(" §wordvisib§"    , wordvisib   ). 
-			replaceAll("§displayNone§"    , displayNone ).  
-			replaceAll("§displayNone1§"   , displayNone1 ).  
-			replaceAll("§displayNoneL§"   , displayNoneL ).  
-			replaceAll("§ixW2StudyLs§"      , ""+ixW2StudyLs ). 
+			replaceAll("§summarystyle§"  , summarystyle ).
+			replaceAll(" §wordvisib§"    , wordvisib    ). 
+			replaceAll("§displayNone§"   , displayNone  ).  
+			replaceAll("§displayNone1§"  , displayNone1 ).  
+			replaceAll("§displayNoneL§"  , displayNoneL ).  
+			replaceAll("§dyNoneTD234§"   , dyNoneTD234  ).
+			replaceAll("§ixW2StudyLs§"   , ""+ixW2StudyLs ). 
 			replaceAll("§one-ixLemma§"   , ""+ixLemma   ). 
 			replaceAll("§one-ixixLemma§" , ""+ixixLemma ). 
 			replaceAll("§one-numTR§"     , ""+numeroTR ). 
@@ -329,7 +346,7 @@ license MIT: you can share and modify the software, but you must include the lic
 			;  
 		return newTr;	
 		
-	}  // end of newTr_from_prototype
+	}  // end of TOGLInewTr_from_prototype
 	
 	//======================================================
 	let prototype_tr_m2_tts = ` 

@@ -1,0 +1,132 @@
+package wbfSubPack
+
+import (
+    "fmt"
+	"strings"
+	"sort"
+)
+//-----------------------------------------------
+
+//--------------------------------------------
+func g31_read_languageFile( path0 string, inpFile0 string) {
+	
+	fmt.Println( green( "read_languageFile" ) )
+		
+	path1, inpFile1 := getLemmaPathAndFile(inpFile0)
+	//if path1 == "" { path1 = path0}
+
+	fmt.Println("    folder=" , path1, " file=", inpFile1)
+	
+	
+	bytesPerRow:= 40
+    righe := rowListFromFile( path1, inpFile1, inpFile1, "read_languageFile", bytesPerRow)  
+	if sw_stop { return }
+	fmt.Println("\nletto language file ", inpFile1  + " " , len(righe) , " righe") 
+	
+	var translate_chars_std_inp = "" 
+	var translate_chars_std_out = ""
+	var translate_chars_SEQ_inp = ""     
+	var translate_chars_SEQ_out = "" 
+	//-----------------------------------------------  
+
+	var sepPref =""	
+	
+	for _, line0:= range righe {
+		line := strings.TrimSpace( line0 )
+		if len(line) < 2 {continue}
+		if line[0:2] == "//" {continue}
+		j1:= strings.Index( line, "//" )
+		if j1 >0 { line = line[0:j1] }
+		
+		if len(line) < 1 { continue } 
+		
+		j1 = strings.Index( line, "=" ) 
+		if j1 < 0 { continue}
+		
+		value1:= strings.Trim(line[j1+1:], `"' ` )
+		var1 := strings.Trim(line[0:j1]  , `"' ` )	
+		/**
+		if line[0:9] == "sep_pref " {
+			sepPref += strings.TrimSpace(line[9:]) +";"  
+			continue
+		}	
+		**/
+		switch var1 {
+			case "chars_std_inp":  translate_chars_std_inp = value1
+			case "chars_std_out":  translate_chars_std_out = value1
+			case "chars_SEQ_inp":  translate_chars_SEQ_inp = value1
+			case "chars_SEQ_out":  translate_chars_SEQ_out = value1
+			//case "sep_pref"     :  sepPref += strings.TrimSpace(line[9:]) +";"  
+			case "sep_pref"     :  sepPref += value1 +";"  			
+		}
+		//fmt.Println("input language ==> var1=" + var1, " value1=" + value1, " sepPref=", sepPref)  
+	} 	
+	
+	translate_chars_std_inpList =  strings.Fields( strings.ReplaceAll(translate_chars_std_inp, ","," ") )	     
+	translate_chars_std_outList =  strings.Fields( strings.ReplaceAll(translate_chars_std_out, ","," ") )	 
+   
+	translate_chars_SEQ_inpList =  strings.Fields( strings.ReplaceAll(translate_chars_SEQ_inp, ","," ") )	       
+	translate_chars_SEQ_outList =  strings.Fields( strings.ReplaceAll(translate_chars_SEQ_out, ","," ") )	 
+	
+	//------------------------------
+	fmt.Println("translate_chars_std_inpList = " , translate_chars_std_inpList, "\n"+"translate_chars_std_outList = ", translate_chars_std_outList ) 
+	fmt.Println("translate_chars_SEQ_inpList = " , translate_chars_SEQ_inpList, "\n"+"translate_chars_SEQ_outList = ", translate_chars_SEQ_outList ) 
+	
+	get_separablePrefix( sepPref ) 
+	
+	//prova_code()
+	
+} // end of read_languageFile	
+//-----------------------------------------
+//----------------------------
+func TOGLIprova_code() {
+	wrk:= "anschluss" ;	fmt.Println( red("converti ") , wrk, " 1=", stdCode(wrk), " 2=", std2Code(wrk))
+	wrk = "anschluß";	fmt.Println( red("converti ") , wrk, " 1=", stdCode(wrk), " 2=", std2Code(wrk))
+	
+	outCode:= "anschluss" 
+	for nn,ch1:= range translate_chars_std_outList {
+		fmt.Println("prova nn=", nn, " replace from ch1=", ch1, " to ", translate_chars_std_inpList[nn]) 
+		outCode = strings.ReplaceAll(outCode, ch1, translate_chars_std_inpList[nn])  
+	}	
+	
+	fmt.Println( red("converti3 ") , outCode)
+	fmt.Println( green("translate_chars_std_outList ") , len(translate_chars_std_outList), " ", translate_chars_std_outList) 
+	fmt.Println( green("translate_chars_std_inpList ") , len(translate_chars_std_inpList), " ", translate_chars_std_inpList) 
+	
+	
+}
+
+//-----------------------------------------------
+func get_separablePrefix( stringPrefissiSeparabili string ) {	
+	
+	separPrefList = make([]separPrefStruct, 0, 200) 
+	var sP separPrefStruct 
+	listPr:= strings.Split(  strings.ToLower(stringPrefissiSeparabili),  ";" ) 	
+	for _,lP:= range listPr {
+		if lP == "" {continue}
+		lP+= " - - - "
+		pp:= strings.Split(lP,"-")
+		
+	    sP.sPrefix  = strings.TrimSpace( pp[0] ) 
+		sP.sPrefTran= strings.TrimSpace( pp[1] ) 
+		sP.sLenPref = len(sP.sPrefix) 
+		separPrefList = append(separPrefList, sP) 
+	}	
+	//----- sort firstly the longest prefix, then ascending prefix order   
+	sort.Slice(separPrefList, func(i, j int) bool { 
+			if separPrefList[i].sLenPref != separPrefList[j].sLenPref {
+				return separPrefList[i].sLenPref > separPrefList[j].sLenPref
+			} else {			
+				return separPrefList[i].sPrefix < separPrefList[j].sPrefix 		 	
+			} 
+		})	 	
+	/**
+	fmt.Println("\n\nXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX")
+	for _, p:= range separPrefList {
+		fmt.Println("separable prefix ", p.sPrefix , " \t ", p.sPrefTran)
+	}
+	fmt.Println("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX\n")
+	**/
+	
+}
+//---------------------------------------------------------------------------------
