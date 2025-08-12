@@ -11,7 +11,8 @@ import (
 func read_lastValueSets2() {
 	bytesPerRow:= 10
     lineD := rowListFromFile( FOLDER_INPUT_OUTPUT, FILE_last_mainpage_values2, "last run values", "read_lastValueSets2", bytesPerRow)  
-	
+	if len(lineD) == 0 { sw_stop = false }	
+	if sw_stop { return }
 	fmt.Println("read_lastValueSets2 lineD=", lineD)
 	
 	var dat="";

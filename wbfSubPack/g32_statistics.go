@@ -106,10 +106,13 @@ func stat_useWord() {
 	
 	lastTot:=0;
 	ixNow:=0	
+	lenU := len(uniqueWordByFreq)
+	if lenU < 1 {return } 
+	
 	for z:=0; z < len(listIxPerc); z++ {
 		//from1 = ixNow
 		ixNow =  listIxPerc[z]-1
-		if ixNow< 0 { ixNow=0;}
+		if ((ixNow< 0) || (ixNow >= lenU)) { continue }
 		
 		if uniqueWordByFreq[ixNow].fuTotRow == lastTot { continue }
 		

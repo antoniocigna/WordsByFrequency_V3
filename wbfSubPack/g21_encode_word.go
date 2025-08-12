@@ -1,7 +1,7 @@
 package wbfSubPack
 
 import (  
-	"fmt"
+	//"fmt"
     "strings"
 )
 
@@ -28,7 +28,7 @@ var translate_chars_SEQ_outList []string	 // filled by inputLanguage.txt file in
 func std2Code(inpCode string ) string {		
 	
 	if len(translate_chars_std_outList) == 0 {
-		fmt.Println( red("errore translate_chars_std_outList vuoto") )
+		//fmt.Println( red("errore translate_chars_std_outList vuoto") )
 		return inpCode
 	}
 	

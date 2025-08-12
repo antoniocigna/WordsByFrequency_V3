@@ -18,7 +18,8 @@ func findIndex(slice []int, target int) int {
 //-----------------------------------
 func g25_2read_ParadigmaFile( path1 string, inpFile string) {
 	bytesPerRow:= 40
-    righe := rowListFromFile( path1, inpFile, "paradigma", "read_ParadigmaFile", bytesPerRow)  
+    righe := rowListFromFile( path1, inpFile, "paradigma", "read_ParadigmaFile", bytesPerRow)  	
+	if len(righe) == 0 { sw_stop = false}
 	if sw_stop { return }
 	
 	/*

@@ -1809,7 +1809,11 @@ var currScript = document.currentScript.src; var bar1 = currScript.lastIndexOf("
  // test voice with previous run
  function testPrevVoice() {
 
-	if (prev_voiceName == "") { return -1; }
+	if (prev_voiceLang2 == "") { return -1; }
+	
+	for (var z1 = 0; z1 < voices.length; z1++) {
+		if ( voices[z1].lang.substring(0,2) == prev_voiceLang2) return z1;	
+	}	
 	
 	for (var z1 = 0; z1 < voices.length; z1++) {
 		if (voices[z1].name == prev_voiceName) return z1;	
@@ -1817,16 +1821,21 @@ var currScript = document.currentScript.src; var bar1 = currScript.lastIndexOf("
 	for (var z1 = 0; z1 < voices.length; z1++) {
 		if ( voices[z1].lang == prev_voiceLangRegion) return z1	;
 	}		
-	for (var z1 = 0; z1 < voices.length; z1++) {
-		if ( voices[z1].lang.substring(0,2) == prev_voiceLang2) return z1;	
-	}	
+	
 	return -1;
  }
- 
+ /*
+ 	
+	prev_voice_ix        =  pvLang[0] ; 	
+	prev_voiceLang2      =  pvLang[1] ; 		
+	prev_voiceLangRegion =  pvLang[2] ;  
+	prev_voiceName       =  pvLang[3] ; 
+	 
+ */
  //-------------------------------------------------
   function tts_1_toBeRunAfterGotVoices() {
 	  //console.log("tts_1_toBeRunAfterGotVoices() 1 ")
-	  //console.log("tts_1_toBeRunAfterGotVoices() 2 " , " voices.length=", voices.length)
+	  console.log("tts_1_toBeRunAfterGotVoices() 2 " , " voices.length=", voices.length)
       if (voices.length < 1) return;
 
       voices.sort(
@@ -1850,17 +1859,17 @@ var currScript = document.currentScript.src; var bar1 = currScript.lastIndexOf("
 	  var ixPrevFound = -1 
 	  
 	  
-	  if (prev_voiceName != "") {  
+	  if (prev_voiceLang2 != "") {  
 			ixPrevFound = testPrevVoice() 
 	  }
 	  
-	  /**
+	  
 	  if (ixPrevFound < 0) {
 			console.log("tts_1_toBeRunAfterGotVoices()  ixPrevFound not found"); 
 	  } else {  
 			console.log("tts_1_toBeRunAfterGotVoices()  ixPrevFound=" + ixPrevFound, "\nlastRunLanguage=" +  lastRunLanguage);
 	  }
-	  **/
+	  
 	  
 	  //sele_str += '      <option value="' + 9999+ '" selected>' + '--' + " " + "----------"  +  '</option> \n';
 	  

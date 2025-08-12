@@ -76,7 +76,9 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 	numEleMax:= int(  file1_bytes / bytesPerRow ); 
 	if numEleMax < 10 {numEleMax=10}
 	//----------------
-    lineS:= rowListFromFile( path1, inpLemmaFile_wordLemma, "1assoc. word-lemma", "read_wordLemma_file", bytesPerRow)  		
+    lineS:= rowListFromFile( path1, inpLemmaFile_wordLemma, "1assoc. word-lemma", "read_wordLemma_file", bytesPerRow)  	
+	if len(lineS) == 0 { sw_stop = false }	
+	if sw_stop { return }
 	fmt.Println("lette ", len(lineS), " coppie word-lemma")  
 	//-----------------
 	if inpLemmaFile_wordLemmaPlus != "" {
@@ -88,6 +90,7 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 		if numEleMax2 < 10 {numEleMax2=10}
 		//----------------
 		lineS2:= rowListFromFile( path2, inpLemmaFile_wordLemmaPlus, "1assoc. word-lemma", "read_wordLemma_file", bytesPerRow)  		
+		if len(lineS) == 0 { sw_stop = false }	
 		fmt.Println("lette ", len(lineS2), " coppie word-lemmaPlus")  	
 		if len(lineS2) > 0 {
 			lineS = append(lineS, lineS2...)

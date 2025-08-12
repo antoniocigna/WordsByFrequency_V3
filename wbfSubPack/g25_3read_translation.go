@@ -10,6 +10,7 @@ import (
 func g25_3read_dictLemmaTran_file(path1 string, inpFile string) {
 	bytesPerRow:= 10
     lineD := rowListFromFile( path1, inpFile, "traduzione lemma", "read_dictLemmaTran_file", bytesPerRow)  
+	if len(lineD) == 0 {sw_stop = false }
 	if sw_stop { return }
 	
 	// 	abnutzbarkeit vestibilità   ==>  lemma     \t traduzione                                                                   |    |  |        

@@ -12,11 +12,9 @@ func read_wordsToLearn() {
 	//swWrite:=false; outLearn:= make([]string,0,3000) 
 	
 	bytesPerRow:= 10
-    lineD := rowListFromFile( FOLDER_INPUT_OUTPUT, FILE_words_to_learn, "words to learn", " bind_go_passToJs_read_wordsToLearn", bytesPerRow)  
-	if sw_stop {  // this file might be missing
-		sw_stop=false		
-		return
-	}
+    lineD := rowListFromFile( FOLDER_INPUT_OUTPUT, FILE_words_to_learn, "words to learn", " bind_go_passToJs_read_wordsToLearn", bytesPerRow) 
+	if len(lineD) == 0 { sw_stop = false }	
+	if sw_stop { return }
 	
 	nread:=0
 	for z:=0; z< len(lineD); z++ { 

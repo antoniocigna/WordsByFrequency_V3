@@ -187,9 +187,13 @@ func g09_2_bind_go_write_new_row_dictionary( listGoRows string, js_function stri
 	var rS1 rowStruct
 	//var rG  rowGroupStruct ;
 	//----------------------------------
-	last_rS1 := inputTextRowSlice[ len( inputTextRowSlice )-1 ]
-	last_ngr := last_rS1.rixGroup  	
-	num_O_ix := 0	
+	var last_rS1 rowStruct;
+	last_ngr := 0
+	num_O_ix := 0
+	if len( inputTextRowSlice ) > 0 {
+		last_rS1 = inputTextRowSlice[ len( inputTextRowSlice )-1 ]
+		last_ngr = last_rS1.rixGroup  	
+	}		
 	ngr:= last_ngr+1
 	//----------------------------
 	for _,row1dict := range  strings.Split(listGoRows,"\n") {  

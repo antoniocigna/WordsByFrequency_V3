@@ -11,6 +11,8 @@ import (
 func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 	bytesPerRow:= 10
     lineD := rowListFromFile( path1, inpRowFile, "righe orig/tran", "read_dictRow_Orig_and_Tran_file", bytesPerRow)  
+	
+	if len(lineD) == 0 { sw_stop = false }
 	if sw_stop { return }
 	
 	lineZ := ""
@@ -19,8 +21,6 @@ func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 	3|T|Ma un essere vivente scambia anche energia, cose e sostanze con il suo ambiente.
 	*/
 	
-	
-	prevRunLanguage = ""
 	//prevRunListFile = ""
 	//var rowDict rDictStruct
 	var rS1 rowStruct

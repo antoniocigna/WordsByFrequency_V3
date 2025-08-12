@@ -53,8 +53,7 @@ func begin() {
 	if sw_stop { 
 				fmt.Println("UI is ready ( run stopped because of some error)")
 	} else {
-		//go_exec_js_function("js_go_ready", prevRunLanguage + ":mainpage_value=" + last_mainpage_valueString)  // +"<file>" + prevRunListFile); 
-		
+		fmt.Println("go_exec_js_function( js_go_ready (prevRunLanguage=",  prevRunLanguage )
 		go_exec_js_function("js_go_ready", prevRunLanguage )
 		//log.Println("UI is ready")
 		fmt.Println("UI is ready")

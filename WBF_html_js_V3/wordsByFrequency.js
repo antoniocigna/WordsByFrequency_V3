@@ -449,6 +449,9 @@ function fun_selRowsWanted_changed() {
 //---------------------
 
 function writeLanguageChoise() {
+	
+	return; 
+	
 	//---------------------------------------------------
 	// triggered by onchange_tts_get_oneLangVoice(this1) 
 	
@@ -836,7 +839,7 @@ function onclick_require_rowListWithThisWord2(type,word1, maxNumRow5) {
 
 function onclick_require_rowList1(selFrasiParole12) {	
 	
-	//console.log("onclick_require_rowList1 selFrasiParole12=", selFrasiParole12 )
+	console.log("onclick_require_rowList1 selFrasiParole12=", selFrasiParole12 )
 	
 	document.getElementById("id_inpRowEmpty").style.display = "none";
 	word_to_underline_list = []
@@ -855,7 +858,7 @@ function onclick_require_rowList1(selFrasiParole12) {
 		
 	var caller = "HTML page onclick_require_rowList1" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
 	if (caller == undefined) { caller = ""; }
-	//console.log("2 onclick_require_rowList1 esegue go_passToJs_rowList(" + inpBegRow + "," +numRows + "," + selFrasiParole12 + ","+ "js_go_rowList" + ", " + "js_go_showWordList_lev2(1)" )
+	console.log("2 onclick_require_rowList1 esegue go_passToJs_rowList(" + inpBegRow + "," +numRows + "," + selFrasiParole12 + ","+ "js_go_rowList" + ", " + "js_go_showWordList_lev2(1)" )
 	
 	go_passToJs_rowList(""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2(1)", caller); 
 		
@@ -1652,8 +1655,8 @@ function js_go_rowList( inpstr, js_parm, jsFunc,goFunc) {
 	
 	// triggered by go ( go_passToJs_rowList and js_go_showWrdRowList)
 	
-	//console.log("function js_go_rowList() js_parm=" + js_parm + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc ) 
-	//console.log("	inpstr=" +inpstr ) 
+	console.log("function js_go_rowList() js_parm=" + js_parm + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc ) 
+	console.log("	inpstr=" +inpstr ) 
 	
 	rowToStudy_list = [];
 	newRowTran = [];
@@ -1818,7 +1821,7 @@ function set_dragDiv() {
 **/
 //------------------------------------
 function js_go_ready( prevRun00) {
-	//console.log("************************* js_go_ready(" + prevRun00.trim() + ")" ); 
+	console.log("************************* js_go_ready(" + prevRun00.trim() + ")" ); 
 	
 	/**
 	5,de,de-DE,Microsoft Stefan - German (Germany):mainpage_value=5491,10,1,100,any,,
@@ -1897,7 +1900,7 @@ function js_go_ready( prevRun00) {
 	if (prevRunLanguage != "") {
 		sw_firstDictLine_already_existed = true; 
 		lastRunLanguage = prevRunLanguage
-		//console.log("language file has been read ==>" +  lastRunLanguage) 
+		console.log("language file has been read ==>" +  lastRunLanguage) 
 	} 	
   
     document.getElementById("id_start001").style.display = "none";
@@ -1911,9 +1914,9 @@ function js_go_ready( prevRun00) {
 	if (prevRunLanguage != "") { 
 		lastRunLanguage = prevRunLanguage
 		loadPrevLang( prevRunLanguage ) 
-		//console.log("js_go_ready()  prevRunLanguage=", prevRunLanguage, "  js_go_ready() NON chiama  fcommon_load_all_voices()");  
+		console.log("js_go_ready()  prevRunLanguage=", prevRunLanguage, "  js_go_ready() NON chiama  fcommon_load_all_voices()");  
 	}	else {
-		//console.log("js_go_ready() call fcommon_load_all_voices()");
+		console.log("js_go_ready() call fcommon_load_all_voices()");
 		
 		fcommon_load_all_voices(); // at end calls tts_1_toBeRunAfterGotVoices()		
 		// WARNING: the above function contains asynchronous code.  
@@ -2229,17 +2232,20 @@ function extract_ix_word( i,wordOrig2 ) {
  
 function loadPrevLang(prevLanguage) {
 	
+	prev_voiceLang2 = prevLanguage
+	
 	// language=5,de,de-DE,Microsoft Stefan - German (Germany)   ( it's in the first line of dictionary) 
 	//          0,1 ,2    ,3  
-	var pvLang = prevLanguage.split(",") 
-		
-		
+	
+	/***
+	var pvLang = prevLanguage.trim).split(",") 	
 	prev_voice_ix        =  pvLang[0] ; 	
 	prev_voiceLang2      =  pvLang[1] ; 		
 	prev_voiceLangRegion =  pvLang[2] ;  
 	prev_voiceName       =  pvLang[3] ; 
+	**/
 	 
-	//console.log(" wordByFrequence.js loadPrevLang()" + " prev_voiceName = "+  prev_voiceName  );  
+	console.log(" wordByFrequence.js loadPrevLang()" + " prev_voiceLang2 = "+  prev_voiceLang2 );  
 	
 	fcommon_load_all_voices(); // at end calls tts_1_toBeRunAfterGotVoices()
 	
@@ -4640,7 +4646,7 @@ function onclick_get_newText() {
 		outText += riga;
 	}	
 	eleTxt.value = outText;
-	
+	console.log(" onclick_get_newText ", " --> go_write_new_row_dictionary ", outText)
 	go_write_new_row_dictionary( outText, "js_go_new_row_written")
 	
 	
@@ -4654,6 +4660,9 @@ function go_write_new_row_dictionary( str1 ) {
 ***/
 //-------------------------------------
 function js_go_new_row_written(str1 ) {
+	
+	console.log("js_go_new_row_written ", str1 )
+	
 	var msg1 = "chiudi e riesegui l'applicazione"
 	document.getElementById("id_newTxtMsg0").innerHTML = "<br>" + str1;
 	document.getElementById("id_newTxtMsg1").innerHTML = "<br>" + msg1;

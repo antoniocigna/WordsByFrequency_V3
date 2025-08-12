@@ -20,6 +20,9 @@ func g31_read_languageFile( path0 string, inpFile0 string) {
 	
 	bytesPerRow:= 40
     righe := rowListFromFile( path1, inpFile1, inpFile1, "read_languageFile", bytesPerRow)  
+	if len(righe) == 0 { 
+		sw_stop = true
+	}	
 	if sw_stop { return }
 	fmt.Println("\nletto language file ", inpFile1  + " " , len(righe) , " righe") 
 	
@@ -52,6 +55,7 @@ func g31_read_languageFile( path0 string, inpFile0 string) {
 		}	
 		**/
 		switch var1 {
+			case "language"     :  prevRunLanguage = value1 	
 			case "chars_std_inp":  translate_chars_std_inp = value1
 			case "chars_std_out":  translate_chars_std_out = value1
 			case "chars_SEQ_inp":  translate_chars_SEQ_inp = value1
@@ -61,7 +65,7 @@ func g31_read_languageFile( path0 string, inpFile0 string) {
 		}
 		//fmt.Println("input language ==> var1=" + var1, " value1=" + value1, " sepPref=", sepPref)  
 	} 	
-	
+	fmt.Println("    language ", prevRunLanguage)
 	translate_chars_std_inpList =  strings.Fields( strings.ReplaceAll(translate_chars_std_inp, ","," ") )	     
 	translate_chars_std_outList =  strings.Fields( strings.ReplaceAll(translate_chars_std_out, ","," ") )	 
    
