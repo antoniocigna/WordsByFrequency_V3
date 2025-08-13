@@ -9,19 +9,17 @@ package wbfSubPack
 
 func g06_bind_go_passToJs_getIxRowFromGroup( rowGrIndex int,   html_rowGroup_beginNum int, html_rowGroup_numRows int, js_function string)  {
 
+	//fmt.Println("func ", green("g06_bind_go_passToJs_getIxRowFromGroup"), "(rowGrIndex=", rowGrIndex, ", html_rowGroup_beginNum=",html_rowGroup_beginNum, 
+	//	", html_rowGroup_numRows=", html_rowGroup_numRows ); 
+		
 	if rowGrIndex < 0 { return }
 	
-	/**
-	if (sw_list_Word_if_in_ExtrRow) { 		
-			fmt.Println("on the row list button \"inpBegRow\" or \"maxNumRow\" values has been changed, but since only extracted rows wanted, that causes a rebuild of wordlist data")			
-			build_and_elab_word_list()
-	}
-	**/
-	
-	//gRix := rowLineIxList[ rowGrIndex ] 
-	
 	rG := lista_gruppiSelectRow[ rowGrIndex ]	
+	
+	
 
+	//fmt.Println("    g06_bind_go_passToJs_getIxRowFromGroup",  " lista_gruppiSelectRow[", rowGrIndex, "] = ", rG) 
+	
 
 	ixRowBeg := html_rowGroup_beginNum + rG.rG_firstIxRowOfGr - 1 	 
 	ixRowEnd := ixRowBeg + html_rowGroup_numRows - 1
@@ -39,11 +37,6 @@ func g06_bind_go_passToJs_getIxRowFromGroup( rowGrIndex int,   html_rowGroup_beg
 	last_html_rowGroup_index_gr = rowGrIndex	
 	last_html_rowGroup_beginNum = html_rowGroup_beginNum	// from the beginning of the group ( starting from 1 )
 	last_html_rowGroup_numRows  = html_rowGroup_numRows	
-	//last_html_rowGroup_numRows  = 1 + last_rS_toIxRow - ixRowBeg - (html_rowGroup_beginNum - 1)
-	
-	//last_word_fromWord    = 	
-	//last_word_numWords    = 
-	//last_sel_extrRow      = 
 	
 	write_lastValueSets()
 	
@@ -56,12 +49,22 @@ func g06_bind_go_passToJs_getIxRowFromGroup( rowGrIndex int,   html_rowGroup_beg
 				ixRowBeg, ixRowEnd, 	
 				inputTextRowSlice[  rG.rG_firstIxRowOfGr ].rRow1   )
 	
+	//fmt.Println("    g06_bind_go_passToJs_getIxRowFromGroup"  , " run write_lastValueSets ", "\n\t--> ", js_function , "(", outS1 ); 
+	
 	go_exec_js_function( js_function, outS1 )	
 	
 } // end of bind_go_passToJs_updateRowGroup
+//------------------------------------------
+/***
+func  g06_bind_go_passToJs_getIxRowFromGroup (rowGrIndex= 1 , html_rowGroup_beginNum= 1 , html_rowGroup_numRows= 100
+    g06_bind_go_passToJs_getIxRowFromGroup  run write_lastValueSets
+        -->  js_go_gotIxRowFromGroup ( inp,1,1,7,gr,1,2,7,13,ixr,7,13, file: prova2.csv
+func  g06_bind_go_passToJs_getIxRowFromGroup (rowGrIndex= 5 , html_rowGroup_beginNum= 1 , html_rowGroup_numRows= 100
+    g06_bind_go_passToJs_getIxRowFromGroup  run write_lastValueSets
+        -->  js_go_gotIxRowFromGroup ( inp,5,1,7,gr,0,1,0,6,ixr,0,6, file: prova.csv
 
-
-
+   1° rowGrIndex OK;  1,7 (3°,4°) sono quelli precedenti da html;  5° .rgGroup ERRORE e seguenti errati 
+**/
 //-----------------------------
 func write_lastValueSets() {
 	

@@ -839,7 +839,7 @@ function onclick_require_rowListWithThisWord2(type,word1, maxNumRow5) {
 
 function onclick_require_rowList1(selFrasiParole12) {	
 	
-	console.log("onclick_require_rowList1 selFrasiParole12=", selFrasiParole12 )
+	//console.log("onclick_require_rowList1 selFrasiParole12=", selFrasiParole12 )
 	
 	document.getElementById("id_inpRowEmpty").style.display = "none";
 	word_to_underline_list = []
@@ -858,7 +858,8 @@ function onclick_require_rowList1(selFrasiParole12) {
 		
 	var caller = "HTML page onclick_require_rowList1" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
 	if (caller == undefined) { caller = ""; }
-	console.log("2 onclick_require_rowList1 esegue go_passToJs_rowList(" + inpBegRow + "," +numRows + "," + selFrasiParole12 + ","+ "js_go_rowList" + ", " + "js_go_showWordList_lev2(1)" )
+	
+	//console.log("2 onclick_require_rowList1 esegue go_passToJs_rowList(" + inpBegRow + "," +numRows + "," + selFrasiParole12 + ","+ "js_go_rowList" + ", " + "js_go_showWordList_lev2(1)" )
 	
 	go_passToJs_rowList(""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2(1)", caller); 
 		
@@ -1655,8 +1656,8 @@ function js_go_rowList( inpstr, js_parm, jsFunc,goFunc) {
 	
 	// triggered by go ( go_passToJs_rowList and js_go_showWrdRowList)
 	
-	console.log("function js_go_rowList() js_parm=" + js_parm + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc ) 
-	console.log("	inpstr=" +inpstr ) 
+	//console.log("function js_go_rowList() js_parm=" + js_parm + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc ) 
+	//console.log("	inpstr=" +inpstr ) 
 	
 	rowToStudy_list = [];
 	newRowTran = [];
@@ -2998,7 +2999,7 @@ function write_row_dictionary(wh) {
 	
 	for (var i = 0; i < rowToStudy_list.length; i++) {
 		if ( rowToStudy_list[i] == "") continue; 
-		console.log("2977write " ,  rowToStudy_list[i] )
+		//console.log("2977write " ,  rowToStudy_list[i] )
 		
 		col1 = (rowToStudy_list[i]+ "||||||").split("|");		
 		nfileW = col1[0];  
@@ -4660,12 +4661,15 @@ function go_write_new_row_dictionary( str1 ) {
 ***/
 //-------------------------------------
 function js_go_new_row_written(str1 ) {
-	
-	console.log("js_go_new_row_written ", str1 )
-	
-	var msg1 = "chiudi e riesegui l'applicazione"
+	var eleTxt = document.getElementById("id_newText").value = ""
+	var ele_id1 = document.getElementById("id_newTxt_id")
+	var ele_title1 = document.getElementById("id_newTxt_title"); 
+	var str1 = "il nuovo testo con identificativo " + ele_id1.value + " è stato accettato";
+	//var msg1 = "chiudi e riesegui l'applicazione"
 	document.getElementById("id_newTxtMsg0").innerHTML = "<br>" + str1;
-	document.getElementById("id_newTxtMsg1").innerHTML = "<br>" + msg1;
+	document.getElementById("id_newTxtMsg1").innerHTML = "";
+	ele_id1.value = "";  
+	ele_title1.value= ""; 
 	
 }  // end of js_go_new_row_written
 //-----------------------------------------------------

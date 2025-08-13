@@ -11,25 +11,10 @@ package wbfSubPack
 func get_all_binds() {
 		fmt.Println("func get_all_binds")
 		
-		/***
-		// A simple way to know when UI is ready (uses body.onload event in HTML/JS)
-		ui.Bind("goStart", func() { 
-				fmt.Println("Bind goStart   sw_begin_ended=", sw_begin_ended); 
-				sw_HTML_ready = true 
-				if sw_begin_ended {
-					bind_goStart("1get_all_binds")
-				}	
-			} )
-		**/	
 		//--------------
 		ui.Bind("go_passToJs_html_is_ready", func( msg1 string,  js_function string) { 		
 				g02_bind_go_passToJs_html_is_ready( msg1,  js_function)  })
-		//--------------
-		/**
-		ui.Bind("go_passToJs_html_and_go_ready", func( msg1 string,  js_function string) { 	
-			bind_go_passToJs_html_and_go_ready( msg1,  js_function)  })
-		**/
-		//--------------
+	
 		//----------------------------
 		ui.Bind("go_passToJs_wordList", func( isChange bool, s_fromWord string, s_numWords string, sel_level string, 
 															sel_extrRow string, sel_toBeLearned string,  js_function string) { 		
@@ -96,21 +81,12 @@ func get_all_binds() {
 		ui.Bind("go_passToJs_word_known2", func( s_ixWord string, s_yesNot_len1 string,  js_function string) {
 			g07_bind_go_passToJs_word_known2(       getInt(s_ixWord), s_yesNot_len1, js_function)  } )  
 				
-		//----------------------------------------------------------------
-		/**
-		ui.Bind("go_passToJs_read_wordsToLearn", func( js_function string) {
-			bind_go_passToJs_read_wordsToLearn(js_function)  } )  
-		**/
+		
 		//----------------------------------------------------------------
 		ui.Bind("go_passToJs_write_WordsToLearn", func( js_function string) {
 			g09_bind_go_passToJs_write_WordsToLearn(js_function)  } )  	
 			
 		//-----------------------------------------
-		/***
-		ui.Bind("go_passToJs_updateRowGroup", func( s_index string,  s_inpBegRow string,  s_inpNumRow string,  js_function string) {	
-			bind_go_passToJs_updateRowGroup(       getInt(s_index), getInt(s_inpBegRow), getInt(s_inpNumRow),  js_function)   } ) 
-		**/
-		//-------------------------------------------------------------------
 		
 		ui.Bind("go_passToJs_getIxRowFromGroup", func( s_rowGrIndex string,  s_html_rowGroup_beginNum string, s_html_rowGroup_numRows string, js_function string) {		
 			g06_bind_go_passToJs_getIxRowFromGroup( getInt(s_rowGrIndex),  getInt( s_html_rowGroup_beginNum), getInt( s_html_rowGroup_numRows),  js_function)  } ) 
@@ -136,19 +112,7 @@ func g02_bind_go_passToJs_html_is_ready( msg1 string,  js_function string) {
 } // end of bind_go_passToJs_html_is_ready
  
 //---------------------------------------------
-/**
-func bind_go_passToJs_html_and_go_ready( msg1 string,  js_function string) {
-	fmt.Println("\n", "go func  bind_go_passToJs_html_and_go_ready() " , "\n\t msg from html: ", msg1 )  
-	
-	fmt.Println("XXXXXXXXXX   PRONTO  XXXXXXXXXXXX")
-	
-	begin() 
-	
-} // end of bind_go_passToJs_html_and_go_ready
-***/
-//-------------------------------------------------------- 
 
-//---------------------------		
 
 func getInt(x string) int {	
 	y1, e1 := strconv.Atoi( x ) 
@@ -194,10 +158,5 @@ func isNumber(s string) bool {
     }
     return true
 }
-
-
-
-
-//-----------------------------------------------------------
 
 //==============================================

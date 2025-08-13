@@ -49,6 +49,8 @@ func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 	firstIxRow :=0
 	lastIxRow  :=0
 	//----------
+	
+	lista_gruppiSelectRow  = make([]  rowGroupStruct, 0, 100) 
 
 	group_zero := "."; 
 	
@@ -70,18 +72,12 @@ func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 		
 		if ((row == "") || (id_key == "") || (ty=="")) { continue }
 		
-		//fmt.Println("carica riga z=", z, " lineZ=", lineZ, "\n\t fields: 0=", field[0], "  1=", field[1], " 2=", field[2], "  3=", field[3]   )
-		
 		id_group = get_rowid2(id_key)
-		
-		//fmt.Println("\t id_key=", id_key, " id_group=", id_group)
-		
+			
 		if id_group != pre_id_group {
 			if pre_id_group != "" {
 				// elabora fine gruppo precedente {
-				
-				//fmt.Println("id_key=", pre_id_group, " from=", pre_id_keyFirst, " to=", pre_id_keyLast, " first_ixRow=", firstIxRow, " lastIxRow=", lastIxRow)  
-				
+					
 				if pre_id_group != group_zero { 
 					gruppi_option += "<option>" +  fmt.Sprintf("%s %s", pre_id_group,  pre_id_row)  + "</option>\n"
 					rG.rG_ixSelGrOption   = ngr    // group number = index of group selection 
@@ -91,7 +87,8 @@ func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 					lista_gruppiSelectRow = append( lista_gruppiSelectRow, rG )    
 					ngr++
 					
-					fmt.Println("Group=", pre_id_group, " key: from=", pre_id_keyFirst, " to=", pre_id_keyLast, " ixRow: first_ixRow=", firstIxRow, " lastIxRow=", lastIxRow)  
+					//fmt.Println("Group=", pre_id_group, " key: from=", pre_id_keyFirst, " to=", pre_id_keyLast, " ixRow: first_ixRow=", firstIxRow, " lastIxRow=", lastIxRow, 
+					//" index rG=" ,len(lista_gruppiSelectRow)-1, " rG=", rG)    
 					
 				}			
 			}
@@ -110,7 +107,7 @@ func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 			//newNum=0  ; // ?anto rinumera  
 			pre_id_key  = id_key
 			
-			//fmt.Println("\nNUOVO Group=", id_group)
+			//fmt.Println("\nNUOVO Group=", " pre_id_group=", pre_id_group, " pre_id_keyFirst=", pre_id_keyFirst, " pre_id_row=", pre_id_row)
 			
 		}
 		//--
@@ -162,29 +159,23 @@ func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 		rG.rG_firstIxRowOfGr  = firstIxRow 
 		rG.rG_lastIxRowOfGr   = lastIxRow						
 		lista_gruppiSelectRow = append( lista_gruppiSelectRow, rG )    
-		ngr++
-		fmt.Println("Group=", pre_id_group, " key: from=", pre_id_keyFirst, " to=", pre_id_keyLast, " ixRow: first_ixRow=", firstIxRow, " lastIxRow=", lastIxRow)  		
-	}
+		ngr++					
+		//fmt.Println("(last) Group=", pre_id_group, " key: from=", pre_id_keyFirst, " to=", pre_id_keyLast, " ixRow: first_ixRow=", firstIxRow, " lastIxRow=", lastIxRow, 
+		//		" index rG=" ,len(lista_gruppiSelectRow)-1, " rG=", lista_gruppiSelectRow[ len(lista_gruppiSelectRow)-1] )     
+	}		
+	
 	//-------------
 	
 	go_exec_js_function( "js_go_build_rowGruppi", gruppi_option); 	
 	
-	//-------
-	//fmt.Println("read_dictRow_Orig_and_Tran_file "  , " numAll=", numAll, " numO=", numO, " numT=", numT, " numT_err=", numT_err, " num_oth=", num_oth)
-	/**
-	for z:=0; z< len(inputTextRowSlice); z++ {
-		fmt.Println("caricata inputTextRowSlice[",z,"]=", inputTextRowSlice[z] )
-	}
-	**/
+		
 	//-------------------
 	
 	showReadFile = showReadFile + strconv.Itoa(numLines) + "<file>" + inpRowFile + ";" ; 
 	
 	fmt.Println( "read ", len(lineD) , " lines of file ", inpRowFile, " which contains ",  numLines, " text rows" );  	
 	
-	//testRowGroup()  // TEST
-	//-------------------
-	
+		
 	
 } // end of  read_dictRow_file
 

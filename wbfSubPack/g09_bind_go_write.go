@@ -223,6 +223,8 @@ func g09_2_bind_go_write_new_row_dictionary( listGoRows string, js_function stri
 	msg1 := "caricate " + strconv.Itoa(num_O_ix) + " nuove righe, ora in tutto le righe di testo sono " + strconv.Itoa( len(  inputTextRowSlice) )
 	
 	go_exec_js_function( js_function, msg1 ); 
+	
+	begin()
 
 } // end of  bind_go_write_new_row_dictionary 	
 

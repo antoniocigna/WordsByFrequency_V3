@@ -28,6 +28,8 @@ func read_lastValueSets2() {
 	if last_rG_firstIxRowOfGr < len(inputTextRowSlice) {
 		rwS = inputTextRowSlice[ last_rG_firstIxRowOfGr ].rRow1  		
 	}
+	     // gostr1=> 2,3,14,24,html,2,1,11,ix,14,24,w,1,9999,anyRow, :row=,file: prova notizie del 24 maggio 2024
+		 
 	outS1:= fmt.Sprintf( "%d,%s,%d,%d,html,%d,%d,%d,ix,%d,%d,w,%d,%d,%s, :row=,%s", 
 				last_rG_ixSelGrOption, 
 				last_rG_group,
