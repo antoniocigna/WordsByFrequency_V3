@@ -10,12 +10,12 @@ package wbfSubPack
 //--------------------------------------------------------
 const PREF_MARKER = " :PREF: "
 //-------------------------------------------
-
+                      //go_passToJs_wordList  swChg= false  fromWord= 1  numWords= 9999  sel_level= any  html_sel_extrRow= anyRow  sel_toBeLearned= allWords
 func g07_bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords int, onlyThisLevel string, 
 						sel_extrRow string, sel_toBeLearned string,  js_function string) {
 					
-		//fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
-		//				" from=",  fromWord, " numWords=", numWords )
+		fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
+						" from=",  fromWord, " numWords=", numWords )
 		
 		var from1, to1 int; 
 		from1 = fromWord; //   - 1; 
@@ -77,7 +77,7 @@ func g07_bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWord
 		//var row11 string;
 		//var numNoTran = 0
 		
-		//fmt.Println("bind_go_passToJs_wordList () 0  from1 m=", from1 ) 
+		fmt.Println("bind_go_passToJs_wordList () 0  from1 m=", from1, " len(uniqueWordByFreq)=",  len(uniqueWordByFreq ) ) 
 		
 		onlyIfExtr := true 
 		

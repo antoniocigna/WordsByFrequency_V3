@@ -269,7 +269,7 @@ func g32_build_stat() {
 	numWordRi = 0
 	//-------------------
 	fmt.Println("numberOfWords=",numberOfWords, "  numberOfUniqueWords=",  	numberOfUniqueWords)
-	
+	prePe:=0
 	for _, frW:= range uniqueWordByFreq{
 		if strings.Index(frW.fuWord2,"...") > 0  { continue }  
 		/**
@@ -289,7 +289,13 @@ func g32_build_stat() {
 		sS.totWords    = numWordRi
 		sS.uniquePerc  = percIx 
 		sS.totPerc     = int(numWordRi * 100 / numWordRi_0);
-		fmt.Println("statistic ", "sS.totWords=", sS.totWords, " numWordRi=",numWordRi, "  sS.totPerc=",  sS.totPerc )
+		
+		if (sS.totPerc%5 == 0) { // stampa solo percentuali multipli di 5 e soltanto una riga di queste 
+			if prePe != sS.totPerc { 	
+				fmt.Println("statistic ", "sS.totWords=", sS.totWords, " numWordRi=",numWordRi, "  sS.totPerc=",  sS.totPerc )
+				prePe = sS.totPerc
+			}	
+		}
 			
 		if sS.totPerc <= 200 {   // esistono perc > 100%,  probabilmente c'è un errore di logica 
 			/**
@@ -303,10 +309,6 @@ func g32_build_stat() {
 			}
 		}
 	}
-
-
-	
-	
 
 } // end of build_stat 	
 //----------------------------

@@ -124,8 +124,24 @@ func g12_add_totRow_and_indexLemmaPairUNO() {
 //-----------------------------------------------------------------
 
 func g12_manage_one_word_of_manyRowsUNO(ix1 int, ix2 int, preW string, pre_wSwSelRow int, tot_extrRow int, totR int, lastIx int) {
+	swNoLemma:= false 
+	/*
+		var NO_LEMMA_WORD  = "_"
+		var NO_LEMMA_LEMMA = "_"
+		var NO_LEMMA_INDEX = 0
+	*/
+	ixLemmaPairFoundList := lookForAllLemmas( preW, lastIx) 
+	if len(ixLemmaPairFoundList) < 1 {	
+		swNoLemma = true 
+		ixLemmaPairFoundList = append(ixLemmaPairFoundList, NO_LEMMA_INDEX)
+	} else {
+		if ixLemmaPairFoundList[0] < 0 { 
+			swNoLemma = true 
+			ixLemmaPairFoundList[0] = NO_LEMMA_INDEX
+		}
+	}	
 	
-	ixLemmaPairFoundList := lookForAllLemmas2( preW, lastIx) 
+	//fmt.Println("g12_manage_one_word_of_manyRowsUNO  ", preW,  " ix1=", ix1, " ix2=", ix2, " totR=", totR,  "  ixLemmaPairFoundList=", ixLemmaPairFoundList);
 	
 	//fmt.Println("add_... lemma... word=", preW, " 	ixLemmaPairFoundList=", ixLemmaPairFoundList,   " for ix=", ix1, " to ix2=", ix2) 
 	lemmaIndex:= make([]int,0,100)
@@ -141,46 +157,62 @@ func g12_manage_one_word_of_manyRowsUNO(ix1 int, ix2 int, preW string, pre_wSwSe
 		 
 		 //fmt.Println("add_... lemma...  wordSliceAlpha[",i2,"].wIxLemmaPair=", wS22.wIxLemmaPair
 		 //------------------------------
-		 if len(wS22.wListPref) > 0 {
-			for _,ixLe:= range ixLemmaPairFoundList {  
-				 lePe:= wordLemmaPair[ixLe]
-				 if wS22.wWord2 != lePe.lWord2 { continue } // error   
-				 le_Lemma := lePe.lLemma
-				 
-				 //ixAF = lePe.lIxLemma
-				 ixAF = binarySearch_string(listAllLemmaFromFile, le_Lemma) 
-				 if ixAF >=0 { 
-					lemmaIndex = append(lemmaIndex, ixAF)
-					wS22.wIxLemmaList = append(wS22.wIxLemmaList, ixAF) 
-				 }			 
-				 //fmt.Println("               wRord2=", wS22.wWord2, " lemma=", le_Lemma)	
-				 pref3 := strings.Fields(wS22.wListPref) 
-				 if len(pref3) < 1 {continue}
-				 
-				 for _, onePref:= range pref3 {
-					 newLemma:= onePref + le_Lemma 
-					 //fmt.Println("              1 word2=", wS22.wWord2, " lemma=", le_Lemma, " newLemma =", newLemma)	
-					 ixAF = binarySearch_string(listAllLemmaFromFile, newLemma) 
-					 if ixAF < 0 { continue}
-					 lemmaIndex = append(lemmaIndex, ixAF)
-					 wS33 = wS22
-					 wS33.wWord2   =  wS22.wWord2   + " ... " + onePref 
-					 wS33.wWordSeq =  wS22.wWordSeq + " ... " + onePref 
-					 wS33.wIxLemmaList = append( wS33.wIxLemmaList, ixAF)
-					 wS33.wSwSelRowG    = pre_wSwSelRow; 	// se esiste almeno un richiamo a una riga estratta ( wSwSelRowR)allora questo segnale è ripetuto come wSwSelRowG
-					 wS33.wTotExtrRow   = tot_extrRow 
-					 wS33.wTotRow       = totR;   // se una parola è ripetuta 3 volte, ad ogni parola è associato 3  		
-					 wordSliceAlphaToApp = append(wordSliceAlphaToApp, wS33)
-					 //fmt.Println("              word2=", wS22.wWord2 + " ... " + onePref, " lemma=", le_Lemma, " newLemma =", newLemma)	
-					 //PRElemmaSlice = append(PRElemmaSlice, leV )
+		 var le_Lemma string 
+		 //if len(wS22.wListPref) > 0 {
+		for _,ixLe:= range ixLemmaPairFoundList {  
+			 lePe:= wordLemmaPair[ixLe]
+			 if swNoLemma {
+				 if ixLe != NO_LEMMA_INDEX {
+					 fmt.Println(red("ERRORE g12_manage_one_word_of_manyRowsUNO "), " ixLe=", ixLe , " not equal to NO_LEMMA_INDEX=", NO_LEMMA_INDEX)
+					 continue
 				 }
-			}
-		 } 
+				 le_Lemma = lePe.lLemma 
+			 } else {
+				 if wS22.wWord2 != lePe.lWord2 { 
+					continue } // error   
+				 le_Lemma = lePe.lLemma
+			 }
+			 
+			 //ixAF = lePe.lIxLemma
+			 ixAF = binarySearch_string(listAllLemmaFromFile, le_Lemma) 
+			 if ixAF >=0 { 
+				lemmaIndex = append(lemmaIndex, ixAF)
+				wS22.wIxLemmaList = append(wS22.wIxLemmaList, ixAF) 
+			 }		
+			 
+			 if ixLe == NO_LEMMA_INDEX {continue}
+			 //fmt.Println("               wRord2=", wS22.wWord2, " lemma=", le_Lemma)	
+			 pref3 := strings.Fields(wS22.wListPref) 
+			 if len(pref3) < 1 {continue}
+			 
+			 for _, onePref:= range pref3 {
+				 newLemma:= onePref + le_Lemma 
+				 //fmt.Println("              1 word2=", wS22.wWord2, " lemma=", le_Lemma, " newLemma =", newLemma)	
+				 ixAF = binarySearch_string(listAllLemmaFromFile, newLemma) 
+				 if ixAF < 0 { continue}
+				 lemmaIndex = append(lemmaIndex, ixAF)
+				 wS33 = wS22
+				 wS33.wWord2   =  wS22.wWord2   + " ... " + onePref 
+				 wS33.wWordSeq =  wS22.wWordSeq + " ... " + onePref 
+				 wS33.wIxLemmaList = append( wS33.wIxLemmaList, ixAF)
+				 wS33.wSwSelRowG    = pre_wSwSelRow; 	// se esiste almeno un richiamo a una riga estratta ( wSwSelRowR)allora questo segnale è ripetuto come wSwSelRowG
+				 wS33.wTotExtrRow   = tot_extrRow 
+				 wS33.wTotRow       = totR;   // se una parola è ripetuta 3 volte, ad ogni parola è associato 3  		
+				 wordSliceAlphaToApp = append(wordSliceAlphaToApp, wS33)
+				 
+				 //fmt.Println("                       wS33: ",  wS33.wWord2 , " ", wS33.wIxLemmaList )
+				 
+				 //fmt.Println("              word2=", wS22.wWord2 + " ... " + onePref, " lemma=", le_Lemma, " newLemma =", newLemma)	
+				 //PRElemmaSlice = append(PRElemmaSlice, leV )
+			 }
+		 }
+		 // }
 		 //---------------------------	
 		 wS22.wSwSelRowG    = pre_wSwSelRow; 	// se esiste almeno un richiamo a una riga estratta ( wSwSelRowR)allora questo segnale è ripetuto come wSwSelRowG
 		 wS22.wTotExtrRow   = tot_extrRow 
 		 wS22.wTotRow       = totR;   // se una parola è ripetuta 3 volte, ad ogni parola è associato 3  		
 		 wordSliceAlpha[i2] = wS22
+		 //fmt.Println("                       wS22:   ",  wS22.wWord2 , " ", wS22.wIxLemmaList )
 	}
     //-------------
 } // end of manage_one_word_of_manyRows

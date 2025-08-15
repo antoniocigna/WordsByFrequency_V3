@@ -57,7 +57,7 @@ func myOpenRead( path1 string,   fileName string,   descr string,  func1    stri
 		fmt.Println( "\t", "size: ", sizeByte, " bytes" )	
 		return readFile, sizeByte
 	}
-	msg1_Js:= `il file "` + fileN + `" (` + descr + " " + func1 + ")" + " non esiste"
+	msg1_Js:= `il file "` + green(fileName) + `" (` + descr + " " + func1 + ")" + red(" non esiste") + ` in folder "` + path2 + `"` ;
 		
 	errorMSG = `<br><br>il file ` + 
 				`<span style="font-size:0.7em;color:black;">(`	+ descr + `)</span>` +

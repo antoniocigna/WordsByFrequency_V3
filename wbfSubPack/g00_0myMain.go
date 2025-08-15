@@ -64,7 +64,7 @@ func MyMain() {
 func endBegin(wh string) {
 	//fmt.Println("func endBegin (", wh,")")
 	if sw_stop { 
-		fmt.Println("\nXXXXXXXX  error found XXXXXXXXXXXXXX\n"); 
+		fmt.Println(red("\nXXXXXXXX  error found XXXXXXXXXXXXXX\n") ); 
 	}	
 	sw_begin_ended = true 		
 }

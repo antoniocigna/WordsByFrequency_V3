@@ -35,13 +35,11 @@ func getLemmaPathAndFile(inpLemmaFile_wordLemma string) (string, string) {
 }
 
 //----------------
-
+var NO_LEMMA_WORD  = "aaalemmanotfound"
+var NO_LEMMA_LEMMA = "aaalemmanotfound"
+var NO_LEMMA_INDEX = 0
+//----------------------------------
 func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inpLemmaFile_wordLemmaPlus0 string) {
-	
-	fmt.Println(green("read_wordLemma_file"), 
-		" path = ", path0 ,
-		"\n 	inputLemmaFile     =", inpLemmaFile_wordLemma0, 
-		"\n	 	inputLemmaFilePlus =", inpLemmaFile_wordLemmaPlus0 ) 
 	
 	bytesPerRow:=20
 	numLemmaDict=0; 
@@ -54,22 +52,15 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 	path2, inpLemmaFile_wordLemmaPlus := getLemmaPathAndFile(inpLemmaFile_wordLemmaPlus0)
 	if path2 == "" { path2 = path0}
 	
+	fmt.Println(green("read_wordLemma_file 1 "), 
+		" path = ", path1 ,
+		"\n		inputLemmaFile     =", inpLemmaFile_wordLemma, 
+		"\n		inputLemmaFilePlus =", inpLemmaFile_wordLemmaPlus, 
+		"\n-------------------------------------------------" ) 
 	
-	/**
-	bar1:= strings.Index(inpLemmaFile_wordLemma,"/") 
-	if bar1 < 0 {bar1 = strings.Index(inpLemmaFile_wordLemma,"\\") }	
-	if bar1 > 0 {
-		barZ:= inpLemmaFile_wordLemma[bar1:bar1+1]
-		for z:= len(inpLemmaFile_wordLemma)-1; z > 0; z-- {
-			if inpLemmaFile_wordLemma[z:z+1] == barZ {
-				path1 = inpLemmaFile_wordLemma[0:z]
-				inpLemmaFile_wordLemma = inpLemmaFile_wordLemma[z+1:]
-				break
-			}
-		} 	
-	}  	
-	**/
-	fmt.Println(green("read_wordLemma_file"), " file ", inpLemmaFile_wordLemma, " in folder ", path1)
+	
+		
+	fmt.Println(green("\n  read_wordLemma_file 2 read "), " file ", inpLemmaFile_wordLemma, " in folder ", path1)
 	//------
 	file1_bytes := getFileByteSize(path1, inpLemmaFile_wordLemma)
 	fmt.Println("file ", inpLemmaFile_wordLemma, "  ", file1_bytes , " bytes") 
@@ -80,29 +71,40 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 	if len(lineS) == 0 { sw_stop = false }	
 	if sw_stop { return }
 	fmt.Println("lette ", len(lineS), " coppie word-lemma")  
+	lineS = append(lineS, NO_LEMMA_WORD + "|" + NO_LEMMA_LEMMA + "|" )
+	/**
+	for z, line := range lineS {	// eseguito in ordine di lemma e poi word 	
+		if z < 10 { fmt.Println("lines ", z , " " , line) }
+	}
+	**/
 	//-----------------
 	if inpLemmaFile_wordLemmaPlus != "" {
-		fmt.Println(green("read_wordLemma_file"), " file ", inpLemmaFile_wordLemmaPlus, " in folder ", path2)
+		fmt.Println(green("\n  read_wordLemma_file 3 read"), " file ", inpLemmaFile_wordLemmaPlus, " in folder ", path2)
 		//------
 		file2_bytes := getFileByteSize(path1, inpLemmaFile_wordLemmaPlus)
-		fmt.Println("file ", inpLemmaFile_wordLemmaPlus, "  ", file1_bytes , " bytes") 
+		fmt.Println("file ", inpLemmaFile_wordLemmaPlus, "  ", file2_bytes , " bytes") 
 		numEleMax2:= int(  file2_bytes / bytesPerRow ); 
 		if numEleMax2 < 10 {numEleMax2=10}
 		//----------------
-		lineS2:= rowListFromFile( path2, inpLemmaFile_wordLemmaPlus, "1assoc. word-lemma", "read_wordLemma_file", bytesPerRow)  		
-		if len(lineS) == 0 { sw_stop = false }	
+		lineS2:= rowListFromFile( path2, inpLemmaFile_wordLemmaPlus, "1assoc. word-lemma", "read_wordLemma_file", bytesPerRow)  	
+		
+		if len(lineS2) == 0 { sw_stop = false }	
 		fmt.Println("lette ", len(lineS2), " coppie word-lemmaPlus")  	
 		if len(lineS2) > 0 {
 			lineS = append(lineS, lineS2...)
 			numEleMax += numEleMax2
 		}	
+		if sw_stop {fmt.Println( red("sw_stop in g30_read_wordLemma_file 1"))	}
 	} 
 	//-----------------------------------
+	if sw_stop {fmt.Println( red("sw_stop in g30_read_wordLemma_file 2")) }
 	
 	listAllLemmaFromFile = make([]string, 0, numEleMax )
 	//soloQueste := "  familie personen mutter natürlich  mein  gehören  "  
 	
 	if (sw_stop) {	return }
+	
+	
 	// read word lemma
 	for z:=0; z< len(lineS); z++ { 
 		lineZ0 := strings.ToLower( strings.TrimSpace(lineS[z]) )   //  format:     word   lemma		
@@ -169,17 +171,7 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 		listAllLemmaFromFile = append(listAllLemmaFromFile, preLemma)
 	}
 	
-	//------------------------------
-	/**
-	fmt.Println(" listAllLemmaFromFile len=", len(listAllLemmaFromFile) )
-	for x0, LL2 := range listAllLemmaFromFile {
-		if strings.Index(LL2, "gehen") >=0 {
-			fmt.Println( " lista listAllLemmaFromFile[",x0,"] = ", LL2) 
-		}
-		if x0 < 5 { fmt.Println( " lista listAllLemmaFromFile[",x0,"] = ", LL2) }
-	}
-	**/
-	//-----------------------------------------
+	//------------------------------	
 	
 	wordLemmaPair_lemmaWordSeq = make( []wordLemmaPairStruct, len(wordLemmaPair) )
 	copy(wordLemmaPair_lemmaWordSeq,wordLemmaPair) 
@@ -194,6 +186,21 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
  				return wordLemmaPair[i].lLemma < wordLemmaPair[j].lLemma 					
  			}
  		} )	 
+	//---------------------
+	/**
+	for z, wL := range wordLemmaPair {	// eseguito in ordine di lemma e poi word 	
+		if z < 10 { fmt.Println("LEMMA ", z , " " , wL) }
+	}
+	**/
+	for z, wL := range wordLemmaPair {	// eseguito in ordine di lemma e poi word 	
+		if wL.lWordSeq == NO_LEMMA_WORD {
+			if wL.lLemma == NO_LEMMA_LEMMA {
+				NO_LEMMA_INDEX = z 		
+				fmt.Println("no lemma entry index=", NO_LEMMA_INDEX, " entry: ", wL )
+				break
+			}
+		}
+	}	
 	//----------------------------------			
 	fmt.Println( "lette " , numLemmaDict ,  " coppie word-lemma", "    ", numLemma, " lemma")
 	fmt.Println( "wordLemmaPair è in ordine di wordSeq, lemma")

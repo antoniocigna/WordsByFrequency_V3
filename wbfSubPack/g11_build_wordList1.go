@@ -172,13 +172,7 @@ func g11_buildWordList() {
 	
 	//----	
 	fmt.Println("sort wordSliceAlpha  in ordine .wWordSeq, .wWord2, .wNfile") 
-	
-	/***
-	sort.Slice(wordSliceAlpha, func(i, j int) bool {
-		return wordSliceAlpha[i].wWord2 < wordSliceAlpha[j].wWord2            // word  ascending order (eg.   a before b ) 		
-	})
-	//----------------------
-	***/
+		
 	//----	
 	sort.Slice(wordSliceAlpha, func(i, j int) bool {
 		if wordSliceAlpha[i].wWordSeq != wordSliceAlpha[j].wWordSeq {
@@ -191,6 +185,13 @@ func g11_buildWordList() {
 			}
 		}
 	})
+	//--------------------------
+	/**
+	for z,wA := range wordSliceAlpha {
+		if z > 40 {break}
+		fmt.Println("lista wordSliceAlfa[", z, "] =", wA, "  wIxRow=", wA.wIxRow)			
+	}
+	**/
 	//------------------------------		
 	
 	g12_add_totRow_and_indexLemmaPair()
@@ -243,7 +244,13 @@ func g11_buildWordList() {
 	
 	read_wordsToLearn()
 	
-	
+	//----------------
+	/**
+	for n2, aa:= range uniqueWordByAlpha {
+		if n2 > 40 { break }
+		fmt.Println("lista uniqueWordByAlpha[", n2,"]=", aa)
+	}
+	**/
 } // end of buildWordList
 
 
