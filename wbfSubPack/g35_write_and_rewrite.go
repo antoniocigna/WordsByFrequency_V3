@@ -6,7 +6,8 @@ import (
     "bufio"	
 	"sort"
 	"time"
-	//"strings"
+	"strconv"
+	"strings"
 )
 //--------------------------------
 
@@ -42,34 +43,44 @@ func rewrite_word_lemma_dictionary() {
 } // end of rewrite_word_lemma_dictionary
 
 //--------------------------------
-
-func rewrite_LemmaTranDict_file() {
-
-	//fmt.Println( "GO ", green("rewrite_LemmaTranDict_file" ))
+func g35_rewriteUP_LemmaTranDict_file() {
 	
-	//outFile := FOLDER_IO_lastTRAN +  string(os.PathSeparator) + FILE_ outLemmaTranDict;
+	//fmt.Println("rewriteUP_LemmaTranDict_file  len(dictLemmaTranUP) = ", len(dictLemmaTranUP) )
 	
 	outFile := FOLDER_IO_lastTRAN  +  string(os.PathSeparator) + FILE_last_updated_dict_words 
 
-	pkey := ""; key := ""
+	pkey := ""; key := ""	
+	pkeyLemma:=""
+	keyLemma:=""
 	
-	lines:= make([]string, 0, 10+len(dictLemmaTran) )
+	lines:= make([]string, 0, 10+len(dictLemmaTranUP) )
 	lines = append(lines,  "__" + outFile + "\n" + "_lemma	_traduzione")
 	
-	for z:=0; z < len(dictLemmaTran); z++ {
-	
+	sort_lemmaTranUP()   // necessario di nuovo il sort perchè dopo il caricamento inziale sono stati accodati degli elementi 
+	//------------------
+	for z:=0; z < len(dictLemmaTranUP); z++ {
+		//fmt.Println( "dictLemmaTranUP[",z,"]=", dictLemmaTranUP[z])
+		
+		keyLemma = strings.TrimSpace( dictLemmaTranUP[z].dL_lemma2 )
+		
+		if len(keyLemma) < 1 {continue}
+		if keyLemma[:1] < "a" { continue} 	
+		
+		key = keyLemma + "|" + dictLemmaTranUP[z].dL_tran  + "|" + strconv.Itoa(dictLemmaTranUP[z].dL_numDict)  //  dictLemmaTranUP[z].dL_lemma2 + "|"  + dictLemmaTranUP[z].dL_tran  			
+		if pkeyLemma != keyLemma { 
+		   if pkey != "" { 
+				lines = append(lines, pkey ) 
+		   }
+		   pkeyLemma = keyLemma	
+		}
 		pkey=key
-		
-		
-		
-		key = dictLemmaTran[z].dL_lemma2 + "|"  + dictLemmaTran[z].dL_tran  		////cigna1_3
-		
-		//if strings.Index(key,"eindhoven")>=0 { fmt.Println("rewrite_LemmaTranDict_file ",  dictLemmaTran[z],  " key=",key, " pkey=", pkey) }
-		
-		if pkey == key { continue}
-		
-		lines = append(lines, key ) 
 	}
+	//---
+	if pkey != "" { 
+		lines = append(lines, pkey ) 	
+	}
+	fmt.Println("lemma translation update ", " letti ", len(dictLemmaTranUP), ", scritti ", len(lines) , " sul file ", outFile  )
+		   
 	writeList( outFile, lines )
 	//--------------------
 
@@ -81,7 +92,50 @@ func rewrite_LemmaTranDict_file() {
 	
 	
 } // end of rewrite_LemmaTranDict_file
+//----------------------------------------------
 
+func g35_bind_go_rewrite_allTran() {
+	
+	
+	outFile := "__all_updated_lemma_tran.csv.txt" 
+
+	pkey := ""; key := "";	pkey00:="";	key00:=""; pkeyLemma:=""; keyLemma:=""
+		
+	lines:= make([]string, 0, 10+len(dictLemmaTran) )
+	lines = append(lines,  "__" + outFile + "\n" + "_lemma	_traduzione")
+		
+	//------------------
+	for z:=0; z < len(dictLemmaTran); z++ {
+		keyLemma = strings.TrimSpace(dictLemmaTran[z].dL_lemma2) 
+		if len(keyLemma) < 1 {continue}
+		if keyLemma[:1] < "a" { continue} 	
+			
+		key00 = keyLemma + "|" + dictLemmaTran[z].dL_tran 
+		
+		key = key00 + "|" + strconv.Itoa(dictLemmaTran[z].dL_numDict)  //  dictLemmaTranUP[z].dL_lemma2 + "|"  + dictLemmaTranUP[z].dL_tran  			
+		if pkeyLemma != keyLemma { 
+		   if pkey != "" { 
+				lines = append(lines, pkey00) 
+		   }
+		}
+		pkey      = key	
+		pkey00    = key00	
+		pkeyLemma = keyLemma	
+	}
+	//---
+	if pkey != "" { 
+		lines = append(lines, pkey00 ) 		
+	}
+	fmt.Println("lemma translation ", " letti ", len(dictLemmaTran), ", scritti ", len(lines) , " sul file ", outFile )
+	fmt.Println(red("sostituisci con questo file (dopo averlo rinominato) "), " il file ", 
+		`"WBF_INPUT_DE/inputTranslation/input_dict_tran_words.csv" `)
+	fmt.Println("\t e poi azzera il file ", `"INPUT_OUTPUT\lastTRAN\lastUpdated_dict_tran_words.csv"` )
+	
+		   
+	writeList( outFile, lines )
+	
+	
+} // end of g35_bind_go_rewrite_allTran
 //----------------------
 func writeList( fileName string, lines []string)  {
 	// create file

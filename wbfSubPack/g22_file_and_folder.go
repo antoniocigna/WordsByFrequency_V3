@@ -14,7 +14,7 @@ var main_input_text_file string = ""              // input text file ( this is t
 var outFile          = "outFileProva.csv" 
 //--------------------------------------------
 
-var   FOLDER_INPUT          string = "INPUT"
+var FOLDER_INPUT          string = "INPUT"
 
 var FOLDER_I_lemma          string = ""
 var FOLDER_I_paradigma      string = ""
@@ -22,6 +22,7 @@ var FILE_inpParadigma       string = "X_myParadigma.csv" ;
 var FILE_inputLanguage      string = "X_inputLanguage.txt"
 var FILE_inputWordLemma     string = "X_word_lemma.csv"
 var FILE_inputWordLemmaPlus string = "X_word_lemmaPlus.csv"
+var FILE_inputTranslation   string = "x_inputTranslation.csv"
 
 const FOLDER_OUTPUT         string = "OUTPUT"
 const FOLDER_INPUT_OUTPUT   string = "INPUT_OUTPUT"

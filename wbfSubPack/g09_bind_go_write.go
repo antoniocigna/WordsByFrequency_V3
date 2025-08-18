@@ -36,7 +36,7 @@ func g09_bind_go_write_word_dictionary( listGoWords string) {
 		
 		// listGoWords = list of NEW translated words
 		
-		fmt.Println( "GO ",red("bind_go_write_word_dictionary"),  listGoWords  );  	
+		//fmt.Println( "GO ",red("bind_go_write_word_dictionary"),  listGoWords  );  	
 		
 		//js_console_log("GO esegue bind_go_write_word_dictionary ")
 	
@@ -45,20 +45,26 @@ func g09_bind_go_write_word_dictionary( listGoWords string) {
 		if len(listGoWords) > 9 {
 			if listGoWords[0:9] == "language=" { return }
 		}
-			
-		lemmaTranStr := ""; //  "__" + outFileName + "\n" + "_lemma	_traduzione"
+		
 		lastNumDict++; 
-		lemmaTranStr += split_ALL_word_dict_row( listGoWords )	
+		//lemmaTranStr := ""; //  "__" + outFileName + "\n" + "_lemma	_traduzione"		
+		//lemmaTranStr += split_ALL_word_dict_row( listGoWords )	
+		
+		split_ALL_word_dict_row( listGoWords )	
+		
+		//fmt.Println(" len(dictLemmaTranUP) = ", len(dictLemmaTranUP) )
+		
+		dictLemmaTran = append(dictLemmaTran, dictLemmaTranUP...)
 		
 		//js_console_log("GO bind_go_write_word_dictionary " + "listGoWords=" + listGoWords   + "lemmaTranStr=" + lemmaTranStr )
 		
-		sort_lemmaTran2();  // sort_lemmaX2 in write_word_dict... utilizzabili già in questo run 	
+		sort_lemmaTran2();  // (sort di tutte le traduzioni nuove e vecchie) sort_lemmaX2 in write_word_dict... utilizzabili già in questo run 	
 					
 		//----------------------
 		
 		//sort_lemmaTran();  // sort_lemma2 in write_word_dict... utilizzabili già in questo run 
 		
-		rewrite_LemmaTranDict_file() 
+		g35_rewriteUP_LemmaTranDict_file()   // write dictLemmaTranUP 
 		
 		//js_console_log("GO fine esecuzione bind_go_write_word_dictionary ")
 		
@@ -270,7 +276,113 @@ func writeTextRowSlice() {
 //-------------------------------
 //  called by bind_go_write 
 //----------------
-func split_ALL_word_dict_row(  strRows string) string {
+
+func split_ALL_word_dict_row(  strRows string) {
+	//fmt.Println( "ANTONIO xxxxxxxxxxxxxxxxxxxxxxxxxxxx  split_ALL_word_dict_row( strRows=", strRows); 
+	// eg. einem;14 ; ein§einem§einer ;  a§uno§uno;	  ==> word ; ix : list of lemmas ; list of translations	
+	
+	//lemmaTranStr := ""
+	
+	lines := strings.Split( strRows, "\n");	
+	
+	var ele1 lemmaTranStruct     
+	
+	//dictLemmaTranUP:= make([]lemmaTranStruct, 0, 10+len(lines) ) 
+	
+	/**
+	//--------------------------
+		type lemmaTranStruct struct {
+			dL_lemmaSeq  string 
+			dL_lemma2    string  
+			dL_numDict   int	  
+			dL_tran      string
+			dL_knownYesNo string
+		} 
+	**/
+	
+	lenUnFr:= len(uniqueWordByFreq)
+
+	
+	for z:=0;  z < len(lines); z++ {   
+		
+		//fmt.Println("\nsplit_ALL_word_dict_row 1 lines[",z,"]=", lines[z] )	
+		
+		_, ixFr, lemmaLis,tranLis := split_one_word_dict_row( lines[z] )
+		
+		//fmt.Println("\nsplit_ALL_word_dict_row 1 lines[",z,"]=", lines[z] , " ixFr=", ixFr, " lemmaLis=", lemmaLis, " tranLis=", tranLis) 	
+		
+		if ixFr < 0 { continue }		
+		
+		//fmt.Println("       split_ALL_word_dict_row 2 ", " ixFr=", ixFr)
+		
+		if ixFr >= lenUnFr { 
+			fmt.Println("error7 1 len(uniqueWordByFreq)=", len(uniqueWordByFreq), " ixFr=", ixFr ,  " lines[z=", z, "]=", lines[z] )
+			continue 
+		}
+	
+		ixAl:= uniqueWordByFreq[ixFr].fuIxUnW_al
+		xWordAlpha := uniqueWordByAlpha[ixAl]
+		//---------------
+		if xWordAlpha.uIxUnW_fr != ixFr {	
+			fmt.Println("error7 2 len(uniqueWordByFreq)=", len(uniqueWordByFreq), " ixFr=", ixFr ,  " lines[z=", z, "]=", lines[z] )
+			continue 
+		}  // error	
+		
+		
+		//---------------------
+		
+		for m, lemmaFreq:= range xWordAlpha.uLemmaL {
+			
+			newL:=-1
+			for l1:=0; l1 < len(lemmaLis); l1++ {         // translation from dict tran file 
+				if lemmaFreq == lemmaLis[l1] {
+					newL = l1
+					break	
+				}			
+			}	
+			
+			//fmt.Println("       split_ALL_word_dict_row 6 for 1 ")
+			
+			if newL < 0 { continue }	
+			
+			//fmt.Println("       split_ALL_word_dict_row 6 for 2 ")
+			
+			if lemmaLis[newL] != xWordAlpha.uLemmaL[m] { continue }     // error?   
+				
+			//fmt.Println("       split_ALL_word_dict_row 6 for 3 ")
+			
+			ixLe:= xWordAlpha.uIxLemmaL[m]
+			lemmaSlice[ixLe].leTran    = tranLis[newL]            // update lemmaSlice lemmaStruct .le...
+			//uniqueWordByFreq[ixFr].uTranL[m]     = mTran 	
+			//uniqueWordByAlpha[ixAlfa].uTranL[m] = mTran 
+			
+			//lemmaTranStr += "\n" + lemmaLis[newL] + "|" + tranLis[newL]  	
+			ele1.dL_lemmaSeq = seqCode(lemmaLis[newL] )                  //  lemmaTranStruct struct   .dL...
+			ele1.dL_lemma2   = lemmaLis[newL] 
+			ele1.dL_numDict  = lastNumDict
+			ele1.dL_tran     = tranLis[newL]   
+			
+			
+			//fmt.Println("       split_ALL_word_dict_row 6 for 4 ")
+			
+			if  tranLis[newL] != "" { 		
+				dictLemmaTranUP = append( dictLemmaTranUP, ele1 ) 
+				
+				//fmt.Println("         split_ALL_word_dict_row 6.1 =>  dictLemmaTran[]=", dictLemmaTran[ len(dictLemmaTran)-1 ] ) 
+			
+			}
+		} 
+		//---------------------------	
+		
+	} // end of z 	
+	
+} // end of split_ALL_word_dict_row(
+
+//------------------------------------------
+
+
+//-------------------------------------------
+func TOGLIsplit_ALL_word_dict_row(  strRows string) string {
 	//fmt.Println( "ANTONIO xxxxxxxxxxxxxxxxxxxxxxxxxxxx  split_ALL_word_dict_row( strRows=", strRows); 
 	// eg. einem;14 ; ein§einem§einer ;  a§uno§uno;	  ==> word ; ix : list of lemmas ; list of translations	
 	
@@ -368,7 +480,7 @@ func split_ALL_word_dict_row(  strRows string) string {
 	
 	return lemmaTranStr
 	
-} // end of split_ALL_word_dict_row(
+} // end of TOGLIsplit_ALL_word_dict_row(
 
 //------------------------------------------
 

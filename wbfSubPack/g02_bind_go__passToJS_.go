@@ -65,7 +65,10 @@ func get_all_binds() {
 			g09_bind_go_write_lang_dictionary( langAndVoiceName ) } ) 	
 		//---------------------------------------	
 		ui.Bind("go_write_word_dictionary", func( listGoWords string) {
-			g09_bind_go_write_word_dictionary( listGoWords ) } )  				
+			g09_bind_go_write_word_dictionary( listGoWords ) } )  	
+		//--------
+		ui.Bind("go_rewrite_allTran", func() {
+			g35_bind_go_rewrite_allTran() } )    
 		//---------------------------------------			
 		ui.Bind("go_write_row_dictionary", func( listGoRows string) {
 			g09_bind_go_write_row_dictionary( listGoRows ) } )		
@@ -73,24 +76,17 @@ func get_all_binds() {
 		ui.Bind("go_write_new_row_dictionary", func( listGoRows string,  js_function string) {
 			g09_2_bind_go_write_new_row_dictionary( listGoRows,  js_function) } )  
 		//---------------------
-		
 		ui.Bind("go_passToJs_word_known", func( s_ixWord string,  s_yesNo string,  s_knowCtr string, js_function string) {
 			g07_bind_go_passToJs_word_known(       getInt(s_ixWord), getInt(s_yesNo), getInt(s_knowCtr), js_function)  } )  
 		//---------------------
-												
 		ui.Bind("go_passToJs_word_known2", func( s_ixWord string, s_yesNot_len1 string,  js_function string) {
 			g07_bind_go_passToJs_word_known2(       getInt(s_ixWord), s_yesNot_len1, js_function)  } )  
-				
-		
 		//----------------------------------------------------------------
 		ui.Bind("go_passToJs_write_WordsToLearn", func( js_function string) {
 			g09_bind_go_passToJs_write_WordsToLearn(js_function)  } )  	
-			
 		//-----------------------------------------
-		
 		ui.Bind("go_passToJs_getIxRowFromGroup", func( s_rowGrIndex string,  s_html_rowGroup_beginNum string, s_html_rowGroup_numRows string, js_function string) {		
 			g06_bind_go_passToJs_getIxRowFromGroup( getInt(s_rowGrIndex),  getInt( s_html_rowGroup_beginNum), getInt( s_html_rowGroup_numRows),  js_function)  } ) 
-		
 		//----------------------------------------------------------------
 }  
 //---------------------------------------------

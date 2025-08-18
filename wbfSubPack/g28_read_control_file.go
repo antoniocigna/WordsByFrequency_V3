@@ -8,7 +8,9 @@ import (
 //------------------------------------------------
 
 func g28_read_control_file() {
-
+	
+	fmt.Println("file control: ", file_inputControl)
+	
 	bytesPerRow:= 40
     lineD := rowListFromFile( "", file_inputControl, "input control", "read_control_file", bytesPerRow)  
 	if sw_stop { return }
@@ -20,12 +22,17 @@ func g28_read_control_file() {
 	trim2 := string(`'`)
 	_, err := strconv.Atoi("0")
 	//--------	
-	sw1:=false
+	type ctlSk struct {
+		var1 string
+		val1 string
+	}
+	var c1 ctlSk
+	ctlLine:= make([]ctlSk,0,20)
+	var commonInputFolder string
+	//---------------------------
 	for _, fline00:= range( lineD ) {
 	
 		if (fline00 == "") {continue}    // ignore zero length line 
-		sw1 = ( strings.Index(fline00, "inputLanguage") >=0 ) 
-		if sw1 { fmt.Println("riga control ==>" + fline00)  }
 		fline:= strings.Split(fline00, "//")[0]           // ignore all after // 
 		fline = strings.Split(fline,   "/*")[0]           // ignore all after /* 
 		fli  := strings.Split(fline,   "=")               //  dictionary_folder=folder of the dictionary files,   or file = filename  
@@ -35,23 +42,37 @@ func g28_read_control_file() {
 		value1 := strings.TrimSpace(fli[1]) 
 		value1 = strings.Trim(value1, trim1) 
 		value1 = strings.Trim(value1, trim2)
-	if sw1 { fmt.Println("varia1=" + varia1 + ", value1=" + value1) }
+		if varia1 == "commoninputfolder" {
+			commonInputFolder = value1 
+			continue
+		}			
+		c1.var1 = varia1
+		c1.val1 = value1
+		ctlLine = append(ctlLine, c1) 
+	}
+	//---------------	
+	if commonInputFolder != "" {
+		commonInputFolder = strings.ReplaceAll(commonInputFolder, "\\","/")
+		if commonInputFolder[ len(commonInputFolder)-1:] != "/" {
+			commonInputFolder += "/"
+		}
+	}
+	fmt.Println("commonInputFolder=", commonInputFolder)
+	//----------------------------
+	for _,line1:= range ctlLine {
+		varia1:= line1.var1
+		value1:= line1.val1
 		
-		//fmt.Println("nread file list " , fline) 
 		rowArrayCap   := 0	
 		wordSliceCap  := 0
 		uniqueWordsCap:= 0
 		//-------------------
 		switch varia1 {
-			case "word_lemma_file"     : 
-				FILE_inputWordLemma      = value1
-			case "word_lemmaplus_file" : 
-				FILE_inputWordLemmaPlus  = value1	
-			case "paradigma_file" : 
-				FILE_inpParadigma        = value1	
-			case "inputlanguage_file": 
-				FILE_inputLanguage            = value1
-				if sw1 {fmt.Println("legge ", value1 , " ==> ",  FILE_inputLanguage) }
+			case "word_lemma_file"     	 : FILE_inputWordLemma      = commonInputFolder + value1
+			case "word_lemmaplus_file" 	 : FILE_inputWordLemmaPlus  = commonInputFolder + value1	
+			case "paradigma_file"      	 : FILE_inpParadigma        = commonInputFolder + value1	
+			case "inputlanguage_file"  	 : FILE_inputLanguage       = commonInputFolder + value1
+			case "inputtranslation_file" : FILE_inputTranslation  	= commonInputFolder + value1
 				
 			case "write_numbered_text" :     //       = true 
 				sw_write_numbered_text = (value1 == "true") 				
@@ -93,7 +114,7 @@ func g28_read_control_file() {
 					dictionaryWord      = make([]wDictStruct,  0, uniqueWordsCap)  
 					fmt.Println("max_num_uniques   :", uniqueWordsCap, " (uniqueWordsByFreq capacity)")  
 				}	
-				
+			/**	
 			case "text_split_ignore_newline" :           // if true, newLine Character (\n) are ignored and the text is split only by full stop or any of other character as .;:!?    
 				value1 = strings.ToLower(value1)					
 				fmt.Println("text_split_ignore_newline :", value1)  
@@ -110,7 +131,7 @@ func g28_read_control_file() {
 							
 			case "main_text_file"  :
 				main_input_text_file = value1 				
-			
+			**/
 			
 			case "rewrite_word_lemma_dictionary" :
 				sw_rewrite_wordLemma_dict = (value1 == "true") 				
@@ -121,12 +142,12 @@ func g28_read_control_file() {
     } // end for fline00 range
 	//-----------------------------------
 	
-	fmt.Println("file control: ", file_inputControl)
-		fmt.Println("\t", "word_lemma_file     = " , FILE_inputWordLemma ,
-				"\n\t",   "word_lemmaplus_file = " , FILE_inputWordLemmaPlus,
-				"\n\t",   "paradigma_file      = " , FILE_inpParadigma,
-				"\n\t",   "inputLanguage_file  = " , FILE_inputLanguage ,
-				"")
+	fmt.Println("\t", "word_lemma_file       = " , strings.ReplaceAll( FILE_inputWordLemma ,  commonInputFolder,""), 
+			"\n\t",   "word_lemmaplus_file   = " , strings.ReplaceAll( FILE_inputWordLemmaPlus,  commonInputFolder,""), 
+			"\n\t",   "paradigma_file        = " , strings.ReplaceAll( FILE_inpParadigma,     commonInputFolder,""), 
+			"\n\t",   "inputLanguage_file    = " , strings.ReplaceAll( FILE_inputLanguage   , commonInputFolder,""), 
+			"\n\t",   "inputTranslation_file = " , strings.ReplaceAll( FILE_inputTranslation, commonInputFolder,""), 
+			"")
 				
 	fmt.Println("sw_write_numbered_text  = ", sw_write_numbered_text, 
 				", sw_read_numbered_text   = ", sw_read_numbered_text )

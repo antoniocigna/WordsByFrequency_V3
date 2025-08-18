@@ -213,7 +213,7 @@ function onchange_mostFreqWordList_extrRow() {
 function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", toLearn="") {	
 	
 	console.log("%c	require_mostFreqWordList", "color:blue;")
-	console.log("anyRow=", anyRow,  " toLearn=", toLearn); 
+	
 	
 	document.getElementById("id_inpBegError").style.display = "none"; 	
 	
@@ -224,7 +224,7 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", t
 	var numWords = getInt( document.getElementById("id_inpMaxNumWords" ).value);
 	if (fromWord < 1) { fromWord=1;     document.getElementById("id_inpBegFreqWList").value = 1; }
 	if (numWords < 1) { numWords = 1;   document.getElementById("id_inpMaxNumWords" ).value = 1; }
-	
+	console.log("anyRow=", anyRow, " fromWord=",fromWord, " numWords=", numWords, " toLearn=", toLearn); 
 	//---
 	var sel_level = "any"; //  x.options[i].id;
 	//---
@@ -243,7 +243,7 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", t
 	
 	is_selected_row_only = ( i == index_onlySelRowsWanted); //1 onclick_require_mostFreqWordLi
 	
-	//console.log("  require_mostFreqWordList", " is_selected_row_only =", is_selected_row_only )
+	console.log("  require_mostFreqWordList", " is_selected_row_only =", is_selected_row_only )
 	
 	fun_selRowsWanted_changed();
 	//---	
@@ -253,7 +253,7 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", t
 	if (toLearn != "") {
 		sel_toBeLearned = toLearn; 
 	}
-	//console.log("sel_toBeLearned=" ,sel_toBeLearned); 
+	console.log("sel_toBeLearned=" ,sel_toBeLearned); 
 	
 	//--
 	swChg = isExtrRowChanged() 
@@ -264,17 +264,17 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", t
 		}
 	}
 	if (swFromOnChangeExtr) {
-		//console.log("onchange_mostFreqWordList_extrRow " , " isExtrRowChanged=", swChg , " return");	
+		console.log("onchange_mostFreqWordList_extrRow " , " isExtrRowChanged=", swChg , " return");	
 		return; 
 	}
 	
-	//console.log("onclick_mostFreqWordList_require " , " isExtrRowChanged=", swChg , " go_passToJs_wordList --> js_go_showWordList_lev2  ( , button=1)");	
+	console.log("onclick_mostFreqWordList_require " , " isExtrRowChanged=", swChg , " go_passToJs_wordList --> js_go_showWordList_lev2  ( , button=1)");	
 	
 	//var caller = "HTML page onclick_require_rowList1" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
 	//if (caller == undefined) { caller = ""; }
 	
 	console.log("%cfun_require_mostFreqWordList fun_require_mostFreqWordList", "color:green;"); 
-	console.log("go_passToJs_rowList ", "swChg=", swChg, " fromWord=", fromWord, " numWords=", numWords, " sel_level=", sel_level, 
+	console.log("go_passToJs_wordList ", "swChg=", swChg, " fromWord=", fromWord, " numWords=", numWords, " sel_level=", sel_level, 
 			" html_sel_extrRow=", html_sel_extrRow, " sel_toBeLearned=", sel_toBeLearned ); 
 	
 	go_passToJs_wordList( swChg, ""+fromWord, ""+numWords, sel_level, html_sel_extrRow, sel_toBeLearned, "js_go_showWordList_lev2(1)," + caller);
@@ -492,9 +492,7 @@ function write_word_dictionary() {
             continue;
         }  		
 		if (ix1 < 0) continue; 
-		
-		if (word1== "Xabfahren") { console.log("word1=", word1, " wParaList=", wParaList, " wExampleList=", wExampleList)}
-		
+				
 		if (newTran[ixW2StudyLs]==1) {
 			if (ix1 == -1) { continue; }	
 			newTranWord++; 	
@@ -517,6 +515,14 @@ function write_word_dictionary() {
 	//console.log(red("\tJS  dopo l'istruzione di run go_write_word_dictionary")); 	
 	
 } // end of write_word_dictionary
+
+//-----------------------------------------
+
+function onclick_reWriteAllTran() {
+	
+	go_rewrite_allTran(); 
+	
+} // end of onclick_reWriteAllTran
 
 //---------------------------------------------------------
 
@@ -3825,9 +3831,13 @@ function onclickDoubleWordTran(this1) {
 		'style="background-color:lightgrey; color:black; font-weight:bold;border:2px solid black;min-width:100%;text-align:left;" ' +
 		'contentEditable=true>' + 
 		ele_tran.innerHTML + '</div>' + '\n'		
-	newInn += '<div  style="width:100%;"><button onclick="onclick_saveNewWordTran(this)">Salva tutte le nuove traduzioni</button></div>\n'; 
+	newInn += '<div  style="width:100%;"><button onclick="onclick_saveNewWordTran(this)">Salva tutte le nuove traduzioni</button>' +
+				'</div>\n'; 
 	//eleTD.children[1].innerHTML = newInn;    	
 	eleDiv1.children[1].innerHTML = newInn;    
+	
+	//onclick_vertResizeLemma(this);
+	
 	
 	//console.log( "    new eleTD=", eleTD.outerHTML) ; 	
 	/**
@@ -3861,6 +3871,23 @@ function onclickDoubleWordTran(this1) {
 } // end of onclickDoubleWordTran
 
 
+//------------------------
+function vertResizeWord(this1) {	
+	var class01 = "c_size_1_line";
+	var classNN = "c_size_nn_line";
+	var divToResize = this1.parentElement.parentElement.parentElement
+	var swClass = ( divToResize.classList.contains( class01 )	)
+	//----------------------
+	if (swClass) {	
+		divToResize.classList.remove( class01 );			
+		divToResize.classList.add(    classNN );		
+	} else {	
+		divToResize.classList.remove( classNN );			
+		divToResize.classList.add(    class01 );	
+	} 	
+} // end of onclick_vertResizeLemma 
+
+
 //----------------------------------------
 function onclick_saveNewWordTran(this1) {
 	//===
@@ -3870,6 +3897,9 @@ function onclick_saveNewWordTran(this1) {
 	// =================
 	//console.log("1 onclick_saveNewWordTran"); 
 	if (this1 == null) return; 
+	
+	vertResizeWord(this1);
+	
 	var eleTR = this1.parentElement; 
 	var eleTD;
 	var numCellWrd = -1; 
@@ -4485,16 +4515,14 @@ function onclick_vertResizeLemma(this1) {
 	var lemmaCell = rows1[0].cells[5].children[0]
 	var swClass = ( lemmaCell.classList.contains( class01 )	)
 	//----------------------
-	if (swClass) {
-		
+	if (swClass) {		
 		this1.innerHTML = "mostra solo 2 righe"
 		for (var g=0; g < rows1.length; g++ ) {	
 			lemmaCell = rows1[g].cells[5].children[0]
 			lemmaCell.classList.remove( class01 );
 			lemmaCell.classList.add(    classNN );		
 		} // end for g
-	} else {
-		
+	} else {		
 		this1.innerHTML = "mostra tutte le righe"
 		for (var g=0; g < rows1.length; g++ ) {	
 			lemmaCell = rows1[g].cells[5].children[0]
@@ -4541,13 +4569,14 @@ function onclick_listNoParadigmaWords(this1) {
 function onclick_listNoTranWords(this1) {	
 	
 	var downfilename= "parole_senza_traduzione.txt" 
-	var outText = "Lista Parole senza Traduzione"+ "\n\n" ;
+	var outText = "Lista Parole senza Traduzione"+ "\n" ;
 	
 	var eleBody = document.getElementById("idTableWordList_tbody")
 	var rows1 = eleBody.rows; 	
 	//--------
 	var lemmaCell, eleTran, elePara, eleDivSup;	
 	//----------------------
+	var noTranL = []
 	for (var g=0; g < rows1.length; g++ ) {	
 		try {
 			lemmaCell = rows1[g].cells[5]
@@ -4555,15 +4584,27 @@ function onclick_listNoTranWords(this1) {
 			eleTran = eleDivSup.children[3]; 
 			
 			if (eleTran.innerHTML == "") {
-				outText += eleDivSup.children[0].innerHTML.replaceAll("<b>","").replaceAll("</b>","") + "  | \n";					
+				noTranL.push(  eleDivSup.children[0].innerHTML.replaceAll("<b>","").replaceAll("</b>","") );					
 			}
 		} catch(e1) {
 			console.log(e1)
 			continue
 		}
 	} // end for g
+	//-----------------
+	noTranL.sort();
+	//------------------	
+	var preW="", wo="";
+	var nn=0;
+	for (g=0; g < noTranL.length; g++ ) {
+		wo = noTranL[g]
+		if (wo == preW) continue;
+		preW = wo; 
+		nn++;
+		outText += "\n|" + nn + "|" + wo;		
+	}	
 	
-	download(downfilename, outText );
+	download(downfilename, outText + "\n" );
 	
 } // end of onclick_listNoTranWords 
 
@@ -4673,3 +4714,36 @@ function js_go_new_row_written(str1 ) {
 	
 }  // end of js_go_new_row_written
 //-----------------------------------------------------
+//------------------------------------	 
+		 // display traduzione righe toccando col mouse la riga originale 
+		 /*
+				<div class="suboLine" style="display: none;" id="idc_1" ondblclick="onclickDoubleRowTran(this)"					
+						 onmouseover='onmouseOverRow(this)' onmouseout='onmouseOutRow(this)'			
+				>Zu meiner Familie gehören vier Personen.</div>
+				<div class="tranLine" style="display:none;" id="idt_1">Ci sono quattro persone nella mia famiglia.<br></div>	
+		 */
+		 //------------------------------------	
+		 function onmouseOverRow(this1) {  // toccando la riga originale, rende visibile la traduzione  
+			 var id1 = this1.id;
+			 if (id1 == undefined) return 
+			 var idNum = id1.replaceAll("idc_","idt_"); 
+			 var eleTran = document.getElementById(idNum); 
+			 if (eleTran == undefined) return;
+			 eleTran.style.display = "block";			 
+		 } // end of onmouseOverRow
+		 //-----------------------------------------------------------	
+		 function onmouseOutRow(this1) {   // allontanando il mouse dalla riga originale, nasconde la traduzione (a meno che non sia attivo il tasto show T.    
+			 var id1 = this1.id
+			 if (id1 == undefined) return 
+			 var idNum = id1.replaceAll("idc_","idt_"); 
+			 var eleTran = document.getElementById(idNum); 
+			 if (eleTran == undefined) return;
+			 // sarebbe naturale rimettere display none, ma fintanto che esistono i pulsanti di show/hide transl. forzo lo stato dettato da questi 
+			 var idNumButtT = id1.replaceAll("idc_","idbT_");
+			 if (idNumButtT == undefined) return;
+			 var eleTranButt = document.getElementById(idNumButtT); 
+			 var eleTbutCh   = eleTranButt.children[0]; 
+			 if (eleTbutCh == undefined) return;
+			 eleTran.style.display = eleTbutCh.style.display;			 
+		 } // end of onmouseOutRow
+//---------------------------------------------------------------------		 

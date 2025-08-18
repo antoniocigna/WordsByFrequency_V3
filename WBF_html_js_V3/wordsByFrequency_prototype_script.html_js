@@ -128,6 +128,7 @@ license MIT: you can share and modify the software, but you must include the lic
 							<button onclick="onclick_vertResizeLemma(this)"     >mostra tutte le righe</button>
 							<button onclick="onclick_listNoParadigmaWords(this)">lemma senza paradigma</button>
 							<button onclick="onclick_listNoTranWords(this)"     >lemma senza traduzione</button>
+							<button onclick="onclick_reWriteAllTran()"     >riscrivi tutte le traduzioni</button>
 						</div>
 					</th>
 					
@@ -197,7 +198,7 @@ license MIT: you can share and modify the software, but you must include the lic
 				<button §learnedClass§ onclick="onclick_word_known2(\'§one-ix1§\',this)">§YESorNOT§</button></span>
 			</td>		
 			<td style="text-align:center;" class="fixWordTdWidthN borderVert_L" >
-				<div class="c_size_1_line">
+				<div class="c_size_nn_line">
 					<div class="hpad top left1"  >
 						<span ondblclick="onclickDoubleWordTran(this)"> 
 							<span class="c_wordOrig"><b>§one-word1§</b></span>						
@@ -452,7 +453,8 @@ license MIT: you can share and modify the software, but you must include the lic
             </td>            
 			<td class="borderVert"> 
 				<div class="divRowText" >
-					<div class="suboLine" style="display:none;" id="idc_§1§"  ondblclick="onclickDoubleRowTran(this)">§4txt§</div>
+					<div class="suboLine" style="display:none;" id="idc_§1§"  ondblclick="onclickDoubleRowTran(this)"
+						onmouseover='onmouseOverRow(this)' onmouseout='onmouseOutRow(this)'	>§4txt§</div>
 					<div class="tranLine" style="display:none;" id="idt_§1§">§5txt§<br></div>	
 					<div id="idw_§1§" class="center" style="width:100%;border:0px solid red;"></div>				
 					<div style="display:none;" id="idtts§1§">§ttstxt§</div>

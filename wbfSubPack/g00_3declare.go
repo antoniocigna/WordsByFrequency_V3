@@ -109,8 +109,8 @@ var listAllLemmaFromFile []string
 
 var wordToLearnTextSlice []string;   // elenco delle parole col flag se sono già note o ancora da imparare 
 
-var dictLemmaTran []lemmaTranStruct ;  // dictionary lemma translation  
-
+var dictLemmaTran []lemmaTranStruct ;  // dictionary lemma translation    (tutti)  
+var dictLemmaTranUP []lemmaTranStruct ;  // dictionary lemma translation  ( update )
 
 var wordStatistic_tx =  make( []statStruct, 150, 150);	
 var inputTextRowSlice       []rowStruct;

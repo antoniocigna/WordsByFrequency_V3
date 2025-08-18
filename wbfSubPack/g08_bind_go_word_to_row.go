@@ -875,12 +875,12 @@ func g08_bind_go_passToJs_rowList(inpBegRow int, maxNumRow int, selFrasiParole12
 		//fmt.Println("bind_go_passToJs_rowList rline.rixGroup=", rline.rixGroup," rline=", rline )
 		
 		if ((rowX =="") || (rowX == LAST_WORD)) { 
-			fmt.Println("   bind_go_pa... 1")
+			//fmt.Println("   bind_go_pa... 1")
 			continue 
 		}		
 		numOut++
 		if (numOut > maxNumRow)  { 
-			fmt.Println("   bind_go_pa... 2")
+			//fmt.Println("   bind_go_pa... 2")
 			break 
 		}
 	

@@ -7,41 +7,38 @@ import (
 )
 //-----------------------------------------------
 
-func g25_3read_dictLemmaTran_file(path1 string, inpFile string) {
+func g25_3read_dictLemmaTran_file(path1 string, inpFile string, swUp bool) {
 	bytesPerRow:= 10
     lineD := rowListFromFile( path1, inpFile, "traduzione lemma", "read_dictLemmaTran_file", bytesPerRow)  
 	if len(lineD) == 0 {sw_stop = false }
 	if sw_stop { return }
 	
-	// 	abnutzbarkeit vestibilità   ==>  lemma     \t traduzione                                                                   |    |  |        
-	
-	lineZ := ""
-	
 	var ele1 lemmaTranStruct       //  lemmaTranStruct: dL_lemmaSeq string,  dL_lemma2 string, dL_tran string  
 	
 	//---------------
 	cod1:= "" 	
-	lastNumDict ++;
+	if swUp { lastNumDict = 100000}
 	//-----------------
 	for z:=0; z< len(lineD); z++ { 
+				
+		lineCol := strings.Split( (lineD[z]+"|||"), "|" ) 
 		
-		lineZ = strings.TrimSpace(lineD[z]) 
-		
-		// eg. abnutzbarkeit \t	vestibilità     ==>  lemma \t translation  
-		
-		if lineZ == "" { continue }
-		j1:= strings.Index(lineZ, "|")
-		if j1 < 0 { continue }
-		cod1 = lineZ[0:j1]
+		lastNumDict ++;
+		cod1 = strings.TrimSpace( lineCol[0] )
 		ele1.dL_lemmaSeq = seqCode(cod1) 
-		ele1.dL_lemma2   = strings.TrimSpace( cod1 )
+		ele1.dL_lemma2   = cod1 
 		ele1.dL_numDict  = lastNumDict 
-		ele1.dL_tran     = strings.TrimSpace( lineZ[j1+1:] )   ////cigna1_2
+		ele1.dL_tran     = strings.TrimSpace( lineCol[1] ) 
 		
-		
+		if swUp {
+			dictLemmaTranUP = append( dictLemmaTranUP, ele1 ) 	
+		} 
 		dictLemmaTran = append( dictLemmaTran, ele1 ) 	
-		
+				
 	}	
+	//-----------------
+	sort_lemmaTranUP()
+	//---------------
 	
 	fmt.Println("read_dictLemmaTran_file", " len(lineD)=", len(lineD), " len( dictLemmaTran)=", len(dictLemmaTran) )
 	
@@ -54,6 +51,18 @@ func g25_3read_dictLemmaTran_file(path1 string, inpFile string) {
 
 //---------------------------------------
 
+func sort_lemmaTranUP() {
+	
+	if len(dictLemmaTranUP) < 1 { return }	
+	sort.Slice(dictLemmaTranUP, func(i, j int) bool {
+			if (dictLemmaTranUP[i].dL_lemmaSeq != dictLemmaTranUP[j].dL_lemmaSeq) { 
+				return dictLemmaTranUP[i].dL_lemmaSeq < dictLemmaTranUP[j].dL_lemmaSeq 
+			} else {
+				return dictLemmaTranUP[i].dL_numDict < dictLemmaTranUP[j].dL_numDict				
+			}
+		} )		
+		
+}  // end of sort_lemmaTranUP
 //---------------------------------
 
 func sort_lemmaTran2() {
