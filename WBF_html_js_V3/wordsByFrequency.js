@@ -12,6 +12,7 @@ const YES1 = "Yes";
 const NOT_YET1 = "Not Yet";
 const MAX_NUM_WORD_LEARN = 10;
 let numWordsKnownChanged = 0;
+const NUM_CELL_LEMMA = 6;  
 //----------------------------------
 var html_fromIxRow  = 0;
 var html_toIxRow  = 0;
@@ -601,7 +602,7 @@ function js_go_showBetweenWordList(wordListStr, js_parm, jsFunc,goFunc) {
 
 function onclick_require_betweenLemmaList() {
 	
-	console.log("%conclick_require_betweenLemmaList", "color:green;")
+	//console.log("%conclick_require_betweenLemmaList", "color:green;")
 	word_to_underline_list = []
 	ele_wordList.innerHTML ="";
 	
@@ -643,7 +644,7 @@ function onclick_require_betweenLemmaList() {
 	//eleLemma2.style.color = null;
 	//eleLemma2.parentElement.style.backgroundColor = null;
 	
-	console.log("go_passToJs_betweenLemmaList")
+	//console.log("go_passToJs_betweenLemmaList"   , " fromWordPref=", fromWordPref)
 	
 	go_passToJs_betweenLemmaList(""+maxNumLemma, fromWordPref, "js_go_showBetweenLemmaList"); // ask 'go' to give wordlist by js_... function  
 	
@@ -652,7 +653,7 @@ function onclick_require_betweenLemmaList() {
 
 //------------------------------------
 function js_go_showBetweenLemmaList(lemmaListStr, js_parm, jsFunc,goFunc) {
-	console.log("js_go_showBetweenLemmaList")
+	//console.log("js_go_showBetweenLemmaList")
 	if (lemmaListStr == "") {
 		document.getElementById("id_bW0_err").style.display ="block";   // no entry found
     } else {
@@ -1933,7 +1934,13 @@ function js_go_ready( prevRun00) {
 	
 	//onclick_getRowGroup(  document.getElementById("id_gruppi_sel") )
 	
-	
+	let cellWord_TrTD = document.getElementById("idTableWordList_tbody").children[0].children[5]; 		
+	let cellWord_TrTH = document.getElementById("idTableWordList_thead").children[0].children[5]; 		
+		console.log("%ccellWord_TrTH=",cellWord_TrTH.innerHTML) 
+		console.log("%ccellWord_TrTD=",cellWord_TrTD.innerHTML) 
+		
+		console.log("%ccellWord_TrTD  xxx =",document.getElementById("idTableWordList_tbody").rows[0]) 
+
 } // end of js_go_ready
 //-------------------------------------
 
@@ -3885,11 +3892,11 @@ function vertResizeWord(this1) {
 		divToResize.classList.remove( classNN );			
 		divToResize.classList.add(    class01 );	
 	} 	
-} // end of onclick_vertResizeLemma 
+} // end of onclick_vertResizeWord 
 
 
 //----------------------------------------
-function onclick_saveNewWordTran(this1) {
+function TOGLIonclick_saveNewWordTran(this1) {
 	//===
 	let wordx, ix12, nrow, totExtrRow2,  wLemma1, wordTran, uLearnedYN ;
 	var wLemmaList, wTranList, wLevelList, wParaList, wExampleList,  wIxLemmaList;	
@@ -4107,7 +4114,7 @@ function onclick_saveNewWordTran(this1) {
 		write_word_dictionary()
 	}
 	
-} // end of onclick_saveNewWordTran	
+} // end of TOGLIonclick_saveNewWordTran	
 
 //------------------------------------
 /***
@@ -4477,6 +4484,8 @@ function js_go_file_words_to_learn_written( str1 ) {
 function onclick_hideShowWordTran(this1) {	
 
 	var swEle = this1.previousElementSibling;
+	
+	//console.log("%conclick_hideShowWordTran", "color:red;"); console.log(" swEle=", swEle)
 
 	// nasconde o mostra la traduzione di tutte le parole 
 	var eleBody = document.getElementById("idTableWordList_tbody")
@@ -4491,12 +4500,14 @@ function onclick_hideShowWordTran(this1) {
 		swEle.innerHTML = "y";
 		visib = "hidden";
 	}	
+	//console.log( "            swEle.innerHTML=", swEle.innerHTML,   " visib=", visib, " rows1.length=", rows1.length)
 	//----------------------
 	for (var g=0; g < rows1.length; g++ ) {	
 		try {
-			lemmaCell = rows1[g].cells[5]
+			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
 			eleTran = lemmaCell.children[0].children[1].children[3]; 
 			eleTran.style.visibility = visib;
+			//console.log(" lemmaCell=", lemmaCell, "  VISIBIL=",eleTran.style.visibility, " eleTran=", eleTran.outerHTML )
 		} catch(e1) {
 			continue
 		}
@@ -4512,20 +4523,20 @@ function onclick_vertResizeLemma(this1) {
 	var class01 = "c_size_1_line";
 	var classNN = "c_size_nn_line";
 	if (rows1.length < 1) return
-	var lemmaCell = rows1[0].cells[5].children[0]
+	var lemmaCell = rows1[0].cells[NUM_CELL_LEMMA].children[0]
 	var swClass = ( lemmaCell.classList.contains( class01 )	)
 	//----------------------
 	if (swClass) {		
 		this1.innerHTML = "mostra solo 2 righe"
 		for (var g=0; g < rows1.length; g++ ) {	
-			lemmaCell = rows1[g].cells[5].children[0]
+			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA].children[0]
 			lemmaCell.classList.remove( class01 );
 			lemmaCell.classList.add(    classNN );		
 		} // end for g
 	} else {		
 		this1.innerHTML = "mostra tutte le righe"
 		for (var g=0; g < rows1.length; g++ ) {	
-			lemmaCell = rows1[g].cells[5].children[0]
+			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA].children[0]
 			lemmaCell.classList.remove( classNN );
 			lemmaCell.classList.add(    class01 );				
 		}
@@ -4534,7 +4545,7 @@ function onclick_vertResizeLemma(this1) {
 
 //-----------------------------------------------------------------
 
-function onclick_listNoParadigmaWords(this1) {	
+function onclick_listNoParadigmaLemma(this1) {	
 
 	var downfilename= "parole_senza_paradigma.txt" 
 	var outText = "Lista Parole senza paradigma " + "\n\n" ;
@@ -4547,7 +4558,7 @@ function onclick_listNoParadigmaWords(this1) {
 	//----------------------
 	for (var g=0; g < rows1.length; g++ ) {	
 		try {
-			lemmaCell = rows1[g].cells[5]
+			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
 			eleDivSup = lemmaCell.children[0].children[1];
 			elePara = eleDivSup.children[1]; 
 			
@@ -4562,14 +4573,18 @@ function onclick_listNoParadigmaWords(this1) {
 	
 	download(downfilename, outText );
 		
-} // end of onclick_listNoParadigmaWords 
+} // end of onclick_listNoParadigmaLemma 
 
 //-----------------------------------------------------------------
 
-function onclick_listNoTranWords(this1) {	
+function onclick_listNoTranLemma(this1,swNoTran) {	
 	
-	var downfilename= "parole_senza_traduzione.txt" 
-	var outText = "Lista Parole senza Traduzione"+ "\n" ;
+	var downfilename= "Lemma_senza_traduzione.txt" 
+	var outText = "Lista Lemma senza Traduzione"+ "\n" ;
+	if (swNoTran == false) {
+		downfilename= "lista_tutti_lemma.txt" 
+	    outText = "Lista di tutti i lemma"+ "\n" ;
+	} 
 	
 	var eleBody = document.getElementById("idTableWordList_tbody")
 	var rows1 = eleBody.rows; 	
@@ -4577,15 +4592,19 @@ function onclick_listNoTranWords(this1) {
 	var lemmaCell, eleTran, elePara, eleDivSup;	
 	//----------------------
 	var noTranL = []
+	var tranS;
 	for (var g=0; g < rows1.length; g++ ) {	
 		try {
-			lemmaCell = rows1[g].cells[5]
+			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
 			eleDivSup = lemmaCell.children[0].children[1];
 			eleTran = eleDivSup.children[3]; 
-			
-			if (eleTran.innerHTML == "") {
-				noTranL.push(  eleDivSup.children[0].innerHTML.replaceAll("<b>","").replaceAll("</b>","") );					
+			if (eleTran) tranS = eleTran.innerHTML;
+			else tranS = ""
+			if (swNoTran) {
+				if (tranS != "") continue;
 			}
+			noTranL.push(  eleDivSup.children[0].innerHTML.replaceAll("<b>","").replaceAll("</b>","") + "|" + tranS );					
+			
 		} catch(e1) {
 			console.log(e1)
 			continue
@@ -4606,8 +4625,57 @@ function onclick_listNoTranWords(this1) {
 	
 	download(downfilename, outText + "\n" );
 	
-} // end of onclick_listNoTranWords 
+} // end of onclick_listNoTranLemma 
+//----------------------------------------------
 
+
+function onclick_listWords(this1) {	
+	
+	var downfilename= "lista_parole.txt" 
+	var outText = "Lista Parole"+ "\n" ;	
+	var eleBody = document.getElementById("idTableWordList_tbody")
+	var rows1 = eleBody.rows; 	
+	//--------
+	var wordCell, lemmaCell, eleTran, elePara, eleDivSup, eleWrd;	
+	var lemmaT, wordT;
+	//----------------------
+	var noTranL = []
+	var tranS;
+	for (var g=0; g < rows1.length; g++ ) {	
+		try {
+			wordCell = rows1[g].cells[4];
+			eleWrd = wordCell.children[0].children[0].children[0].children[0]; 
+			if (eleWrd == undefined) continue; 
+			
+			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
+			eleDivSup = lemmaCell.children[0].children[1];
+			eleTran = eleDivSup.children[3]; 
+			if (eleTran) tranS = eleTran.innerHTML;
+			else tranS = ""	;	
+			wordT = eleWrd.innerHTML.replaceAll("<b>","").replaceAll("</b>","") ;
+			lemmaT = 	eleDivSup.children[0].innerHTML.replaceAll("<b>","").replaceAll("</b>","");
+			noTranL.push( lemmaT+ " §§" +wordT + "|" + lemmaT + "|" + tranS );				
+		} catch(e1) {
+			console.log(e1)
+			continue
+		}
+	} // end for g
+	//-----------------
+	noTranL.sort();
+	//------------------	
+	var preW="", wo="";
+	var nn=0;
+	for (g=0; g < noTranL.length; g++ ) {
+		wo = noTranL[g].split("§§")[1];
+		if (wo == preW) continue;
+		preW = wo; 
+		nn++;
+		outText += "\n|" + nn + "|" + wo;		
+	}	
+	
+	download(downfilename, outText + "\n" );
+	
+} // end of onclick_listWords 
 //------------------------------------------	
 function download(filename, text) {
 
@@ -4714,7 +4782,6 @@ function js_go_new_row_written(str1 ) {
 	
 }  // end of js_go_new_row_written
 //-----------------------------------------------------
-//------------------------------------	 
 		 // display traduzione righe toccando col mouse la riga originale 
 		 /*
 				<div class="suboLine" style="display: none;" id="idc_1" ondblclick="onclickDoubleRowTran(this)"					
@@ -4722,28 +4789,236 @@ function js_go_new_row_written(str1 ) {
 				>Zu meiner Familie gehören vier Personen.</div>
 				<div class="tranLine" style="display:none;" id="idt_1">Ci sono quattro persone nella mia famiglia.<br></div>	
 		 */
-		 //------------------------------------	
-		 function onmouseOverRow(this1) {  // toccando la riga originale, rende visibile la traduzione  
-			 var id1 = this1.id;
-			 if (id1 == undefined) return 
-			 var idNum = id1.replaceAll("idc_","idt_"); 
-			 var eleTran = document.getElementById(idNum); 
-			 if (eleTran == undefined) return;
-			 eleTran.style.display = "block";			 
-		 } // end of onmouseOverRow
-		 //-----------------------------------------------------------	
-		 function onmouseOutRow(this1) {   // allontanando il mouse dalla riga originale, nasconde la traduzione (a meno che non sia attivo il tasto show T.    
-			 var id1 = this1.id
-			 if (id1 == undefined) return 
-			 var idNum = id1.replaceAll("idc_","idt_"); 
-			 var eleTran = document.getElementById(idNum); 
-			 if (eleTran == undefined) return;
-			 // sarebbe naturale rimettere display none, ma fintanto che esistono i pulsanti di show/hide transl. forzo lo stato dettato da questi 
-			 var idNumButtT = id1.replaceAll("idc_","idbT_");
-			 if (idNumButtT == undefined) return;
-			 var eleTranButt = document.getElementById(idNumButtT); 
-			 var eleTbutCh   = eleTranButt.children[0]; 
-			 if (eleTbutCh == undefined) return;
-			 eleTran.style.display = eleTbutCh.style.display;			 
-		 } // end of onmouseOutRow
-//---------------------------------------------------------------------		 
+		
+//------------------------------------	 
+let sw_mouseoverActiv = false;
+//----------------------------------   
+function onclick_moveOverActivate(this1) {
+	if (sw_mouseoverActiv) {
+		sw_mouseoverActiv = false;
+		this1.innerHTML = "attivare la traduzione al passaggio del mouse"
+	} else {
+		sw_mouseoverActiv = true;
+		this1.innerHTML = "disattivare la traduzione al passaggio del mouse"
+	}
+	
+} // end of onclick_moveOverActivate
+//---------------------------------------------
+function onmouseOverRow(this1) {  // toccando la riga originale, rende visibile la traduzione  
+	if (sw_mouseoverActiv == false) return;
+	var id1 = this1.id;
+	if (id1 == undefined) return 
+	var idNum = id1.replaceAll("idc_","idt_"); 
+	var eleTran = document.getElementById(idNum); 
+	if (eleTran == undefined) return;
+	eleTran.style.display = "block";			 
+} // end of onmouseOverRow
+//-----------------------------------------------------------	
+function onmouseOutRow(this1) {   // allontanando il mouse dalla riga originale, nasconde la traduzione (a meno che non sia attivo il tasto show T.  
+	if (sw_mouseoverActiv == false) return;	
+	var id1 = this1.id
+	if (id1 == undefined) return 
+	var idNum = id1.replaceAll("idc_","idt_"); 
+	var eleTran = document.getElementById(idNum); 
+	if (eleTran == undefined) return;
+	// sarebbe naturale rimettere display none, ma fintanto che esistono i pulsanti di show/hide transl. forzo lo stato dettato da questi 
+	var idNumButtT = id1.replaceAll("idc_","idbT_");
+	if (idNumButtT == undefined) return;
+	var eleTranButt = document.getElementById(idNumButtT); 
+	var eleTbutCh   = eleTranButt.children[0]; 
+	if (eleTbutCh == undefined) return;
+	eleTran.style.display = eleTbutCh.style.display;			 
+} // end of onmouseOutRow
+//---------------------------------------------------------------------		
+
+
+function onclick_changeTraduzione(this1 ) {	
+	
+	var eleTD0  = this1.parentElement;
+	
+	var eleLemmaTD = eleTD0.nextElementSibling;
+	
+	/***
+		// td lemma     tr.cells[NUM_CELL_LEMMA] 	
+		<td style="text-align:center;" class="fixWordTdWidthL borderVert_L borderVert_R">
+			<div class="c_size_1_line">					
+				<div style="display:none;">zwei</div>
+				<div class="hpad top left1 " style="width:100%;">										
+					<span style="display:none;" class="c_lemma" onmouseover="mouseOverWord(this,3)" onmouseout="mouseOutWord(this,3)"><b>zwei</b></span>
+					<span class="c_paradigma" onmouseover="mouseOverWord(this,3)" onmouseout="mouseOutWord(this,3)">zwei</span>						
+					<br class="c_paradigma">	
+					<div class="c_wordTran" style="visibility: hidden;">due</div>						
+					<div class="c_example"></div>
+				</div> 				
+			</div>
+			----
+			qui la parte per variare la traduzione 	
+			----
+		</td>
+	
+	***/
+		
+	var eleWordTD  = eleTD0.previousElementSibling;
+		
+	var eleTD    =  eleWordTD; 
+		
+	var eleLemDiv1   = eleLemmaTD.children[0]
+	var eleLemmaSpan = eleLemDiv1.children[0]
+	if (eleLemmaSpan.innerHTML == "") return; 	
+		
+	if (eleLemmaTD.children.length >= 2) { return; } 
+	
+	var ele_oldTran = eleLemmaTD.children[0].children[1].children[3]
+
+	const newDiv = document.createElement("div");
+	newDiv.style.textAlign = "left";
+	
+	eleLemmaTD.appendChild(newDiv);
+	var newInn=""
+	newInn += '<div  style="font-size:0.6em;width:100%;">add/modify translation</span></div>' + '\n';
+	newInn += '<div  class="c_wordTran" ' +
+		'style="background-color:lightgrey; color:black; font-weight:bold;border:2px solid black;min-width:100%;text-align:left;" ' +
+		'contentEditable=true>' + 
+		ele_oldTran.innerHTML + '</div>' + '\n'		
+	newInn += '<div  style="width:100%;"><button onclick="onclick_saveNewWordTran(this)">Salva tutte le nuove traduzioni</button>' +
+				'</div>\n'; 
+	
+	eleLemmaTD.children[1].innerHTML = newInn;    
+	
+} // end of onclick_changeTraduzione
+
+//----------------------------------------
+function onclick_saveNewWordTran(this1) {
+	
+	/******
+	
+	<td style="text-align:center;" class="fixWordTdWidthL borderVert_L borderVert_R">
+		<div class="c_size_1_line">
+			<div style="display:none;">zwei</div>
+			<div class="hpad top left1 " style="width:100%;">										
+				<span style="display:none;" class="c_lemma" onmouseover="mouseOverWord(this,3)" onmouseout="mouseOutWord(this,3)"><b>zwei</b></span>
+				<span class="c_paradigma" onmouseover="mouseOverWord(this,3)" onmouseout="mouseOutWord(this,3)">zwei</span>						
+				<br class="c_paradigma">	
+				<div class="c_wordTran" style="visibility: hidden;">due</div>						
+				<div class="c_example"></div>
+			</div> 
+		</div>
+					
+		<div style="text-align: left;">
+			<div style="font-size:0.6em;width:100%;">add/modify translation</div>
+			<div class="c_wordTran" style="background-color:lightgrey; color:black; 
+					font-weight:bold;border:2px solid black;min-width:100%;text-align:left;" 
+					contenteditable="true">
+					due
+			</div>
+			<div style="width:100%;">
+					<button onclick="onclick_saveNewWordTran(this)">Salva tutte le nuove traduzioni</button>
+			</div>
+		</div>
+	</td>	
+	
+	*********/
+	
+	
+	var wLemmaList, wTranList, wLevelList, wParaList, wExampleList,  wIxLemmaList;	
+	let wordx, ix12, nrow, totExtrRow2,  wLemma1, wordTran, uLearnedYN ;
+	let word1, ixW2StudyLs, ix1, ixLemma; 	
+	var oldDivTran, eleOldTran, oldTranslation; 
+	var newDivTran, eleNewTran, newTranslation; 
+	var swChg=false;
+	var eleTD_0, eleTD_5; var eleTD0_val;
+	var eleTD_6, ele_details, ele_details, ele_summ, ele_tranLemma; 
+	
+	var newUp = 0; 
+	
+	var div_onsave00 = this1.parentElement; 	
+	var divAdded00   = div_onsave00.parentElement;  
+	var eleTdLemma00 = divAdded00.parentElement; 
+	if (eleTdLemma00.tagName != "TD") { console.log("%cERRORE eleTdLemma.tagName not equal TD =" + +eleTdLemma00.tagName );return; } 	
+	var eleTR = eleTdLemma00.parentElement; 	
+	if (eleTR.tagName != "TR") { return; }
+	var elePareTr = eleTR.parentElement; // tbody
+	if (elePareTr == null) return; 
+	
+	//----------------------
+	// cerca tutti i lemma con traduzione pendente  
+	
+	var tranToUpdList = [];
+	var bodyChild = elePareTr.children
+	for (var p1=0; p1 < bodyChild.length; p1++) {
+		var eleTr0 = bodyChild[p1];
+		var oneTdLemma = eleTr0.children[NUM_CELL_LEMMA]; 		
+		if (oneTdLemma.children.length < 2) { continue; }	
+		var oneNewLemTran = oneTdLemma.children[1]; 
+		var oneNewLemTranInner = oneNewLemTran.children[1].innerHTML;
+		if (oneNewLemTranInner == "") { continue; }	
+		tranToUpdList.push( [ oneTdLemma.children[0].children[0].innerHTML, oneNewLemTranInner, oneNewLemTran ] ); 		
+	} // end for p1	
+	//-------------------
+	for(var t2=0; t2 < tranToUpdList.length; t2++) {
+		var toUpdLemma   = tranToUpdList[t2][0];	
+		var toUpdTran    = tranToUpdList[t2][1];	
+		var addedLivTran = tranToUpdList[t2][2];
+		for (var p2=0; p2 < bodyChild.length; p2++) {
+			updateOneTran(  bodyChild[p2], toUpdLemma, toUpdTran); 
+		}	
+		addedLivTran.remove(); 			
+	}  // end for t2 
+	//---------------------
+	if (newUp > 0) {
+		console.log( " onclick_saveNewWordTran	call  write_word_dictionary",    "  ", newUp, " variazioni")		
+		write_word_dictionary();
+	}
+	return
+	
+	//------------------------------
+	function updateOneTran( eleTr2, targetLemmaName, newLemTran ) {
+		var eleTdLemma = eleTr2.children[ NUM_CELL_LEMMA] ;
+		var ele_target_lemmaName = eleTdLemma.children[0].children[0].innerHTML; 			
+		if (ele_target_lemmaName != targetLemmaName) { 
+			return;
+		}	
+		//-----
+		eleTD_0 = eleTr2.children[0];
+		eleTD0_val = eleTD_0.children[1]; 
+		word1       = eleTD0_val.children[0].innerHTML; 
+		ixW2StudyLs = eleTD0_val.children[1].innerHTML; // indice wordToStudy_List
+		ix1         = eleTD0_val.children[2].innerHTML; // indice word (in go) 
+		ixLemma     = eleTD0_val.children[3].innerHTML; // indice lemma x lemma e tran list 
+		
+		var ele_target_lemTran   = eleTdLemma.children[0].children[1].children[3]; 		
+		if (ele_target_lemTran.innerHTML ==  newLemTran) { 
+			console.log("    traduzione eguale a prima, ignoro")
+			return;
+		}
+		ele_target_lemTran.innerHTML = newLemTran;
+		//------		
+		[wordx, ix12,  nrow, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2,uLearnedYN, wIxLemmaList  ] = wordToStudy_list[ixW2StudyLs]; 
+		wTranList = newLemTran;
+		wordToStudy_list[ixW2StudyLs] = [wordx, ix12, nrow, 
+						wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList   ] ;
+		newTran[ixW2StudyLs]=1; 	 
+		newUp++;
+		
+	} //end of updateOneTran 
+	//-------------------------------------
+	
+} // end of onclick_saveNewWordTran	
+
+//------------------------------------
+
+function vertResizeLemma( eleTdLemma ) {	
+	var class01 = "c_size_1_line";
+	var classNN = "c_size_nn_line";
+	var divToResize = eleLemma.children[0] ; 
+	var swClass = ( divToResize.classList.contains( class01 )	)
+	//----------------------
+	if (swClass) {	
+		divToResize.classList.remove( class01 );			
+		divToResize.classList.add(    classNN );		
+	} else {	
+		divToResize.classList.remove( classNN );			
+		divToResize.classList.add(    class01 );	
+	} 	
+} // end of onclick_vertResizeLemma 
+//-----------------------------

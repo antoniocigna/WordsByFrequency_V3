@@ -38,28 +38,23 @@ license MIT: you can share and modify the software, but you must include the lic
 						<div class="c_verticalText">do you know it?</div>
 					</th>
 					
-					<th style="text-align:center;" class="fixWordTdWidthN">	
+					<th style="text-align:center;resize:none;" class="fixWordTdWidthN">	
 						
 						<div class="hpad top left1">
 							parola 
 						</div>
 					</th>	
-					<th style="text-align:center;" class="fixWordTdWidthL">	
+					<th class="fixWordTdWidth2" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;">
+						<div class="c_verticalText">cambia traduzione</div>
+					</th>
+					<th style="text-align:center;resize:none;" class="fixWordTdWidthL">	
 						<div class="hpad top left1">	
 							lemma paradigma 	
-							<div id="dragWLsTip5_Header"  class="gradientColor" 
-										style="height:1em;width:100%;">
-								<div style="width:100%; text-align:right;font-size:0.7em;">help</div>
-								<span style="font-size:0.7em;">	
-									Sposta il mouse sul <span style="color:blue;font-weight:bold;">lemma</span> per leggere la <span style="color:green;font-weight:bold;">traduzione</span> 
-									<br>Per listare le righe che contengono la <span style="color:blue;font-weight:bold;">parola</span> 
-									o il <span style="color:blue;font-weight:bold;">lemma</span> 
+							<div style="width:100%;font-size:0.7em;font-style: italic;">	
 									<br>
-									clicca su un pulsante delle ultime tre colonne,		
-									<br>
-									doppio click sulla parola per cambiare la traduzione o inserirla se manca 						
-								</span>	
-							</div>	
+									Sposta il mouse sul <span style="color:blue;">lemma</span> 
+									per leggere la <span style="color:green;">traduzione</span> 	
+							</div>							
 						</div>
 					</th>	
 					<th class="fixWordTdWidth3" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
@@ -87,8 +82,12 @@ license MIT: you can share and modify the software, but you must include the lic
 									
 					<!--    2 th  rowspanned 3-->		
 					<!--    2 th  rowspanned 3-->		
-					<th style="text-align:center;" class="fixWordTdWidthN"></th>	
-					<th style="text-align:center;" class="fixWordTdWidthL"></th>	  	
+					<th style="text-align:center;resize:none;" class="fixWordTdWidthN"></th>
+					<!--    1 th  rowspanned 3--> 	
+					<th style="text-align:center;resize:none;" class="fixWordTdWidthL">
+					
+					
+					</th>	  	
 					<!--    3 th  rowspanned 3-->		
 					<!--    3 th  rowspanned 3-->					
 				</tr>  
@@ -96,13 +95,25 @@ license MIT: you can share and modify the software, but you must include the lic
 				<tr class="tabWhead_r3">   
 					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
 					<!--    2 th  rowspanned 3-->			
-					<th style="text-align:center;" class="fixWordTdWidthN borderVert_L">	
+					<th style="text-align:center;resize:none;" class="fixWordTdWidthN borderVert_L">	
 						<div id="id_buttLearnDiv"  style="display:none;border:5px solid red; width:100%;">
 							<button id="id_buttScriviLearn" onclick="onclick_write_words_to_learn()"  style="font-weight:bold;">Aggiorna la lista delle parole da imparare</button>
 							<br><span style="font-size:0.7em;font-weight:normal;">&nbsp;(<span id="id_buttLearnNumW"></span>&nbsp;variaz.) </span>
 						</div>				
-					</th>				
-					<th style="text-align:center;" class="fixWordTdWidthL borderVert_L borderVert_R"></th>	  	
+					</th>	
+					<!--  1 th rowspanned 3 -->
+					<th style="text-align:center;resize:none;" class="fixWordTdWidthL borderVert_L borderVert_R">
+						<div style="text-align:center;">
+								<span style="display:none;">y</span>	
+								<button onclick="onclick_hideShowWordTran(this)"    >show/hide translation</button>
+								<button onclick="onclick_vertResizeLemma(this)"     >mostra tutte le righe</button>
+								<button onclick="onclick_listNoParadigmaLemma(this)">scrivi lemma senza paradigma</button>
+								<button onclick="onclick_listNoTranLemma(this,true)"     >scrivi lemma senza traduzione</button>
+								<button onclick="onclick_listNoTranLemma(this,false)"    >scrivi tutti i lemma</button>
+								<button onclick="onclick_listWords(this)"   >scrivi tutte le parole con lemma e traduzione</button>
+								<button onclick="onclick_reWriteAllTran()"          >riscrivi tutte le traduzioni</button>
+							</div>
+					</th>	  	
 					<!--    3 th  rowspanned 3-->
 					<!--    3 th  rowspanned 3-->	
 				</tr>  
@@ -114,21 +125,25 @@ license MIT: you can share and modify the software, but you must include the lic
 					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(1,0,true,'d', 5,1,false,'a')">sort</button></th> 					
 					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(2,0,true,'d', 1,0,true, 'd')">sort</button></th> 					
 					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(3,1,false,'a', 2,0,true,'d')">sort</button></th>  	
-					<th class="fixWordTdWidthN" style="text-align:center;" >	
+					<th class="fixWordTdWidthN" style="text-align:center;resize:none;" >	
 						<div class="hpad top left1">
-							<button onclick="onclick_sortWordBy_ixField(4,1,false,'a', 5,1,false,'a')">sort</button></th>
+							<button onclick="onclick_sortWordBy_ixField(4,1,false,'a', 6,1,false,'a')">sort</button></th>
 						</div>
 					</th>						
-					
-					<th style="text-align:center;" class="fixWordTdWidthL">	
+					<th></th>
+					<th style="text-align:center;resize:none;" class="fixWordTdWidthL">	
 						<div class="hpad top left1">
-							<button onclick="onclick_sortWordBy_ixField(5,1,false,'a', 4,1,false,'a')">sort</button>
+							<button onclick="onclick_sortWordBy_ixField(6,1,false,'a', 4,1,false,'a')">sort</button>
 							<span style="margin: 6em 0;visibility:hidden;">y</span>
+							<!--
+							<br>
 							<button onclick="onclick_hideShowWordTran(this)"    >show/hide translation</button>
 							<button onclick="onclick_vertResizeLemma(this)"     >mostra tutte le righe</button>
-							<button onclick="onclick_listNoParadigmaWords(this)">lemma senza paradigma</button>
-							<button onclick="onclick_listNoTranWords(this)"     >lemma senza traduzione</button>
-							<button onclick="onclick_reWriteAllTran()"     >riscrivi tutte le traduzioni</button>
+							<button onclick="onclick_listNoParadigmaLemma(this)">scrivi lemma senza paradigma</button>
+							<button onclick="onclick_listNoTranLemma(this)"     >scrivi lemma senza traduzione</button>
+							<button onclick="onclick_listAllLemma(this)"        >scrivi tutti i lemma</button>
+							<button onclick="onclick_reWriteAllTran()"          >riscrivi tutte le traduzioni</button>
+							-->
 						</div>
 					</th>
 					
@@ -156,7 +171,7 @@ license MIT: you can share and modify the software, but you must include the lic
 				</tr>
 			
 				<tr>
-					<th  style="background-color:black;" colspan="12"></th>
+					<th  style="background-color:black;" colspan="13"></th>
 				</tr>
 			</thead>\n	
 	</table>
@@ -207,7 +222,9 @@ license MIT: you can share and modify the software, but you must include the lic
 					</div>	
 				</div>	
 			</td>	
-			
+			<td class="fixWordTdWidth2" style="width:1em;  font-size:0.8em;">
+					<button onclick="onclick_changeTraduzione(this,\'§one-ix1§\')">.</button>
+			</td>
 			<td style="text-align:center;"  class="fixWordTdWidthL borderVert_L borderVert_R">
 				<div class="c_size_1_line">
 				§tdLemma§			
@@ -250,105 +267,7 @@ license MIT: you can share and modify the software, but you must include the lic
 		return '<button onclick="onclick_require_lemmaWordList(\"' + lemma3 + '\")" class="tdBut1">Lista le Parole di questo lemma</button>'
 	}
 	**/
-	//--------------------------------------------------------------------
 
-	function TOGLInewTr_from_prototype( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, word1, f_lemma, x_level, 
-					f_para, f_tran, x_para1,x_example1, showAltre, m, 
-					n_extr_row1, 
-					uLearnedYN, numButton) {  
-	   
-		var displayNone  = "";
-		var displayNone1 = "";
-		var displayNoneL = "";
-		var dyNoneTD234  = ""; 
-		
-		var newTr = prototype_oneTR_lemma.trim(); 
-		
-		//if (x_level != "")    { x_level    = "(lev." + x_level + ")"; }
-		if (x_para1 != "")    {
-			displayNoneL = 'style="display:none;"'
-		}		
-		if (x_example1 == undefined) console.log("x_example1=", x_example1);
-		if (x_example1 != "") { x_example1 = x_example1 ; }
-		var summarystyle = ' style="list-style-position: outside;" ' 
-		if ((x_level == "") && ( x_para1=="") && (x_example1=="") ) {
-			summarystyle= ' style="display:block;" '  // in <detail><summary></summary> other staff </details> if other stuff is empty hide the arrow (default is display:list-item) 
-		}
-		
-		if (nrow == 0) {
-			displayNone  = 'style="display:none;"';
-			displayNone1 = 'style="display:none;"';
-		} 
-		
-		var wordvisib = "";
-		if (numButton == "5") {  
-			//wordvisib = ' style="visibility:hidden;" ' ;
-			word1 = "";
-			displayNone1 = 'style="display:none;"';
-		} else if (numButton == "2") {  
-			n_extr_row1 = "";
-		} else if (numButton == "3") {  
-			n_extr_row1 = "";
-		}
-	
-		
-		/**
-		if (word1 == "$lemmalist$") {
-			word1 = buttonWordList( f_lemma )
-		}
-		**/
-		var yesOrNot;
-		var learnedClass;
-		if (uLearnedYN == "y") {
-			yesOrNot = YES1; 
-			learnedClass = '';	
-		} else { 
-			yesOrNot = NOT_YET1;
-			learnedClass = ' class="notYetLearnedButt" '
-		}
-		if (ix1 < 0) {			
-			displayNone  = 'style="display:none;"';
-			displayNone1 = 'style="display:none;"';
-			dyNoneTD234  = "visibility:hidden;"
-		} 
-		
-		 
-		if (f_lemma=="gehen") { 
-			console.log("newTr_from_prototype( numeroTR=", numeroTR, " ", word1, " nrow=", nrow, " ix1=", ix1, "  dyNoneTD234=",dyNoneTD234	)
-		}
-		
-		
-		
-		
-		//console.log(word1 , "  nrow=", nrow,  " displayNone=>" + displayNone, "<==")
-		newTr = newTr.
-			replaceAll("§summarystyle§"  , summarystyle ).
-			replaceAll(" §wordvisib§"    , wordvisib    ). 
-			replaceAll("§displayNone§"   , displayNone  ).  
-			replaceAll("§displayNone1§"  , displayNone1 ).  
-			replaceAll("§displayNoneL§"  , displayNoneL ).  
-			replaceAll("§dyNoneTD234§"   , dyNoneTD234  ).
-			replaceAll("§ixW2StudyLs§"   , ""+ixW2StudyLs ). 
-			replaceAll("§one-ixLemma§"   , ""+ixLemma   ). 
-			replaceAll("§one-ixixLemma§" , ""+ixixLemma ). 
-			replaceAll("§one-numTR§"     , ""+numeroTR ). 
-			replaceAll("§one-nrow§"      , ""+nrow     ). 
-			replaceAll("§one-ix1§"       , ""+  ix1    ). 
-			replaceAll("§one-word1§"     , ""+word1    ). 			
-			replaceAll("§one-f_lemma§"   , ""+f_lemma  ). 			 
-			replaceAll("§one-x_level§"   , ""+x_level  ).
-			replaceAll("§one-f_tran§"    , ""+f_tran   ).   
-			replaceAll("§one-x_para1§"   , ""+x_para1  ). 
-			replaceAll("§one-x_example1§", ""+x_example1 ). 
-			replaceAll("§one-showAltre§",  ""+ showAltre). 	
-			replaceAll("§one-n_extr_row§", ""+ n_extr_row1).	
-			replaceAll("§YESorNOT§"      , ""+yesOrNot).  		
-			replaceAll("§learnedClass§", learnedClass)	
-			;  
-		return newTr;	
-		
-	}  // end of TOGLInewTr_from_prototype
-	
 	//======================================================
 	let prototype_tr_m2_tts = ` 
 		<tr id="idtr_§1§_m2" style="display:none;height:1.5em;">
@@ -397,6 +316,9 @@ license MIT: you can share and modify the software, but you must include the lic
 					<button style="width:50%;" onclick="onclick_print_selected_row(this, true )">Stampa il testo e la traduzione delle righe selezionate</button>  		
 				</div>
 				fai doppio clic sulla frase per inserire la traduzione o variare quella esistente 
+				<br>
+				<button  onclick="onclick_moveOverActivate(this)">attivare la traduzione al passaggio del mouse</button> 
+				
 			</td>		
 			<td>
 				<button class="buttonWhite" onclick="onclick_tts_playSynthVoice_m1_row2(this,§1§,false,false)">

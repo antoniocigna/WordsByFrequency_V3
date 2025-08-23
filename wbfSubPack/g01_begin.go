@@ -114,6 +114,12 @@ func g1_read_all_files() {
 	g25_1read_dictRow_Orig_and_Tran_file( FOLDER_IO_lastTRAN,  FILE_last_updated_dict_rows)	
 	if sw_stop { return }	
 	
+	
+	g25_3read_dictLemmaTran_file( "", FILE_inputTranslation , false)      // file soltanto in input  
+	if sw_stop { return }
+	g25_3read_dictLemmaTran_file( FOLDER_IO_lastTRAN, FILE_last_updated_dict_words , true) 	  // file che è letto e se serve riscritto per aggiungere nuove traduzioni 
+	if sw_stop { return }	
+	
 	fmt.Println( green("read_lemma_file --> build listAllLemmaFromFile, listAllLemmaFromFile") )
 	g30_read_wordLemma_file( FOLDER_I_lemma, FILE_inputWordLemma, FILE_inputWordLemmaPlus)
 	if sw_stop { return }
@@ -121,11 +127,6 @@ func g1_read_all_files() {
 	g25_2read_ParadigmaFile( FOLDER_I_paradigma, FILE_inpParadigma ) ;		
 	if sw_stop { return }
 	
-	
-	g25_3read_dictLemmaTran_file( "", FILE_inputTranslation , false)      // file soltanto in input  
-	if sw_stop { return }
-	g25_3read_dictLemmaTran_file( FOLDER_IO_lastTRAN, FILE_last_updated_dict_words , true) 	  // file che è letto e se serve riscritto per aggiungere nuove traduzioni 
-	if sw_stop { return }	
 	
 	fmt.Println( green("build word_db") )
 	g01_build_word_db()

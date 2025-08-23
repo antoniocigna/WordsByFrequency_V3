@@ -42,7 +42,7 @@ func g04_get_word_row_list( maxNumWords int, fromWordPref string) (string, []int
 			return "", wordPrefixIndexList, wordSuffixIndexList
 	}
 	//----------------------		
-	
+	sw_oneOnly:= false;
 	if fromWord[0:1] == "-" {
 		if  fromWord[lenFrom-1:] == "-" { //     any word which contains the string in fromWord  eg.   -mili-  --> familie 
 			// this case cannot be of any use, ignore it    
@@ -50,7 +50,8 @@ func g04_get_word_row_list( maxNumWords int, fromWordPref string) (string, []int
 			
 		} else {//a suffix request, wanted all words ending with the string in fromWord.    eg.  -en --> gehen, haben, etc.   		
 			//fmt.Println("   g04  g34_getListInverseWordIndex  di " + fromWord[1:] + "<==") 
-			wordSuffixIndexList = g34_getListInverseWordIndex( fromWord[1:]         , maxNumWords) 
+			sw_oneOnly = true;
+			wordSuffixIndexList = g34_getListInverseWordIndex( fromWord[1:] , sw_oneOnly, maxNumWords) 
 			sw_suffix = true 
 		}	
 	} else {

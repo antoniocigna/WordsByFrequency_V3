@@ -54,10 +54,8 @@ func g34_lookForInverse(invTarg string, inverseSlice []inverseStruct, sw_oneOnly
 		len2 =  len(inverseSlice[z].inInverse) 
 		if len2 < lenTarg {continue }
 		if sw_oneOnly == false { len2 = lenTarg}
-		//fmt.Println("     loop1 confronta =>" + inverseSlice[z].inInverse + "<== len=", len2, " con ==>" + invTarg + "<==")
-		if inverseSlice[z].inInverse[0:len2] != invTarg { break  } 
-		fromIx = z;		
-		//fmt.Println("      1 trovato eguale  fromIx=", fromIx)
+		if inverseSlice[z].inInverse[0:lenTarg] != invTarg { break  } 
+		fromIx = z;
 	}
 	//------------------	
 	for z:=fromIx; z < len(inverseSlice); z++ {   //  vai avanti 
@@ -65,10 +63,8 @@ func g34_lookForInverse(invTarg string, inverseSlice []inverseStruct, sw_oneOnly
 		len2 =  len(inverseSlice[z].inInverse) 
 		if len2 < lenTarg {continue }
 		if sw_oneOnly == false { len2 = lenTarg}
-		//fmt.Println("     loop2 confronta =>" + inverseSlice[z].inInverse + "<== len=", len2, " con ==>" + invTarg + "<==")
-		if inverseSlice[z].inInverse[0:len2] != invTarg { break  } 
+		if inverseSlice[z].inInverse[0:lenTarg] != invTarg { break  } 
 		toIx = z;
-		//fmt.Println("      2 trovato eguale  fromIx=", fromIx, " toIx=", toIx)
 	}	
 	return fromIx, toIx	
 
@@ -122,12 +118,11 @@ func g34_load_direct_and_inverse_lemma()  {
 			}   )		
 	fmt.Println( "func ", green("loadInverseLemmaSlice") , " caricati ", len(inverseLemmaSlice) , " lemma inversi", 
 		len(directLemmaSlice), " lemma diretti"	)   
-	
-	
-	//provaInverseLemma("hen", false, 100)
-	//provaDirectLemma("welt",true,  100)
-	//provaDirectLemma("welt",false, 100)
-	
+	/**
+	provaInverseLemma("hen", false, 100)
+	provaDirectLemma("gehen",true,  100)
+	provaDirectLemma("geh"  ,false, 100)
+	**/
 	
 }  // end of loadInverseLemmaSlice
 //-------------------
@@ -218,7 +213,7 @@ func provaInverseLemma( finalLemma string, sw_oneLemma bool, maxNum int) {
 //------------
 func provaDirectLemma( finalLemma string, sw_oneLemma bool, maxNum int) {
 
-	fmt.Println( "\n\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n   ", red("prova direct Lemma"), " = ", finalLemma , "  sw_oneLemma =",  sw_oneLemma ) 
+	fmt.Println( "\n\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n     prova direct Lemma = ", finalLemma ) 
 	
 	listDirectLemmaIndex := g34_getListDirectLemmaIndex(  finalLemma, sw_oneLemma, maxNum) 	 
 	

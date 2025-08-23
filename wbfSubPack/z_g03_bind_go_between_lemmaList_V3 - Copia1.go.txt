@@ -1,7 +1,7 @@
 package wbfSubPack
 
 	import (
-		//"fmt"
+		"fmt"
 		"strings"		
 		//"strconv"
 		//"regexp"
@@ -44,16 +44,14 @@ func g03_get_lemma_row_list( maxNumLemmas int, fromLemmaPref string) string {
 		if  fromLemma[lenFrom-1:] == "-" { //     any lemma which contains the string in fromLemma  eg.   -mili-  --> familie 
 			// this case cannot be of any use, ignore it    
 			return ""			
-		} else {//a suffix request, wanted all lemmas ending with the string in fromLemma.    eg.  -en --> gehen, haben, etc. 
-			sw_oneLemma = false
+		} else {//a suffix request, wanted all lemmas ending with the string in fromLemma.    eg.  -en --> gehen, haben, etc. 				
 			lemmaSuffixIndexList = g34_getListInverseLemmaIndex( fromLemma[1:] , sw_oneLemma, maxNumLemmas) 
 		}	
 	} else {
 		if fromLemma[lenFrom-1:] == "-" {// a prefix request,  wanted all lemmas beginning with the string in fromLemma. eg.  geh-    --> geht, gehen, etc.    
 			fromLemma = fromLemma[:lenFrom-1]  
-			sw_oneLemma = false
 		} else { 
-			sw_oneLemma = true   // fromLemma contains the only lemma to look for,  it's not a prefix neither a suffix 
+			sw_oneLemma = true    // fromLemma contains the only lemma to look for,  it's not a prefix neither a suffix 
 		}
 		//lemmaPrefixIndexList = getListLemmaIndex(fromLemma, sw_oneLemma, maxNumLemmas) 
 		lemmaPrefixIndexList = g34_getListDirectLemmaIndex(fromLemma, sw_oneLemma, maxNumLemmas) 
@@ -68,44 +66,22 @@ func g03_get_lemma_row_list( maxNumLemmas int, fromLemmaPref string) string {
 
 	totNumLemmas:= len(listA)	
 	
-	
+	sw1:= false; // ( ( fromLemmaPref == "at-") || ( fromLemmaPref == "atr-") || ( fromLemmaPref == "atri-") || ( fromLemmaPref == "atriu-")  || ( fromLemmaPref == "atrium"))
+	if sw1 { fmt.Println("bind_go_passToJs_betweenLemmaList_V3 ", " num indici=", len(listA), " ", listA) }
 	var rowW string
-	/**
 	for j1, ix2:= range listA {
 		if sw1 {fmt.Println("\n", green("LEMMA lemmaSlice"),"[", ix2, "]=", lemmaSlice[ix2] ) }
 		
 		if totNumLemmas > 1 { 
-			rowW = g05_build_one_lemma_row_word_ManyLemma( ix2,  lemmaSlice[ix2], totNumLemmas)		
+			rowW = g05_build_one_lemma_row_word_ManyLemma(   lemmaSlice[ix2], totNumLemmas)		
 		} else {		
-			rowW = g05_build_one_lemma_row_word_OnlyOneLemma(ix2, lemmaSlice[ix2], totNumLemmas)
+			rowW = g05_build_one_lemma_row_word_OnlyOneLemma(lemmaSlice[ix2], totNumLemmas)
 		}
 		if sw1 {fmt.Println("loop", j1, "\n\t", strings.ReplaceAll(rowW, "\n", "\n\t") ) }
 		outS1 += rowW
 		num1++
 		if num1 >= maxNumLemmas { break }	
 	}	
-	**/
-	//fmt.Println( "\n", red("\n 0 get_lemma_row_list ") + fromLemmaPref , "  sw_oneLemma=",  sw_oneLemma, " totNumLemmas=",totNumLemmas )  
-	/**
-	for j1, ix2:= range listA {
-		fmt.Println("     listA[", j1, "] = " , " ix2=", ix2, "   lemmaSlice[ix2] =",  lemmaSlice[ix2]   )
-	}	
-	**/
-	for _, ix2:= range listA {
-		//fmt.Println("\n           ", green("LEMMA lemmaSlice"),"[", ix2, "]=", lemmaSlice[ix2] , " totNumLemmas=",totNumLemmas,  "  sw_oneLemma=",  sw_oneLemma , " j1=", j1) 
-		
-		if sw_oneLemma {
-			rowW = g05_build_one_lemma_row_word_OnlyOneLemma(ix2, lemmaSlice[ix2], totNumLemmas, sw_oneLemma)			
-		} else { 
-			rowW = g05_build_one_lemma_row_word_ManyLemma( ix2,  lemmaSlice[ix2],  totNumLemmas, sw_oneLemma)		
-		} 
-		//if sw1 {fmt.Println("loop", j1, "\n\t", strings.ReplaceAll(rowW, "\n", "\n\t") ) }
-		outS1 += rowW
-		num1++
-		if num1 >= maxNumLemmas { break }	
-	}	
-	
-	
 	return outS1
 	
 } // end of bind_go_passToJs_betweenLemmaList_V3

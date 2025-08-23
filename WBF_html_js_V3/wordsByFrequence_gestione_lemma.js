@@ -17,6 +17,7 @@ function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc=""
 	console.log("    ", "wordListStr.length=",wordListStr00.length  ," numButton=", numButton, " <-- " + goFunc + " <-- " + jsFunc) ;
 	*/
 	//console.log("js_go_showWordList_lev2    ", "wordListStr.length=",wordListStr00.length  ," numButton=", numButton, " <-- " + goFunc + " <-- " + jsFunc) ;
+	//console.log("    ", wordListStr00);
 
 	// numButton=1 default ==> from onclick most frequent word list  
 	// numButton=2         ==> from onclick BetweenWordList or prefix wordlist   
@@ -44,7 +45,7 @@ function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc=""
 	//console.log("function js_go_showWordList_lev2 2 ")
 	
     if (wordListStr == "") {
-        console.log("js_showWordList: parameter is empty");
+        //console.log("js_showWordList: parameter is empty");
 		if (numButton==1) { errorNoWord1()}
 		onclick_jumpFromToPage( myPage02,myPage03,  myPage01); 
         return;
@@ -78,7 +79,7 @@ function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc=""
 	var listKey=[]; var keyS, keyIx;
 	
 	if (numButton == 1) {	
-			console.log("function js_go_showWordList_lev2 4 button 1 ")
+			//console.log("function js_go_showWordList_lev2 4 button 1 ")
 			listKey = sortWordFreqFirst(wordToStudy_listStr) ;
 			for (var x=0; x < listKey.length; x++ ) {
 				[keyS, keyIx] = listKey[x].split(":") 
@@ -90,7 +91,7 @@ function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc=""
 		//console.log("function js_go_showWordList_lev2 5 button 5 ")
 		for (var g=0; g < wordToStudy_listStr.length; g++) {
 			var wordLineZ =	wordToStudy_listStr[g]	
-			console.log( "%c   wordToStudy g" + g + " =>" + wordLineZ, "color:green;" )
+			//console.log( "%c   wordToStudy g" + g + " =>" + wordLineZ, "color:green;" )
 			if (wordLineZ == "") return; 
 		
 			var ww0 = ((wordLineZ + ";.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.").split(";.") ).slice(0,15);
@@ -109,7 +110,7 @@ function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc=""
 	}
 	//------------------	
 	if ((numButton > 1) && (numButton < 5)) {
-		console.log("function js_go_showWordList_lev2 6 button 1>1 e <5 ")
+		//console.log("function js_go_showWordList_lev2 6 button 1>1 e <5 ")
 		listKey = sortAlpha(wordToStudy_listStr)   // cod 
 		
 		for (var x=0; x < listKey.length; x++ ) {
@@ -117,7 +118,7 @@ function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc=""
 				oneElemToStudy(keyIx)
 		} 
 	}
-	console.log("function js_go_showWordList_lev2 7 ")
+	//console.log("function js_go_showWordList_lev2 7 ")
 	//--------------------
 	
 	function oneElemToStudy(z, x0) {		
@@ -192,7 +193,7 @@ function js_go_showWordList_lev2(wordListStr00, numButton=1, jsFunc="",goFunc=""
 	
 	fun_showWordList("3") 
 	
-	console.log("function js_go_showWordList_lev2 9")
+	//console.log("function js_go_showWordList_lev2 9")
 	
 } // end of js_go_showWordList_lev2
 //--------------------------------------------------------------
@@ -311,11 +312,43 @@ function showWordsAndTranButton(wh) {
    	
 	onclick_jumpFromToPage( myPage01,myPage02, myPage03);  
 	
+	
+   cellWord_TrTH =  document.getElementById("idTableWordList_thead").children[0].children[4]; 	
+		
+	
+	cellWord_TrTD = document.getElementById("idTableWordList_tbody").children[0].children[4]; 
+
+	resize1.observe(cellWord_TrTD)
+	//resize2.observe(cellWord_TrTH)		
+			
+			//----------------
+	
+	
 } // end of showWordsAndTranButton
+//------------------------------
+let cellWord_TrTD;
+let cellWord_TrTH; 			
+function resizeTd_wordFunc(e) {
+	if (e[0].target) {
+		//console.log("e=", e[0] )
+		//cellWord_TrTH.style.width = e[0].target.clientWidth + "px";
+		cellWord_TrTH.style.width = e[0].contentRect.width + "px"; 
+		//cellWord_TrTH.style.width = e[0].contentRect.width + "px"; 
+
+		
+		//cellWord_TrTD.style.width = e[0].target.offsetWidth + "px";
+	} 
+}	
+				
+var resize1 = new ResizeObserver(resizeTd_wordFunc)
+//var resize2	= new ResizeObserver(resizeTd_wordFunc)
+			
+			//----------------
+		
 //---------------------------
 
 function nascondi_celleEgualiPrecedenti() {	
-	console.log("%cfunction  nascondi_celleEgualiPrecedenti", "color:red;")
+	//console.log("%cfunction  nascondi_celleEgualiPrecedenti", "color:red;")
 	let IX_WORD = 4; 
 	let IX_LEMMA = IX_WORD+1
 	
@@ -326,7 +359,7 @@ function nascondi_celleEgualiPrecedenti() {
 	let nRighe   = eleTab.rows.length;
 	let eleRighe = eleTab.rows;	
 
-	console.log(" numrighe=", eleTab.rows.length)
+	//console.log(" numrighe=", eleTab.rows.length)
 	
 	let preWord = ""; let preLemma=""
 	let word1 = "";   let lemma1=""
@@ -522,12 +555,7 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, f_lemma, f_
 					uLearnedYN, numButton,
 					tdLemmaList
 					) {  
-	    /**
-		if (word1=="gehen") { 
-			console.log("newTr_from_prototype( numeroTR=", numeroTR, " ", word1, " nrow=", nrow, " ix1=", ix1, " m=",m ,
-				"  n_extr_row=",   n_extr_row1," numButton=", numButton  ) 
-		}
-		**/
+	   
 		var displayNone  = "";
 		var displayNone1 = "";
 		var displayNoneL = "";
@@ -584,7 +612,8 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, f_lemma, f_
 			displayNone  = 'style="display:none;"';
 			displayNone1 = 'style="display:none;"';
 			dyNoneTD234  = 'style="display:none;"';
-		} 		
+		} 
+		if (word1 == "") {displayNone1 = 'style="display:none;"';}		
 		
 		//console.log(word1 , "  nrow=", nrow,  " displayNone=>" + displayNone, "<==")
 		newTr = newTr.

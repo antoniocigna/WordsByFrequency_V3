@@ -420,6 +420,14 @@
          width:100%; 
          border:0px solid red;
          }
+		.fixWordTdWidth2 {
+         width:1.5em; 
+         max-width:1.5em; 
+         min-width:1.5em; 		 	
+		 text-align:center; 
+         border-left:  1px solid black;
+         }
+		 
          .fixWordTdWidth3 {
          width:3.0%; 
          max-width:3.0%; 
@@ -437,17 +445,15 @@
          min-width:5.1%; 	border-left:  1px solid black;
          }
          .fixWordTdWidthN {
-         width:20%; 
-         max-width:20%; 
-         min-width:20%; 	border-left:  1px solid black;
+         border-left:  1px solid black;
          word-break: break-all;
+		 resize:horizontal;overflow:auto; /* 19 agosto2025*/
          }
          .fixWordTdWidthL {
-         width:30%; 
-         max-width:40%; 
-         min-width:40%; 	border-left:  1px solid black;
+         border-left:  1px solid black;
          word-break: break-all; 
          padding-right:1em;	
+		 resize:horizontal;overflow:auto; /* 19 agosto2025*/
          }
          .notYetLearnedButt {
          background-color: red; 
@@ -464,9 +470,11 @@
          height: 2.1em;
          resize: vertical;
          overflow: hidden;
-         }
-         .c_size_nn_line {
+         }        
+		 .c_size_nn_line {
          width:100%;
+		 resize: vertical;
+         overflow: hidden;
          }
       </style>
             <!-- anchor -- >&#9875; -->	
