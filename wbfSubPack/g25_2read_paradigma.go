@@ -45,64 +45,63 @@ func g25_2read_ParadigmaFile( path1 string, inpFile string) {
 	//var pP paraStruct
 	var pkeyL, keyL string
 	var pkeyL2, keyL2 string
-	var sumExample string
+	//var sumExample string
 	var xLem, xPara, xExa string
 	
 	sk:=0
 	//sw1:=false
+	//es1:=0
 	//--------------
 	for z1:=0; z1 < len(righe); z1++ {		
 		col := strings.Split((righe[z1]+"||||"), "|") 
-		xLem   = strings.TrimSpace( col[0] )
+		xLem   = stdCode( strings.TrimSpace(  col[0] ) )
 		if xLem == "" {continue}
+		//sw1 = (xLem == "fahren")
 		xPara    = strings.TrimSpace( col[1] ) 	
 		xExa     = strings.TrimSpace( col[2] ) 
+		//if sw1 {  fmt.Println( red("paradigma "), righe[z1], "\n\tcol=", col, "\n\txPara=", xPara, " xExa=", xExa) }
 		keyL2 = xLem + "." +  xPara
 		keyL  = xLem + "." +  xPara + "." + xExa
 		
 		if keyL == pkeyL { sk++; continue }
 		if keyL2 != pkeyL2 {
 			if pkeyL2 != "" {
-				wP.p_example = sumExample
+				//wP.p_example = sumExample
 				lemma_para_list = append(lemma_para_list , wP ) 
 				//if ((wP.p_lemma == "gehen") || (wP.p_lemma == "familie"))  {fmt.Println("carica paradigma ", wP)  } 
+				//if (wP.p_example !="") { es1++; if es1 < 10 {  fmt.Println("ESEMPIO ",  wP) } } 
 			}	
 			pkeyL2 = keyL2
-			sumExample   = ""
+			//sumExample   = ""
 			wP.p_lemma   = xLem
 			wP.p_para    = xPara 	
-			wP.p_example = "" 
+			wP.p_example = xExa 
 		}
 		//sw1 =((xLem == "gehen") || (xLem == "familie")) 
 		//if sw1 { fmt.Println("legge  paradigma ", keyL)  } 
 		pkeyL = keyL
+		/**
 		if len(sumExample) > 0 {  
 			if len(xExa) > 0 {  
 				if strings.Index(".!?", sumExample[ len(sumExample)-1:] ) < 0 {xExa = ". " + xExa } else {xExa = " " + xExa}	
 			}
 		}
 		sumExample += xExa 
+		**/
 	} // end of for_z1	
 	//-------
-	wP.p_example = sumExample 
+	//wP.p_example = sumExample 
+	//if (sumExample !="") { es1++; if es1 < 10 {  fmt.Println("ESEMPIO ",  wP) } } 
 	lemma_para_list = append(lemma_para_list , wP ) 	
 	//------------
 	fmt.Println("    scartate ", sk, " righe doppie, ", len( lemma_para_list ), " righe caricate in lemma_para_list")
 	
 	sort_lemmaPara() 
 	
+	/****
 	numFound:=0 
 	notFound:=0
-	swFound:=false	
-	
-	/**
-	//-----------------------
-	for f2, lex := range lemmaSlice {
-		if lex.leLemma == "person" {
-			fmt.Println("g25_2read_para... 1 lemma ", f2, " ==> ", lex.leLemma, " para=", lex.lePara, " ", lex)
-		}	
-	}
-	**/
+	swFound:=false		
 	//------------------------------------------------ 		
 	for z2, wP2 := range lemma_para_list {	
 		
@@ -147,16 +146,10 @@ func g25_2read_ParadigmaFile( path1 string, inpFile string) {
 			}
 		}	
 	}
-	//-----------------------
-	/**
-	for f2, lex := range lemmaSlice {
-		if lex.leLemma == "person" {
-			fmt.Println("g25_2read_para... 2 lemma ", f2, " ==> ", lex.leLemma, " para=", lex.lePara, " ", lex)
-		}	
-	}
-	**/
+	
 	//--------------
 	fmt.Println("\t\t", numFound , " lemma_para_list FOUND in lemmaSlice, ",  notFound, " not found")       
+	**/
 	
 } // end of read_ParadigmaFile
 

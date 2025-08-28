@@ -5,6 +5,7 @@ package wbfSubPack
 		"os"
 		"strings"
 		"strconv"
+		"time"
 	)
 //----------------------------------
 var sw_stop bool = false
@@ -14,7 +15,11 @@ func begin() {
 	//swProva := true
 	fmt.Println("func begin"); 
 	
-	g1_read_all_files() 
+	startTime := time.Now()
+	
+	g01_read_all_files() 
+	
+	printTimeDiff(startTime, "tempo di esecuzione di read_all_files")
 	
 	if sw_stop { endBegin("1"); return }
 	
@@ -43,6 +48,8 @@ func begin() {
 		fmt.Println("UI is ready")
 	}	
 	fmt.Println("\nEND of begin \n") 
+	
+	printTimeDiff(startTime, "tempo di esecuzione di begin")
 	fmt.Println(cyan("\nREADY"), "\n") 
 
 	
@@ -98,7 +105,7 @@ func getPgmArgs( key0, key1 , key2 , key3, key4 string) (string, string, bool, i
 	
 } // end of getPgmArgs
 //-------------------------------
-func g1_read_all_files() { 
+func g01_read_all_files() { 
 	
 	fmt.Println( "func ", green("read_all_files") )
 	
@@ -110,30 +117,51 @@ func g1_read_all_files() {
 	g31_read_languageFile(  FOLDER_INPUT, FILE_inputLanguage)
 	if sw_stop { return }
 	
+	
+	
+	//  LEGGE FILE DI TESTO
+	startTime := time.Now()
 	fmt.Println( green("read_dictRow_Orig_and_Tran_file --> build inputTextRowSlice") )
 	g25_1read_dictRow_Orig_and_Tran_file( FOLDER_IO_lastTRAN,  FILE_last_updated_dict_rows)	
 	if sw_stop { return }	
+	printTimeDiff(startTime, "tempo di esecuzione di g25_1read_dictRow_Orig_and_Tran_file")
 	
-	
+	//  LEGGE FILE TRADUZIONE LEMMA (2 file)
+	startTime = time.Now()
 	g25_3read_dictLemmaTran_file( "", FILE_inputTranslation , false)      // file soltanto in input  
 	if sw_stop { return }
+	
 	g25_3read_dictLemmaTran_file( FOLDER_IO_lastTRAN, FILE_last_updated_dict_words , true) 	  // file che è letto e se serve riscritto per aggiungere nuove traduzioni 
 	if sw_stop { return }	
 	
+	printTimeDiff(startTime, "tempo di esecuzione di g25_3read_dictLemmaTran_file")
+	
+	//  LEGGE FILE PARADIGMA LEMMA 
+	startTime = time.Now()
+	g25_2read_ParadigmaFile( FOLDER_I_paradigma, FILE_inpParadigma ) ;		
+	if sw_stop { return }
+	printTimeDiff(startTime, "tempo di esecuzione di g25_2read_ParadigmaFile")
+	
+	//  LEGGE FILE WORD_LEMMA
+	startTime = time.Now()
 	fmt.Println( green("read_lemma_file --> build listAllLemmaFromFile, listAllLemmaFromFile") )
 	g30_read_wordLemma_file( FOLDER_I_lemma, FILE_inputWordLemma, FILE_inputWordLemmaPlus)
 	if sw_stop { return }
-	
-	g25_2read_ParadigmaFile( FOLDER_I_paradigma, FILE_inpParadigma ) ;		
-	if sw_stop { return }
+	printTimeDiff(startTime, "tempo di esecuzione di g30_read_wordLemma_file")
 	
 	
+	//  BUILD WORD alpha, freq, unique 	
+	startTime = time.Now()
 	fmt.Println( green("build word_db") )
 	g01_build_word_db()
+	printTimeDiff(startTime, "tempo di esecuzione di g01_build_word_db")
+	
 	fmt.Println( red("finito build_word_db"), "\n\n\n")
 	
+	startTime = time.Now()
 	g34_load_direct_and_inverse_lemma()
-		
+	printTimeDiff(startTime, "tempo di esecuzione di g34_load_direct_and_inverse_lemma")	
+	
 	read_lastValueSets2()
 	
 } // end of read_all_files
@@ -157,4 +185,10 @@ func test_all_folder() {
 } // end of test_all_folders
 
 //----------------------------------------------
+func printTimeDiff(startTime time.Time, descr string) {
  
+	diff := time.Now().Sub(startTime).Seconds()
+	diff1:= float64(int(diff * 1000) )/1000  
+	fmt.Println( magenta( fmt.Sprint(descr, " = ", diff1 , " secondi") ) )
+}	
+//------------------------------------

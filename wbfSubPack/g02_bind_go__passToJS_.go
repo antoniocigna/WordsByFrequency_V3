@@ -100,7 +100,8 @@ func g02_bind_go_passToJs_html_is_ready( msg1 string,  js_function string) {
 	fmt.Println( green( "\n\nxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n" + 
 		"xxxxxxxxxxxxxx you can use the tool xxxxxxxxxxxxxxxxxx\n"  + 
 		"xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\n\n"  ) ) 
-		
+	
+	printTimeDiff(timeZero, "tempo di esecuzione da INIZIO MAIN a READY")	
 	//prova_js_function_treValori();
 	
 	//go_exec_js_function( js_function, msg1); 	

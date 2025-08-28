@@ -2405,7 +2405,7 @@ function js_go_rowWordList(wordListStr) {
  	
 	var divWord = "";
 	divWord += `<div style="font-size:0.6em;color: black;text-align:center;margin-top:0.5em;">					
-				clicca su una parola per ottenere la lista di tutte le frasi che la contengono							
+				clicca su una parola per ottenere paradigma, traduzione, esempi, toccala senza cliccare per avere la traduzione   							
 			</div> \n`; 
 	divWord += table_txt;
 	
@@ -2415,8 +2415,9 @@ function js_go_rowWordList(wordListStr) {
 	ele_wordset.innerHTML = divWord; 
 	
 	//console.log("\nXXXXXXXXXXXXX\nXXXXXXXXXXXX\n ele_wordset.innerHTML = " + ele_wordset.innerHTML ) 
-	
+	//console.log("ixLastEle=", ixLastEle)
 	if (ixLastEle > 0) {
+		//console.log("ULTIMO")
 		var eleF = document.getElementById("wb1_0");
 		var eleT = document.getElementById("wb2_" + ixLastEle );
 		onclick_tts_word_arrowFromIx(eleF, 0,         true, false)
@@ -2433,8 +2434,104 @@ function js_go_rowWordList(wordListStr) {
 } // end of js_go_rowWordList
 
 //------------------------------------
+ // XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+
+    function tts_3_spezzaRiga3(rowWordList) {
+
+        //console.log("%cspezzaRiga", "color:red;");
+
+        let prototype_one_lemma = `
+							<div style="text-align:left;font-size:0.8em;padding-left:1em;">
+								<span class="c_paradigma2" style="font-weight:bold;">§7alemma§</span>	
+								&nbsp;&nbsp;&nbsp;<span class="c_wordTran2" >§7atran§</span>	
+								<span class="c_example2"  >§7aesempi§</span>
+							</div> `; // end of prototype_one_lemma 
+        //--
+        let prototype_all_lemma_header = `<div style="display:none" onclick="onclick_showHideLemma(this)"> `;
+
+        let all_lemma_for_thisWord = "";
+
+
+        let endix2 = -1;
+        let maxNumRow5 = 100;
+        let listaParole = [];
+        let listaParo_tts = [];
+        let listaParo_lemma = [];
+        let listaParo_tran = [];
+        let listaParo_nFrasi = [];
+
+        let row1, k1, k2, col1;
+        let part1;
+        let Xword1;
+        let listLemS, listTranS;
+        let listLem, listTran;
+        let xWord_numFrasi;
+
+        let pezRiga, pezzo0, pezzoN, pez2;
+        let lemma, paradigma, traduz, esempi, numWords;
+        let parola1, paro_nFrasi, paro_tts;
+        let trad1;
+        let frase_showTxt = prototype_word_table_header; //  '<div><table>
+        //--------------
+
+
+
+        //-------------
+		 let last1 = 0;
+        //--------------------------------------------------
+        for (let k = 0; k < rowWordList.length; k++) {
+
+            let unaRiga = rowWordList[k];
+            //console.log("k=", k, "   ", unaRiga);
+
+            pezRiga = unaRiga.split("[");
+            if (pezRiga.length < 1) continue;
+            pezzo0 = pezRiga[0];
+            //-----------
+
+            part1 = (pezzo0 + ";;;;").split(";");
+            col1 = part1[0].split(",");
+            parola1 = col1[0].trim();
+			if (parola1 == "") continue;
+            paro_nFrasi = col1[2];
+            paro_tts = parola1;
+            //-------------------
+            //console.log("pezzo0=", pezzo0, "    pezRiga.length=", pezRiga.length);
+
+            all_lemma_for_thisWord = prototype_all_lemma_header;
+            trad1 = "";
+			let traduz1;
+            for (let p = 1; p < pezRiga.length; p++) {
+                pezzoN = pezRiga[p].replace("]", "");
+                [lemma, paradigma, traduz, esempi, numWords] = ((pezzoN + ";;;;;").split(";")).slice(0, 5);
+				traduz1 = " " + traduz+" ";
+				if (trad1.indexOf(traduz1) < 0) { trad1 += traduz1;	}				
+                if (paradigma != "") lemma = paradigma;
+				if (esempi !="") esempi = "<br>" + esempi;
+                all_lemma_for_thisWord += prototype_one_lemma.replaceAll("§7alemma§", lemma).replaceAll("§7atran§", traduz).replaceAll("§7aesempi§", esempi);
+            }
+            all_lemma_for_thisWord += "\n						</div>";
+			trad1 = trad1.trim().replaceAll("  ",", "); 
+            frase_showTxt += getWord_tr2(k, parola1, paro_tts, trad1, all_lemma_for_thisWord, paro_nFrasi, maxNumRow5) + "\n";
+			last1 = k;
+        } // end for k 	
+
+       
+
+        frase_showTxt += prototype_word_table_end; // </table></div>
+
+        //console.log("%cfine frase showword", "color:red;");
+        //console.log("last1=", last1);
+
+        return [last1, frase_showTxt];
+
+    } //  end of  spezzaRiga3()
+
+    //-------------------------------------
+  
+
 // ===================================================================
-function tts_3_spezzaRiga3( rowWordList ) {
+function OLDtts_3_spezzaRiga3( rowWordList ) {
 	
     var endix2 = -1;
 
@@ -2513,7 +2610,7 @@ function tts_3_spezzaRiga3( rowWordList ) {
 	
     return [ last1, frase_showTxt ];
 
-} //  end of  spezzaRiga3()
+} //  end of  OLDspezzaRiga3()
 
 //====================
 
@@ -3130,13 +3227,13 @@ function TOGLImouseOutWord(this1,nch) {
 } // end of mouseOutWord
 //-------------------------------
 
-function mouseOverWord2(this1) {
+function OLDmouseOverWord2(this1) {
 	if (this1.children.length > 1) { 
 		this1.children[2].style.display = "inline-block";
 	}
 }
 //---------------------
-function mouseOutWord2(this1) {
+function OLDmouseOutWord2(this1) {
 	if (this1.children.length > 1) { 
 		this1.children[2].style.display = "none";
 	}
@@ -3182,7 +3279,7 @@ function js_go_word_known(str1) {
 //-------------------------------------------------	
 		
 function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1, 
-									nField2,nChild2,isNumber2,ascending2) {
+									nField2,nChild2,isNumber2,ascending2,swTran = false) {
 	
 	if (arguments.length != 8) {
 		console.log("error: wrong number of arguments in onclick_sortWordBy_ixField( ", nField1,nChild1,isNumber1,ascending1, 
@@ -3195,33 +3292,9 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 	
 	var ele_tbody = document.getElementById("idTableWordList_tbody"); 
 	var num_tr = ele_tbody.children.length; 
-	var ele_tr, ele_td, ele_butt ; 
+	var ele_tr, ele_td, ele_butt,  ele_div0, ele_tran;  
 	var num_td =0; 
-	/**
-	var colgr = document.getElementById("Didwcol2"); 
-	var colgrX
-	for(var f=0; f < colgr.children.length; f++) {
-		colgrX = colgr.children[f]
-		if (colgrX) {
-			if (f == nField1) {
-				colgrX.style.borderLeft  = "3px solid green"; 
-				colgrX.style.borderRight = "3px solid green"; 
-			} else {
-				colgrX.style.borderLeft  = null;
-				colgrX.style.borderRight = null;
-			}
-		}
-	}  
-	**/
-		
-	//document.getElementById("idwcol2_" + nField).style.backgroundColor =  "gray"; // "#c4e8db";  //"#b2bbcb";  // "#33ffcc" ; //"#33ff99" ; //"#ccfff2";   
-	
-	//console.log("onclick_sortWordBy_ixField()1 nField=", nField1,  " isNumber=", isNumber1, "ascending1=", ascending1,
-	//			" nField2=", nField2,   " isNumber2=", isNumber2, "ascending2=", ascending2);
-	
-	
-	//console.log("onclick_sortWordBy_ixField() => ", document.getElementById("idTableWordList").innerHTML.substr(0,500));  
-
+	var trad="";
 	
 	const EMPTY  = "_none_"; 
 	
@@ -3246,19 +3319,15 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 			ele_butt = ele_butt.children[0]; 
 		} 		
 		key1 = setKey0(isNumber1, ele_butt.innerHTML, ascending1, MAXKEY);			
-		
-		/***		
-		if (nChild1==0) {
-			key1 = setKey0(isNumber1, ele_td.innerHTML, ascending1, MAXKEY); 
-		} else {
-			if (nChild1>1) {
-				ele_butt = ele_td.children[0]; 	// might be button or  span		
-			} 
-			ele_butt = ele_td.children[0]; 	// might be button or  span						
-			key1 = setKey0(isNumber1, ele_butt.innerHTML, ascending1, MAXKEY);				
-		} 		
-		console.log("  XXXX onclick_sortWordBy_ixField g=",g, " nField1=", nField1, " num_td=", num_td, " ele_td=", ele_td)
-		***/
+		if (swTran) {
+			trad="2";		
+			ele_div0 = ele_td.children[0];
+			ele_tran = ele_div0.children[1].children[3];
+			if (ele_tran) {
+				if (ele_tran.innerHTML.trim() != "" )  trad="1"; 
+			}
+			key1 = trad + "_" + key1;	
+		}		
 		//--
 		ele_td = ele_tr.children[nField2];	
 		ele_butt = ele_td 		
@@ -3266,18 +3335,7 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 			if (ele_butt.children.length == 0) break
 			ele_butt = ele_butt.children[0]; 
 		} 	
-		key2 = setKey0(isNumber2, ele_butt.innerHTML, ascending2, MAXKEY);
-		
-		/**
-		if (nChild2==0) {
-				key2 = setKey0(isNumber2, ele_td.innerHTML, ascending2, MAXKEY); 
-		} else {	
-			ele_butt = ele_td.children[0]; 	// might be button or  span							
-			key2 = setKey0(isNumber2, ele_butt.innerHTML, ascending2, MAXKEY);
-		}
-		key1 = key1.replaceAll("</b>", "     </b>")    //  in questo modo <b>ging ... auf</b> va dopo <b>ging</b>
-		key2 = key2.replaceAll("</b>", "     </b>") 
-		**/
+		key2 = setKey0(isNumber2, ele_butt.innerHTML, ascending2, MAXKEY);		
 		
 		listKey.push( key1 + "::" + key2 + "::" + (MAXKEY + g)  ); 
 		
@@ -5021,4 +5079,37 @@ function vertResizeLemma( eleTdLemma ) {
 		divToResize.classList.add(    class01 );	
 	} 	
 } // end of onclick_vertResizeLemma 
-//-----------------------------
+
+//-------------------------------------
+
+function onclick_showHideLemma(this1) {
+	let ele2 = this1.nextElementSibling;
+	if (ele2.style.display == "none") ele2.style.display = "block";
+	else ele2.style.display = "none";
+} // end of onclick_showHideLemma 
+
+//------------------------------------
+
+function getWord_tr2(z3, parola1, paro_tts, trad1, all_lemma_for_thisWord, paro_nFrasi, maxNumRow) {
+
+	var wordTR = prototype_word_tr_tts.replaceAll("§1§", z3).replaceAll("§4txt§", parola1).replaceAll("§4maxNumRow§", "" + maxNumRow).
+	replaceAll("§ttsWtxt§", paro_tts).replaceAll("§8numfrasi§", paro_nFrasi).replaceAll("§6tran§", trad1).
+	replaceAll("§6alllemmaWord§", all_lemma_for_thisWord);
+	return wordTR;
+
+} // end of getWord_tr 
+
+//-----------------------------------
+
+function mouseOverWord3(this1) {
+    if (this1.children.length > 1) {
+        this1.children[1].style.display = "inline-block";
+    }
+}
+//---------------------
+function mouseOutWord3(this1) {
+    if (this1.children.length > 1) {
+        this1.children[1].style.display = "none";
+    }
+}
+//-------------------------------

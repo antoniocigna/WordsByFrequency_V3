@@ -108,7 +108,7 @@ func g05_build_one_lemma_row_word_ManyLemma( ixLemS int, myLem1 lemmaStruct, tot
 			xWordAlpha = uniqueWordByAlpha[ixW] 
 	} else {
 			xWordAlpha = zeroW
-			//xWordAlpha.uWordSeq = wPair.lWordSeq
+			//xWordAlpha.uWordSeq = wPair.lWord2
 			//xWordAlpha.uWord2   = wPair.lWord2
 			xWordAlpha.uIxLemmaL= append(xWordAlpha.uIxLemmaL, myLem1.leFromIxLW) 
 			xWordAlpha.uLemmaL  = append(xWordAlpha.uLemmaL,   myLem1.leLemma   )  
@@ -201,7 +201,7 @@ func g05_build_one_lemma_row_word_ManyLemma( ixLemS int, myLem1 lemmaStruct, tot
 		leNumPara   int	
 	   } 		
 	type wordLemmaPairStruct struct {
-		lWordSeq string 
+		lWord2 string 
 		lWord2   string 
 		lLemma   string
 		lIxLemma  int
@@ -263,7 +263,7 @@ func g05_build_one_lemma_row_word_OnlyOneLemma(ix2 int, myLem1 lemmaStruct, totN
 			//fmt.Println("   ", uniqueWordByAlpha[ixW] ) 
 		} else {
 			xWordAlpha = zeroW
-			xWordAlpha.uWordSeq = wPair.lWordSeq
+			xWordAlpha.uWordSeq = wPair.lWord2
 			xWordAlpha.uWord2   = wPair.lWord2
 			xWordAlpha.uIxLemmaL= append(xWordAlpha.uIxLemmaL, wPair.lIxLemma ) 
 			xWordAlpha.uLemmaL  = append(xWordAlpha.uLemmaL,   wPair.lLemma   )  

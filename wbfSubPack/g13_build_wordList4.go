@@ -16,12 +16,6 @@ package wbfSubPack
 	
 func g13_addLemmaTranParadigmaToUniqueWord( wF wordUnAlphaStruct, lis_ixLemma []int)  {
 	
-		//var wP lemmaTranStruct  
-			
-		//lemma_word_ix = make([]lemmaWordStruct, 0,  len(uniqueWordByAlpha)  )  
-		
-		//var LW lemmaWordStruct		
-		
 		nele := len( lis_ixLemma )
 			
 		lis_lemmaName := make( [] string, 0, nele )		
@@ -41,7 +35,7 @@ func g13_addLemmaTranParadigmaToUniqueWord( wF wordUnAlphaStruct, lis_ixLemma []
 			lemmaSlice[ixLemma2].leUnWord_al_IxList = append( lemmaSlice[ixLemma2].leUnWord_al_IxList, wF.uIxUnW_al)
 			//-------------
 			for g:=lem1Slice.leFromIxLW; g<= lem1Slice.leToIxLW;g++ {					
-				if wordLemmaPair_lemmaWordSeq[g].lWordSeq ==  wF.uWordSeq {
+				if wordLemmaPair_lemmaWordSeq[g].lWord2 ==  wF.uWord2 {
 					wordLemmaPair_lemmaWordSeq[g].lIxUnWord_al = wF.uIxUnW_al
 					break
 				}

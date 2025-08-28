@@ -24,9 +24,8 @@ func g25_3read_dictLemmaTran_file(path1 string, inpFile string, swUp bool) {
 		lineCol := strings.Split( (lineD[z]+"|||"), "|" ) 
 		
 		lastNumDict ++;
-		cod1 = strings.TrimSpace( lineCol[0] )
-		ele1.dL_lemmaSeq = seqCode(cod1) 
-		ele1.dL_lemma2   = cod1 
+		cod1 =  stdCode( strings.TrimSpace( lineCol[0] ) )
+		ele1.dL_lemma    = cod1 
 		ele1.dL_numDict  = lastNumDict 
 		ele1.dL_tran     = strings.TrimSpace( lineCol[1] ) 
 		
@@ -55,8 +54,8 @@ func sort_lemmaTranUP() {
 	
 	if len(dictLemmaTranUP) < 1 { return }	
 	sort.Slice(dictLemmaTranUP, func(i, j int) bool {
-			if (dictLemmaTranUP[i].dL_lemmaSeq != dictLemmaTranUP[j].dL_lemmaSeq) { 
-				return dictLemmaTranUP[i].dL_lemmaSeq < dictLemmaTranUP[j].dL_lemmaSeq 
+			if (dictLemmaTranUP[i].dL_lemma != dictLemmaTranUP[j].dL_lemma) { 
+				return dictLemmaTranUP[i].dL_lemma < dictLemmaTranUP[j].dL_lemma 
 			} else {
 				return dictLemmaTranUP[i].dL_numDict < dictLemmaTranUP[j].dL_numDict				
 			}
@@ -70,15 +69,20 @@ func sort_lemmaTran2() {
 	if len(dictLemmaTran) < 1 { return }
 	
 	sort.Slice(dictLemmaTran, func(i, j int) bool {
-			if (dictLemmaTran[i].dL_lemmaSeq != dictLemmaTran[j].dL_lemmaSeq) { 
-				return dictLemmaTran[i].dL_lemmaSeq < dictLemmaTran[j].dL_lemmaSeq 
+			if (dictLemmaTran[i].dL_lemma != dictLemmaTran[j].dL_lemma) { 
+				return dictLemmaTran[i].dL_lemma < dictLemmaTran[j].dL_lemma 
 			} else {
 				return dictLemmaTran[i].dL_numDict < dictLemmaTran[j].dL_numDict				
 			}
 		} )		
 	//------------	
+	/**
 	var pre lemmaTranStruct
 	pre = dictLemmaTran[0]
+	
+	tempTran:= make([]lemmaTranStruct, len(dictLemmaTran), len(dictLemmaTran) )
+	copy(tempTran, dictLemmaTran)	
+	
 	//nelle doppie mette codice X'ff'  valore massio di un byte
 	for g2:=1; g2 < len(dictLemmaTran); g2++ {
 		if (dictLemmaTran[g2].dL_lemmaSeq == pre.dL_lemmaSeq) {
@@ -116,6 +120,8 @@ func sort_lemmaTran2() {
 	if numLin > 0 {
 		dictLemmaTran = dictLemmaTran[firstIx:]
 	}
+	***/
+	
 	
 	
 } // end of sort_lemmaTran2() 

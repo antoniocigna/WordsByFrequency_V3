@@ -15,15 +15,11 @@ func rewrite_word_lemma_dictionary() {
 	
 	//----------------------------------------------------
 	sort.Slice(newWordLemmaPair, func(i, j int) bool {
-			if (newWordLemmaPair[i].lWordSeq != newWordLemmaPair[j].lWordSeq) {
-				return newWordLemmaPair[i].lWordSeq < newWordLemmaPair[j].lWordSeq
+		if (newWordLemmaPair[i].lWord2 != newWordLemmaPair[j].lWord2) {
+				return newWordLemmaPair[i].lWord2 < newWordLemmaPair[j].lWord2 
 			} else {
-				if (newWordLemmaPair[i].lWord2 != newWordLemmaPair[j].lWord2) {
-					return newWordLemmaPair[i].lWord2 < newWordLemmaPair[j].lWord2 
-				} else {
-					return newWordLemmaPair[i].lLemma < newWordLemmaPair[j].lLemma
-				}
-			}
+				return newWordLemmaPair[i].lLemma < newWordLemmaPair[j].lLemma
+			}			
 		} )		 	
 	//------------			
 	outFile := FOLDER_OUTPUT +  string(os.PathSeparator) + FILE_outWordLemmaDict ;		
@@ -61,12 +57,12 @@ func g35_rewriteUP_LemmaTranDict_file() {
 	for z:=0; z < len(dictLemmaTranUP); z++ {
 		//fmt.Println( "dictLemmaTranUP[",z,"]=", dictLemmaTranUP[z])
 		
-		keyLemma = strings.TrimSpace( dictLemmaTranUP[z].dL_lemma2 )
+		keyLemma = strings.TrimSpace( dictLemmaTranUP[z].dL_lemma )
 		
 		if len(keyLemma) < 1 {continue}
 		if keyLemma[:1] < "a" { continue} 	
 		
-		key = keyLemma + "|" + dictLemmaTranUP[z].dL_tran  + "|" + strconv.Itoa(dictLemmaTranUP[z].dL_numDict)  //  dictLemmaTranUP[z].dL_lemma2 + "|"  + dictLemmaTranUP[z].dL_tran  			
+		key = keyLemma + "|" + dictLemmaTranUP[z].dL_tran  + "|" + strconv.Itoa(dictLemmaTranUP[z].dL_numDict)  //  dictLemmaTranUP[z].dL_lemma + "|"  + dictLemmaTranUP[z].dL_tran  			
 		if pkeyLemma != keyLemma { 
 		   if pkey != "" { 
 				lines = append(lines, pkey ) 
@@ -106,13 +102,13 @@ func g35_bind_go_rewrite_allTran() {
 		
 	//------------------
 	for z:=0; z < len(dictLemmaTran); z++ {
-		keyLemma = strings.TrimSpace(dictLemmaTran[z].dL_lemma2) 
+		keyLemma = strings.TrimSpace(dictLemmaTran[z].dL_lemma) 
 		if len(keyLemma) < 1 {continue}
 		if keyLemma[:1] < "a" { continue} 	
 			
 		key00 = keyLemma + "|" + dictLemmaTran[z].dL_tran 
 		
-		key = key00 + "|" + strconv.Itoa(dictLemmaTran[z].dL_numDict)  //  dictLemmaTranUP[z].dL_lemma2 + "|"  + dictLemmaTranUP[z].dL_tran  			
+		key = key00 + "|" + strconv.Itoa(dictLemmaTran[z].dL_numDict)  //  dictLemmaTranUP[z].dL_lemma + "|"  + dictLemmaTranUP[z].dL_tran  			
 		if pkeyLemma != keyLemma { 
 		   if pkey != "" { 
 				lines = append(lines, pkey00) 

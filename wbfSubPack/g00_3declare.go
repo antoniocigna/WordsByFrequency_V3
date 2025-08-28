@@ -96,7 +96,8 @@ var msgLevelStat = ""
 var sw_PRINT_TIME bool = false;                 // in caso di durata abnorme, usa true per vedere dove impiega più tempo
 var all_words      = make([]string,0, 0) 
 var wordSliceAlpha = make([]wordStruct, 0, 0)  
-var wordSliceAlphaToApp = make([]wordStruct, 0, 0)   
+//var wordSliceAlphaToApp = make([]wordStruct, 0, 0)   
+var wordAlphaPlusPref   = make([]wordStruct, 0, 0)   
 //var wordSliceFreq  = make([]wordStruct, 0, 0)  
 //var wordLemmaPairTMP = make( []wordLemmaPairStruct, 0, 1000)
 

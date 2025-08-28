@@ -6,11 +6,14 @@ package wbfSubPack
 		"os/signal"
 		"strings"	
 		"runtime"	
+		"time"
 	)
+	
+var timeZero  = time.Now()
 
 //------------------------------------------------------
 func MyMain() {
-
+    timeZero = time.Now()
 	fmt.Println("\n======================\n         My Main()  INIZIO di mainPack \n===============================\n")
 	fmt.Println(  red("WordsByFrequence - wbfMain") )
 	

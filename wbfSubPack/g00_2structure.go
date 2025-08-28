@@ -12,8 +12,8 @@ type separPrefStruct struct {
 type lemmaStruct struct {
 	leLemma    string    
 	leNumWords int 
-	leFromIxLW  int 
-	leToIxLW    int  
+	leFromIxLW  int             // limite inferiore range indici a wordLemmaPair (in seq. di lemma)   wordLemmaPair_lemmaWordSeq[] 
+	leToIxLW    int             // limite superiore range indici a wordLemmaPair (in seq. di lemma)   wordLemmaPair_lemmaWordSeq[]   
 	leUnWord_al_IxList []int    // indice delle parole unique che puntano a questo lemma        
 	leTran      string 
 	lePara      string  
@@ -23,25 +23,13 @@ type lemmaStruct struct {
 //-------------------------------
 
 type wordLemmaPairStruct struct {
-	lWordSeq 	 string 
+	//lWordSeq 	 string 
 	lWord2   	 string 
 	lLemma   	 string
 	lIxLemma  	 int
 	lIxUnWord_al int
 } 
 //---
-
-//---------------
-type lemmaWordStruct struct {
-	lw_lemmaSeq string 	
-	lw_lemma2   string 	
-	lw_prefix   string
-	lw_word     string 
-	lw_ixLemma    int
-	lw_ixWordUnAl int
-	lw_ixWordUnFr int
-	lw_origLemma string
-}
 
 type rowStruct struct {
 	rIdRow       string
@@ -140,8 +128,8 @@ type statStruct struct {
 //--------------------------
 var lastNumDict = 0;   
 type lemmaTranStruct struct {
-	dL_lemmaSeq   string 
-	dL_lemma2     string 
+	//dL_lemmaSeq   string 
+	dL_lemma      string 
 	dL_numDict    int	
 	dL_tran       string    
 } 

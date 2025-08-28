@@ -106,14 +106,14 @@ func lookForAllLemmas2(  wordToFindCod string, lastIx int) []int {
 	fromIx:= fromIxX
 	
 	for k:= fromIxX; k >= 0; k-- {
-		if wordLemmaPair[k].lWordSeq < wordToFindCod { break }
+		if wordLemmaPair[k].lWord2 < wordToFindCod { break }
 		fromIx = k
 	}
 	for k:= fromIx; k < len(wordLemmaPair); k++ {
-		if wordLemmaPair[k].lWordSeq == wordToFindCod {
+		if wordLemmaPair[k].lWord2 == wordToFindCod {
 			ixFoundList = append( ixFoundList, k) ; //    wordLemmaPair[k].lLemma )	
 		} else {
-			if wordLemmaPair[k].lWordSeq > wordToFindCod { break }
+			if wordLemmaPair[k].lWord2 > wordToFindCod { break }
 		}
 	} 
 			
@@ -196,24 +196,24 @@ func lookForParadigma(lemmaToFind string, lastIx int) (int, int) {
 //-----------------------------------------
 
 func lookForAllTran ( lemma30 string , lastIx int) int {
-	lemma3Cod:= seqCode(lemma30)	
-	fromIxX, toIxX := lookForTranslation( lemma3Cod , lastIx)
+	
+	fromIxX, toIxX := lookForTranslation( lemma30 , lastIx)
 	if toIxX < 0 { return -1 }
 	
 	
 	z:=-1
 	fromIx:= fromIxX
 	for k:= fromIxX; k >= 0; k-- {
-		if dictLemmaTran[k].dL_lemmaSeq == lemma3Cod {
+		if dictLemmaTran[k].dL_lemma == lemma30 {
 			z=k
 			break	
 		}
-		if dictLemmaTran[k].dL_lemmaSeq < lemma3Cod { break }
+		if dictLemmaTran[k].dL_lemma < lemma30 { break }
 		fromIx = k
 	}
 	if z < 0 {
 		for k:= fromIx; k < len( dictLemmaTran); k++ {
-			if dictLemmaTran[k].dL_lemmaSeq == lemma3Cod {
+			if dictLemmaTran[k].dL_lemma == lemma30 {
 				z=k
 				break
 			}
@@ -236,12 +236,12 @@ func lookForTranslation(lemmaToFindCod string, lastIx int) (int, int) {
 	high  := len(dictLemmaTran) - 1	
 	maxIx := high; 
 	if lastIx >=0 {
-		if dictLemmaTran[lastIx].dL_lemmaSeq < lemmaToFindCod {  low = lastIx }
+		if dictLemmaTran[lastIx].dL_lemma < lemmaToFindCod {  low = lastIx }
 	}
 	//----
 	for low <= high{
 		median := (low + high) / 2
-		if dictLemmaTran[median].dL_lemmaSeq < lemmaToFindCod {  
+		if dictLemmaTran[median].dL_lemma < lemmaToFindCod {  
 			low = median + 1
 		}else{
 			high = median - 1
@@ -269,12 +269,12 @@ func lookForWordLemmaPair(wordToFindCod string, lastIx int) (int, int) {
 	if high < 1 { return -1, -1 } 
 	
 	if lastIx >=0 {
-		if wordLemmaPair[lastIx].lWordSeq < wordToFindCod {  low = lastIx }
+		if wordLemmaPair[lastIx].lWord2 < wordToFindCod {  low = lastIx }
 	}
 	//----
 	for low <= high{
 		median := (low + high) / 2
-		if wordLemmaPair[median].lWordSeq < wordToFindCod {  
+		if wordLemmaPair[median].lWord2 < wordToFindCod {  
 			low = median + 1
 		}else{
 			high = median - 1
@@ -390,41 +390,6 @@ func testGenericWord(pref string ) {
 	return 
 }
 //---------------------
-
-
-//------------------------------------------------
-
-func lookForLemmaWord(lemmaCode string, lastIx int) (int, int) {
-	
-	// find 2 indices of the 2 words nearest to the word to find 
-	
-	low   := 0
-	high  := len(lemma_word_ix) - 1	
-	maxIx := high; 
-	
-	if lastIx >=0 {
-		if lemma_word_ix[lastIx].lw_lemmaSeq < lemmaCode {  low = lastIx }
-	}
-	
-	//----
-	for low <= high{
-		median := (low + high) / 2
-		if lemma_word_ix[median].lw_lemmaSeq < lemmaCode {  
-			low = median + 1
-		}else{
-			high = median - 1
-		}
-	} 
-	//---
-	fromIx:= low; toIx := high; 
-	if fromIx > toIx { fromIx = high; toIx = low;}
-	if fromIx < 0 { fromIx=0} 
-	if toIx  > maxIx { toIx = maxIx}
-	return fromIx, toIx	
-
-} // end of LookForLemmaWord
-
-//-----------------------------------------
 
 func binarySearch_string(myStrList []string, value string) int {
 	// SEARCH STRING ARRAY RETURN INDEX OF -1  

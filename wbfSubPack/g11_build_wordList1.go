@@ -173,7 +173,8 @@ func g11_buildWordList() {
 	//----	
 	fmt.Println("sort wordSliceAlpha  in ordine .wWordSeq, .wWord2, .wNfile") 
 		
-	//----	
+	//----
+	/**
 	sort.Slice(wordSliceAlpha, func(i, j int) bool {
 		if wordSliceAlpha[i].wWordSeq != wordSliceAlpha[j].wWordSeq {
 			return wordSliceAlpha[i].wWordSeq < wordSliceAlpha[j].wWordSeq            // word  ascending order (eg.   a before b ) 
@@ -185,6 +186,7 @@ func g11_buildWordList() {
 			}
 		}
 	})
+	***/
 	//--------------------------
 	/**
 	for z,wA := range wordSliceAlpha {
@@ -193,7 +195,15 @@ func g11_buildWordList() {
 	}
 	**/
 	//------------------------------		
+	sort.Slice(wordSliceAlpha, func(i, j int) bool {
+		if wordSliceAlpha[i].wWord2 != wordSliceAlpha[j].wWord2 {
+			return wordSliceAlpha[i].wWord2 < wordSliceAlpha[j].wWord2  
+		} else {
+			return wordSliceAlpha[i].wNfile < wordSliceAlpha[j].wNfile          // nFile ascending order (eg.   0 before 1 ) 
+		}
+	})
 	
+	//-----------
 	g12_add_totRow_and_indexLemmaPair()
 	
 	
@@ -235,6 +245,7 @@ func g11_buildWordList() {
 		}	  
 	}	
 	numberOfUniqueWords = len(uniqueWordByFreq)
+	fmt.Println( "numero di parole uniqueWord = ", numberOfUniqueWords)
 	//------------------------------------
 	
 	loadInverseWordSlice()
