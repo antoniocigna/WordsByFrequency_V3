@@ -29,7 +29,6 @@ var separWord = "["     +
 			"°"        + 
 			"¡"        + 
 			"\\"       + 
-			"_"        +
 			"\\+"      +
 			"\\*"      +
 			"()<>"     + 
@@ -40,6 +39,7 @@ var separWord = "["     +
 			"\\/"      +  
 			wSep       + 
 			"]" ; 	
+	//                      	"_"        +	// _ eliminato per permettere parole composte e _lemma_not_found 
 //-------------------------------------
 var fseq = "z§" ; 
 var lenFseq = len(fseq) 

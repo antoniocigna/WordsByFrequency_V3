@@ -15,7 +15,7 @@ license MIT: you can share and modify the software, but you must include the lic
 		<table id="1idTableWordList"   style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n				
 			<thead   id="idTableWordList_thead" >
 				<tr class="tabWhead_r1">  
-					<th class="fixWordTdWidth5" style="text-align:center;">
+					<th class="fixWordTdWidth4" style="text-align:center;">
 						<span style="display:none;">num.</span>
 						<span style="display:none;">
 							<span>word</span>    
@@ -32,7 +32,7 @@ license MIT: you can share and modify the software, but you must include the lic
 						<div  class="c_verticalText">frequenza nelle<br> righe scelte</div>
 					</th>					
 					
-					<th class="fixWordTdWidth5" rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;">
+					<th class="fixWordTdWidth5" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;">
 						<div class="c_verticalText">do you know it?</div>
 					</th>
 					
@@ -76,7 +76,7 @@ license MIT: you can share and modify the software, but you must include the lic
 				</tr>   
 				
 				<tr class="tabWhead_r2">   	
-					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
+					<th class="fixWordTdWidth4" style="text-align:center;"></th>  
 									
 					<!--    2 th  rowspanned 3-->		
 					<!--    2 th  rowspanned 3-->		
@@ -91,7 +91,7 @@ license MIT: you can share and modify the software, but you must include the lic
 				</tr>  
 				
 				<tr class="tabWhead_r3">   
-					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
+					<th class="fixWordTdWidth4" style="text-align:center;"></th>  
 					<!--    2 th  rowspanned 3-->			
 					<th style="text-align:center;resize:none;" class="fixWordTdWidthN borderVert_L">	
 						<div id="id_buttLearnDiv"  style="display:none;border:5px solid red; width:100%;">
@@ -119,7 +119,7 @@ license MIT: you can share and modify the software, but you must include the lic
 				
 				<tr class="tabWhead_r4">   
 					<!--                     onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1, nChild2,ndeep2,isNumber2,ascending2)  -->
-					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
+					<th class="fixWordTdWidth4" style="text-align:center;"></th>  
 					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(1,0,true,'d', 5,1,false,'a')">sort</button></th> 					
 					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(2,0,true,'d', 1,0,true, 'd')">sort</button></th> 					
 					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(3,1,false,'a', 2,0,true,'d')">sort</button></th>  	
@@ -128,7 +128,8 @@ license MIT: you can share and modify the software, but you must include the lic
 							<button onclick="onclick_sortWordBy_ixField(4,1,false,'a', 6,1,false,'a')">sort</button></th>
 						</div>
 					</th>						
-					<th></th>
+					<th class="fixWordTdWidth2" style="text-align:center;vertical-align:middle; font-size:0.8em;">
+					</th>
 					<th style="text-align:center;resize:none;" class="fixWordTdWidthL">	
 						<div class="hpad top left1">
 							<button onclick="onclick_sortWordBy_ixField(6,1,false,'a', 4,1,false,'a',true)">sort</button>
@@ -179,181 +180,7 @@ license MIT: you can share and modify the software, but you must include the lic
 			<tbody id="idTableWordList_tbody">   \n 
 		 ` ; // end of prototype_tableWordList_Header ; 
 
-//------------------------------------------------------------
-	
 
-
-//------------------------------------------	
-	
-	let OLDprototype_tableWordList_Header = `  
-	
-		<div style="width:100%;border:0px solid black;" class="divCont_table1_header"> 	 	
-		<table id="1idTableWordList"   style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n				
-			<thead   id="idTableWordList_thead" >
-				<tr class="tabWhead_r1">  
-					<th class="fixWordTdWidth5" style="text-align:center;">
-						<span style="display:none;">num.</span>
-						<span style="display:none;">
-							<span>word</span>    
-							<span>ixW2StudyLs</span>
-							<span>ix1</span>
-							<span>ixLemma</span>	
-						</span>						
-					</th>  				
-					<th class="fixWordTdWidth5" rowspan="3" style="text-align:center; vertical-align:middle; font-size:0.8em;" >
-						<div  class="c_verticalText">frequenza in<br> tutte le righe</div>
-					</th>
-					
-					<th class="fixWordTdWidth5" rowspan="3" style="text-align:center;vertical-align:middle;  font-size:0.8em;" >
-						<div  class="c_verticalText">frequenza nelle<br> righe scelte</div>
-					</th>					
-					
-					<th class="fixWordTdWidth5" rowspan="3" style="text-align:center;vertical-align:middle; width:1em;  font-size:0.8em;">
-						<div class="c_verticalText">do you know it?</div>
-					</th>
-					
-					<th style="text-align:center;resize:none;" class="fixWordTdWidthN">	
-						
-						<div class="hpad top left1">
-							parola 
-						</div>
-					</th>	
-					<th class="fixWordTdWidth2" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;">
-						<div class="c_verticalText">cambia traduzione</div>
-					</th>
-					<th style="text-align:center;resize:none;" class="fixWordTdWidthL">	
-						<div class="hpad top left1">	
-							lemma paradigma 	
-							<div style="width:100%;font-size:0.7em;font-style: italic;">	
-									<br>
-									Sposta il mouse sul <span style="color:blue;">lemma</span> 
-									per leggere la <span style="color:green;">traduzione</span> 	
-							</div>							
-						</div>
-					</th>	
-					<th class="fixWordTdWidth3" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
-						<div  class="c_verticalText">Play Voce Preferita</div>
-					</th>
-					<th class="fixWordTdWidth3" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
-						<div  class="c_verticalText">Play a new voice</div>
-					</th>
-					<th class="fixWordTdWidth3" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
-						<div  class="c_verticalText">Spelling della parola</div>
-					</th>	
-					<th class="fixWordTdWidth4" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
-						<div  class="c_verticalText">lista le righe con <br>questa parola</div>
-					</th>
-					<th class="fixWordTdWidth4" rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
-						<div  class="c_verticalText">lista le righe con <br>questo lemma</div>
-					</th>
-					<th class="fixWordTdWidth4"  rowspan="3" style="text-align:center;vertical-align:middle; font-size:0.8em;" >
-						<div  class="c_verticalText">lista le parole con<br>questo lemma</div>
-					</th>					
-				</tr>   
-				
-				<tr class="tabWhead_r2">   	
-					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
-									
-					<!--    2 th  rowspanned 3-->		
-					<!--    2 th  rowspanned 3-->		
-					<th style="text-align:center;resize:none;" class="fixWordTdWidthN"></th>
-					<!--    1 th  rowspanned 3--> 	
-					<th style="text-align:center;resize:none;" class="fixWordTdWidthL">
-					
-					
-					</th>	  	
-					<!--    3 th  rowspanned 3-->		
-					<!--    3 th  rowspanned 3-->					
-				</tr>  
-				
-				<tr class="tabWhead_r3">   
-					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
-					<!--    2 th  rowspanned 3-->			
-					<th style="text-align:center;resize:none;" class="fixWordTdWidthN borderVert_L">	
-						<div id="id_buttLearnDiv"  style="display:none;border:5px solid red; width:100%;">
-							<button id="id_buttScriviLearn" onclick="onclick_write_words_to_learn()"  style="font-weight:bold;">Aggiorna la lista delle parole da imparare</button>
-							<br><span style="font-size:0.7em;font-weight:normal;">&nbsp;(<span id="id_buttLearnNumW"></span>&nbsp;variaz.) </span>
-						</div>				
-					</th>	
-					<!--  1 th rowspanned 3 -->
-					<th style="text-align:center;resize:none;" class="fixWordTdWidthL borderVert_L borderVert_R">
-						<div style="text-align:center;">
-								<span style="display:none;">y</span>	
-								<button onclick="onclick_hideShowWordTran(this)"    >show/hide translation</button>
-								<button onclick="onclick_vertResizeLemma(this)"     >mostra tutte le righe</button>
-								<button onclick="onclick_listNoParadigmaLemma(this)">scrivi lemma senza paradigma</button>
-								<button onclick="onclick_listNoTranLemma(this,true)"     >scrivi lemma senza traduzione</button>
-								<button onclick="onclick_listNoTranLemma(this,false)"    >scrivi tutti i lemma</button>
-								<button onclick="onclick_listWords(this)"   >scrivi tutte le parole con lemma e traduzione</button>
-								<button onclick="onclick_reWriteAllTran()"          >riscrivi tutte le traduzioni</button>
-							</div>
-					</th>	  	
-					<!--    3 th  rowspanned 3-->
-					<!--    3 th  rowspanned 3-->	
-				</tr>  
-				
-				
-				<tr class="tabWhead_r4">   
-					<!--                     onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1, nChild2,ndeep2,isNumber2,ascending2)  -->
-					<th class="fixWordTdWidth5" style="text-align:center;"></th>  
-					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(1,0,true,'d', 5,1,false,'a')">sort</button></th> 					
-					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(2,0,true,'d', 1,0,true, 'd')">sort</button></th> 					
-					<th class="fixWordTdWidth5" style="text-align:center;"><button onclick="onclick_sortWordBy_ixField(3,1,false,'a', 2,0,true,'d')">sort</button></th>  	
-					<th class="fixWordTdWidthN" style="text-align:center;resize:none;" >	
-						<div class="hpad top left1">
-							<button onclick="onclick_sortWordBy_ixField(4,1,false,'a', 6,1,false,'a')">sort</button></th>
-						</div>
-					</th>						
-					<th></th>
-					<th style="text-align:center;resize:none;" class="fixWordTdWidthL">	
-						<div class="hpad top left1">
-							<button onclick="onclick_sortWordBy_ixField(6,1,false,'a', 4,1,false,'a',true)">sort</button>
-							<span style="margin: 6em 0;visibility:hidden;">y</span>
-							<!--
-							<br>
-							<button onclick="onclick_hideShowWordTran(this)"    >show/hide translation</button>
-							<button onclick="onclick_vertResizeLemma(this)"     >mostra tutte le righe</button>
-							<button onclick="onclick_listNoParadigmaLemma(this)">scrivi lemma senza paradigma</button>
-							<button onclick="onclick_listNoTranLemma(this)"     >scrivi lemma senza traduzione</button>
-							<button onclick="onclick_listAllLemma(this)"        >scrivi tutti i lemma</button>
-							<button onclick="onclick_reWriteAllTran()"          >riscrivi tutte le traduzioni</button>
-							-->
-						</div>
-					</th>
-					
-					<th class="fixWordTdWidth3" style="text-align:center;" ></th>					
-					<th class="fixWordTdWidth3" style="text-align:center;" ></td>     
-					<th class="fixWordTdWidth3" style="text-align:center;" ></th>						
-					<th class="fixWordTdWidth4" style="text-align:center;font-size:0.8em;">
-						<label>max<br> 
-							<input type="number"  min="1" value="100" id="idTabWRoW1" 
-								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
-						</label>					
-					</th>
-					<th class="fixWordTdWidth4" style="text-align:center;font-size:0.8em;">
-						<label>max<br> 
-							<input type="number"  min="1" value="100" id="idTabWRoL2"
-								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
-						</label>					
-					</th>
-					<th class="fixWordTdWidth4" style="text-align:center;font-size:0.8em;">
-						<label>max<br> 
-							<input type="number"  min="1" value="100" id="idTabWRLL3"
-								style="text-align:right; width:4em;background-color:white;font-weight:bold;">
-						</label>					
-					</th>
-				</tr>
-			
-				<tr>
-					<th  style="background-color:black;" colspan="13"></th>
-				</tr>
-			</thead>\n	
-	</table>
-</div>	
-<div style="width:100%;border:0px solid black;" class="divCont_table1_list"> 	
-	<table           style="border-collapse: collapse; table-layout: auto; width:100%;"> 	\n	 					
-			<tbody id="idTableWordList_tbody">   \n 
-		 ` ; // OLDend of prototype_tableWordList_Header ; 
 
 //------------------------------------------------------------
 	
@@ -371,7 +198,7 @@ license MIT: you can share and modify the software, but you must include the lic
 	
 	let prototype_oneTR_lemma = `\n  
 		<tr> 
-			<td class="fixWordTdWidth5" style="text-align:center;font-size:0.8em;font-weight:100;">
+			<td class="fixWordTdWidth4" style="text-align:center;font-size:0.8em;font-weight:100;">
 					<span onmouseover="mouseOverWord(this)" onmouseout="mouseOutWord(this)"  >§one-numTR§</span>					
 					<span style="display:none;">
 						<span>§one-word1§</span>    
@@ -396,7 +223,7 @@ license MIT: you can share and modify the software, but you must include the lic
 					</div>	
 				</div>	
 			</td>	
-			<td class="fixWordTdWidth2" style="width:1em;  font-size:0.8em;">
+			<td class="fixWordTdWidth2" font-size:0.8em;">
 					<button onclick="onclick_changeTraduzione(this,\'§one-ix1§\')">.</button>
 			</td>
 			<td style="text-align:center;"  class="fixWordTdWidthL borderVert_L borderVert_R">
@@ -488,11 +315,7 @@ license MIT: you can share and modify the software, but you must include the lic
 				<div>
 					<button style="width:50%;" onclick="onclick_print_selected_row(this, false)">Stampa il testo delle righe selezionate </button> 
 					<button style="width:50%;" onclick="onclick_print_selected_row(this, true )">Stampa il testo e la traduzione delle righe selezionate</button>  		
-				</div>
-				fai doppio clic sulla frase per inserire la traduzione o variare quella esistente 
-				<br>
-				<button  onclick="onclick_moveOverActivate(this)">attivare la traduzione al passaggio del mouse</button> 
-				
+				</div>			
 			</td>		
 			<td>
 				<button class="buttonWhite" onclick="onclick_tts_playSynthVoice_m1_row2(this,§1§,false,false)">

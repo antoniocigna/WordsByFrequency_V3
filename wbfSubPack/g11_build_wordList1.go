@@ -90,7 +90,7 @@ func g11_buildWordList() {
 		//wordA  := regexp.MustCompile(separWord).Split(row2, -1);  // split row into words 
 		wordA  := strings.Fields( regexp.MustCompile(separWord).ReplaceAllString(row2," ") ) 
 		
-		//if (ixR < 5) { fmt.Println( "  wordA=", wordA) }
+		//if strings.Index(row2, "parola")>=0 { fmt.Println( green("g11_buildWordList "), " wordA=", wordA) }
 		tot1:= len(wordA) 
 		
 		all_words = append(all_words, wordA...)
@@ -119,12 +119,15 @@ func g11_buildWordList() {
 		//pref_inThisLineList := strings.Fields(pref_inThisLine)
 		//if (ixR < 25) { fmt.Println( " pref_inThisLine=", pref_inThisLine) }
 		//-------------------
+		//sw2:=false
 		for _, wor1 := range wordA {
 			//if nn < 20 { fmt.Println( "buildWordList ", nn, "  ", wor1)}
 			
 			wS1.wWord2 = checkTheWord( wor1 ) 
 			if wS1.wWord2 == "" { continue }	
 			wS1.wWordSeq = seqCode(wS1.wWord2)
+			//sw2 = ( strings.Index(wS1.wWord2, "parola") >=0 )
+			//if sw2 { fmt.Println(" loop wordA wS.wWord2=",  wS1.wWord2  ) }
 			//------------------
 			if len(pref_inThisLine) == 0 {
 				wS1.wListPref = ""
@@ -144,7 +147,7 @@ func g11_buildWordList() {
 			wS1.wIxRow    = ixR   // index of row containing the word 
 			wS1.wIxPosRow = z;    // position of the word in the row 
 			wordSliceAlpha = append(wordSliceAlpha, wS1);	
-			
+			//if sw2 { llMio:=  len(wordSliceAlpha) - 1 ; fmt.Println( red("wordSliceAlpha["), llMio,"]=" ,  wordSliceAlpha[llMio] ) }
 		}
 		tot1 = 1+z 
 		rS2.rNumWords  = tot1      // number of words in the row 

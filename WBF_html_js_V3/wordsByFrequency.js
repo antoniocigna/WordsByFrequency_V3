@@ -3281,12 +3281,14 @@ function js_go_word_known(str1) {
 function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1, 
 									nField2,nChild2,isNumber2,ascending2,swTran = false) {
 	
-	if (arguments.length != 8) {
+	if (arguments.length < 8) {
 		console.log("error: wrong number of arguments in onclick_sortWordBy_ixField( ", nField1,nChild1,isNumber1,ascending1, 
 									nField2,nChild2,isNumber2,ascending2, 
 					"\n check  'prototype_tableWordList_Header'  in 'wordsByFrequency_prototype_script.html_js' file " ); 		
 	}
-	
+	console.log("onclick_sortWordBy_ixField(", nField1,",",nChild1,",", isNumber1,",",ascending1, ",",
+									nField2,",",nChild2,",",isNumber2,",",ascending2,",",swTran)
+									
 	document.getElementById("id_wordList1").scrollTop = 0;
 	
 	
@@ -3302,7 +3304,8 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 	var key1 , key2; 
 	var ke2, ix1, ix2; 
 	var MAXKEY = 1000000;  
-	
+	var ele_td5 ;
+	//---------------------------------
 	for(var g=0; g < num_tr; g++) {
 		//if (g > 20) { break; }
 		
@@ -3327,7 +3330,15 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 				if (ele_tran.innerHTML.trim() != "" )  trad="1"; 
 			}
 			key1 = trad + "_" + key1;	
-		}		
+			ele_td5 = ele_tr.children[5];	
+			
+			if (trad == "1") {
+				ele_td5.style.backgroundColor = "lightgrey";				
+			} else {
+				ele_td5.style.backgroundColor = "white";		
+			}	
+		}	
+		
 		//--
 		ele_td = ele_tr.children[nField2];	
 		ele_butt = ele_td 		

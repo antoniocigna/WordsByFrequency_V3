@@ -36,8 +36,8 @@ func getLemmaPathAndFile(inpLemmaFile_wordLemma string) (string, string) {
 }
 
 //----------------
-var NO_LEMMA_WORD  = "aaalemmanotfound"
-var NO_LEMMA_LEMMA = "aaalemmanotfound"
+const NO_LEMMA_WORD  = "aaalemmanotfound"
+const NO_LEMMA_LEMMA = "_lemma_not_found"
 var NO_LEMMA_INDEX = 0
 //----------------------------------
 func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inpLemmaFile_wordLemmaPlus0 string) {
@@ -158,8 +158,16 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 		e le entrate word_lemma contengono l'indice del lemma a cui si riferiscono 
 	---------------------- 
 	*/
-	for _, wL := range wordLemmaPair {	// eseguito in ordine di lemma e poi word 	
+	for _, wL := range wordLemmaPair {	// eseguito in ordine di lemma e poi word 			
 		z++
+		//--
+		if wL.lWord2 == NO_LEMMA_WORD {
+			if wL.lLemma == NO_LEMMA_LEMMA {
+				NO_LEMMA_INDEX = z 		
+				fmt.Println( red("no lemma entry index="), NO_LEMMA_INDEX, " entry: ", wL )
+			}
+		}
+		//---
 		if preLemma != wL.lLemma { 	
 			if numW > 0 {
 				//scrive lemma precedente 	

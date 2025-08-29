@@ -508,7 +508,7 @@ func g12_updateWordAlpha_with_ix_lemma() {
 	xWordF.uTotRow   	= 0	
 	//xWordF.uIxLemmaL  = []int 
 	
-	tempUniq := make([]wordUnAlphaStruct,0, len(wordSliceAlpha) )
+	tempWordUniq := make([]wordUnAlphaStruct,0, len(wordSliceAlpha) )
 	
 	ix1:=0
 	preW:=""
@@ -518,13 +518,13 @@ func g12_updateWordAlpha_with_ix_lemma() {
 			xWordF.uWord2 = preW; 
 			xWordF.uIxFromWord_al = ix1
 			xWordF.uTotRow    = ix2-ix1	
-			tempUniq = append(tempUniq, xWordF)			
+			tempWordUniq = append(tempWordUniq, xWordF)			
 			preW = wS1.wWordSeq; 					
 			ix1 = ix2; 	
 		} 
 	}	
 	
-	g12_updateTempUniq( tempUniq, wordLemmaPair )
+	g12_updateTempWordUniq( tempWordUniq, wordLemmaPair )
 	
 	wordSliceAlphaCand = make([]wordCandStruct, 0, len(wordSliceAlpha)  ) 
 	
@@ -532,7 +532,7 @@ func g12_updateWordAlpha_with_ix_lemma() {
 	var WC1 wordCandStruct
 	//nn:=0
 	fromIx:=0; toIx:=0
-	for _, tU:= range tempUniq{
+	for _, tU:= range tempWordUniq{
 		//sw2:= (tU.uWord2 == "geht") 
 		
 		fromIx = tU.uIxFromWord_al;  
@@ -540,7 +540,7 @@ func g12_updateWordAlpha_with_ix_lemma() {
 		listIxLem := tU.uIxLemmaL
 		
 		//if sw2 {fmt.Println( magenta("g12 update "), tU.uWord2, " tU.uIxLemmaL=", tU.uIxLemmaL, 
-		//	" wordSliceASlpha fromIx=", fromIx, " to Ix=", toIx ," tempUniq[", g,"]= ", tU)  }
+		//	" wordSliceASlpha fromIx=", fromIx, " to Ix=", toIx ," tempWordUniq[", g,"]= ", tU)  }
 		
 		for x:= fromIx; x < toIx; x++ {
 			wordSliceAlpha[x].wIxLemmaList = make([]int, len(listIxLem), len(listIxLem) )
@@ -635,16 +635,16 @@ func g12_updateWordAlpha_with_ix_lemma() {
 	
 }// end of g12_updateWordAlpha_with_ix_lemma	
 //-----------------------------------
-func g12_updateTempUniq( tempUniq []wordUnAlphaStruct, wordLemmaPair []wordLemmaPairStruct) { 	
+func g12_updateTempWordUniq( tempWordUniq []wordUnAlphaStruct, wordLemmaPair []wordLemmaPairStruct) { 	
 	/*
-	aggiorna tempUniq con i dati di wordLemmaPair
+	aggiorna tempWordUniq con i dati di wordLemmaPair
 	tutte le liste devono essere già in sequenza di codice (alfanumerico)
 	*/
 	//---------------------------------------
 	var maxNumErr = 10;	
 	
 	numOutSeq := 0;
-	len1 := len(tempUniq) 
+	len1 := len(tempWordUniq) 
 	len2 := len(wordLemmaPair   )
 	loopMax := len1 + len2 
 	
@@ -661,15 +661,15 @@ func g12_updateTempUniq( tempUniq []wordUnAlphaStruct, wordLemmaPair []wordLemma
 	//-----------------------
 	
 	for t0=0; t0 < loopMax; t0++ {
-		if (j1 < len1) {cod1 = "1" + tempUniq[j1].uWord2        } else {cod1 = "9" }
+		if (j1 < len1) {cod1 = "1" + tempWordUniq[j1].uWord2        } else {cod1 = "9" }
 		if (j2 < len2) {cod2 = "1" + wordLemmaPair[j2].lWord2   } else {cod2 = "9" }
 		if (cod1 <= cod2) {
 			min1 = cod1; type1=1; 
-			if (cod1 < pcod1) {	_ = g14_outSeqErr("g12_updateTempUniq 1 ", type1, pcod1, cod1, numOutSeq, maxNumErr); return ; 	}
+			if (cod1 < pcod1) {	_ = g14_outSeqErr("g12_updateTempWordUniq 1 ", type1, pcod1, cod1, numOutSeq, maxNumErr); return ; 	}
 			pcod1 = cod1
 		}  else {
 			min1 = cod2; type1=2;
-			if (cod2 < pcod2) {	_ = g14_outSeqErr("g12_updateTempUniq 2 ",  type1, pcod2, cod2, numOutSeq, maxNumErr); return ; 	}
+			if (cod2 < pcod2) {	_ = g14_outSeqErr("g12_updateTempWordUniq 2 ",  type1, pcod2, cod2, numOutSeq, maxNumErr); return ; 	}
 			pcod2 = cod2
 		}
 		
@@ -683,7 +683,7 @@ func g12_updateTempUniq( tempUniq []wordUnAlphaStruct, wordLemmaPair []wordLemma
 			preMin    = min1 
 		} else {
 			if (min1 < preMin) { 
-				numOutSeq = g14_outSeqErr("g12_updateTempUniq 4 ",  type1, preMin, min1, numOutSeq, maxNumErr)
+				numOutSeq = g14_outSeqErr("g12_updateTempWordUniq 4 ",  type1, preMin, min1, numOutSeq, maxNumErr)
 				if numOutSeq < 0 { return }
 				continue; 					
 			}
@@ -696,11 +696,11 @@ func g12_updateTempUniq( tempUniq []wordUnAlphaStruct, wordLemmaPair []wordLemma
 				//fmt.Println("               coppia word lemma senza una word in testo, ignorato " , wordLemmaPair[j2] )
 				//numIgn2++
 			} else {
-				tempUniq[index_ix1].uIxLemmaL = append( tempUniq[index_ix1].uIxLemmaL, wordLemmaPair[j2].lIxLemma  )
+				tempWordUniq[index_ix1].uIxLemmaL = append( tempWordUniq[index_ix1].uIxLemmaL, wordLemmaPair[j2].lIxLemma  )
 				/**
 				if ((min1 == "1geht" ) || ( min1 ==  "1gehoren")) {
 					vv:=  wordLemmaPair[j2].lIxLemma 
-					fmt.Println(" wordLemmaPair[", j2, "] =", wordLemmaPair[j2], " tempUniq[",index_ix1,"]=", tempUniq[index_ix1], " lemmaSlice[", vv, "]=", lemmaSlice[ vv ])					
+					fmt.Println(" wordLemmaPair[", j2, "] =", wordLemmaPair[j2], " tempWordUniq[",index_ix1,"]=", tempWordUniq[index_ix1], " lemmaSlice[", vv, "]=", lemmaSlice[ vv ])					
 				} 
 				**/
 			}
@@ -712,12 +712,34 @@ func g12_updateTempUniq( tempUniq []wordUnAlphaStruct, wordLemmaPair []wordLemma
 	//-----------------
 	
 	//if (preMin != "") {seqCodeChange(index_ix1, wordSliceAlpha)}
+	g12_add_unknowLemma(tempWordUniq) 
 	
-	fmt.Println("  in update tempUniq ([]wordAlphaStruct), trovati ",    
+	fmt.Println("  in update tempWordUniq ([]wordAlphaStruct), trovati ",    
 		len(wordSliceAlpha), " righe in wordSliceAlpha, \n\t",  len(wordLemmaPair), " word_lemma pair letti, di cui ", (len(wordLemmaPair)-numIgn2), " usati" )
 
 
-} // end of g14_update_tempUniq
+} // end of g14_update_tempWordUniq
+//-----------------
+func g12_add_unknowLemma(tempWordUniq []wordUnAlphaStruct) {
+	//----------------
+	/**
+	var NO_LEMMA_WORD  = "aaalemmanotfound"
+	var NO_LEMMA_LEMMA = "aaalemmanotfound"
+	var NO_LEMMA_INDEX = 0
+	**/
+	noLem:=0
+	for j3, wU:= range tempWordUniq{
+		if len(wU.uIxLemmaL) < 1 { 
+			tempWordUniq[j3].uIxLemmaL = append( tempWordUniq[j3].uIxLemmaL, NO_LEMMA_INDEX  )
+			noLem++
+			fmt.Println("tempWordUniq[j3]=",tempWordUniq[j3], " lemma=", lemmaSlice[NO_LEMMA_INDEX] )  
+		}  
+	}
+	if noLem > 0 {
+		fmt.Println("  in update tempWordUniq ", noLem , " parole non trovate assegnate al lemma ", NO_LEMMA_LEMMA, "( con indice ",NO_LEMMA_INDEX,")" )	
+	}
+	
+} // end of g12_add_unknowLemma
 //-------------------------------------------
 func g12_update_wordCand_vfyLemma( wordSliceAlphaCand []wordCandStruct, lemmaSlice []lemmaStruct) int {
 	/*
@@ -740,7 +762,7 @@ func g12_update_wordCand_vfyLemma( wordSliceAlphaCand []wordCandStruct, lemmaSli
 		} 
 	*/
 	/*
-	aggiorna tempUniq con i dati di wordLemmaPair
+	aggiorna tempWordUniq con i dati di wordLemmaPair
 	tutte le liste devono essere già in sequenza di codice (alfanumerico)
 	*/
 	//---------------------------------------
