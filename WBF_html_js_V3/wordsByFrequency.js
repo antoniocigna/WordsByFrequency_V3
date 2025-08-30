@@ -3803,13 +3803,17 @@ function js_go_valueFromLastRun( gostr1 ) {
 
 ***/ 
 //---
-function onclickDoubleRowTran(this1) {
+function onclickModifyRowTran(this1) {
 	var eleDiv = this1.parentElement;
 	var eleTD  = eleDiv.parentElement; 
-	
-	if (eleTD.children.length >= 2) { return; } 	
-	var ele_tran = eleDiv.children[1];	
-	const newDiv = document.createElement("div");
+	var newDiv;
+	if (eleTD.children.length >= 2) { 		// elimina div che permette variazione/immissione traduzione della riga 
+		newDiv = eleTD.children[1]; 	
+		newDiv.remove();
+		return; 
+	} 	
+	var ele_tran = eleDiv.children[1];		// aggiunge div che permette variazione/immissione traduzione della riga 
+	newDiv = document.createElement("div");
 	newDiv.style.textAlign = "left";
 	eleTD.appendChild(newDiv);
 	
@@ -4933,7 +4937,25 @@ function onmouseOutRow(this1) {   // allontanando il mouse dalla riga originale,
 } // end of onmouseOutRow
 //---------------------------------------------------------------------		
 
+function onmouseOverRow2( num1 ) {  // toccando la riga originale, rende visibile la traduzione  
+	
+	var idNum = "idt_" + num1; 
+	var eleTran = document.getElementById(idNum); 
+	if (eleTran == undefined) return;
+	eleTran.style.display = "block";	
+	
+} // end of onmouseOverRow
+//-----------------------------------------------------------	
+function onmouseOutRow2( num1 ) {   // allontanando il mouse dalla riga originale, nasconde la traduzione (a meno che non sia attivo il tasto show T.  
+	var idNum = "idt_" + num1; 
+	var eleTran = document.getElementById(idNum); 
+	if (eleTran == undefined) return;
+	eleTran.style.display = "none";	 
+	
+} // end of onmouseOutRow
+//---------------------------------------------------------------------		
 
+//----------------------------------------------------------
 function onclick_changeTraduzione(this1 ) {	
 	
 	var eleTD0  = this1.parentElement;

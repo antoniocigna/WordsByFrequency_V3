@@ -380,7 +380,8 @@ license MIT: you can share and modify the software, but you must include the lic
                </button>
             </td>
             <td>
-               <button class="buttonTD2" id="idG_§1§" onclick="onclick_tts_seeWordsGO1(§1§,§6ix§)">			
+               <button class="buttonTD2" id="idG_§1§" onclick="onclick_tts_seeWordsGO1(§1§,§6ix§)"
+					onmouseover='onmouseOverRow2("§1§")' onmouseout='onmouseOutRow2("§1§")'	>
 						<span style="font-size:2em;height:1.4em;padding:0 0.1em;">
 						<span>${magnifyingGlass_symb}</span>
 					</span>
@@ -388,8 +389,7 @@ license MIT: you can share and modify the software, but you must include the lic
             </td>            
 			<td class="borderVert"> 
 				<div class="divRowText" >
-					<div class="suboLine" style="display:none;" id="idc_§1§"  ondblclick="onclickDoubleRowTran(this)"
-						onmouseover='onmouseOverRow(this)' onmouseout='onmouseOutRow(this)'	>§4txt§</div>
+					<div class="suboLine" style="display:none;" id="idc_§1§"  onclick="onclickModifyRowTran(this)">§4txt§</div>
 					<div class="tranLine" style="display:none;" id="idt_§1§">§5txt§<br></div>	
 					<div id="idw_§1§" class="center" style="width:120%;border:0px solid red;background-color:lightblue;"></div>				
 					<div style="display:none;" id="idtts§1§">§ttstxt§</div>
