@@ -164,21 +164,21 @@
          text-align:left;
          }	
          .c_wordTran2 {	
-         background-color:yellow;
-         color:green;
-         font-size:0.8em;
+         color:green;   font-weight:bold;
+         /*font-size:0.8em; */
          text-align:left;
          margin-left:1em; 
          }	
          .c_paradigma2 {
          color:black;
-         font-size:0.8em;
+         /*font-size:0.8em; */
          text-align:left;		
          }
 		 .c_example2 {
-         color:green;
+         color:black; font-style: oblique;
          font-size:0.8em;
-         text-align:left;		
+         text-align:left;	
+		 margin-left:1em; 
          }
          .tranTip {
          position: relative;
@@ -460,9 +460,9 @@
          }
 		 
          .fixWordTdWidth3 {
-         width:3.0%; 
-         max-width:3.0%; 
-         min-width:3.0%; 
+         width:3.2%; 
+         max-width:3.2%; 
+         min-width:3.2%; 
          border-left:  1px solid black;
          }
          .fixWordTdWidth4 {
@@ -476,18 +476,18 @@
          min-width:5.0%; 	border-left:  1px solid black;
          }
          .fixWordTdWidthN {
-			width:20.0%; 
-			max-width:20.0%; 
-			min-width:20.0%; 
+			width:19.9%; 
+			max-width:19.9%; 
+			min-width:19.9%; 
 			border-left:  1px solid black;
 			word-break: break-all; 
 			word-wrap: normal;
 		 /*resize:horizontal;overflow:auto; ** 19 agosto2025*/
          }
          .fixWordTdWidthL {
-		 width:35.2%; 
-		 max-width:35.2%; 
-		 min-width:35.2%; 
+		 width:35.0%; 
+		 max-width:35.0%; 
+		 min-width:35.0%; 
          border-left:  1px solid black;
          word-break: break-all; 
          padding-right:1em;	
@@ -846,8 +846,7 @@
       </div>
       <!-- id_myPage02 -->
       <!-- xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx  -->
-      <div id="id_myPage03" class="onePage1" style="display: none; height:">
-         myPage03
+      <div id="id_myPage03" class="onePage1" style="display: none;">         
          <div id="dragButt2" class="mydrag_backButton" >
             <div id="dragButt2_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
                <button onclick="onclick_jumpFromToPage( myPage03,0, myPage01)">
@@ -855,14 +854,18 @@
                </button>			
             </div>
          </div>
-         <div class="centerXY" style="height:95%;width:98%;border:0px solid violet;text-align:center; padding:1em;">
+		
+         <div class="centerXY" style="height:100%; width: 100%;text-align:center; ">
             <div id="id_wordList1" class="00tableFixHead" style="border:0px solid red;width:100%;height:100%;">
                una table  inserita qui da wordsByFrequency.js  
             </div>
          </div>
+		 <!--
          <div style="min-width:5%;border:0px solid blue;text-align:right;vertical-align:middle;">
          </div>
+		 -->
       </div>
+	  
       <div id="id_myPage04" class="onePage1" style="display:none;">
          myPage04
          <div id="dragButt3" class="mydrag_backButton" >
@@ -1066,7 +1069,7 @@
                               <th id="xxm125" class="msg header_1 ">gruppo<br>num.riga</th>
                            </tr>
                            <tr>
-                              <th  style="padding:0.5px; background-color:black;" colspan="11"></th>
+                              <th  style="padding:0.5px; background-color:black; border-bottom:2px solid black;" colspan="11"></th>
                            </tr>
                         </thead>
                         <tbody id="id_tabSub_tbody">

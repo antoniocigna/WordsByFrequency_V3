@@ -3286,12 +3286,13 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 									nField2,nChild2,isNumber2,ascending2, 
 					"\n check  'prototype_tableWordList_Header'  in 'wordsByFrequency_prototype_script.html_js' file " ); 		
 	}
+	/**
 	console.log("onclick_sortWordBy_ixField(", nField1,",",nChild1,",", isNumber1,",",ascending1, ",",
 									nField2,",",nChild2,",",isNumber2,",",ascending2,",",swTran)
+	**/									
 									
 	document.getElementById("id_wordList1").scrollTop = 0;
-	
-	
+		
 	var ele_tbody = document.getElementById("idTableWordList_tbody"); 
 	var num_tr = ele_tbody.children.length; 
 	var ele_tr, ele_td, ele_butt,  ele_div0, ele_tran;  
@@ -4564,18 +4565,20 @@ function onclick_hideShowWordTran(this1) {
 	//-------------
 	if (swEle.innerHTML == "y") {
 		swEle.innerHTML = "n"; 
-		visib = "visible";
+		//visib = "visible";		
+		visib = "inline-block";
 	} else {
 		swEle.innerHTML = "y";
-		visib = "hidden";
+		//visib = "hidden";
+		visib = "none"; 
 	}	
 	//console.log( "            swEle.innerHTML=", swEle.innerHTML,   " visib=", visib, " rows1.length=", rows1.length)
 	//----------------------
 	for (var g=0; g < rows1.length; g++ ) {	
 		try {
 			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
-			eleTran = lemmaCell.children[0].children[1].children[3]; 
-			eleTran.style.visibility = visib;
+			eleTran = lemmaCell.children[0].children[1].children[1]; 
+			if (eleTran) eleTran.style.display = visib;
 			//console.log(" lemmaCell=", lemmaCell, "  VISIBIL=",eleTran.style.visibility, " eleTran=", eleTran.outerHTML )
 		} catch(e1) {
 			continue
@@ -4585,8 +4588,38 @@ function onclick_hideShowWordTran(this1) {
 } // end of onclick_hideShowWordTran 
 //-------------------------------------------------------
 
+var hideShowTranExample_H1 = "mostra traduzione ed esempi"; 
+var hideShowTranExample_H2 = "nascondi traduzione ed esempi"; 
+//----------------
+function onclick_hideShowTranExample(this1) {
+	//console.log("onclick_hideShowTranExample")
+	var display1;
+	var lemmaCell, eleTran;
+	var buttHeader = this1.innerHTML; 
+	if (buttHeader == hideShowTranExample_H1) {
+		display1="block";
+		this1.innerHTML = hideShowTranExample_H2
+	} else {
+		display1="none";
+		this1.innerHTML = hideShowTranExample_H1
+	}	
+	var eleBody = document.getElementById("idTableWordList_tbody")
+	var rows1 = eleBody.rows; 
+	//--------------------------
+	for (var g=0; g < rows1.length; g++ ) {	
+		try {
+			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
+			eleTran = lemmaCell.children[0].children[2]; 
+			if (eleTran) eleTran.style.display = display1;
+		} catch(e1) {
+			console.log("%cerrore " + e1, "color:red;")
+			continue
+		}
+	}
+	
+} // end of onclick_hideShowTranExample
 //------------------------
-function onclick_vertResizeLemma(this1) {	
+function TOGLIonclick_vertResizeLemma(this1) {	
 	var eleBody = document.getElementById("idTableWordList_tbody")
 	var rows1 = eleBody.rows; 		
 	var class01 = "c_size_1_line";
@@ -4610,7 +4643,7 @@ function onclick_vertResizeLemma(this1) {
 			lemmaCell.classList.add(    class01 );				
 		}
 	} 	
-} // end of onclick_vertResizeLemma 
+} // end of TOGLIonclick_vertResizeLemma 
 
 //-----------------------------------------------------------------
 
@@ -4937,8 +4970,7 @@ function onclick_changeTraduzione(this1 ) {
 		
 	if (eleLemmaTD.children.length >= 2) { return; } 
 	
-	var ele_oldTran = eleLemmaTD.children[0].children[1].children[3]
-
+	var ele_oldTran = eleLemmaTD.children[0].children[1].children[1];
 	const newDiv = document.createElement("div");
 	newDiv.style.textAlign = "left";
 	
@@ -5035,7 +5067,7 @@ function onclick_saveNewWordTran(this1) {
 	}  // end for t2 
 	//---------------------
 	if (newUp > 0) {
-		console.log( " onclick_saveNewWordTran	call  write_word_dictionary",    "  ", newUp, " variazioni")		
+		//console.log( " onclick_saveNewWordTran	call  write_word_dictionary",    "  ", newUp, " variazioni")		
 		write_word_dictionary();
 	}
 	return
@@ -5054,13 +5086,18 @@ function onclick_saveNewWordTran(this1) {
 		ixW2StudyLs = eleTD0_val.children[1].innerHTML; // indice wordToStudy_List
 		ix1         = eleTD0_val.children[2].innerHTML; // indice word (in go) 
 		ixLemma     = eleTD0_val.children[3].innerHTML; // indice lemma x lemma e tran list 
+
+		var ele_target_lemTran = eleTdLemma.children[0].children[1].children[1]; 		
+		var ele_target_tran2   = eleTdLemma.children[0].children[2].children[0].children[0]; 
+		//console.log("ele_target_lemTran=", ele_target_lemTran.innerHTML)
+		//console.log("ele_target_tran2  =", ele_target_tran2.innerHTML)
 		
-		var ele_target_lemTran   = eleTdLemma.children[0].children[1].children[3]; 		
 		if (ele_target_lemTran.innerHTML ==  newLemTran) { 
 			console.log("    traduzione eguale a prima, ignoro")
 			return;
 		}
 		ele_target_lemTran.innerHTML = newLemTran;
+		ele_target_tran2.innerHTML = newLemTran;
 		//------		
 		[wordx, ix12,  nrow, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2,uLearnedYN, wIxLemmaList  ] = wordToStudy_list[ixW2StudyLs]; 
 		wTranList = newLemTran;

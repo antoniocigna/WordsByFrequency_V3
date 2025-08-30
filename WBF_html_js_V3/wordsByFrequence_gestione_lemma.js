@@ -240,6 +240,7 @@ function fun_showWordList(wh, ix1=-1) {
 //-------------------------------------------
 function showWordsAndTranButton(wh) {		
 	//console.log("%cfunction  showWordsAndTranButton(" + wh + ")",  "color:blue;")
+	
 	var showList = prototype_tableWordList_Header;  
 		
 	var x2 = document.getElementById("id_sel_2_extrRow");
@@ -275,9 +276,8 @@ function showWordsAndTranButton(wh) {
 			[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
 					totExtrRow2, uLearnedYN, wIxLemmaList, numButton ] = wordToStudy_list[ixW2StudyLs]; 
 					
-			//nSpanV =  wLemmaList.length
-			//console.log("%c    LOOP wordToStudy_list " +  ixW2StudyLs , " color:red;")
 			/*
+			console.log("%c    LOOP wordToStudy_list " +  ixW2StudyLs , " color:red;")
 			console.log("               word2=", word2, "wLemmaList type=", typeof wLemmaList, " =>", 
 				wLemmaList, " wLemmaList.length=", wLemmaList.length)
 			*/
@@ -321,8 +321,18 @@ function showWordsAndTranButton(wh) {
 	resize1.observe(cellWord_TrTD)
 	//resize2.observe(cellWord_TrTH)		
 			
-			//----------------
-	
+	/**
+	console.log("%cfunction  showWordsAndTranButton(" + wh + ")",  "color:blue;")		
+	var eleX1 = document.getElementById("idTableWordList_tbody"); 
+	var eleX2; 
+	for(var mio1=0; mio1 < 20; mio1++) {
+		console.log( mio1 + " tag=" + eleX1.tagName + " id=" + eleX1.id  + 
+			" width=" + eleX1.style.width + " offw=" + eleX1.offsetWidth + "px" + " border=", eleX1.style.border) 	;
+		if (eleX1.tagName == "HTML") break;
+		eleX2 = eleX1.parentElement; 
+		eleX1 = eleX2; 
+	} 
+	**/
 	
 } // end of showWordsAndTranButton
 //------------------------------
@@ -379,10 +389,7 @@ function nascondi_celleEgualiPrecedenti() {
 } // end of nascondi_celleEgualiPrecedenti
 
 //-------------------------------------------
-/**
-function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
-					totExtrRow2, uLearnedYN, wIxLemmaList, numButton) {	
-***/
+
 function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, f_lemma, f_tran, f_level, f_para, f_example, 
 					totExtrRow2, uLearnedYN, f_ixLemma, numButton) {	
 			//console.log("%c        oneTR_lemma(" +ixW2StudyLs + " wor1=" + word1 + " lemma=" + f_lemma, "color:blue;") 		
@@ -393,31 +400,12 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, f_lemma, f_
 			var wLemma3, wTran3;
 			var nSpanV, spanV;			
 			var showList = ""; 		
-			//if (wExampleList.length == 0)  wExampleList[0] = "";
-			//------------------------------------------------
-			/**
-			var f_lemma   = wLemmaList[  ixLemma ];
-			var f_ixLemma = wIxLemmaList[ixLemma ];
-			var f_tran    = wTranList[   ixLemma ]; 			
-			var f_para    = wParaList[   ixLemma ]; 
-			var f_example = wExampleList[ixLemma ]; 
 			
-			//console.log("oneTR_lemma ixLemma=", ixLemma, " wParaList=",  wParaList)
-			if (f_lemma   == undefined) f_lemma = "";
-			if (f_ixLemma == undefined) f_ixLemma = "";
-			if (f_tran    == undefined) f_tran = "";		
-			if (f_para    == undefined) f_para    = "";	
-			if (f_example == undefined) f_example = "";
-			//console.log("   oneTR_lemma  f_para=", f_para)
-			***/
-			//------------------------------------------------------
-			//var nn_level   = f_level.split("|")	
-			
-			//console.log("f_para=", f_para,  " type=", typeof f_para)
 			
 			
 			var nn_para    = f_para.split("|")	
 			var nn_example = f_example.split("|")	
+			
 			
 			
 			//----------------------------------------------------------------------
@@ -454,10 +442,12 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, f_lemma, f_
 			if (totExtrRow2) { if (totExtrRow2 > 0) { XnExtrRow = ""+totExtrRow2}};  	
 				
 			var Xword1 = word1;
-		
+			
 			var Xf_lemma = f_lemma;
 			var Xf_para  = f_para; 
 			var Xf_tran  = f_tran.replaceAll("|", "<br>") ; 
+			
+			
 			
 			//-----------------------	
 			var key="",	pKey=""
@@ -485,25 +475,38 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, f_lemma, f_
 			let displayNone  = "";
 			let displayNone1 = "";
 			let displayNoneL = "";
-			let topBorder = ""; 
+			let topBorder = "";
 			
-			//console.log("            numLev=", numLev, "   nn_para=", nn_para, "  nn_example=", nn_example)
+			/**
+			console.log("f_para=", f_para, "  nn_para=", nn_para)			
+			console.log("            numLev=", numLev, "   nn_para=", nn_para, 		
+				"  nn_example=", nn_example)
+			**/
 			
+		
 			//------------------------------------------------------
 			let tdLemmaList = ""; 
 			let last_para = ""
 			for (var m=0; m < numLev; m++) {	
+				/**
 				key = x_level + " " + x_para + " " + x_example 
 				if (key == pKey) {continue; }	
 				pKey = key
-				let newTdLemma = prototype_lemmaTD	
+				**/
+				let newTdLemma = prototype_lemmaTD;
 				
 				//x_level   = nn_level[m]; 
 				x_para    = sentenceOneRow( nn_para[m] );
-				x_example = sentenceOneRow( nn_example[m] ); 	
+				x_example = sentenceOneRow( nn_example[m] ); 
+
+				if (f_para == "") x_para = f_lemma; 	
+				
+				//console.log( m, " x_para=", x_para, " xexample=", x_example)
 				
 				if (m > 0)	topBorder = "c_topBorder"; else topBorder="";
 				
+				
+				/**
 				if (x_para != "") {
 					displayNoneL = 'style="display:none;"' ;
 					if (x_para == last_para) {
@@ -512,8 +515,10 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, f_lemma, f_
 					} 
 				} else {
 					displayNoneL = "";
-				}		
+				}	
+				
 				last_para = x_para	
+				**/
 				
 				newTdLemma = newTdLemma.	
 					replaceAll("§topBorder§"     , topBorder ). 
@@ -549,13 +554,15 @@ function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, f_lemma, f_
 //----------------------------------------
 //--------------------------------------------------------------------
 
-	function newTr_from_prototype_manyLev( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, word1, f_lemma, x_level, 
+	function newTr_from_prototype_manyLev( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, 
+					word1, 
+					f_lemma, x_level, 
 					f_para, f_tran, x_para1,x_example1, showAltre, m, 
 					n_extr_row1, 
 					uLearnedYN, numButton,
 					tdLemmaList
 					) {  
-	   
+		//console.log("newTr_from_prototype_manyLev ", " word1=", word1, " lemma=", f_lemma, "\n\ttdLemmaList=",tdLemmaList)    
 		var displayNone  = "";
 		var displayNone1 = "";
 		var displayNoneL = "";
