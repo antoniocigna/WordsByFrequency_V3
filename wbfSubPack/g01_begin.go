@@ -158,6 +158,8 @@ func g01_read_all_files() {
 	
 	fmt.Println( red("finito build_word_db"), "\n\n\n")
 	
+	g06_setAvgWordFreqInRow()
+	
 	startTime = time.Now()
 	g34_load_direct_and_inverse_lemma()
 	printTimeDiff(startTime, "tempo di esecuzione di g34_load_direct_and_inverse_lemma")	

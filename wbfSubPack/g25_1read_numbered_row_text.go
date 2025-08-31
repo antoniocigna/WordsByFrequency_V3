@@ -122,8 +122,8 @@ func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 				rS1.rIdRow 		 = id_key
 				rS1.rRow1  		 = row
 				rS1.rTran1		 = ""
-				rS1.rixGroup     = ngr      // indice del gruppo 
-				rS1.rixBaseGroup = num_O_ix // posizione del row nel gruppo ( si inzia dal num.1 )  
+				rS1.rIxGroup     = ngr      // indice del gruppo 
+				rS1.rIxBaseGroup = num_O_ix // posizione del row nel gruppo ( si inzia dal num.1 )  
 		    case "T" : 
 				if id_key != pre_id_key {  // error 
 					numT_err++

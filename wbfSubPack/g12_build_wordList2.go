@@ -732,7 +732,7 @@ func g12_add_unknowLemma(tempWordUniq []wordUnAlphaStruct) {
 		if len(wU.uIxLemmaL) < 1 { 
 			tempWordUniq[j3].uIxLemmaL = append( tempWordUniq[j3].uIxLemmaL, NO_LEMMA_INDEX  )
 			noLem++
-			fmt.Println("tempWordUniq[j3]=",tempWordUniq[j3], " lemma=", lemmaSlice[NO_LEMMA_INDEX] )  
+			//fmt.Println("tempWordUniq[j3]=",tempWordUniq[j3], " lemma=", lemmaSlice[NO_LEMMA_INDEX] )  
 		}  
 	}
 	if noLem > 0 {

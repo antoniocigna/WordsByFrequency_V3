@@ -4,6 +4,7 @@ package wbfSubPack
 		"fmt"
 		"os"	
 		"strconv"
+		"sort"
 	)
 //--------------------------------------------------------
 
@@ -95,3 +96,59 @@ func write_lastValueSets() {
 } // end of 
 
 //----------------------------------
+func g06_setAvgWordFreqInRow() {
+	/*	
+	type rowPriorStruct struct {   // priority of rows in the text 	
+			rP_numWords 	int    // number of words in row 
+			rP_wordFreqAvg 	int	   // average of frequence of the words in the row		
+			rP_index 		int    // index of row in inputTextRowSlice
+			rP_ixGroup       int    // file number                          
+	}
+	*/
+	var oneP rowPriorStruct
+	
+	rowPriorityList = make([]rowPriorStruct, 0, len(inputTextRowSlice) )
+	lenT:= len(inputTextRowSlice)
+	for ixRR := 0; ixRR < lenT; ixRR++  {
+		rline := inputTextRowSlice[ixRR]
+		avgWfreq:= 0;
+		len1 := len( rline.rListFreq ) 
+		if len1 > 0 {
+			for _, fr:= range rline.rListFreq { 
+				avgWfreq += fr
+			}
+			avgWfreq =  int( (float64( avgWfreq)) / (float64(len1) ) )
+		}
+		inputTextRowSlice[ixRR].rWordFreqAvg = avgWfreq
+		
+		oneP.rP_numWords 	= rline.rNumWords
+		oneP.rP_wordFreqAvg = avgWfreq
+		oneP.rP_index 		= ixRR
+		oneP.rP_ixGroup      = rline.rIxGroup
+		rowPriorityList   = append(rowPriorityList, oneP)
+		
+	} // end for ixRR
+	//---------------------------------------
+	sort.Slice(rowPriorityList, func(i, j int) bool {
+		if rowPriorityList[i].rP_numWords != rowPriorityList[j].rP_numWords {
+			return rowPriorityList[i].rP_numWords < rowPriorityList[j].rP_numWords      // number of words:  ascending order  ( prima le righe con meno parole
+		} else {
+			if rowPriorityList[i].rP_wordFreqAvg != rowPriorityList[j].rP_wordFreqAvg {
+				return rowPriorityList[i].rP_wordFreqAvg > rowPriorityList[j].rP_wordFreqAvg //average of word frequency: descending descending order (prima le più frequenti) 
+			} else {
+				return rowPriorityList[i].rP_index < rowPriorityList[j].rP_index            //  index in the rows in the text: ascending order  
+			}
+		}
+	})
+	//-----------
+	fmt.Println( green("rowPriorityList "), len(rowPriorityList), " righe")
+	//------------------------
+	// set priority to the text row
+	for pp, oneP := range rowPriorityList {
+		ixRR := oneP.rP_index
+		if ixRR >= lenT { continue }   // error
+		inputTextRowSlice[ixRR].rPriority = pp
+	}
+	
+} // end of g06_setAvgWordFreqInRow		
+//------------------------------

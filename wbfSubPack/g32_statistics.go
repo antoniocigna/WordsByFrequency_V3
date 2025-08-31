@@ -5,36 +5,56 @@ import (
     "strings"
 	"strconv"	
 )
-
+//fmt.Println("leggi riga=", rowX,  " rNumWords=", rline.rNumWords, " .rListIxUnF=", rline.rListIxUnF, " freq=", rline.rListFreq)
+//---------------
+func g32_lista_alcuni_rows() {
+	fmt.Println(green("g32_lista_alcuni_rows") )
+	/*	
+	type rowPriorStruct struct {   // priority of rows in the text 	
+			rP_numWords 	int    // number of words in row 
+			rP_wordFreqAvg 	int	   // average of frequence of the words in the row		
+			rP_index 		int    // index of row in inputTextRowSlice
+			rP_nFile1       int    // file number                          
+	}
+	*/
+	numMax:=100;
+	from:=0;
+	/**
+	if numMax >= len(inputTextRowSlice) { numMax = len(inputTextRowSlice) }
+	for ixRR := from; ixRR < numMax; ixRR++  {
+		rline := inputTextRowSlice[ixRR]		
+		fmt.Println(green("row "),  ixRR, " ", rline.rRow1,  " rNumWords=", rline.rNumWords, " avg=", rline.rWordFreqAvg, " freq=", rline.rListFreq)
+	} 	
+	**/
+	lenT := len(rowPriorityList)
+	if numMax >= lenT { numMax = lenT }	
+	for pp, oneP := range rowPriorityList {
+		if pp < from { continue }
+		if pp >= numMax { break }
+		if oneP.rP_index >= lenT { break }
+		ixRR:= oneP.rP_index
+		rline := inputTextRowSlice[ixRR]		
+		fmt.Println(oneP, " ", green("row "),  ixRR, " \tprior=", rline.rPriority,  " \trNumWords=", rline.rNumWords, " \tavg=", rline.rWordFreqAvg, " freq=", rline.rListFreq, " \t", rline.rRow1 )
+	} 	
+	
+	
+} // end of g32_lista_alcuni_rows	
+	
 //------------------------------
 func g32_buildStatistics() {		
 		//fmt.Println(cyan("buildStatistics"))
 		//var rows []string
+		
+		//g32_lista_alcuni_rows()
+		
 		var result string = ""
-		 g32_build_stat() 
+		g32_build_stat() 
 		//if len( only_level_numWords ) < 1 { return }
 		
-		/***	
-		msgLevelStat = "" 		
-		if percA0 > 0 {msgLevelStat += ", A0: " + strconv.Itoa(percA0) + "%" }
-		if percA1 > 0 {msgLevelStat += ", A1: " + strconv.Itoa(percA1) + "%" }
-		if percA2 > 0 {msgLevelStat += ", A2: " + strconv.Itoa(percA2) + "%" }
-		if percB1 > 0 {msgLevelStat += ", B1: " + strconv.Itoa(percB1) + "%" }
-		if percOth > 0 {msgLevelStat += ", Oth: " + strconv.Itoa(percOth) + "%" }
-		if len(msgLevelStat) > 1 {msgLevelStat = msgLevelStat[2:] } 
-		**/
+		
 		
 		msgLevelStat = "" 
-		/**
-		for f:=1; f < len( only_level_numWords ) ; f++ {
-			//if only_level_numWords[f] == 0 { continue }
-			if perc_level[f] == 0 { continue }
-			msgLevelStat += ", " + list_level[f] + ": " + strconv.Itoa( perc_level[f] ) + "%"  
-		}	
-		if only_level_numWords[0] > 0 {  
-			msgLevelStat += ", " + list_level[0] + ": " + strconv.Itoa( perc_level[0] ) + "%"  
-		}
-		**/
+		
 		if len(msgLevelStat) > 1 {msgLevelStat = msgLevelStat[2:] } 
 
 		result += "livello " + msgLevelStat //  + "..endLevel ";  

@@ -198,7 +198,7 @@ func g09_2_bind_go_write_new_row_dictionary( listGoRows string, js_function stri
 	num_O_ix := 0
 	if len( inputTextRowSlice ) > 0 {
 		last_rS1 = inputTextRowSlice[ len( inputTextRowSlice )-1 ]
-		last_ngr = last_rS1.rixGroup  	
+		last_ngr = last_rS1.rIxGroup  	
 	}		
 	ngr:= last_ngr+1
 	//----------------------------
@@ -215,8 +215,8 @@ func g09_2_bind_go_write_new_row_dictionary( listGoRows string, js_function stri
  		rS1.rIdRow 		 = id_key
  		rS1.rRow1  		 = row
  		rS1.rTran1		 = ""
- 		rS1.rixGroup     = ngr      // indice del gruppo 
- 		rS1.rixBaseGroup = num_O_ix // posizione del row nel gruppo ( si inzia dal num.1 )  		
+ 		rS1.rIxGroup     = ngr      // indice del gruppo 
+ 		rS1.rIxBaseGroup = num_O_ix // posizione del row nel gruppo ( si inzia dal num.1 )  		
  		inputTextRowSlice = append(inputTextRowSlice, rS1);	
  		isUsedArray       = append(isUsedArray, false)  
 		

@@ -33,14 +33,16 @@ type wordLemmaPairStruct struct {
 
 type rowStruct struct {
 	rIdRow       string
-	rixGroup     int      // indice del gruppo 
-	rixBaseGroup int      // posizione del row nel gruppo ( si inzia dal num.1 )  
+	rIxGroup     int      // indice del gruppo 
+	rIxBaseGroup int      // posizione del row nel gruppo ( si inzia dal num.1 )  
     rRow1        string
 	rNfile1      int  
 	rSwExtra     bool 
-    rNumWords    int       // number of words in the row 
 	rListIxUnF   []int     // for each word in the row, index of the word in the uniqueWordByFreq  
-	rListFreq    []int     // for each word in the row, how many times the woird is used in all the text    
+	rListFreq    []int     // for each word in the row, how many times the word is used in all the text  	
+    rNumWords    int       // number of words in the row 	
+	rWordFreqAvg int       // average of the frequency of use of the words in this row   
+	rPriority    int       // lesser the number, the first to be learned (atually this is the index of row in the rowPriorityList    
 	rTran1       string 
 }
 
@@ -58,6 +60,14 @@ type rowIxStruct struct {
     ixR_ix        int	
 	ixR_ix_last   int 
 }
+
+type rowPriorStruct struct {   // priority of rows in the text 	
+		rP_numWords 	int    // number of words in row 
+		rP_wordFreqAvg 	int	   // average of frequence of the words in the row		
+		rP_index 		int    // index of row in inputTextRowSlice
+		rP_ixGroup      int    // group number                          
+}
+
 const SEL_EXTR_ROW    = 1; 
 const SEL_NO_EXTR_ROW = 2; 
 

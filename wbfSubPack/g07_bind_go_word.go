@@ -295,10 +295,10 @@ func g07_bind_go_passToJs_getRowsByIxWord( ixWord int, maxNumRow int, js_functio
 			continue 
 		}		
 		
-		if rline.rixGroup < 0 { 
-			new_rIdRow = "- " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		if rline.rIxGroup < 0 { 
+			new_rIdRow = "- " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		} else {
-			new_rIdRow = lista_gruppiSelectRow[ rline.rixGroup ].rG_group + " " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+			new_rIdRow = lista_gruppiSelectRow[ rline.rIxGroup ].rG_group + " " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		}	
 		outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow   + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1; 
 		
@@ -391,10 +391,10 @@ func g07_bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, 
 			continue 
 		}		
 		
-		if rline.rixGroup < 0 { 
-			new_rIdRow = "- " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		if rline.rIxGroup < 0 { 
+			new_rIdRow = "- " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		} else {
-			new_rIdRow = lista_gruppiSelectRow[ rline.rixGroup ].rG_group + " " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+			new_rIdRow = lista_gruppiSelectRow[ rline.rIxGroup ].rG_group + " " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		}	
 		outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow   + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1; 
 		

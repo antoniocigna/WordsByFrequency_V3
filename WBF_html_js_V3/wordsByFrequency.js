@@ -852,13 +852,38 @@ function onclick_require_rowList1(selFrasiParole12) {
 	word_to_underline_list = []
 	ele_wordList.innerHTML ="";
 	//ele_wRowList.innerHTML = "";
-    //ele_word.innerHTML     = ""; 	 	
+    //ele_word.innerHTML     = ""; 	 
+	/**	
+	????????????
+	var ele_gruppi = document.getElementById("id_gruppi_sel"          )
+	var ele_begNum = document.getElementById("id_gruppi_iBegNum"  )
+	var ele_numRow = document.getElementById("id_gruppi_iNumRows" )
+
+	if (ele_gruppi.selectedIndex < 0) { return; }
 	
-	var inpBegRow = getInt( document.getElementById("id_fromIx_row").innerHTML );
-	var numRows   = getInt( document.getElementById("id_inpNumRow" ).innerHTML );  
+	//console.log("%conchange_rowGroupSelectChange", "color:blue;"); console.log("onchange_rowGroupSelectChange ", "sw_newGR=", sw_newGr, " where=", where, "  ele_gruppi.selectedIndex=", ele_gruppi.selectedIndex, " ele_begNum",ele_begNum.id, " ==>", ele_begNum.value  ) ;
+	
+	html_rowGroup_index_gr = ele_gruppi.selectedIndex ;  // indice gruppo 	
+    html_rowGroup_beginNum = getInt( ele_begNum.value);  // il gruppo inizia dalla riga in id_gruppi_iBegNum 	
+	html_rowGroup_numRows  = getInt( ele_numRow.value); 
+	
+	??????????????????
+	**/
+	/**
+	<input id="id_gruppi_iNumRows" type="number" min="100" value="4" 
+    <input id="id_gruppi_iBegNum" type="number
+	**/
+	//var inpBegRow = getInt( document.getElementById("id_fromIx_row").innerHTML );
+	//var numRows   = getInt( document.getElementById("id_inpNumRow" ).innerHTML );  
+	
+	var indexGroup= getInt( document.getElementById("id_gruppi_sel").selectedIndex );
+	var inpBegRow = getInt(document.getElementById("id_gruppi_iBegNum"  ).value );
+	var numRows   = getInt(document.getElementById("id_gruppi_iNumRows" ).value );
+	
+	
 	var inpEndRow = inpBegRow+numRows-1;
 		
-	//console.log("onclick_require_rowList1 ", " XXX numRows=", numRows, " inpBegRow=" , inpBegRow, " inpEndRow=",  inpEndRow  ) 
+	//console.log("onclick_require_rowList1 ", " XXX ",  "indexGroup = ", indexGroup, " numRows=", numRows, " inpBegRow=" , inpBegRow, " inpEndRow=",  inpEndRow  ) 
 	
 	//myPage01.style.display = "none"; 
 	document.getElementById("id_headWord").innerHTML = ""; //head1; 
@@ -868,7 +893,7 @@ function onclick_require_rowList1(selFrasiParole12) {
 	
 	//console.log("2 onclick_require_rowList1 esegue go_passToJs_rowList(" + inpBegRow + "," +numRows + "," + selFrasiParole12 + ","+ "js_go_rowList" + ", " + "js_go_showWordList_lev2(1)" )
 	
-	go_passToJs_rowList(""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2(1)", caller); 
+	go_passToJs_rowList("" + indexGroup, ""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2(1)", caller); 
 		
 } // end of onclick_require_rowList1
 

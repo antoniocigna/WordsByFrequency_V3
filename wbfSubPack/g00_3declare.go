@@ -121,6 +121,8 @@ var isUsedArray    []bool
 
 var lista_gruppiSelectRow  = make([]  rowGroupStruct, 0, 100)  
 
+var rowPriorityList = make([]rowPriorStruct, 0, 0) 
+
 var countNumLines  bool = false 
 var maxNumLinesToWrite = 0
 var lemmaFormat   = "word lemma"

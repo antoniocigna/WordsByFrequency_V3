@@ -212,10 +212,10 @@ func g08_bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_func
 			continue 
 		}		
 		
-		if rline.rixGroup < 0 { 
-			new_rIdRow = "- " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		if rline.rIxGroup < 0 { 
+			new_rIdRow = "- " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		} else {
-			new_rIdRow = lista_gruppiSelectRow[ rline.rixGroup ].rG_group + " " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+			new_rIdRow = lista_gruppiSelectRow[ rline.rIxGroup ].rG_group + " " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		}	
 		outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow   + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1; 
 		
@@ -393,10 +393,10 @@ func g08_bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string
 		}	
 		pre_rowX = rowX 	
 		
-		if rline.rixGroup < 0 { 
-			new_rIdRow = "- " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		if rline.rIxGroup < 0 { 
+			new_rIdRow = "- " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		} else {
-			new_rIdRow = lista_gruppiSelectRow[ rline.rixGroup ].rG_group + " " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+			new_rIdRow = lista_gruppiSelectRow[ rline.rIxGroup ].rG_group + " " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		}	
 		outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow   + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1; 
 		
@@ -424,14 +424,28 @@ func g08_bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string
 
 //-----------------------------------------------------
 
-func g08_bind_go_passToJs_rowList(inpBegRow int, maxNumRow int, selFrasiParole12 int, js_function1R string, js_function2W string, caller string) {
+func g08_bind_go_passToJs_rowList(indexGroup int,  inpBegRow int, maxNumRow int, selFrasiParole12 int, js_function1R string, js_function2W string, caller string) {
 	// lista tutte le frasi richieste ( numero della prima frase, numero di frasi) 
 	
-	swLIST_WORD := (selFrasiParole12 != 1)    // 1 = list chosen rows,  2 = list words in the chosen rows  3 = list toBeLearned words in the chosen rows 
+	// 	selFrasiParole12: 1 = list chosen rows,  2 = list words in the chosen rows  3 = list toBeLearned words in the chosen rows 
+	//                    4 = list chosen rows sorted by priority 
+	
+	swPriorSort := false
+	if selFrasiParole12 == 4 {
+		swPriorSort = true
+		selFrasiParole12 = 1
+	}
+	
+	
+	swLIST_WORD := (selFrasiParole12 != 1)    
 	swLIST_TOLEARN := (selFrasiParole12 == 3)  // only to be learned words
 	
-	var ixFromList = inpBegRow 
 	
+	/**
+	fmt.Println( green("g08_bind_go_passToJs_rowList ")," indexGroup =", indexGroup, " inpBegRow=", inpBegRow, 
+			"  maxNumRow=", maxNumRow, " selFrasiParole12=", selFrasiParole12,
+			green(" swPriorSort="), swPriorSort, " swLIST_WORD=", swLIST_WORD)
+	**/
 		
 	var outS1 string;
 	numOut:=0 
@@ -442,27 +456,89 @@ func g08_bind_go_passToJs_rowList(inpBegRow int, maxNumRow int, selFrasiParole12
 	//fmt.Println("bind_go_passToJs_rowList ixFromList=", ixFromList, " swLIST_WORD=", swLIST_WORD ,  " selFrasiParole12=",  selFrasiParole12, " len=",  len(inputTextRowSlice) ) 
 	//list swLIST_WORD= true  selFrasiParole12= 2  len= 7	
 	//----------------------------------------------------------------
-	for ixRR := ixFromList; ixRR < len(inputTextRowSlice); ixRR++  {
+	
+	type rowPr2 struct {   // priority of rows in the text 			
+		p2_index 		int    // index of row in inputTextRowSlice
+		p2_prio         int    // priority                          
+	}
+	var onePr rowPr2
+	
+	listIxRowPrio:= make([]rowPr2, 0, (maxNumRow + 10) )
+
+	//-----------------------------
+	nOut1:=0
+	minIx  :=0
+	maxOut := inpBegRow+maxNumRow
+	//--------------------------------
+	if swPriorSort {
+		/*
+		oneP.rP_numWords 	= rline.rNumWords
+		oneP.rP_wordFreqAvg = avgWfreq
+		oneP.rP_index 		= ixRR
+		oneP.rP_nFile1      = rline.rNfile1
+		*/
+		minIx = inpBegRow
+		nOut1=0
+		for pp:=minIx; pp < len(rowPriorityList); pp++ {
+			if rowPriorityList[pp].rP_ixGroup != indexGroup { continue }		
+			nOut1++				
+			if nOut1 < inpBegRow {continue }
+			onePr.p2_index = rowPriorityList[pp].rP_index
+			onePr.p2_prio  = pp	
+			listIxRowPrio  = append(listIxRowPrio, onePr) 
+			if nOut1 >= maxOut {break}
+		}
+		//fmt.Println(" trovate PRIOR ", " group = ",  indexGroup, " nOut1=", nOut1, " len(listIxRowPrio)=", len(listIxRowPrio) )
+	} else {	
+		minIx = 0
+		nOut1=0
+		
+		//fmt.Println(" inpBegRow=", inpBegRow, " maxNumRow=", maxNumRow)
+		for ixRR := minIx;  ixRR < len(inputTextRowSlice); ixRR++  {
+			rline := inputTextRowSlice[ixRR]	
+			//fmt.Println("ixRR=",  ixRR," nOut1=", nOut1, " rline.rIxGroup=", rline.rIxGroup, " indexGroup=", indexGroup)
+			if rline.rIxGroup != indexGroup { continue }
+			nOut1++			
+			//fmt.Println(" nOut1=", nOut1," inpBegRow=", inpBegRow, " maxNumRow=", maxNumRow)
+			if nOut1 < inpBegRow {continue }			
+			//fmt.Println(" indexGroup=", indexGroup, " rIxGroup=", rline.rIxGroup , " ixRR=", ixRR, " ", rline) 	
+			onePr.p2_index = ixRR
+			onePr.p2_prio  = rline.rPriority	
+			listIxRowPrio  = append(listIxRowPrio, onePr) 
+			if nOut1 >= maxOut {break}
+		} // end for ixRR	
+		//fmt.Println(" trovate seq.naturale ", " group = ",  indexGroup, " nOut1=", nOut1, " len(listIxRowPrio)=", len(listIxRowPrio) )
+	}
+	
+	//fmt.Println(" trovate  len(listIxRowPrio)=", len(listIxRowPrio) )
+
+	//-------------------------------
+	for _, onePr:= range listIxRowPrio {
+		ixRR:= onePr.p2_index
+		
+		//fmt.Println("   onePr=", onePr, " ixRR=", ixRR )
+		
 		rline := inputTextRowSlice[ixRR]
 		
 		rowX := cleanRow(rline.rRow1)	
 		
-		//fmt.Println("bind_go_passToJs_rowList rline.rixGroup=", rline.rixGroup," rline=", rline )
+		//fmt.Println("bind_go_passToJs_rowList rline.rIxGroup=", rline.rIxGroup," rline=", rline )
 		
 		if ((rowX =="") || (rowX == LAST_WORD)) { 
 			//fmt.Println("   bind_go_pa... 1")
 			continue 
 		}		
+		/**
 		numOut++
 		if (numOut > maxNumRow)  { 
 			//fmt.Println("   bind_go_pa... 2")
 			break 
 		}
-	
-		if rline.rixGroup < 0 { 
-			new_rIdRow = "- " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		**/
+		if rline.rIxGroup < 0 { 
+			new_rIdRow = "- " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		} else {
-			new_rIdRow = lista_gruppiSelectRow[ rline.rixGroup ].rG_group + " " + strconv.Itoa( rline.rixBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+			new_rIdRow = lista_gruppiSelectRow[ rline.rIxGroup ].rG_group + " " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
 		}
 		if swLIST_WORD {  
 			//fmt.Println("leggi riga=", rowX,  " rNumWords=", rline.rNumWords, " .rListIxUnF=", rline.rListIxUnF, " freq=", rline.rListFreq)

@@ -52,8 +52,8 @@ func get_all_binds() {
 				g08_bind_go_passToJs_someWordsRowList( aWordList1, aWordList2, getInt(s_maxNumRow), js_function) } )	
 				
 		//---------------------------------------
-		ui.Bind("go_passToJs_rowList", func(  s_inpBegRow string,   s_maxNumRow string, s_selFrasiParole string, js_function1R string, js_function2W string, caller string) {	
-				g08_bind_go_passToJs_rowList(     getInt(s_inpBegRow), getInt(s_maxNumRow), getInt(s_selFrasiParole), js_function1R, js_function2W, caller) } )
+		ui.Bind("go_passToJs_rowList", func(s_indexGroup string,  s_inpBegRow string,   s_maxNumRow string, s_selFrasiParole string, js_function1R string, js_function2W string, caller string) {	
+				g08_bind_go_passToJs_rowList( getInt(s_indexGroup),  getInt(s_inpBegRow), getInt(s_maxNumRow), getInt(s_selFrasiParole), js_function1R, js_function2W, caller) } )
 		//---------------------------------------
 		ui.Bind("go_passToJs_rowWordList", func( numIdOut string, s_ixRR string, js_function string ) {
 				g08_bind_go_passToJs_rowWordList(numIdOut, getInt(s_ixRR), js_function) } ) 	
