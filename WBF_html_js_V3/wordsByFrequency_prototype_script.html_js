@@ -411,7 +411,7 @@ license MIT: you can share and modify the software, but you must include the lic
 					<span style="font-size:2em;height:1.0em;">${speakinghead_symb}</span><span style="font-size:0.9em;">${word_pause_symb}</span>
                </button>
             </td>		
-            <td class="filerow  textfile§nfile§">§1§</td>
+            <td class="filerow  textfile§nfile§">§1§-§1beg§</td>
 			<td class="filerow  textfile§nfile§">
 					<span onmouseover="mouseOverWord(this)" onmouseout="mouseOutWord(this)">§6id§</span> 
 					<span style="display:none;">§6id2§</span>				

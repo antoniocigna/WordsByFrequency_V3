@@ -386,17 +386,7 @@ function sentenceOneRow( str1 ) {
 	if (str1 == undefined)  { return str2; }
 	var str2 = (""+str1).replaceAll("\n"," ")
 	str2 = str2.replaceAll(". ",".<br>").replaceAll("? ","?<br>").replaceAll("! ","!<br>"); 
-	/**
-	str2 = str2.replaceAll(" 1.","<br>1.").
-			replaceAll(" 2.","<br>1."). 	
-			replaceAll(" 3.","<br>2."). 	
-			replaceAll(" 4.","<br>3."). 	
-			replaceAll(" 5.","<br>4."). 	
-			replaceAll(" 6.","<br>5."). 	
-			replaceAll(" 7.","<br>6."). 	
-			replaceAll(" 8.","<br>7."). 	
-			replaceAll(" 9.","<br>8.")  ;
-	**/		
+	
 	str2 = str2.
 			replaceAll("1.<br>", "1. "). 	
 			replaceAll("2.<br>", "2. "). 	
@@ -408,20 +398,6 @@ function sentenceOneRow( str1 ) {
 			replaceAll("8.<br>", "8. ").
 			replaceAll("9.<br>", "9. ").
 			replaceAll("0.<br>", "0. ") ;		
-	
-	/**
-	str2 = str2.replaceAll(" 1.","<br>1.").
-			replaceAll(" 2.","<br>1."). 	
-			replaceAll(" 3.","<br>2."). 	
-			replaceAll(" 4.","<br>3."). 	
-			replaceAll(" 5.","<br>4."). 	
-			replaceAll(" 6.","<br>5."). 	
-			replaceAll(" 7.","<br>6."). 	
-			replaceAll(" 8.","<br>7."). 	
-			replaceAll(" 9.","<br>8.")  ;
-	str2 = str2.replaceAll(". ",".<br>").replaceAll("? ","?<br>").replaceAll("! ","!<br>"); 
-	**/
-	//if (str1.indexOf("Hund") >= 0) { console.log("ANTONIO str1=" + str1 + "\nstr2=" + str2) }
 	
 	return str2	
 }
@@ -451,27 +427,7 @@ function fun_selRowsWanted_changed() {
 
 function writeLanguageChoise() {
 	
-	return; 
-	
-	//---------------------------------------------------
-	// triggered by onchange_tts_get_oneLangVoice(this1) 
-	
-	//console.log("writeLanguageChoise()"); 
-	
-	var langRow = ""; 
-	if ( isVoiceSelected ) {		
-		langRow += selected_voice_ix + "," + selected_voiceLang2 + "," + selected_voiceLangRegion + "," +  selected_voiceName;
-	}
-	// langRow += "<file>" + prevRunListFile
-	
-	if (langRow == "") return
-	if (langRow == lastRunLanguage) return
-	
-	//console.log(" write file language " + langRow); 
-	
-	js_go_ready( langRow);  
-	
-	go_write_lang_dictionary(   "language="  + langRow );  
+	return; 	
 	
 } // end of writeLanguageChoise
 //--------------------------------------------
@@ -851,30 +807,6 @@ function onclick_require_rowList1(selFrasiParole12) {
 	document.getElementById("id_inpRowEmpty").style.display = "none";
 	word_to_underline_list = []
 	ele_wordList.innerHTML ="";
-	//ele_wRowList.innerHTML = "";
-    //ele_word.innerHTML     = ""; 	 
-	/**	
-	????????????
-	var ele_gruppi = document.getElementById("id_gruppi_sel"          )
-	var ele_begNum = document.getElementById("id_gruppi_iBegNum"  )
-	var ele_numRow = document.getElementById("id_gruppi_iNumRows" )
-
-	if (ele_gruppi.selectedIndex < 0) { return; }
-	
-	//console.log("%conchange_rowGroupSelectChange", "color:blue;"); console.log("onchange_rowGroupSelectChange ", "sw_newGR=", sw_newGr, " where=", where, "  ele_gruppi.selectedIndex=", ele_gruppi.selectedIndex, " ele_begNum",ele_begNum.id, " ==>", ele_begNum.value  ) ;
-	
-	html_rowGroup_index_gr = ele_gruppi.selectedIndex ;  // indice gruppo 	
-    html_rowGroup_beginNum = getInt( ele_begNum.value);  // il gruppo inizia dalla riga in id_gruppi_iBegNum 	
-	html_rowGroup_numRows  = getInt( ele_numRow.value); 
-	
-	??????????????????
-	**/
-	/**
-	<input id="id_gruppi_iNumRows" type="number" min="100" value="4" 
-    <input id="id_gruppi_iBegNum" type="number
-	**/
-	//var inpBegRow = getInt( document.getElementById("id_fromIx_row").innerHTML );
-	//var numRows   = getInt( document.getElementById("id_inpNumRow" ).innerHTML );  
 	
 	var indexGroup= getInt( document.getElementById("id_gruppi_sel").selectedIndex );
 	var inpBegRow = getInt(document.getElementById("id_gruppi_iBegNum"  ).value );
@@ -883,18 +815,23 @@ function onclick_require_rowList1(selFrasiParole12) {
 	
 	var inpEndRow = inpBegRow+numRows-1;
 		
-	//console.log("onclick_require_rowList1 ", " XXX ",  "indexGroup = ", indexGroup, " numRows=", numRows, " inpBegRow=" , inpBegRow, " inpEndRow=",  inpEndRow  ) 
 	
-	//myPage01.style.display = "none"; 
 	document.getElementById("id_headWord").innerHTML = ""; //head1; 
 		
 	var caller = "HTML page onclick_require_rowList1" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
 	if (caller == undefined) { caller = ""; }
 	
-	//console.log("2 onclick_require_rowList1 esegue go_passToJs_rowList(" + inpBegRow + "," +numRows + "," + selFrasiParole12 + ","+ "js_go_rowList" + ", " + "js_go_showWordList_lev2(1)" )
+	//console.log("%conclick_require_rowList1 ","color:red;", "esegue go_passToJs_rowList  (indexGroup = " + indexGroup + " inpBegRow=",inpBegRow + "," +numRows + ", selFrasiParole12=" + selFrasiParole12 + ","+ "js_go_rowList" + ", " + "js_go_showWordList_lev2(1)" )
 	
 	go_passToJs_rowList("" + indexGroup, ""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2(1)", caller); 
-		
+	
+	/**
+	if ( selFrasiParole12 == 4) {
+		go_passToJs_rowList("" + indexGroup, ""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList4" , "js_go_showWordList_lev2(1)", caller); 
+	} else {	
+		go_passToJs_rowList("" + indexGroup, ""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2(1)", caller); 
+	}
+	**/	
 } // end of onclick_require_rowList1
 
 //--------------
@@ -1683,12 +1620,16 @@ function js_go_rowList2( inpstr )  {
 
 } // end of  js_go_rowList2
 
+function js_go_rowList4( inpstr, js_parm, jsFunc,goFunc ) {
+	js_go_rowList( inpstr, js_parm, jsFunc,goFunc, "4")
+}  // end of  js_go_rowList2	
+
 //--------------------------------------
 function js_go_rowList( inpstr, js_parm, jsFunc,goFunc) {
 	
 	// triggered by go ( go_passToJs_rowList and js_go_showWrdRowList)
 	
-	//console.log("function js_go_rowList() js_parm=" + js_parm + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc ) 
+	//console.log("function js_go_rowList () js_parm=" + js_parm + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc ) 
 	//console.log("	inpstr=" +inpstr ) 
 	
 	rowToStudy_list = [];
@@ -1719,6 +1660,7 @@ function js_go_rowList( inpstr, js_parm, jsFunc,goFunc) {
 	//console.log("js_go_rowList() 2 rowToStudy_list.length=", rowToStudy_list.length );
 	
 	for (var z=0; z < rowToStudy_list.length; z++) {	
+		//if (z < 10) { console.log("js_go_rowList ", z, "  ", rowToStudy_list[z]   )  }
 		newRowTran.push( 0 )
 	}
 		
@@ -2139,9 +2081,10 @@ function onclick_showWordsButton(type) {
 		
 		//console.log("traduz=", wT, "\n\t ixzNum=", ixzNum, "  ixUnTrad=", ixUnTrad, " numf=", numf, " newTran_f=", newTran_f ) // 
 		
-		//ixzNum is the index of the word in wordToStudy_list		
+		//ixzNum is the index of the word in wordToStudy_list
+		var ix3;	
 		try{
-			var ix3 = parseInt( ixzNum );
+			ix3 = parseInt( ixzNum );
 		} catch(e1) {
 			continue;			
 		}
@@ -2814,7 +2757,7 @@ function onclick_showRowsButton(type) {
 	var ixRowS, ixRow, ouIxRowS, ouIxRow, rowNewTran; 
 	//------------------------------------------
 
-	var nfileW, idRowW, ixRowW, rowW, tranW;
+	var nfileW, idRowW, ixRowW, rowW, tranW, gruppoW;
 	//-----------
 	var wList;
 	var sw_someTranMissingR = false;  // sometimes the automatic translator does some mistakes 
@@ -2880,7 +2823,7 @@ function onclick_showRowsButton(type) {
 		//console.log("     rowToStudy_list[ouIxRow] = "  +  oldRow )
 		// accoppia la riga di traduzione con quella originale  
 		try {
-			[nfileW,idRowW, ixRowW, rowW, tranW] = oldRow.split("|");
+			[nfileW,idRowW, ixRowW, rowW, tranW, gruppoW] = oldRow.split("|");
 		} catch(e1) {
 			/**
 			console.log(e1); 
@@ -2903,7 +2846,7 @@ function onclick_showRowsButton(type) {
 		
 		newRowTran[ouIxRow] = 1; 
 		
-		rowToStudy_list[ouIxRow] = nfileW + "|" + idRowW + "|" + ixRowW + "|" + rowW + "|" + rowNewTran ; // update with translation 	
+		rowToStudy_list[ouIxRow] = nfileW + "|" + idRowW + "|" + ixRowW + "|" + rowW + "|" + rowNewTran + "|" + gruppoW ; // update with translation 	
 		
 		//console.log("  xxx  NUOVA rowToStudy_list[ouIxRow=",ouIxRow , "] = " + rowToStudy_list[ouIxRow]	)
 		
@@ -2928,201 +2871,10 @@ function onclick_showRowsButton(type) {
 	showRowsAndTranButton("3");
 	
 } // end of onclick_showRowsButton()
- 
-
-//----------------------
-
-
-//---------------------------
-
-function showRowsAndTranButton(wh) {	
-	
-	//console.log("showRowsAndTranButton  (wh=",wh)
-	
-	var showList = ''    ;
-    var word1, ix1, nrow, wLemma1;
-	var riga;
-	
-	var wordOrig2, wordTran2;
-	
-	
-	var wordTran = ""
-	var row0; 
-	var nfile, idRow, ixRow, origRow, origTran; 
-	
-	//string_tr_xx = "\n" + prototype_tr_m2_tts + "\n" + prototype_tr_m1_tts + "\n" + prototype_tr_tts; 
-	string_tr_xx = "\n" + prototype_tr_tts; 
-	
-	//word_tr_allclip =  "\n" + prototype_word_tr_m2_tts + "\n" + prototype_word_tr_m1_tts + "\n" + prototype_word_tr_tts; 
-		
-	//--------------	
-	var txt1p, text_tts, tranRow; 
-	var nFileR, nfile_zero;
-	var first= -1, last=-1;
-	var visib;
-	var ixRow2StudyLs;
-	var inpBegRow = getInt( document.getElementById("id_fromIx_row").innerHTML );
-	var numRows   = getInt( document.getElementById("id_inpNumRow" ).innerHTML );  
-	var inpEndRow = inpBegRow+numRows-1;
-	//------------------------------------
-	var newRowList1 =[];
-	var newRowList2 =[];
-	
-	//--- 
-	for (var i1 = 0; i1 < rowToStudy_list.length; i1++) {	
-		
-		row0 = rowToStudy_list[i1].trim();	
-		
-		//console.log(  "showRowsAndTranButton () XXX i1=", i1, " rowToStudy_list[i1]=", rowToStudy_list[i1] );  	
-		
-		if (row0=="") {continue;}	
-		if (row0 == "\n") {continue}
-		
-		row0 = i1 + "|" + row0 + "|||||"; 
-			
-		var cols = row0.split("|")
-				
- 		try{ 
-			[ixRow2StudyLs, nfile, idRow, ixRow, origRow, tranRow] = cols.slice(0,6); 
-		} catch(e1) {
-			console.log("showRowsAndTranButton () o=", i, " rowToStudy_list[i]=", rowToStudy_list[i], " row0=", row0, " cols=", cols, "\n\t XXX  error ", e1) 			
-		}
-		
-		if ((ixRow >= inpBegRow) && (ixRow <= inpEndRow)) {		
-			newRowList1.push(row0)	
-		} else {
-			newRowList2.push(row0)
-		}	
-    }  // end for i1
-	
-	//console.log("showRowsAndTranButton 2")
-	//---------------------------
-	//var endLine1 = "_endLine1_" 
-	//newRowList1.push(endLine1);
-	var newRowList = newRowList1.concat(newRowList2);
-	//---------------------------
-	var iNumTr =0;
-	var idRow1, idRow2; 
-	
-	var PREF_MARKER = ":PREF:"
-	
-	for (var i = 0; i < newRowList.length; i++) {
-		iNumTr = i+1;
-		row0 = newRowList[i].trim() + "|||||"; 		
-		var cols = row0.split("|")
- 				
-		try{ 
-			[ixRow2StudyLs, nfile, idRow, ixRow, origRow, tranRow] = cols.slice(0,6); 
-		} catch(e1) {
-			console.log("showRowsAndTranButton () o=", i, " rowToStudy_list[i]=", rowToStudy_list[i], " row0=", row0, " cols=", cols, "\n\t XXX  error ", e1) 			
-		}
-		//if (i < 5) {  console.log("showRowsAndTranButton () i=", i, " rowToStudy_list[i]=", rowToStudy_list[i]  , " idRow="+ idRow) }
-		
-		/***
-		if (nfile == endLine1) {
-			riga = string_tr_xx.replaceAll("§1§", i).
-				replaceAll("§4txt§"  , "").
-				replaceAll("§5txt§"  , "").
-				replaceAll("§ttstxt§", "").
-				replaceAll("§6id§"   , "").
-				replaceAll("§6ix§"   , "").
-				replaceAll("§nfile§" , ""). 
-				replaceAll("§visib§" , "");
-			
-			showList    += riga + "\n";	
-			continue; 
-		}  
-		***/
-		
-		if (origRow == "") { continue; } 
-		if (origRow == undefined) { continue; } 	
-		
-		origRow = origRow.trim(); 
-		txt1p = origRow;
-		
-		var unaparola; 
-		var class_targList = [ "c_wordTarg", "c_wordTarg2" ]
-		var type=0;
-		
-		for(var hx=0; hx < word_to_underline_list.length; hx++) {  
-			unaparola = word_to_underline_list[hx].trim()
-			if (unaparola == "") { continue }
-			if (unaparola == PREF_MARKER) {type=1;  continue; } 
-			
-			txt1p = evidenzia(unaparola, class_targList[type], txt1p); 			
-		}
-		
-		txt1p = txt1p.replaceAll("§§", "");  // have beewn addded in function evidenzia
-				
-		text_tts = "";
-		visib=""; 
-		if (origRow == "") {
-			visib = "visibility: hidden;"; 			
-		} 	
-		
-		if ((ixRow >= inpBegRow) && (ixRow <= inpEndRow)) {
-			nfile = 1
-		} else {
-			nfile = 2	
-		} 
-		var idro1 =idRow.split("(");
-		if (idro1.length<2) {
-			idRow1 = idRow; idRow2 = "";
-		} else {
-			idRow1 = idro1[0];  idRow2 = idro1[1]; 
-		}
-		//if (i < 5) { console.log("\t idrow=", idRow, " idro1=", idro1.join(",") ,"   idRow1=", idRow1, " idRow2=", idRow2) }
-		
-		
-		//let txt1p_n   =   txt1p.replaceAll("%20"," ").replaceAll("/","/ ").replaceAll("</ ","</");
-		//let tranRow_n = tranRow.replaceAll("%20"," ").replaceAll("/","/ ").replaceAll("</ ","</");	
-		let txt1p_n   =   txt1p
-		let tranRow_n = tranRow
-        riga = string_tr_xx.replaceAll("§1§", iNumTr).
-			replaceAll("§ixRow2StudyLs§"  , ""+ixRow2StudyLs).
-			replaceAll("§4txt§"  , txt1p_n).
-			replaceAll("§5txt§"  , tranRow_n).
-			replaceAll("§ttstxt§", text_tts).
-			replaceAll("§6id§"   , idRow1.replace(" "," - ") ).
-			replaceAll("§6id2§"   ,idRow2).
-			replaceAll("§6ix§"   , ixRow).
-			replaceAll("§nfile§" , nfile). 
-			replaceAll("§visib§" , visib);
-		
-		if (first < 0) first = iNumTr;
-		last = iNumTr;
-		
-		showList    += riga + "\n";	
-				
-		
-   } // end for i
-	//---------------------------------------------------
-	eleTabSub_tbody.innerHTML = showList;
-	
-	//console.log("showRowsAndTranButton 3", " first=", first,  " last=", last)
-	
-	//scroll_1_init()
-	
-	if ( (last - first) > 0) {
-		let eleF = document.getElementById("b1_" + first);
-		let eleT = document.getElementById("b2_" + last);
-		onclick_tts_arrowFromIx(eleF, first, 5);
-		onclick_tts_arrowToIx(  eleT, last , "3showRowsAndTranButton" );		
-	}
-	//console.log("showRowsAndTranButton 4")
-	
-	onclick_jumpFromToPage( myPage04,0, myPage05);  
-	
-	//eleTabSub_tbody.scrollIntoView(true);  // non sempre l'elemento risulta preciso al top , forzo invece zero  direttamente sull'elemento scrollabile  
-	
-	eleTabSub_tbody.parentElement.parentElement.scrollTop = 0;
-	
-} // end of showRowsAndTranButton
-
-//-------------------------------------------------
+//-------------------------------------------
 
 function write_row_dictionary(wh) {
-	var nfileW,ixRowW, rowW, tranW; 
+	var nfileW,ixRowW, rowW, tranW, gruppoW; 
 	var word1, ix1, nrow, wLemma1, wordTran, col1;
 	
 	var newTranRow=0;
@@ -3141,7 +2893,8 @@ function write_row_dictionary(wh) {
 		idRow1 = col1[1]; 
 		ixRow1 = col1[2];
 		rowW   = col1[3]; 
-		tranW  = col1[4].replaceAll("|"," "); 		
+		tranW  = col1[4];
+		gruppoW= col1[5].replaceAll("|"," "); 		
 		
 		//console.log( "\t col1 = ", col1, "    tranW=", tranW)
 
@@ -4327,13 +4080,13 @@ function onclick_saveNewRowTran(this1) {
 		row0 = rowToStudy_list[ixRow2StudyLs].trim() + "|||||"; 	
 		cols = row0.split("|")
 		try{ 
-			[nfile, idRow, ixRow, origRow, tranRow] = cols.slice(0,5); 	
+			[nfile, idRow, ixRow, origRow, tranRow, gruppoW] = cols.slice(0,6); 	
 		} catch(e1) {	
 			continue
 		}
 		if (oldTranslation.indexOf(tranRow)>=0) {  // non sono esattamente eguali, oldTranslation termina con <br>
 			tranRow = newTranslation;
-			rowToStudy_list[ixRow2StudyLs] = nfile + "|" + idRow + "|" + ixRow + "|" + origRow + "|" + tranRow;  
+			rowToStudy_list[ixRow2StudyLs] = nfile + "|" + idRow + "|" + ixRow + "|" + origRow + "|" + tranRow + "|" + gruppoW;  
 			newRowTran[ixRow2StudyLs]=1; 
 			newUp++;
 			eleOldTran.innerHTML = newTranslation; 	
@@ -4464,6 +4217,7 @@ function get_first_tr_visible() {
 		const eleBottom = eleTop + ele.clientHeight;
 		if (eleTop >= containerTop && eleBottom <= containerBottom) { // The element is fully visible in the container
 			 first_visible_tr_id = i;
+			 //console.log("%cget_first_tr_visible ","color:red;"); console.log("first_visible_tr_id =i=", i, " ele=\n",ele.innerHTML) 
 			 break; 
 		}
 	} // end for i 
@@ -4472,7 +4226,13 @@ function get_first_tr_visible() {
 	} else {
 		//console.log("%cLa prima tr visibile è " + first_visible_tr_id, "color:blue;")
 		var eleFromNum=document.getElementById("id_gruppi_iBegNum");  
-		eleFromNum.value = parseInt(eleFromNum.value) + first_visible_tr_id;  	               // set on first page
+		//console.log('get_first_tr_visible 1 document.getElementById("id_gruppi_iBegNum")=', document.getElementById("id_gruppi_iBegNum").value) 
+		var newSt = parseInt(eleFromNum.value) + first_visible_tr_id - 1;  	
+		if (newSt < 0) newSt=0; 
+		eleFromNum.value = newSt;               // set on first page
+		
+		//console.log('get_first_tr_visible 2 document.getElementById("id_gruppi_iBegNum")=', document.getElementById("id_gruppi_iBegNum").value) 
+
 		onchange_rowGroupSelectChange(false,11);
 	}
 	
@@ -4694,7 +4454,7 @@ function onclick_listNoParadigmaLemma(this1) {
 			elePara = eleDivSup.children[1]; 
 			
 			if (elePara.innerHTML == "") {
-				outText += eleDivSup.children[0].innerHTML.replaceAll("<b>","").replaceAll("</b>","") + "  | \n";;				
+				outText += eleDivSup.children[0].innerHTML.replaceAll("<b>","").replaceAll("</b>","") + "  | \n";				
 			}
 		} catch(e1) {
 			console.log(e1)
@@ -5208,3 +4968,171 @@ function mouseOutWord3(this1) {
     }
 }
 //-------------------------------
+
+function primaLeRigheGruppoRichiesto(inpBegRow, inpEndRow, rowToStudy_list) {	
+	
+	let nfile, idRow, ixRow, ixRowS, origRow ; 			
+	let tranRow; 	
+	let ixRow2StudyLs;
+	
+	let newRowList1 =[];
+	let newRowList2 =[];
+	let row0, cols;
+	//------------------------
+	for (let i1 = 0; i1 < rowToStudy_list.length; i1++) {	
+		
+		row0 = rowToStudy_list[i1].trim();	
+		//if (i1 < 10) console.log("primaLeRighe... i1=", i1, " row0=", row0)	
+		if (row0=="") 	  { continue;}	
+		if (row0 == "\n") { continue; }
+		
+		row0 = i1 + "|" + row0 + "|||||"; 
+		
+		newRowList1.push(row0);
+		
+		/**
+		continue;
+		
+		cols = row0.split("|");		
+ 		try{ 
+			[ixRow2StudyLs, nfile, idRow, ixRowS, origRow, tranRow] = cols.slice(0,6); 
+		} catch(e1) {
+			console.log("showRowsAndTranButton () o=", i1, " rowToStudy_list[i1]=", rowToStudy_list[i1],
+				" row0=", row0, " cols=", cols, "\n\t XXX  error ", e1); 			
+		}	
+		
+		ixRow = parseInt(ixRowS)	
+		if ((ixRow >= inpBegRow) && (ixRow <= inpEndRow)) {		
+			newRowList1.push(row0);				
+			if (i1 < 10) console.log("  ixRow="+ ixRow + ", 1 caricato row")    
+		} else {
+			newRowList2.push(row0);			
+			if (i1 < 10) console.log("  ixRow="+ ixRow + ", 2 caricato row")    
+		}	
+		**/
+    }  // end for i1
+	
+	return newRowList1.concat(newRowList2);
+
+} // end of primaLeRigheGruppoRichiesto	
+//----------------------------------------------
+
+function showRowsAndTranButton(wh) {	
+	
+	//console.log("showRowsAndTranButton  (wh=",wh)	
+	let showList = ''    ;    
+	let riga;		
+	let row0; 
+	let nfile, idRow, ixRow, origRow, gruppo; 
+	
+	string_tr_xx = "\n" + prototype_tr_tts; 
+		
+	//--------------	
+	let txt1p, text_tts, tranRow; 
+	let first= -1, last=-1;
+	let visib;
+	let ixRow2StudyLs;
+	var indexGroup= getInt( document.getElementById("id_gruppi_sel").selectedIndex );
+	let inpBegRow = getInt( document.getElementById("id_fromIx_row").innerHTML );
+	let numRows   = getInt( document.getElementById("id_inpNumRow" ).innerHTML );  
+	let inpEndRow = inpBegRow+numRows-1;
+	//------------------------------------
+	let newRowList = primaLeRigheGruppoRichiesto(inpBegRow, inpEndRow, rowToStudy_list);
+	//------------------------------
+	let iNumTr =0;
+	let idRow1, idRow2; 
+	let PREF_MARKER = ":PREF:";
+	//----------------------------------------------------
+	
+	for (let i = 0; i < newRowList.length; i++) {
+		one_newRowList(i);	
+	} // end for i
+	
+	//---------------------------------------------------
+	eleTabSub_tbody.innerHTML = showList;		
+	if ( (last - first) > 0) {
+		let eleF = document.getElementById("b1_" + first);
+		let eleT = document.getElementById("b2_" + last);
+		onclick_tts_arrowFromIx(eleF, first, 5);
+		onclick_tts_arrowToIx(  eleT, last , "3showRowsAndTranButton" );		
+	}	
+	onclick_jumpFromToPage( myPage04,0, myPage05);  
+		
+	eleTabSub_tbody.parentElement.parentElement.scrollTop = 0;
+	
+	//-----------------------------------------------------------------
+	function one_newRowList(i) { 	
+		iNumTr = i+1;
+		row0 = newRowList[i].trim() + "||||||"; 		
+		//if (i < 10) { console.log( " one_newRowList[]=", row0)  } 
+		let cols = row0.split("|");
+ 		
+		[ixRow2StudyLs, nfile, idRow, ixRow, origRow, tranRow, gruppo] = cols.slice(0,7); 
+		
+		
+		if (origRow == ""       ) { return; } 
+		if (origRow == undefined) { return; } 	
+		
+		origRow = origRow.trim(); 
+		txt1p = origRow;
+		
+		let unaparola; 
+		let class_targList = [ "c_wordTarg", "c_wordTarg2" ];
+		let type=0;
+		//-------
+		for(let hx=0; hx < word_to_underline_list.length; hx++) {  
+			unaparola = word_to_underline_list[hx].trim();
+			if (unaparola == "") { continue; }
+			if (unaparola == PREF_MARKER) {type=1;  continue; } 			
+			txt1p = evidenzia(unaparola, class_targList[type], txt1p); 			
+		}
+		//---	
+		txt1p = txt1p.replaceAll("§§", "");  // have beewn addded in function evidenzia
+				
+		text_tts = "";
+		visib=""; 
+		if (origRow == "") {
+			visib = "visibility: hidden;"; 			
+		} 	
+		
+		
+		if (indexGroup == gruppo) {    // if ((ixRow >= inpBegRow) && (ixRow <= inpEndRow)) {
+			nfile = 1;
+		} else {
+			nfile = 2;	
+		} 
+		let idro1 =idRow.split("(");
+		if (idro1.length<2) {
+			idRow1 = idRow; idRow2 = "";
+		} else {
+			idRow1 = idro1[0];  idRow2 = idro1[1]; 
+		}
+		let numBeg = inpBegRow + i; 
+		//-------------	
+		let txt1p_n   =   txt1p;
+		let tranRow_n = tranRow;
+        riga = string_tr_xx.replaceAll("§1§", iNumTr).
+			replaceAll("§ixRow2StudyLs§"  , ""+ixRow2StudyLs).
+			replaceAll("§4txt§"  , txt1p_n).
+			replaceAll("§5txt§"  , tranRow_n).
+			replaceAll("§ttstxt§", text_tts).
+			replaceAll("§6id§"   , idRow1.replace(" "," - ") ).
+			replaceAll("§6id2§"   ,idRow2).			
+			replaceAll("§1beg§"  , numBeg).
+			replaceAll("§6ix§"   , ixRow).
+			replaceAll("§nfile§" , nfile). 
+			replaceAll("§visib§" , visib);
+		
+		if (first < 0) first = iNumTr;
+		last = iNumTr;		
+		showList    += riga + "\n";	
+		
+		//if (i < 10) console.log("           one_newRowList ", riga) 
+		
+	} // end of one_newRowList
+	//---------------------------
+	
+} // end of showRowsAndTranButton
+
+//-------------------------------------------------
+
