@@ -55,7 +55,7 @@ func g34_lookForInverse(invTarg string, inverseSlice []inverseStruct, sw_oneOnly
 		if len2 < lenTarg {continue }
 		if sw_oneOnly == false { len2 = lenTarg}
 		//fmt.Println("     loop1 confronta =>" + inverseSlice[z].inInverse + "<== len=", len2, " con ==>" + invTarg + "<==")
-		if inverseSlice[z].inInverse[0:len2] != invTarg { break  } 
+		if inverseSlice[z].inInverse[0:lenTarg] != invTarg { break  } 
 		fromIx = z;		
 		//fmt.Println("      1 trovato eguale  fromIx=", fromIx)
 	}
@@ -66,7 +66,7 @@ func g34_lookForInverse(invTarg string, inverseSlice []inverseStruct, sw_oneOnly
 		if len2 < lenTarg {continue }
 		if sw_oneOnly == false { len2 = lenTarg}
 		//fmt.Println("     loop2 confronta =>" + inverseSlice[z].inInverse + "<== len=", len2, " con ==>" + invTarg + "<==")
-		if inverseSlice[z].inInverse[0:len2] != invTarg { break  } 
+		if inverseSlice[z].inInverse[0:lenTarg] != invTarg { break  } 
 		toIx = z;
 		//fmt.Println("      2 trovato eguale  fromIx=", fromIx, " toIx=", toIx)
 	}	
@@ -237,7 +237,7 @@ func loadInverseWordSlice()  {
 	var oneInv inverseStruct
 	                                                
 	for ix1, oneWord := range uniqueWordByAlpha {	
-		oneInv.inInverse = reverseString(  oneWord.uWordSeq )
+		oneInv.inInverse = reverseString(  oneWord.uWord2 )
 		oneInv.inIx      = ix1		
 		inverseWordSlice = append( inverseWordSlice, oneInv )
 	}  
@@ -246,11 +246,12 @@ func loadInverseWordSlice()  {
 				return inverseWordSlice[i].inInverse < inverseWordSlice[j].inInverse
 			}   )		
 	fmt.Println( green("loadInverseWordSlice") , " caricati ", len(inverseWordSlice) , " word inversi")   
+	
 	/**
 	for j:=0; j < len(inverseWordSlice); j++ {		
-		fmt.Println( "inverse Word ", inverseWordSlice[j] )		
+		fmt.Println( green("inverse Word "), inverseWordSlice[j] )		
 	} 
-	***/
+	**/
 	
 }  // end of loadInverseWordSlice
 //-------------------------------------------
@@ -259,7 +260,7 @@ func g34_getListInverseWordIndex(dirWordTarg string, sw_oneOnly bool, maxNum int
 
 	//fmt.Println("g34_getListInverseWordIndex(dirWordTarg=",dirWordTarg	)
 	
-	targWordCoded := seqCode( dirWordTarg) 	
+	targWordCoded := dirWordTarg 	
 	
 	invWordTarg:= reverseString(targWordCoded) 
 		
@@ -304,7 +305,7 @@ func provaInverseWord( finalWord string, maxNum int) {
 	//fmt.Println( "     prova indici = ",listInverseWordIndex ) 
 	
 	for _,ixL:= range listInverseWordIndex {  
-		fmt.Println( "trovato word con finale=", finalWord , " ==> ", uniqueWordByAlpha[ixL].uWordSeq, "  -  ", uniqueWordByAlpha[ixL].uWord2)
+		fmt.Println( "trovato word con finale=", finalWord , " ==> ", uniqueWordByAlpha[ixL].uWord2, "  -  ", uniqueWordByAlpha[ixL].uWord0)
 	}
 	//----------------------------
 	

@@ -60,11 +60,8 @@ func g11_buildWordList() {
 	//-------
 	
 	fmt.Println(" stdCode: from ",  translate_chars_std_inpList, " to ", translate_chars_std_outList)
-	fmt.Println(" seqCode: from ",  translate_chars_SEQ_inpList, " to ", translate_chars_SEQ_outList)
-	//------------
-	//antoCtr_rowSchrift :=0 ;
-	//antoCtr_wordSchrift:=0; 
-	//fmt.Println("separPrefList=" , separPrefList)
+	
+	
 	allPrefStringList := " " 
 	for _,sP := range separPrefList {
 		allPrefStringList += sP.sPrefix + " "
@@ -72,7 +69,7 @@ func g11_buildWordList() {
 	
 	fmt.Println("allPrefStringList=" + allPrefStringList)
 	
-	all_words = make([]string,0, 5*len(inputTextRowSlice) ) 
+	//all_words = make([]string,0, 5*len(inputTextRowSlice) ) 
 	
 	//---------------------
 	for ixR, rS2 := range inputTextRowSlice {	//  for each text row 
@@ -84,7 +81,7 @@ func g11_buildWordList() {
 			percX1 += delta1 
 			if ixR == (1000 * int(ixR/1000)) {
 				//fmt.Println("ixR=", ixR, " percX1=", int( percX1 ) )
-				go_exec_js_function( "showProgress", strconv.Itoa( int( percX1 ) ) ) 	
+				go_exec_js_function( "go_run_js_showProgress", strconv.Itoa( int( percX1 ) ) ) 	
 			}
 		}		
 		//wordA  := regexp.MustCompile(separWord).Split(row2, -1);  // split row into words 
@@ -93,7 +90,7 @@ func g11_buildWordList() {
 		//if strings.Index(row2, "parola")>=0 { fmt.Println( green("g11_buildWordList "), " wordA=", wordA) }
 		tot1:= len(wordA) 
 		
-		all_words = append(all_words, wordA...)
+		//all_words = append(all_words, wordA...)
 				
         z:= -1;
 		thisR_SelRow = SEL_NO_EXTR_ROW
@@ -108,7 +105,7 @@ func g11_buildWordList() {
 		
 		//-------------------
 		for _, wor1 := range wordA {			
-			oneW0 := checkTheWord( wor1 ) ;
+			oneW0 := g12_checkTheWord( wor1 ) ;			
 			if oneW0 == "" { continue}
 			oneW1:= " "+oneW0+" "	
 			if strings.Index(allPrefStringList, oneW1) < 0 {continue}
@@ -122,12 +119,9 @@ func g11_buildWordList() {
 		//sw2:=false
 		for _, wor1 := range wordA {
 			//if nn < 20 { fmt.Println( "buildWordList ", nn, "  ", wor1)}
-			
-			wS1.wWord2 = checkTheWord( wor1 ) 
-			if wS1.wWord2 == "" { continue }	
-			wS1.wWordSeq = seqCode(wS1.wWord2)
-			//sw2 = ( strings.Index(wS1.wWord2, "parola") >=0 )
-			//if sw2 { fmt.Println(" loop wordA wS.wWord2=",  wS1.wWord2  ) }
+			wS1.wWord0 = g12_checkTheWord( wor1 ) 			
+			if wS1.wWord0 == "" { continue }	
+			wS1.wWord2   = stdCode(wS1.wWord0)    // elimina umlaut ed eszet  
 			//------------------
 			if len(pref_inThisLine) == 0 {
 				wS1.wListPref = ""
@@ -167,46 +161,30 @@ func g11_buildWordList() {
 	//-------------------------	
 	var wS0 wordStruct;
 	wS0.wWord2   = LAST_WORD
-	wS0.wWordSeq = LAST_WORD  
 	wordSliceAlpha = append(wordSliceAlpha, wS0);
-	all_words      = append(all_words,wS0.wWord2)
+	//all_words      = append(all_words,wS0.wWord2)
 	//-----------------
-	sort.Strings(all_words)
+	//sort.Strings(all_words)
 	
 	//----	
-	fmt.Println("sort wordSliceAlpha  in ordine .wWordSeq, .wWord2, .wNfile") 
+	fmt.Println("sort wordSliceAlpha  in ordine  .wWord2, .wWord0,  .wNfile") 
 		
 	//----
-	/**
-	sort.Slice(wordSliceAlpha, func(i, j int) bool {
-		if wordSliceAlpha[i].wWordSeq != wordSliceAlpha[j].wWordSeq {
-			return wordSliceAlpha[i].wWordSeq < wordSliceAlpha[j].wWordSeq            // word  ascending order (eg.   a before b ) 
-		} else {
-			if wordSliceAlpha[i].wWord2 != wordSliceAlpha[j].wWord2 {
-				return wordSliceAlpha[i].wWord2 < wordSliceAlpha[j].wWord2  
-			} else {
-				return wordSliceAlpha[i].wNfile < wordSliceAlpha[j].wNfile          // nFile ascending order (eg.   0 before 1 ) 
-			}
-		}
-	})
-	***/
-	//--------------------------
-	/**
-	for z,wA := range wordSliceAlpha {
-		if z > 40 {break}
-		fmt.Println("lista wordSliceAlfa[", z, "] =", wA, "  wIxRow=", wA.wIxRow)			
-	}
-	**/
-	//------------------------------		
-	sort.Slice(wordSliceAlpha, func(i, j int) bool {
-		if wordSliceAlpha[i].wWord2 != wordSliceAlpha[j].wWord2 {
+	
+	sort.Slice(wordSliceAlpha, func(i, j int) bool {	
+		if wordSliceAlpha[i].wWord2 != wordSliceAlpha[j].wWord2 {                  // word ortografia standardizzata 
 			return wordSliceAlpha[i].wWord2 < wordSliceAlpha[j].wWord2  
 		} else {
-			return wordSliceAlpha[i].wNfile < wordSliceAlpha[j].wNfile          // nFile ascending order (eg.   0 before 1 ) 
-		}
+			if wordSliceAlpha[i].wWord0 != wordSliceAlpha[j].wWord0 {              // word ortografia originale (con umlaut e eszet )             
+				return wordSliceAlpha[i].wWord0 < wordSliceAlpha[j].wWord0  
+			} else {
+				return wordSliceAlpha[i].wNfile < wordSliceAlpha[j].wNfile          // nFile ascending order (eg.   0 before 1 ) 
+			}	
+		}		
 	})
 	
-	//-----------
+	//--------------------------
+	
 	g12_add_totRow_and_indexLemmaPair()
 	
 	
@@ -217,7 +195,6 @@ func g11_buildWordList() {
 	var ffww wordUnFreqStruct
 	
 	for _, aW:= range uniqueWordByAlpha {
-		ffww.fuWordSeq  = aW.uWordSeq
 		ffww.fuWord2    = aW.uWord2
 		ffww.fuIxUnW_al = aW.uIxUnW_al
 		ffww.fuIxUnW_fr = aW.uIxUnW_fr
@@ -228,12 +205,8 @@ func g11_buildWordList() {
 	sort.Slice(uniqueWordByFreq, func(i, j int) bool {
 			if uniqueWordByFreq[i].fuTotRow !=  uniqueWordByFreq[j].fuTotRow {
 			   return uniqueWordByFreq[i].fuTotRow > uniqueWordByFreq[j].fuTotRow        // totRow    descending order (how many row contain the word) 
-			} else {
-				if uniqueWordByFreq[i].fuWordSeq != uniqueWordByFreq[j].fuWordSeq {
-					return uniqueWordByFreq[i].fuWordSeq < uniqueWordByFreq[j].fuWordSeq            // word  ascending order (eg.   a before b ) 
-				} else {
-					return uniqueWordByFreq[i].fuWord2 < uniqueWordByFreq[j].fuWord2  			
-				}
+			} else {				
+				return uniqueWordByFreq[i].fuWord2 < uniqueWordByFreq[j].fuWord2  					
 			}
 		})
 	//---------------------------------------------------	

@@ -81,26 +81,9 @@ func g31_read_languageFile( path0 string, inpFile0 string) {
 	//prova_code()
 	
 } // end of read_languageFile	
-//-----------------------------------------
-//----------------------------
-func TOGLIprova_code() {
-	wrk:= "anschluss" ;	fmt.Println( red("converti ") , wrk, " 1=", stdCode(wrk), " 2=", std2Code(wrk))
-	wrk = "anschluß";	fmt.Println( red("converti ") , wrk, " 1=", stdCode(wrk), " 2=", std2Code(wrk))
-	
-	outCode:= "anschluss" 
-	for nn,ch1:= range translate_chars_std_outList {
-		fmt.Println("prova nn=", nn, " replace from ch1=", ch1, " to ", translate_chars_std_inpList[nn]) 
-		outCode = strings.ReplaceAll(outCode, ch1, translate_chars_std_inpList[nn])  
-	}	
-	
-	fmt.Println( red("converti3 ") , outCode)
-	fmt.Println( green("translate_chars_std_outList ") , len(translate_chars_std_outList), " ", translate_chars_std_outList) 
-	fmt.Println( green("translate_chars_std_inpList ") , len(translate_chars_std_inpList), " ", translate_chars_std_inpList) 
-	
-	
-}
 
 //-----------------------------------------------
+
 func get_separablePrefix( stringPrefissiSeparabili string ) {	
 	
 	separPrefList = make([]separPrefStruct, 0, 200) 

@@ -10,18 +10,18 @@ package wbfSubPack
 //--------------------------------------------------------
 const PREF_MARKER = " :PREF: "
 //-------------------------------------------
-                      //go_passToJs_wordList  swChg= false  fromWord= 1  numWords= 9999  sel_level= any  html_sel_extrRow= anyRow  sel_toBeLearned= allWords
+                    
 func g07_bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWords int, onlyThisLevel string, 
-						sel_extrRow string, sel_toBeLearned string,  js_function string) {
+						sel_extrRow string, sel_toBeLearned string,  js_function string, js_parm string, js_caller string) {
 					
-		fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
-						" from=",  fromWord, " numWords=", numWords )
+		//fmt.Println( cyan("bind_go_passToJs_wordList"), "isChange_extrRow=", isChange_extrRow, " sel_extrRow=", sel_extrRow, " sel_toBeLearned=", sel_toBeLearned, 
+		//				" from=",  fromWord, " numWords=", numWords )
 		
 		var from1, to1 int; 
 		from1 = fromWord; //   - 1; 
 		if (from1 < 1) {
 			if from1 < 0 {
-				go_exec_js_function( js_function, ""); 	
+				go_exec_js_functionPlus( js_function, "", "",""); 	
 				return
 			}
 			from1=1;
@@ -30,7 +30,7 @@ func g07_bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWord
 			from1 = numberOfUniqueWords - 1;	
 			if from1 < 0 {
 				fmt.Println("error in bind_go_passToJs_wordList () numberOfUniqueWords=", numberOfUniqueWords)
-				go_exec_js_function( js_function, ""); 	
+				go_exec_js_functionPlus( js_function, "","",""); 	
 				return
 			}
 		}
@@ -48,13 +48,7 @@ func g07_bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWord
 			
 			if (sel_extrRow != last_run_extrRow) {
 				fmt.Println("on the word list button,  an option has been changed from \"" + last_run_extrRow + "\" to \"" + sel_extrRow + "\", this causes a rebuild of wordlist data")
-				last_run_extrRow = sel_extrRow
-				fmt.Println("bind_go_passToJs_wordList () sel_extrRow != last_run_extrRow call build_and_elab_word_list() ")
-				
-				build_and_elab_word_list()
-				
-				fmt.Println("bind_go_passToJs_wordList () end of build_and_elab_word_list() ")
-				
+				last_run_extrRow = sel_extrRow				
 			}	
 			//fmt.Println("bind_go_passToJs_wordList () return ")	
 			//return // this func has been called only to set the mainPage values 
@@ -77,7 +71,7 @@ func g07_bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWord
 		//var row11 string;
 		//var numNoTran = 0
 		
-		fmt.Println("bind_go_passToJs_wordList () 0  from1 m=", from1, " len(uniqueWordByFreq)=",  len(uniqueWordByFreq ) ) 
+		//fmt.Println("bind_go_passToJs_wordList () 0  from1 m=", from1, " len(uniqueWordByFreq)=",  len(uniqueWordByFreq ) ) 
 		
 		onlyIfExtr := true 
 		
@@ -108,8 +102,9 @@ func g07_bind_go_passToJs_wordList( isChange_extrRow bool, fromWord int, numWord
 				}
 			}
 		}	
+		outS1 = sortWordToRowByFreq(outS1) 
 		
-		go_exec_js_function( js_function, outS1 ); 	
+		go_exec_js_functionPlus( js_function, outS1, js_parm, js_caller); 	
 		
 }  // end of bind_go_passToJs_wordList	
 
@@ -120,9 +115,9 @@ func print_wordIx( w1 wordUnAlphaStruct ) {
 		 " uIxLemmaL=", w1.uIxLemmaL, " uLemmaL=", w1.uIxLemmaL) 
 	
 	/**		
-		type wordUnAlphaStruct struct {
-			uWordSeq    string	
+		type wordUnAlphaStruct struct {			
 		    uWord2      string	
+				uWord0    string
 			uIxUnW      int            // index of this word in the uniqueWordByFreq	
 			uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
 			uTotRow     int 
@@ -156,7 +151,7 @@ func g07_bind_go_passToJs_word_known2(ixWord int, yesNot_len1  string, js_functi
 	xWordAlpha:= uniqueWordByAlpha[ixAlpha]	
 	
 	ixFreq    := xWordAlpha.uIxUnW_fr  
-	if ixFreq != ixWord { fmt.Println("ERRORE in bind_go_passToJs_word_known2() ixWord not equal to ixFreq ",  xWordAlpha.uWord2, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
+	if ixFreq != ixWord { fmt.Println(red("ERRORE 1 in bind_go_passToJs_word_known2" ), "() ixWord not equal to ixFreq ",  xWordAlpha.uWord2, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
 	
 	xWordAlpha.uLearnedYN = yesNot_len1 // uniqueWordByFreq[ixWord].uKnow_yes_ctr = knowCtr
 		
@@ -177,7 +172,7 @@ func g07_bind_go_passToJs_word_known(ixWord int, yesNo int, knowCtr int, js_func
 	xWordAlpha:= uniqueWordByAlpha[ixAlpha]	
 	
 	ixFreq    := xWordAlpha.uIxUnW_fr  
-	if ixFreq != ixWord { fmt.Println("ERRORE in bind_go_passToJs_word_known() ixWord not equal to ixFreq ",  xWordAlpha.uWord2, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
+	if ixFreq != ixWord { fmt.Println(red("ERRORE 2 in bind_go_passToJs_word_known"), "() ixWord not equal to ixFreq ",  xWordAlpha.uWord2, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
 	
 	if yesNo == 0 {	
 		xWordAlpha.uLearnedYN = LEARNED_YES  // uniqueWordByFreq[ixWord].uKnow_yes_ctr = knowCtr
@@ -194,7 +189,7 @@ func g07_bind_go_passToJs_word_known(ixWord int, yesNo int, knowCtr int, js_func
 
 //---------------------------------------------- 
 
-func g07_bind_go_passToJs_getRowsByIxWord( ixWord int, maxNumRow int, js_function string) {
+func g07_bind_go_passToJs_getRowsByIxWord( ixWord int, maxNumRow int, js_function string, js_parm string, js_caller string) {
 	
 	fmt.Println("func ", green("g07_bind_go_passToJs_getRowsByIxWord "), " ixWord=", ixWord, 
 		" uniqueWordByFreq[ixWord]=", uniqueWordByFreq[ixWord])
@@ -203,66 +198,109 @@ func g07_bind_go_passToJs_getRowsByIxWord( ixWord int, maxNumRow int, js_functio
 	hd_tr := ""; 
 	preL:= ""
 	preW:=""
-	listWords := ""
-	
-	if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
+	listWords := ""	
 		
 	xWordFreq := uniqueWordByFreq[ixWord]  
 	ixAlpha   := xWordFreq.fuIxUnW_al
-	
 	xWordAlpha:= uniqueWordByAlpha[ixAlpha]	
-	
 	ixFreq    := xWordAlpha.uIxUnW_fr  
-	if ixFreq != ixWord { fmt.Println("ERRORE in bind_go_passToJs_word_known() ixWord not equal to ixFreq ",  xWordAlpha.uWord2, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
+	if ixFreq != ixWord { fmt.Println(red("ERRORE 3 in g07_bind_go_passToJs_getRowsByIxWord"), "() ixWord not equal to ixFreq ",  xWordAlpha.uWord2, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
 	
+	aWord:= xWordAlpha.uWord0; 
 	
-	listWords += " " +  xWordAlpha.uWord2
-	
-	aWord:= xWordAlpha.uWord2; 
-	
-	listIxRR := g07_getRowIndicesFromWord(xWordAlpha, maxNumRow)
-	
-	
-	/***
-	ls_lemma_ix_stellen  int	
-	ls_lemma_stellen     string
-	ls_pref_ein          string
-	
+	fmt.Println("g07_bind_go_passToJs_getRowsByIxWord ixWord=", ixWord, " xWordFreq =", xWordFreq , "\n ixAlpha=", ixAlpha, "\n xWordAlpha=", xWordAlpha)
+	/**
+	xWordAlpha= {huebschen huebschen 3760 4034 2 0 54182 2 2 n [26914 26915] [huebsch huebschen]}	
+			//--
+			type wordUnAlphaStruct struct {    // uniqueWordByAlpha
+				uWord2      string					
+				uWord0    string	
+				uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
+				uIxUnW_fr   int            // index of this word in the uniqueWordByFreq	
+				uTotRow     int 
+				uTotExtrRow int
+				uIxFromWord_al int          // index of this word in the wordSliceAlpha (first occurrence, last = uIxFromWordAl + uTotRow-1	
+				//uIxWordFreq int            // index of this word in the wordSliceFreq	
+				uSwSelRowG  int
+				uSwSelRowR   int  
+				uLearnedYN   string         // y n ( ie.yes,I learned / not yet  
+				//uKnow_yes_ctr int 
+				//uKnow_no_ctr  int         // a value > 0  means that this is a word that I don't know, ie. it's to be learned   
+				uIxLemmaL  []int  
+				uLemmaL    []string       // list of lemma 	
+				//uPara      []string  
+				//uExample   []string  
+			}	
 	**/
-	//lemmaPrefList:=""
-	//-------------
-	for z:=0; z < len(xWordAlpha.uLemmaL); z++  {
-		ixL1:= xWordAlpha.uIxLemmaL[z]
-		LeS := lemmaSlice[ixL1]  
-		//lemmaPrefList +=  " " + LeS.ls_pref_ein		
-		newL:= xWordAlpha.uLemmaL[z]
-		if newL != LeS.leLemma {
-			continue;  // error 
-		}			
-		newT:= LeS.leTran
-		//newP:= xWordAlpha.uPara[z]
-		newP:= LeS.lePara
-		if newL == preL { 
-			newL=""
-			newT=""
-			if preW != xWordAlpha.uWord2 { 
-				hd_tr += xWordAlpha.uWord2 + " ";  
-				preW = xWordAlpha.uWord2
-			} 
-		} else { 				
-			if newP == "" {
-				newP = newL;
-			} 				
-			preL = newL 			
-			if hd_tr != "" { hd_tr += "\n" 	}  // 14giugno 
-			
-			hd_tr += " :lemma="  + newP + " :tran=" + newT  + " :wordsInLemma=" +	xWordAlpha.uWord2 + " "
-			//hd_tr += " :lemma="  + newP + " :tran=" + newT + " "
-			
-			preW =  xWordAlpha.uWord2
-		} 			
-	} // end for z
-	
+	thisWordSeq := xWordAlpha.uWord2
+	ix1From :=ixAlpha ; ix1To:=ixAlpha;  
+	for u1:= ixAlpha; u1 >=0; u1-- {
+		if uniqueWordByAlpha[u1].uWord2 < thisWordSeq {break}
+		ix1From	= u1
+	}   
+	for u2:= ix1To; u2 < len(uniqueWordByAlpha); u2++ {
+		if uniqueWordByAlpha[u2].uWord2 > thisWordSeq {break}
+		ix1To = u2
+	}   
+	fmt.Println("g07_bind_go_passToJs_getRowsByIxWord  fromIxAlpha =",ix1From, ", toIxAlpha =",ix1To)
+	//-------------------------------
+	listIxRR := make([]int,0,200) 
+	for u3:= ix1From; u3 <= ix1To; u3++ {  // in case there were more than one word with the same code, but may be different ways of writing (eg. umlaut )  
+	  	xWordAlpha = uniqueWordByAlpha[u3]	
+		
+		fmt.Println( "uniqueWordByAlpha[", u3, "] = ", uniqueWordByAlpha[u3].uWord2, " " , uniqueWordByAlpha[u3].uWord0) 		
+		
+		listWords += " " +  xWordAlpha.uWord0
+		
+		//aWord:= xWordAlpha.uWord0; 
+		
+		listIxRR0 := g07_getRowIndicesFromWord(xWordAlpha, maxNumRow)
+		
+		listIxRR = append(listIxRR, listIxRR0...)
+		
+		
+		/***
+		ls_lemma_ix_stellen  int	
+		ls_lemma_stellen     string
+		ls_pref_ein          string
+		
+		**/
+		//lemmaPrefList:=""
+		//-------------
+		for z:=0; z < len(xWordAlpha.uLemmaL); z++  {
+			ixL1:= xWordAlpha.uIxLemmaL[z]
+			LeS := lemmaSlice[ixL1]  
+			//lemmaPrefList +=  " " + LeS.ls_pref_ein		
+			newL:= xWordAlpha.uLemmaL[z]
+			if newL != LeS.leLemma {
+				continue;  // error 
+			}			
+			newT:= LeS.leTran
+			//newP:= xWordAlpha.uPara[z]
+			newP:= LeS.lePara
+			if newL == preL { 
+				newL=""
+				newT=""
+				if preW != xWordAlpha.uWord2 { 
+					//hd_tr += xWordAlpha.uWord2 + " ";  
+					hd_tr += xWordAlpha.uWord0 + " ";  
+					preW = xWordAlpha.uWord2
+				} 
+			} else { 				
+				if newP == "" {
+					newP = newL;
+				} 				
+				preL = newL 			
+				if hd_tr != "" { hd_tr += "\n" 	}  // 14giugno 
+				
+				//hd_tr += " :lemma="  + newP + " :tran=" + newT  + " :wordsInLemma=" +	xWordAlpha.uWord2 + " "
+				hd_tr += " :lemma="  + newP + " :tran=" + newT  + " :wordsInLemma=" +	xWordAlpha.uWord0 + " "
+				//hd_tr += " :lemma="  + newP + " :tran=" + newT + " "
+				
+				preW =  xWordAlpha.uWord2
+			} 			
+		} // end for z
+	}// end u3	
 	/**
 	if lemmaPrefList != "" {
 		listWords += PREF_MARKER + lemmaPrefList
@@ -313,13 +351,13 @@ func g07_bind_go_passToJs_getRowsByIxWord( ixWord int, maxNumRow int, js_functio
 	//header:= "<HEADER>\n" + "<WORD>" + aWord + "</WORD>"
 	header += hd_tr   // 14giugno
 	header += "</HEADER> \n"
-	
-	go_exec_js_function( js_function, header + outS1 ); 					
+	 	
+	go_exec_js_functionPlus( js_function + ","+js_caller,   header + outS1 , js_parm, js_caller); 		
 	
 } // end of  bind_go_passToJs_getRowsByIxWord  
 
 //-----------------------------------------------------------
-func g07_bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, js_function string) {
+func g07_bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, js_function string, js_parm string, js_caller string) {
 	/*
 	type lemmaStruct struct {
 		leLemma    string    
@@ -336,7 +374,8 @@ func g07_bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, 
 	*/
 	
 	leS:= lemmaSlice[ixLemma]; 
-	lemmaToFind0:= leS.leLemma;
+	//lemmaToFind0:= leS.leLemma;
+	lemmaToFind0:= leS.leLemmaOr;
 	lemmaTran   := leS.leTran
 	//-----------------------------
 	listIxRR        := make([]int,0, max_num_row4lemma)	
@@ -354,9 +393,10 @@ func g07_bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, 
 	
 		xWordF := uniqueWordByAlpha[ixWord]
 
-		listWords += " " +  xWordF.uWord2	
+		//listWords += " " +  xWordF.uWord2	
+		listWords += " " +  xWordF.uWord0	
 		hd_tr += " :lemma="  + lemmaToFind0 			
-		hd_tr +=  " :tran=" + lemmaTran + " :wordsInLemma=" +	xWordF.uWord2 + " "
+		hd_tr +=  " :tran=" + lemmaTran + " :wordsInLemma=" +	xWordF.uWord0 + " "
 				
 		listIxRR_temp = g07_getRowIndicesFromWord(xWordF,  max_num_row4lemma)   // indici row da word 
 		listIxRR      = append(listIxRR, listIxRR_temp...)
@@ -414,8 +454,8 @@ func g07_bind_go_passToJs_getRowsByIxLemma( ixLemma int, max_num_row4lemma int, 
 	//header:= "<HEADER>\n" + "<WORD>" + aWord + "</WORD>"
 	header += hd_tr   // 14giugno
 	header += "</HEADER>\n"
-	
-	go_exec_js_function( js_function, header + outS1 ); 	
+
+	go_exec_js_functionPlus( js_function + ","+js_caller,   header + outS1 , js_parm, js_caller); 	
 		
 } // end of  bind_go_passToJs_getRowsByIxLemma  
 
@@ -449,79 +489,38 @@ func g07_getRowIndicesFromWord(xWordAlpha wordUnAlphaStruct, maxNumRow int) []in
 } // end of getRowIndicesFromWord
 
 //----------------------------------------------------
-func getRowIndicesFromIxAlphaWord(ixWord int, maxNumRow int) []int {
-		fmt.Println("getRowIndicesFromIxAlphaWord ixWord=", ixWord, " len(uniqueWordByAlpha)=", len(uniqueWordByAlpha) )
+func g07_getRowIndicesFromIxAlphaWord(ixAlWord int, maxNumRow int) []int {
+	
+	//	fmt.Println("g07_getRowIndicesFromIxAlphaWord ixAlWord=", ixAlWord, " len(uniqueWordByAlpha)=", len(uniqueWordByAlpha) )
 			
-	if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}			
-	ixAlpha := ixWord;
+	if ixAlWord >= numberOfUniqueWords {ixAlWord = numberOfUniqueWords - 1;}			
+	ixAlpha := ixAlWord;
 	xWordAlpha:= uniqueWordByAlpha[ixAlpha]	
 	
-	ixFreq    := xWordAlpha.uIxUnW_fr  
-	if ixFreq != ixWord { fmt.Println("ERRORE in bind_go_passToJs_word_known() ixWord not equal to ixFreq ",  xWordAlpha.uWord2, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
+	//ixFreq    := xWordAlpha.uIxUnW_fr  
 	
-		
-		
-		
+	//if ixFreq != ixAlWord { fmt.Println(red("ERRORE 4 in g07_getRowIndicesFromIxAlphaWord"), "() ixAlWord not equal to ixFreq ",  xWordAlpha.uWord2, " ixAlWord=", ixAlWord, " ixFreq=", ixFreq )   }
 
-		var ixFromList = xWordAlpha.uIxFromWord_al                     // index of this word in the wordSliceAlpha	( una word per ogni row ) 
-		var ixToList   = ixFromList + xWordAlpha.uTotRow;
-		var maxTo1     = ixFromList + maxNumRow; 		
-		
-		if ixToList > maxTo1        { ixToList = maxTo1; }
-		if ixToList > len(wordSliceAlpha) { ixToList = len(wordSliceAlpha) }
+	var ixFromList = xWordAlpha.uIxFromWord_al                     // index of this word in the wordSliceAlpha	( una word per ogni row ) 
+	var ixToList   = ixFromList + xWordAlpha.uTotRow;
+	var maxTo1     = ixFromList + maxNumRow; 		
+	
+	if ixToList > maxTo1        { ixToList = maxTo1; }
+	if ixToList > len(wordSliceAlpha) { ixToList = len(wordSliceAlpha) }
 
-		listIxRR := make([]int,0, (ixToList - ixFromList) )
+	listIxRR := make([]int,0, (ixToList - ixFromList) )
+	
+	for ix4:=ixFromList; ix4 < ixToList; ix4++ {
+		wS1 := wordSliceAlpha[ix4] 
+		//  .wIxRow           indice del row che contiene la parola 	
+		//  .wSwSelRowR	      1 or 2: 1 SEL_EXTR_ROW, 2 SEL_NO_EXTR_ROW  ( serve per dare la precedenza alle righe che appartengono al brano selezionato    
+		listIxRR = append( listIxRR, wS1.wSwSelRowR * 100000 +  wS1.wIxRow)  	
+	} 	
+	
+	sort.Ints(listIxRR) 
+	
+	return listIxRR 
 		
-		for ix4:=ixFromList; ix4 < ixToList; ix4++ {
-			wS1 := wordSliceAlpha[ix4] 
-			//  .wIxRow           indice del row che contiene la parola 	
-			//  .wSwSelRowR	      1 or 2: 1 SEL_EXTR_ROW, 2 SEL_NO_EXTR_ROW  ( serve per dare la precedenza alle righe che appartengono al brano selezionato    
-			listIxRR = append( listIxRR, wS1.wSwSelRowR * 100000 +  wS1.wIxRow)  	
-		} 	
-		
-		sort.Ints(listIxRR) 
-		
-		return listIxRR 
-		
-} // end of getRowIndicesFromIxFreqWord
+} // end of g07_getRowIndicesFromIxAlphaWord
 
 //----------------------------------------------------
-func getRowIndicesFromIxFreqWord(ixWord int, maxNumRow int) []int {
-		fmt.Println("getRowIndicesFromIxFreqWord ixWord=", ixWord, " len(uniqueWordByFreq)=", len(uniqueWordByFreq) )
-			
-	if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
-		
-	xWordFreq := uniqueWordByFreq[ixWord]  
-	ixAlpha   := xWordFreq.fuIxUnW_al
-	
-	xWordAlpha:= uniqueWordByAlpha[ixAlpha]	
-	
-	ixFreq    := xWordAlpha.uIxUnW_fr  
-	if ixFreq != ixWord { fmt.Println("ERRORE in bind_go_passToJs_word_known() ixWord not equal to ixFreq ",  xWordAlpha.uWord2, " ixWord=", ixWord, " ixFreq=", ixFreq )   }
-	
-		
-		
-		
-
-		var ixFromList = xWordAlpha.uIxFromWord_al                     // index of this word in the wordSliceAlpha	( una word per ogni row ) 
-		var ixToList   = ixFromList + xWordAlpha.uTotRow;
-		var maxTo1     = ixFromList + maxNumRow; 		
-		
-		if ixToList > maxTo1        { ixToList = maxTo1; }
-		if ixToList > len(wordSliceAlpha) { ixToList = len(wordSliceAlpha) }
-
-		listIxRR := make([]int,0, (ixToList - ixFromList) )
-		
-		for ix4:=ixFromList; ix4 < ixToList; ix4++ {
-			wS1 := wordSliceAlpha[ix4] 
-			//  .wIxRow           indice del row che contiene la parola 	
-			//  .wSwSelRowR	      1 or 2: 1 SEL_EXTR_ROW, 2 SEL_NO_EXTR_ROW  ( serve per dare la precedenza alle righe che appartengono al brano selezionato    
-			listIxRR = append( listIxRR, wS1.wSwSelRowR * 100000 +  wS1.wIxRow)  	
-		} 	
-		
-		sort.Ints(listIxRR) 
-		
-		return listIxRR 
-		
-} // end of getRowIndicesFromIxFreqWord
-//---------------------------------------

@@ -28,10 +28,10 @@ func read_wordsToLearn() {
 		if len(yesNo) > 1  { yesNo = yesNo[0:1]}
 		if yesNo != LEARNED_YES { yesNo = LEARNED_NOT }	
 		
-		wordCod:= seqCode( r_word2)		
+		wordCod:= r_word2		
 	
 		/**
-			uWordSeq    string	
+			uWord0    string	
 			uWord2      string	
 			uIxUnW      int            // index of this word in the uniqueWordByFreq	
 			uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
@@ -51,7 +51,7 @@ func read_wordsToLearn() {
 		}		
 		for ixA:= ixF; ixA <= ixT; ixA++ {
 			xWordA :=  uniqueWordByAlpha[ixA]
-			if xWordA.uWordSeq != wordCod {
+			if xWordA.uWord2 != wordCod {
 				continue
 			}
 			uniqueWordByAlpha[ixA].uLearnedYN = yesNo;

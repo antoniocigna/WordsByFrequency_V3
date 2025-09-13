@@ -8,7 +8,7 @@ package wbfSubPack
 		//"sort"
 	)
 //--------------------------------------------------------
-func g05_bind_go_passToJs_lemmaWordList(lemmaToFind0 string, inpMaxWordLemma int, js_function string)   {
+func g05_bind_go_passToJs_lemmaWordList(lemmaToFind0 string, inpMaxWordLemma int, js_function string, js_parm string, js_caller string)   {
 	sw_oneLemma:= true
 	//listA := getListLemmaIndex( strings.ToLower(strings.TrimSpace( lemmaToFind0)), sw_oneLemma, inpMaxWordLemma) 
 	
@@ -24,7 +24,7 @@ func g05_bind_go_passToJs_lemmaWordList(lemmaToFind0 string, inpMaxWordLemma int
 		rowW := g05_build_one_lemma_row_word( ix2, lemmaSlice[ix2] , len(listA) , sw_oneLemma) 
 		outS1 += rowW 	
 	}	
-	go_exec_js_function( js_function, outS1 ) 	
+	go_exec_js_functionPlus( js_function, outS1, js_parm, js_caller) 	
 	
 } // end of bind_go_passToJs_lemmaWordList 
 //------------------------
@@ -41,7 +41,7 @@ func containIntList( list1 []int, s int) bool{
 //------------------------------------------------------
 
 
-func g05_lemma_word_to_row( myLem1_name string, myLem2_name string, lw_lemma2 string, xWordAlpha wordUnAlphaStruct) string  {
+func TOGLIg05_lemma_word_to_row( myLem1_name string, myLem2_name string, lw_lemma2 string, xWordAlpha wordUnAlphaStruct) string  {
 		
 	separ1:= ";."
 	
@@ -57,7 +57,7 @@ func g05_lemma_word_to_row( myLem1_name string, myLem2_name string, lw_lemma2 st
 	
 		ixL1 := xWordAlpha.uIxLemmaL[ix2]
 				
-		return xWordAlpha.uWordSeq + separ1 + xWordAlpha.uWord2 + separ1 + 
+		return xWordAlpha.uWord2 + separ1 + xWordAlpha.uWord0 + separ1 + 
 			"ix" + separ1 + 
 			strconv.Itoa(xWordAlpha.uIxUnW_fr)   + separ1 + strconv.Itoa(xWordAlpha.uTotRow)  + separ1 + 
 			xWordAlpha.uLemmaL[ix2]              + separ1 + 
@@ -70,7 +70,7 @@ func g05_lemma_word_to_row( myLem1_name string, myLem2_name string, lw_lemma2 st
 			"ixLemma" + separ1 + fmt.Sprint( xWordAlpha.uIxLemmaL[ix2] ) + separ1 + 	
 			endOfLine 			
 			 
-} // end of lemma_word_to_row 
+} // end of TOGLIlemma_word_to_row 
 
 //-----------------------------------------------------------
 func g05_build_one_lemma_row_word_ManyLemma( ixLemS int, myLem1 lemmaStruct, totNumLemmas int, sw_oneLemma bool ) string {
@@ -80,8 +80,8 @@ func g05_build_one_lemma_row_word_ManyLemma( ixLemS int, myLem1 lemmaStruct, tot
 	xWordAlpha:= wordUnAlphaStruct{}	
 	
 	var zeroW wordUnAlphaStruct 
-	zeroW.uWordSeq = ""
 	zeroW.uWord2 = ""
+	zeroW.uWord0 = ""
 	zeroW.uIxUnW_al   = -1 	
 	zeroW.uIxUnW_fr   = -1
 	zeroW.uTotRow     = 0 
@@ -108,10 +108,9 @@ func g05_build_one_lemma_row_word_ManyLemma( ixLemS int, myLem1 lemmaStruct, tot
 			xWordAlpha = uniqueWordByAlpha[ixW] 
 	} else {
 			xWordAlpha = zeroW
-			//xWordAlpha.uWordSeq = wPair.lWord2
 			//xWordAlpha.uWord2   = wPair.lWord2
 			xWordAlpha.uIxLemmaL= append(xWordAlpha.uIxLemmaL, myLem1.leFromIxLW) 
-			xWordAlpha.uLemmaL  = append(xWordAlpha.uLemmaL,   myLem1.leLemma   )  
+			xWordAlpha.uLemmaL  = append(xWordAlpha.uLemmaL,   myLem1.leLemmaOr   )  
 	}	
 	
 	//xWordAlpha:= uniqueWordByAlpha[ixW] 			
@@ -119,59 +118,20 @@ func g05_build_one_lemma_row_word_ManyLemma( ixLemS int, myLem1 lemmaStruct, tot
 	
 	ix200 := -1
 	for x1, oneLemmaName := range xWordAlpha.uLemmaL {
-		if oneLemmaName == myLem1.leLemma {
+		if oneLemmaName == myLem1.leLemmaOr {
 			ix200=x1; 
 			break
 		}  	
 	}
 	var ixAlLem string 
 	if ix200 < 0 {ixAlLem="-1"} else { ixAlLem = strconv.Itoa(xWordAlpha.uIxLemmaL[ix200]) }
-	
-	
-	/**
-	if ix200 < 0 {
-		fmt.Println( red("errore "), " g05_build_one_lemma_row_word_ManyLemma ", " lemma=", myLem1.leLemma, 
-			" contiene Word=",xWordAlpha.uWord2, " che ha una lista dei lemma ", xWordAlpha.uLemmaL, " che non contiene il lemma ", myLem1.leLemma)   
-		return ""	
-	}
-	//-----------------------
-	fmt.Println("            g05_build_one_lemma_row_word_ManyLemma ixW=", ixW, " uniqueWordByAlpha[ixW] = xWordAlpha =", xWordAlpha, " xWordAlpha.uLemmaL=", xWordAlpha.uLemmaL)
-	
-	//if ix2 < 0 {return ""}	
-	ixL1:=-1
-	
-	if ix200 < 0 {
-		ixL1 = -1
-	} else {
-		ixL1 = xWordAlpha.uIxLemmaL[ix200]		
-		if ((ixL1 >= 0) && (ixL1 < len(lemmaSlice) )) {
-			if lemmaSlice[ixL1].leLemma == myLem1.leLemma {ixL1 = -1} 
-		}  
-	}
-	if (ixL1 < 0) {
-		fmt.Println( red("errore"), " g05_build_one_lemma_row_word_ManyLemma ",  " lemma=", myLem1.leLemma, "  è diverso dal lemma puntato dalla parola puntata dal lemma")
-		return ""
-	} 
-	fmt.Println("            g05_build_one_lemma_row_word_ManyLemma indice lemma ix200 =", ix200, " ixL1=", ixL1, " ixLemS=", ixLemS, 
-		" lemmaSlice[ixL1].leLemma=", lemmaSlice[ixL1].leLemma ,
-		" myLem1=", myLem1)
-	***/
-	/***many
-				
-		return xWordAlpha.uWordSeq + separ1 + xWordAlpha.uWord2 + separ1 + 
-			"ix" + separ1 + 
-			strconv.Itoa(xWordAlpha.uIxUnW_fr)   + separ1 + strconv.Itoa(xWordAlpha.uTotRow)  + separ1 + 
-			xWordAlpha.uLemmaL[ix2]              + separ1 + 
-			lemmaSlice[ixL1].leTran               + separ1 +   
-			separ1 +  
-			lastLemma.lePara                     + separ1 +  
-	****/
+		
 	//------------------------
 	rowW:= "" + separ1 + "" + separ1 + 
 		"ix"   + separ1 + 
 		"0"    + separ1 + 
 		strconv.Itoa(totAllWordRows)    + separ1 + 
-		myLem1.leLemma     				+ separ1 + 
+		myLem1.leLemmaOr     				+ separ1 + 
 		myLem1.leTran   	   			+ separ1 +      
 		separ1 +  
 		myLem1.lePara                  	+ separ1 +  
@@ -202,7 +162,7 @@ func g05_build_one_lemma_row_word_ManyLemma( ixLemS int, myLem1 lemmaStruct, tot
 	   } 		
 	type wordLemmaPairStruct struct {
 		lWord2 string 
-		lWord2   string 
+		lWord0   string 
 		lLemma   string
 		lIxLemma  int
 		lIxUnWord int
@@ -210,8 +170,8 @@ func g05_build_one_lemma_row_word_ManyLemma( ixLemS int, myLem1 lemmaStruct, tot
 //---   
 	   //--
 type wordUnAlphaStruct struct {
-	uWordSeq    string	
-    uWord2      string		
+    uWord2      string	
+	uWord0     string	
 	uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
 	uIxUnW_fr   int            // index of this word in the uniqueWordByFreq	
 	uTotRow     int 
@@ -241,8 +201,8 @@ func g05_build_one_lemma_row_word_OnlyOneLemma(ix2 int, myLem1 lemmaStruct, totN
 	xWordAlpha:= wordUnAlphaStruct{}	
 	
 	var zeroW wordUnAlphaStruct 
-	zeroW.uWordSeq = ""
 	zeroW.uWord2 = ""
+	zeroW.uWord0 = ""
 	zeroW.uIxUnW_al   = -1 	
 	zeroW.uIxUnW_fr   = -1
 	zeroW.uTotRow     = 0 
@@ -251,8 +211,22 @@ func g05_build_one_lemma_row_word_OnlyOneLemma(ix2 int, myLem1 lemmaStruct, totN
 	zeroW.uSwSelRowG  = 0
 	zeroW.uSwSelRowR  = 0  
 	zeroW.uLearnedYN  = "y" 
-	
-	//fmt.Println("\n1 g05_build_one_lemma_row_word_OnlyOneLemma ", myLem1, " myLem1.leFromIxLW=", myLem1.leFromIxLW, " myLem1.leToIxLW=", myLem1.leToIxLW, " tran=", myLem1.leTran)
+	/**
+		type lemmaStruct struct {
+			leLemma    string    
+			leLemmaOr  string    
+			leNumWords int 
+			leFromIxLW  int             // limite inferiore range indici a wordLemmaPair (in seq. di lemma)   wordLemmaPair_lemmaWordSeq[] 
+			leToIxLW    int             // limite superiore range indici a wordLemmaPair (in seq. di lemma)   wordLemmaPair_lemmaWordSeq[]   
+			leUnWord_al_IxList []int    // indice delle parole unique che puntano a questo lemma        
+			leTran      string 
+			lePara      string  
+			leExample   string  
+			leNumPara   int	
+		} 
+	**/
+	fmt.Println("\n1 g05_build_one_lemma_row_word_OnlyOneLemma ", myLem1, "\n\t myLem1.leFromIxLW=", myLem1.leFromIxLW, " myLem1.leToIxLW=", myLem1.leToIxLW, 
+			" tran=", myLem1.leTran)
 	
 	//---------
 	for g:=myLem1.leFromIxLW; g <= myLem1.leToIxLW; g++ {	
@@ -260,18 +234,18 @@ func g05_build_one_lemma_row_word_OnlyOneLemma(ix2 int, myLem1 lemmaStruct, totN
 		ixW := wPair.lIxUnWord_al 
 		if ixW >= 0 {
 			xWordAlpha = uniqueWordByAlpha[ixW] 
-			//fmt.Println("   ", uniqueWordByAlpha[ixW] ) 
+			fmt.Println("   ", uniqueWordByAlpha[ixW] ) 
 		} else {
 			xWordAlpha = zeroW
-			xWordAlpha.uWordSeq = wPair.lWord2
 			xWordAlpha.uWord2   = wPair.lWord2
+			xWordAlpha.uWord0   = wPair.lWord0   
 			xWordAlpha.uIxLemmaL= append(xWordAlpha.uIxLemmaL, wPair.lIxLemma ) 
-			xWordAlpha.uLemmaL  = append(xWordAlpha.uLemmaL,   wPair.lLemma   )  
+			xWordAlpha.uLemmaL  = append(xWordAlpha.uLemmaL,   wPair.lLemmaOr )  
 		}		
 		
 		ix2 := -1
 		for x1, oneLemmaName := range xWordAlpha.uLemmaL {
-			if oneLemmaName == myLem1.leLemma {
+			if ((oneLemmaName == myLem1.leLemmaOr) || (oneLemmaName == myLem1.leLemma)) {
 				ix2=x1; 
 				break
 			}  	
@@ -283,7 +257,7 @@ func g05_build_one_lemma_row_word_OnlyOneLemma(ix2 int, myLem1 lemmaStruct, totN
 		//fmt.Println("2    g05_build_one_lemma_row_word_OnlyOneLemma  g=", g, " lemma=", myLem1.leLemma, " ixW=", ixW, " ix2=", ix2, " ixL1=", ixL1 ); 
 	
 		
-		rowW:= xWordAlpha.uWordSeq + separ1 + xWordAlpha.uWord2 + separ1 + 
+		rowW:= xWordAlpha.uWord2 + separ1 +  xWordAlpha.uWord0 + separ1 + 
 			"ix" + separ1 + 
 			strconv.Itoa(xWordAlpha.uIxUnW_fr)   + separ1 + 
 			strconv.Itoa(xWordAlpha.uTotRow )    + separ1 + 

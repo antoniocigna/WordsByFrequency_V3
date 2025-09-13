@@ -187,3 +187,182 @@ func g06_setAvgWordFreqInRow() {
 	
 } // end of g06_setAvgWordFreqInRow		
 //------------------------------
+
+
+func g06_bind_go_passToJs_rowList(indexGroup int,  inpBegRow int, maxNumRow int, selFrasiParole12 int, 
+				js_function1R string, js_function2W string, js_parm string, caller string) {
+	// lista tutte le frasi richieste ( numero della prima frase, numero di frasi) 
+	
+	// 	selFrasiParole12: 1 = list chosen rows,  2 = list words in the chosen rows  3 = list toBeLearned words in the chosen rows 
+	//                    4 = list chosen rows sorted by priority 
+	
+	swPriorSort := false
+	if selFrasiParole12 == 4 {
+		swPriorSort = true
+		selFrasiParole12 = 1
+	}
+	
+	if inpBegRow == 1 {inpBegRow=0} 
+	
+	swLIST_WORD := (selFrasiParole12 != 1)    
+	swLIST_TOLEARN := (selFrasiParole12 == 3)  // only to be learned words
+	/**
+	fmt.Println( green("g08_bind_go_passToJs_rowList ")," indexGroup =", indexGroup, " inpBegRow=", inpBegRow, 
+			"  maxNumRow=", maxNumRow, " selFrasiParole12=", selFrasiParole12,
+			green(" swPriorSort="), swPriorSort, " swLIST_WORD=", swLIST_WORD)
+	**/
+		
+	var outS1 string;
+	numOut:=0 
+	
+	new_rIdRow :=""
+	wordIxFrList:= make([]int, 0, 10000)    //  list of index  of uniqueWordByFreq  of the words in the row 
+	
+	//fmt.Println("bind_go_passToJs_rowList ixFromList=", ixFromList, " swLIST_WORD=", swLIST_WORD ,  " selFrasiParole12=",  selFrasiParole12, " len=",  len(inputTextRowSlice) ) 
+	//list swLIST_WORD= true  selFrasiParole12= 2  len= 7	
+	//----------------------------------------------------------------
+	
+	type rowPr2 struct {   // priority of rows in the text 			
+		p2_index 		int    // index of row in inputTextRowSlice
+		p2_prio         int    // priority                          
+	}
+	var onePr rowPr2
+	
+	listIxRowPrio:= make([]rowPr2, 0, (maxNumRow + 10) )
+
+	//-----------------------------
+	/**
+	for ix1, rG:= range lista_gruppiSelectRow {	
+		fmt.Println(  green("lista_gruppiSelectRow ["), ix1, "] = ", rG, ", rG.rG_firstIxRowOfGr=", rG.rG_firstIxRowOfGr  )	
+	}
+	**/
+	//-------------
+	ixStartGroup := 0; 
+	ixEndGroup   := len(inputTextRowSlice) 
+	if indexGroup     < len(lista_gruppiSelectRow) { ixStartGroup = lista_gruppiSelectRow[indexGroup].rG_firstIxRowOfGr }
+	if (indexGroup+1) < len(lista_gruppiSelectRow) { ixEndGroup   = lista_gruppiSelectRow[(indexGroup+1)].rG_firstIxRowOfGr }
+	//fmt.Println( "=ixStartGroup=", ixStartGroup, " ixEndGroup=",  ixEndGroup)
+	//--------------------------------
+	minIx  := ixStartGroup + inpBegRow;
+	maxOut := minIx        + maxNumRow
+	
+	if maxOut >= ixEndGroup {  maxOut = ixEndGroup }
+	
+	//fmt.Println( green("listIxRowPrio:"), minIx, " - ", maxOut)
+	//----------------------
+	if swPriorSort {
+		for pp:=minIx; pp < maxOut; pp++ {			
+			if rowPriorityList[pp].rP_ixGroup != indexGroup { continue }	
+				onePr.p2_index = rowPriorityList[pp].rP_index
+				onePr.p2_prio  = pp	
+				listIxRowPrio  = append(listIxRowPrio, onePr) 			
+		} // end for pp
+	} else {
+		for ixRR := minIx; ixRR < maxOut; ixRR++ {
+			rline := inputTextRowSlice[ixRR]	
+			if rline.rIxGroup != indexGroup { continue }
+				onePr.p2_index = ixRR
+				onePr.p2_prio  = rline.rPriority	
+				listIxRowPrio  = append(listIxRowPrio, onePr) 				
+		} // end for ixRR		
+	} 
+	//--------------------------
+	//fmt.Println( green("listIxRowPrio:"), minIx, " - ", maxOut, " len(listIxRowPrio)=", len(listIxRowPrio) )
+	//-------------------------------
+	
+	for _, onePr:= range listIxRowPrio {
+		ixRR:= onePr.p2_index
+		
+		//if pp < 10 {fmt.Println( red(" out "), " pp=", pp , " onePr=", onePr, " ixRR=", ixRR ) }
+		
+		rline := inputTextRowSlice[ixRR]
+		
+		rowX := cleanRow(rline.rRow1)	
+		
+		//fmt.Println("bind_go_passToJs_rowList rline.rIxGroup=", rline.rIxGroup," rline=", rline )
+		
+		if ((rowX =="") || (rowX == LAST_WORD)) { 
+			//fmt.Println("   bind_go_pa... 1")
+			continue 
+		}		
+		
+		if rline.rIxGroup < 0 { 
+			new_rIdRow = "- " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		} else {
+			new_rIdRow = lista_gruppiSelectRow[ rline.rIxGroup ].rG_group + " " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
+		}
+		if swLIST_WORD {  
+			//fmt.Println("leggi riga=", rowX,  " rNumWords=", rline.rNumWords, " .rListIxUnF=", rline.rListIxUnF, " freq=", rline.rListFreq)
+			wordIxFrList = append(wordIxFrList, rline.rListIxUnF...)
+		} else {	
+			//if (pp < 10) {fmt.Println(      red(" out2 "), " ixRR=", ixRR , " ", rowX ) }
+			outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1 +
+				"|" + strconv.Itoa(rline.rIxGroup); 
+		}	
+	} // end for ixRR
+	//------------------------------
+	if swLIST_WORD {
+		sort.Ints(wordIxFrList)
+		wordIxFrList = append(wordIxFrList, -1)  // serve per scrivere l'ultimo dell'elenco 
+		   
+		//fmt.Println("bind_go_passToJs_rowList  wordIxFrList=", wordIxFrList)
+		
+		preW:=-1
+		numRw:=-999
+		outS1 = ""
+		//var highestValue = string( highestValueByte ) + "end_of_list"	
+		//fmt.Println("bind_go_passToJs_rowList len(uniqueWordByFreq)=",  len(uniqueWordByFreq), " last word=",  uniqueWordByFreq[ len(uniqueWordByFreq)-1 ].uWord2 ) 
+		//----------------
+		/**
+		for ix1,WF := range(uniqueWordByFreq) { 
+			fmt.Println(" tutti    uniqueWordByFreq[",ix1, "]=", WF.uWord2) 
+		}
+		**/
+		//------------------------------------
+		swElab:=false; 
+		var xWordAlpha wordUnAlphaStruct  
+		
+		for _,ixWF := range(wordIxFrList) {
+			//fmt.Println("bind_go_passToJs_rowList  ixWF =", ixWF,  "  preW=", preW, "   numRw=", numRw )
+			
+			if ixWF == preW {
+				numRw++
+				continue
+			}  	
+			swElab = false
+			if ((numRw > 0) && (preW >= 0)) { 
+				swElab = true
+				ixAl := uniqueWordByFreq[preW].fuIxUnW_al 
+				xWordAlpha= uniqueWordByAlpha[ixAl] 
+				//fmt.Println("preW=", preW, " WORD ", cyan(xWordAlpha.uWord2), " xWordAlpha.uLearnedYN=", xWordAlpha.uLearnedYN, "  swLIST_TOLEARN=", swLIST_TOLEARN)
+				if swLIST_TOLEARN {
+					if xWordAlpha.uLearnedYN == LEARNED_YES { swElab = false }
+				}
+			}
+			if swElab {	
+				//fmt.Println("    uniqueWordByFreq[",preW, "]=",cyan( uniqueWordByFreq[preW].uWord2 ) , " numRw=", numRw)     	
+				sw, rowW := word_to_row("", false, "anyRow", xWordAlpha, numRw)  
+				if sw {	
+					numOut++
+					//if (numOut < from1) {continue}   // July7, 2025  
+					outS1 += "<br>" + rowW 						
+					//if numOut >= numWords { 
+					//	break
+					//}
+				}
+			}
+			preW = ixWF	
+			numRw = 1
+		} // end for ixWf range
+		//fmt.Println("bind_go_passToJs_rowList  ", numOut, " words  --> js function=",js_function2W , "\n\toutS1=", outS1 )   
+		if len(outS1) == 0 { outS1 = "<br>" }
+		outS1 = sortWordToRowByFreq(outS1) 
+		go_exec_js_functionPlus( js_function2W, outS1 , js_parm, caller); 			
+	} else {	
+		if len(outS1) == 0 { outS1 = "<br>" }
+		go_exec_js_functionPlus( js_function1R, outS1 , js_parm, caller); 	
+	}
+			
+} // end of bind_go_passToJs_rowList
+
+//-------------------------------

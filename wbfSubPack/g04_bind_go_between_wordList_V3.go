@@ -6,22 +6,25 @@ package wbfSubPack
 		"strconv"
 		//"slices"
 		//"regexp"
-		//"sort"
+		"sort"
 	)
 //--------------------------------------------------------
 
-func g04_bind_go_passToJs_prefixWordList( numWords int, wordPrefix string, js_function string) {
+func g04_bind_go_passToJs_prefixWordList( numWords int, wordPrefix string, js_function string, js_parm string, js_caller string) {
 	
-	g04_bind_go_passToJs_betweenWordList_V3( numWords, wordPrefix, js_function) 
+	g04_bind_go_passToJs_betweenWordList_V3( numWords, wordPrefix, js_function, js_parm, js_caller) 
 			
 } // end of bind_go_passToJs_prefixWordList
 
 //-----------------------------------------
 
 //--------------------------------------------------
-func g04_get_word_row_list( maxNumWords int, fromWordPref string) (string, []int, []int) {
+func g04_get_word_row_list( maxNumWords int, fromWordPref0 string) (string, []int, []int) {
 	
-	//fmt.Println( red("\n 0 get_word_row_list ") + fromWordPref )  
+	 
+	fromWordPref := stdCode( fromWordPref0)
+	
+	//fmt.Println( red("\n 0 get_word_row_list ") + fromWordPref0 + " ==>" + fromWordPref ) 
 	
 	var onlyThisLevel string = "any" ; // "A0"  // questo deve arrivare da parametro  
 	var outS1 string; 	
@@ -67,7 +70,7 @@ func g04_get_word_row_list( maxNumWords int, fromWordPref string) (string, []int
 	
 	lenFrom = len(fromWord)  
 	
-	fromWordCod:= seqCode(fromWord)		
+	fromWordCod:= fromWord		
 	from1, _:= lookForWordInUniqueAlpha( fromWordCod,0)		
 	fromIx2 :=0	
 	fromWordTarg := fromWordCod; //  (strings.Split(fromWordCod,"."))[0]
@@ -81,28 +84,28 @@ func g04_get_word_row_list( maxNumWords int, fromWordPref string) (string, []int
 		fromIx2 = from1 
 		for k:= from1; k >=0; k-- {
 			wAlf   := uniqueWordByAlpha[k]		
-			lenCk   = len(wAlf.uWordSeq)
+			lenCk   = len(wAlf.uWord2)
 			if lenCk > lenFrom { lenCk = lenFrom }		
-			if wAlf.uWordSeq[0:lenCk] < fromWordTarg {  break } 		
+			if wAlf.uWord2[0:lenCk] < fromWordTarg {  break } 		
 			fromIx2 = k
 		}	
 		//---------
 		for k:= fromIx2; k < len( uniqueWordByAlpha); k++ {		
 			wAlf   := uniqueWordByAlpha[k]
-			lenCk   = len(wAlf.uWordSeq)
+			lenCk   = len(wAlf.uWord2)
 			
 			if sw_oneWord {
-				if wAlf.uWordSeq[0:lenCk] != fromWordTarg {
-					if wAlf.uWordSeq[0:lenCk] > fromWordTarg { break } 
+				if wAlf.uWord2[0:lenCk] != fromWordTarg {
+					if wAlf.uWord2[0:lenCk] > fromWordTarg { break } 
 					continue					
 				} 
 			} else {			
 				if lenCk > lenFrom { lenCk = lenFrom}		
 				// compare using the length of the prefix, I shall match just the beginning and nothing else    
 				
-				if wAlf.uWordSeq[0:lenCk] < fromWordTarg { //	fmt.Println(" continue "); 
+				if wAlf.uWord2[0:lenCk] < fromWordTarg { //	fmt.Println(" continue "); 
 					continue} 		
-				if wAlf.uWordSeq[0:lenCk] > fromWordTarg { //fmt.Println(" break    "); 
+				if wAlf.uWord2[0:lenCk] > fromWordTarg { //fmt.Println(" break    "); 
 					break } 			
 			}
 			sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf, -1 )	
@@ -129,7 +132,7 @@ func g04_get_word_row_list( maxNumWords int, fromWordPref string) (string, []int
 			wAlf := uniqueWordByAlpha[ixWord] 
 			sw, rowW := word_to_row("", onlyIfExtr, onlyThisLevel,  wAlf,-1 )  	
 			//fmt.Println( green(" 3 get_word_row_list" ), " z=" , z, " ixWord=", ixWord ,  " rowW=", rowW)  
-			//fmt.Println("    wordSuffixIndexList sw=", sw, " wAlf=", wAlf.uWordSeq) 
+			//fmt.Println("    wordSuffixIndexList sw=", sw, " wAlf=", wAlf.uWord2) 
 			if sw == false {
 				wordSuffixIndexList[z] = -1; 
 				continue 
@@ -146,22 +149,24 @@ func g04_get_word_row_list( maxNumWords int, fromWordPref string) (string, []int
 		outS1 = ""; //   NONE," + fromWord
 	}	
 	
+	outS1 = sortWordToRowByFreq(outS1) 
+	
 	return outS1, wordPrefixIndexList, wordSuffixIndexList
 	
 } // end of get_word_row_list
 //--------------------------------------
-func g04_bind_go_passToJs_betweenWordList_V3( maxNumWords int, fromWordPref string, js_function string) {
+func g04_bind_go_passToJs_betweenWordList_V3( maxNumWords int, fromWordPref string, js_function string, js_parm string, js_caller string) {
 	
 	outS1, _, _ := g04_get_word_row_list( maxNumWords, fromWordPref) 
 	
-	go_exec_js_function( js_function, outS1 ); 		
+	go_exec_js_functionPlus( js_function, outS1, js_parm, js_caller); 		
 			
 } // end of bind_go_passToJs_betweenWordList
 //------------------
 
 func word_to_row_onlyOneLemma(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xWordAlpha wordUnAlphaStruct, numRowsInW int) (bool, string)  {
 	
-	separ1 := ";."
+	
 	sw:= true
 	var lastLemma lemmaStruct
 	
@@ -189,7 +194,7 @@ func word_to_row_onlyOneLemma(onlyThisLemma string, onlyIfExtr bool, onlyThisLev
 		x2IxLemma 	= strconv.Itoa( ixL1) //   fmt.Sprint( xWordAlpha.uIxLemmaL[ix2] )
 	}	
 	  
-	return sw, xWordAlpha.uWordSeq + separ1 + xWordAlpha.uWord2 + separ1 + 
+	return sw, xWordAlpha.uWord2 + separ1 + xWordAlpha.uWord0 + separ1 + 
 		"ix" + separ1 + 
 		strconv.Itoa(xWordAlpha.uIxUnW_fr) + separ1 + strconv.Itoa(xWordAlpha.uTotRow)  + separ1 + 
 		x2Lemma       					+ separ1 + 
@@ -205,8 +210,49 @@ func word_to_row_onlyOneLemma(onlyThisLemma string, onlyIfExtr bool, onlyThisLev
 	
 } // end of word_to_row_onlyOneLemma
 //------------------------------------------------------
+func sortWordToRowByFreq( str1 string) string {
+	return str1	
+}	
+func VEROsortWordToRowByFreq( str1 string) string {	
+	righe:= strings.Split(str1, endOfLine); 
+	type rowWor struct {
+		myKeyF   int
+		myKeyW   string	
+		myField []string
+	}
+	var oneW rowWor; 
+	rowLis:= make([]rowWor,0, 10+len(righe) ) 
+	for j3, oneRow:= range righe {
+		if len(oneRow) < 1 {continue} 		
+		//if len(oneRow) < 5 {fmt.Println( green("sortWord  oneRow=") + oneRow + "<==") }		
+		oneW.myField = strings.Split(oneRow, separ1) 
+		oneW.myKeyF, _ = strconv.Atoi( oneW.myField[4] )   // totRow
+		oneW.myKeyW = oneW.myField[1]    // word0
+		if (j3 < 10) {fmt.Println( green("sortWord  oneW ") + "keyF=", oneW.myKeyF , " keyW=", oneW.myKeyW, " fields=", oneW.myField) }	
+		rowLis = append(rowLis, oneW)
+	}
+	//----------------
+	sort.Slice(rowLis, func(i, j int) bool {
+		if rowLis[i].myKeyF != rowLis[j].myKeyF {
+			return rowLis[i].myKeyF > rowLis[j].myKeyF    // tot.row  in descending order
+		} else {
+			return rowLis[i].myKeyW < rowLis[j].myKeyW   
+		}	
+	})
+	//-----------		
+	outS2:=""; 
+	for j3, oneW:= range rowLis {
+		outS2 += strings.Join(oneW.myField, separ1) + endOfLine
+		if (j3 < 10) { fmt.Println( green("sortato ") + "keyF=", oneW.myKeyF , " keyW=", oneW.myKeyW, " fields=", oneW.myField) }
+	}	
+	return outS2
+	
+} // end of sortWordToRowByFreq 
 
-func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xWordAlpha wordUnAlphaStruct, numRowsInW int) (bool, string)  {
+//-----------------------------------------
+
+
+func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xWordAlpha wordUnAlphaStruct, numRowsInW int) (bool, string)  { 	
 	
 	//fmt.Println("\nXXXXXXX word_to_row ( onlyThisLevel=" + onlyThisLevel + 
 	//  	"<==   onlyThisLevel=" + level_other +  "<==" + "  sw_list_Word_if_in_ExtrRow=" , sw_list_Word_if_in_ExtrRow); 
@@ -243,11 +289,11 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 			return false, ""
 		}  
 		
-		row:= xWordAlpha.uWordSeq + separ1 + xWordAlpha.uWord2 + separ1 + 
+		row:= xWordAlpha.uWord2 + separ1 + xWordAlpha.uWord0 + separ1 +
 				"ix" + separ1 + 
 				strconv.Itoa(xWordAlpha.uIxUnW_fr) + separ1 + 
 				strconv.Itoa(xWordAlpha.uTotRow)   + separ1 +
-				lastLemma.leLemma            	+ separ1 + 
+				lastLemma.leLemmaOr           	+ separ1 + 
 				lastLemma.leTran 				+ separ1 +  
 				separ1 							+  
 				lastLemma.lePara	 			+ separ1 +  
@@ -256,6 +302,7 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 				xWordAlpha.uLearnedYN              + separ1 + 			
 				"ixLemma" + separ1 + strconv.Itoa(ix2) + separ1 +  	
 				endOfLine 	
+		//fmt.Println(green("word_to_row "), row )	
 		outL += row		
 		//fmt.Println(" word_to_row ", row)  
 	} 
@@ -266,98 +313,6 @@ func word_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xW
 
 //------------------------------------------------------
 
-func TOGLIword_to_row(onlyThisLemma string, onlyIfExtr bool, onlyThisLevel string, xWordF2 wordUnAlphaStruct, numRowsInW int) (bool, string)  {
-	
-	//fmt.Println("\nXXXXXXX word_to_row ( onlyThisLevel=" + onlyThisLevel + 
-	//  	"<==   onlyThisLevel=" + level_other +  "<==" + "  sw_list_Word_if_in_ExtrRow=" , sw_list_Word_if_in_ExtrRow); 
-	separ1 := ";."
-	sw:= true
-	var lastLemma lemmaStruct
-	
-	if onlyIfExtr {
-		if (sw_list_Word_if_in_ExtrRow) {
-			if (xWordF2.uSwSelRowG == SEL_NO_EXTR_ROW) {   //    1 or 2: 1 SEL_EXTR_ROW, 2 SEL_NO_EXTR_ROW  
-				//             xWordF2.uSwSelRowG è stato impostato nell'ultima esecuzione di "Lista le Righe" dove è stato scelto il gruppo di righe ed il range da-a
-				sw = false
-				//fmt.Println("word to row " , xWordF2.uWord2, " da ignorare")
-				return sw, ""
-			} 
-		}
-	}
-	//fmt.Println("word to row " , xWordF2.uWord2, " \t\t\t XXXXXXXXXXXX (xWordF2.uTotExtrRow =" ,xWordF2.uTotExtrRow , " xxxxxxxxxxxxxxxxxxx   accettato")
-	//-----------
-	totNumRow:= numRowsInW
-	if totNumRow < 1 {
-		totNumRow = xWordF2.uTotExtrRow
-	}
-	
-	if onlyThisLemma != "" {
-		ix2 := -1
-		for _, ix1 := range xWordF2.uIxLemmaL {		
-			lastLemma = lemmaSlice[ ix1 ]
-			if lastLemma.leLemma == onlyThisLemma {
-				ix2=ix1; 
-				break
-			}  	
-		}		
-		if ix2 >=0 {			
-			fmt.Println("word to row 1 " , xWordF2.uWord2, " ix2=", ix2, " onlyIfExtr=", onlyIfExtr,  
-				"    WordF2.uTotExtrRow =" ,xWordF2.uTotExtrRow, 
-			  "	lastLemma.lePara=",  lastLemma.lePara)
-			
-			ixL1 := xWordF2.uIxLemmaL[ix2]
-	
-			return sw, xWordF2.uWordSeq + separ1 + xWordF2.uWord2 + separ1 + 
-				"ix" + separ1 + 
-				strconv.Itoa(xWordF2.uIxUnW_fr) + separ1 + strconv.Itoa(xWordF2.uTotRow)  + separ1 + 
-				xWordF2.uLemmaL[ix2]              + separ1 + 
-				lemmaSlice[ixL1].leTran           + separ1 +  
-				separ1 +  
-				lastLemma.lePara                  + separ1 +  
-				lastLemma.leExample               + separ1 +  
-				strconv.Itoa(totNumRow) + separ1 +  		
-				xWordF2.uLearnedYN                + separ1 + 	
-				"ixLemma" + separ1 + fmt.Sprint( xWordF2.uIxLemmaL[ix2] ) + separ1 + 	
-				endOfLine 		
-		}
-	}
-	
-	//---------------------------	
-var sw2 = (xWordF2.uWord2 == "personen")
-	lisPara:= ""
-	lisExa := ""
-	for _, ix2 := range xWordF2.uIxLemmaL {		
-		lastLemma = lemmaSlice[ ix2 ]
-		lisPara = wSep + lastLemma.lePara	
-		lisExa  = wSep + lastLemma.leExample	
-		if sw2 {  fmt.Println( "1  ", xWordF2.uWord2, " ix2=", ix2, " lisPara=", lisPara," lisExa=", lisExa )  	}	
-	}
-	if len(lisPara) > 0 {
-		lisPara = lisPara[ len(wSep):]
-		lisExa  = lisExa[  len(wSep):]
-		if sw2 {  fmt.Println( "2  ", xWordF2.uWord2, " lisPara=", lisPara)  	}	
-	}		
-	if sw2 {  fmt.Println( "3  ", xWordF2.uWord2,  " lisPara=", lisPara)  	}	
-	
-	return sw, xWordF2.uWordSeq + separ1 + xWordF2.uWord2 + separ1 + 
-				"ix" + separ1 + 
-				strconv.Itoa(xWordF2.uIxUnW_fr) + separ1 + strconv.Itoa(xWordF2.uTotRow)  + separ1 +
-				fmt.Sprint( strings.Join(xWordF2.uLemmaL,  wSep)  ) + separ1 + 
-				//fmt.Sprint( strings.Join(xWordF2.uTranL,   wSep)  ) + separ1 +  
-				listStringLemmaSlice_Tran(xWordF2) + separ1 +  
-				separ1 +  
-				lisPara + separ1 +  
-				lisExa  + separ1 +  
-				strconv.Itoa(totNumRow) + separ1 +  			
-				xWordF2.uLearnedYN              + separ1 + 			
-				"ixLemma" + separ1 + intSliceToString( xWordF2.uIxLemmaL,wSep )  + separ1 + 		
-				endOfLine 
-				
-				//fmt.Sprint( strings.Join(xWordF2.uPara,    wSep)  ) + separ1 +  
-				//fmt.Sprint( strings.Join(xWordF2.uExample, wSep)  ) + separ1 +  
-				 
-} // end of TOGLIword_to_row 
-//-----------------------------------
 func intSliceToString(mySlice []int, wSep string) string {
 	output := ""
 	for _, v := range mySlice {

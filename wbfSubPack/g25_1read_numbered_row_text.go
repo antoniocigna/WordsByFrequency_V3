@@ -64,11 +64,12 @@ func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 	//----
 	for z:=0; z< len(lineD); z++ { 
 		lineZ = strings.TrimSpace(lineD[z]) + "||||"	
+		sw1:= (strings.Index(lineZ, "bschen") >=0 )
 		field  := strings.Split( lineZ, "|" )
-		id_key := strings.TrimSpace( field[0] )
+		id_key := strings.TrimSpace( field[0] ) 
 		ty     := strings.TrimSpace( field[1] ) 		
 		row    := strings.TrimSpace( field[2] )  	 
-		
+		if sw1 {  fmt.Println(green("g25_1 z="), z, " lineZ=", lineZ, " field=,", field)  }
 		
 		if ((row == "") || (id_key == "") || (ty=="")) { continue }
 		
@@ -166,7 +167,7 @@ func g25_1read_dictRow_Orig_and_Tran_file( path1 string, inpRowFile string) {
 	
 	//-------------
 	
-	go_exec_js_function( "js_go_build_rowGruppi", gruppi_option); 	
+	go_exec_js_function( "go_run_js_build_rowGruppi", gruppi_option); 	
 	
 		
 	//-------------------

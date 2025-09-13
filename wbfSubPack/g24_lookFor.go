@@ -66,7 +66,7 @@ func lookForLemma(lemmaTarg string, _ int) (int, int) {
 
 func lookForAllLemmas(  wordToFind string, lastIx int) []int {
 
-	wordToFindCod:= seqCode( wordToFind )	
+	wordToFindCod:= wordToFind 	
 	ixFoundList := lookForAllLemmas2(  wordToFindCod, lastIx ) 
 	if len(ixFoundList) > 0 {
 		return ixFoundList
@@ -80,7 +80,7 @@ func lookForAllLemmas(  wordToFind string, lastIx int) []int {
 						"ue","ü"), 		
 				"ss","ß") 	
 				
-	wordToFindCod2 := seqCode( inp1 )
+	wordToFindCod2 := inp1
 	ixFoundList2 := lookForAllLemmas2(  wordToFindCod2, lastIx ) 
 	if len(ixFoundList2) == 0 {
 		ixFoundList2 = append( ixFoundList,  -1)	// if lemma is missing use the original word to find 
@@ -92,7 +92,7 @@ func lookForAllLemmas(  wordToFind string, lastIx int) []int {
 //------------------------------------------
 func lookForAllLemmas2(  wordToFindCod string, lastIx int) []int {
 
-	//wordToFindCod:= seqCode( wordToFind )
+	
 
 	// get the index of a word in word-lemma dictionary (-1 if not found)  
 	var ixFoundList = make( []int, 0,0) 
@@ -303,7 +303,7 @@ func lookForWordInUniqueAlpha(wordCoded string, lastIx int) (int, int) {
 	maxIx := high; 
 	
 	if lastIx >=0 {
-		if uniqueWordByAlpha[lastIx].uWordSeq < wordCoded {  low = lastIx }
+		if uniqueWordByAlpha[lastIx].uWord2 < wordCoded {  low = lastIx }
 	}
 	
 	//----
@@ -312,7 +312,7 @@ func lookForWordInUniqueAlpha(wordCoded string, lastIx int) (int, int) {
 		if median >= len(uniqueWordByAlpha) {
 			fmt.Println("errore in lookForWordInUniqueAlpha: median=", median , "     len(uniqueWordByAlpha)=" ,  len(uniqueWordByAlpha) )
 		}
-		if uniqueWordByAlpha[median].uWordSeq < wordCoded {
+		if uniqueWordByAlpha[median].uWord2 < wordCoded {
 			low = median + 1
 		}else{
 			high = median - 1
@@ -334,7 +334,7 @@ func searchAllWordWithPrefixInAlphaList(  wordPref string, lastIx int) (int, int
 	// get the indicies of the first and the last word beginning with the required prefix (-1,-1 if not found)  
 	
 	wordPref = strings.ToLower(strings.TrimSpace( wordPref));  
-	wordCodPref:= seqCode(wordPref)
+	wordCodPref:= wordPref
 	
 	lenPref:= len(wordPref); 
 	ixTo := -1; ixFrom:= -1;	
@@ -355,7 +355,7 @@ func searchAllWordWithPrefixInAlphaList(  wordPref string, lastIx int) (int, int
 	spaceFill := "                                                          ";  
 	//-----------
 	for k:= ix1; k >= 0; k-- {
-		wA =  uniqueWordByAlpha[k].uWordSeq + spaceFill
+		wA =  uniqueWordByAlpha[k].uWord2 + spaceFill
 		if wA[0:lenPref] < wordCodPref { break; }
 		ixFrom = k; 
 	}  
@@ -363,7 +363,7 @@ func searchAllWordWithPrefixInAlphaList(  wordPref string, lastIx int) (int, int
 	if (ixFrom >=0) { ixTo = ixFrom; }  //  se ixFrom è valido, deve essere valido anche ixTo   
 	
 	for k:= ix2; k < numberOfUniqueWords; k++ {
-		wA =  uniqueWordByAlpha[k].uWordSeq + spaceFill  
+		wA =  uniqueWordByAlpha[k].uWord2 + spaceFill  
 		if wA[0:lenPref] > wordCodPref { break; }
 		ixTo = k; 
 		if (ixFrom < 0) {ixFrom = ixTo;}  //  se ixTo è valido, deve essere valido anche ixFrom   

@@ -292,7 +292,6 @@ func split_ALL_word_dict_row(  strRows string) {
 	/**
 	//--------------------------
 		type lemmaTranStruct struct {
-			dL_lemmaSeq  string 
 			dL_lemma2    string  
 			dL_numDict   int	  
 			dL_tran      string
@@ -357,7 +356,6 @@ func split_ALL_word_dict_row(  strRows string) {
 			//uniqueWordByAlpha[ixAlfa].uTranL[m] = mTran 
 			
 			//lemmaTranStr += "\n" + lemmaLis[newL] + "|" + tranLis[newL]  	
-			//ele1.dL_lemmaSeq = seqCode(lemmaLis[newL] )                  //  lemmaTranStruct struct   .dL...
 			ele1.dL_lemma    = lemmaLis[newL] 
 			ele1.dL_numDict  = lastNumDict
 			ele1.dL_tran     = tranLis[newL]   
@@ -394,7 +392,6 @@ func TOGLIsplit_ALL_word_dict_row(  strRows string) string {
 	/**
 	//--------------------------
 		type lemmaTranStruct struct {
-			dL_lemmaSeq  string 
 			dL_lemma2    string  
 			dL_numDict   int	  
 			dL_tran      string
@@ -459,7 +456,6 @@ func TOGLIsplit_ALL_word_dict_row(  strRows string) string {
 			//uniqueWordByAlpha[ixAlfa].uTranL[m] = mTran 
 			
 			lemmaTranStr += "\n" + lemmaLis[newL] + "|" + tranLis[newL]  	
-			//ele1.dL_lemmaSeq = seqCode(lemmaLis[newL] )                  //  lemmaTranStruct struct   .dL...
 			ele1.dL_lemma    = lemmaLis[newL] 
 			ele1.dL_numDict  = lastNumDict
 			ele1.dL_tran     = tranLis[newL]   

@@ -8,13 +8,14 @@ import (
 )
 //--------------------------------------------------------------------------
 
-func g14_appendOneLemma( xLemma string, fromIx int, toIx int, numLemmaOrig int, numLemmaAdded int	) (int, int) {
+func g14_appendOneLemma( xLemma string, xLemmaOr string, fromIx int, toIx int, numLemmaOrig int, numLemmaAdded int	) (int, int) {
 	
 	
 	
 	var leV lemmaStruct; 
 	iixLem:=0	
 	leV.leLemma    = xLemma
+	leV.leLemmaOr  = xLemmaOr
 	leV.leNumWords = 0 
 	leV.leFromIxLW = fromIx 
 	leV.leToIxLW   = toIx  

@@ -170,9 +170,9 @@ var uniqueWordByFreq  []wordUnFreqStruct;   // elenco delle parole in ordine di 
 var uniqueWordByAlpha []wordUnAlphaStruct;    // elenco delle parole in ordine alphabetico
 
 //--
-type wordStruct struct {       // a word is repeated several time one for each row containing it  
-	wWordSeq  string
+type wordStruct struct {       // a word is repeated several time one for each row containing it  	
     wWord2    string
+	wWord0    string
 	wIxThisWord_al int 
 	wIxUniq_al   int               // index of uniqueWordByFreq 	
 	wIxUniq_fr   int               // index of uniqueWordByFreq 	
@@ -189,11 +189,9 @@ type wordStruct struct {       // a word is repeated several time one for each r
 	wIxLemmaList []int
 }
 //--
-
-//--
 type wordUnAlphaStruct struct {    // uniqueWordByAlpha
-	uWordSeq    string	
     uWord2      string		
+	uWord0    string	
 	uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
 	uIxUnW_fr   int            // index of this word in the uniqueWordByFreq	
 	uTotRow     int 
@@ -212,16 +210,13 @@ type wordUnAlphaStruct struct {    // uniqueWordByAlpha
 }	
 
 //--
-type wordUnFreqStruct struct {    // uniqueWordByFreq
-	fuWordSeq    string	
-    fuWord2      string		
+type wordUnFreqStruct struct {    // uniqueWordByFreq		
+    fuWord2      string	
+	fuWord0    string
 	fuIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
 	fuIxUnW_fr   int            // index of this word in the uniqueWordByFreq	
 	fuTotRow     int 
 }	
-
-
-
 ***/
 //--------------------------------------
 func g32_build_stat() {
@@ -243,14 +238,14 @@ func g32_build_stat() {
 	num_word_0 :=0 
 	//--------------------		
 	for _, wS1 := range wordSliceAlpha {	
-		if strings.Index(wS1.wWordSeq, "...") > 0 { continue }
+		if strings.Index(wS1.wWord2, "...") > 0 { continue }
 		num_word++
 		//if wS1.sw_ignore == false { 
 		num_word_0++
 		//}
 		
-		if wS1.wWordSeq != preW {
-			preW = wS1.wWordSeq;
+		if wS1.wWord2 != preW {
+			preW = wS1.wWord2;
 			numWordUn += 1 
 			numWordRi += wS1.wTotRow 
 			//if wS1.sw_ignore == false { 
@@ -293,8 +288,8 @@ func g32_build_stat() {
 	for _, frW:= range uniqueWordByFreq{
 		if strings.Index(frW.fuWord2,"...") > 0  { continue }  
 		/**
-		fuWordSeq    string	
-		fuWord2      string		
+		fuWord2      string
+		fuWord0      string
 		fuIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
 		fuIxUnW_fr   int            // index of this word in the uniqueWordByFreq	
 		fuTotRow     int 

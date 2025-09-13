@@ -38,13 +38,13 @@ func begin() {
 		   ";))"	
 		   //";" + "level " + msgLevelStat + "))" 		
 
-	go_exec_js_function("js_go_showReadFile", mainNum + showReadFile);  
+	go_exec_js_function("go_run_js_showReadFile", mainNum + showReadFile);  
 			
 	if sw_stop { 
 				fmt.Println("UI is ready ( run stopped because of some error)")
 	} else {
-		fmt.Println("go_exec_js_function( js_go_ready (prevRunLanguage=",  prevRunLanguage )
-		go_exec_js_function("js_go_ready", prevRunLanguage )
+		fmt.Println("go_exec_js_function( go_run_js_ready (prevRunLanguage=",  prevRunLanguage )
+		go_exec_js_function("go_run_js_ready", prevRunLanguage )
 		fmt.Println("UI is ready")
 	}	
 	fmt.Println("\nEND of begin \n") 
@@ -67,11 +67,8 @@ func g01_build_word_db() {
 	g11_buildWordList() 	   	
 	
 	
-} // end of build_and_elab_word_list()
-//------------------------------
-func build_and_elab_word_list() {
-	fmt.Println( red("build_and_elab_word_list  vuota x prova"))
-} 
+} // end of g01_build_word_db
+
 //--------------------------------
 
 func getPgmArgs( key0, key1 , key2 , key3, key4 string) (string, string, bool, int, string) {  

@@ -11,6 +11,7 @@ type separPrefStruct struct {
 //---
 type lemmaStruct struct {
 	leLemma    string    
+	leLemmaOr  string    
 	leNumWords int 
 	leFromIxLW  int             // limite inferiore range indici a wordLemmaPair (in seq. di lemma)   wordLemmaPair_lemmaWordSeq[] 
 	leToIxLW    int             // limite superiore range indici a wordLemmaPair (in seq. di lemma)   wordLemmaPair_lemmaWordSeq[]   
@@ -23,9 +24,10 @@ type lemmaStruct struct {
 //-------------------------------
 
 type wordLemmaPairStruct struct {
-	//lWordSeq 	 string 
 	lWord2   	 string 
 	lLemma   	 string
+	lWord0   	 string 
+	lLemmaOr   	 string
 	lIxLemma  	 int
 	lIxUnWord_al int
 } 
@@ -72,9 +74,9 @@ const SEL_EXTR_ROW    = 1;
 const SEL_NO_EXTR_ROW = 2; 
 
 //--
-type wordStruct struct {       // a word is repeated several time one for each row containing it  
-	wWordSeq  string
-    wWord2    string
+type wordStruct struct {       // a word is repeated several time one for each row containing it 
+    wWord2    string           // parola con ortografia standardizzata ( umlaut scompare aggiunta vocale es. ue  , eszet diventa ss) 
+	wWord0    string           // parola originale con umlaut e eszet se ci sono
 	wIxThisWord_al int 
 	wIxUniq_al   int               // index of uniqueWordByFreq 	
 	wIxUniq_fr   int               // index of uniqueWordByFreq 	
@@ -92,8 +94,8 @@ type wordStruct struct {       // a word is repeated several time one for each r
 }
 //--
 type wordUnAlphaStruct struct {    // uniqueWordByAlpha
-	uWordSeq    string	
     uWord2      string		
+	uWord0      string	
 	uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
 	uIxUnW_fr   int            // index of this word in the uniqueWordByFreq	
 	uTotRow     int 
@@ -113,7 +115,6 @@ type wordUnAlphaStruct struct {    // uniqueWordByAlpha
 
 //--
 type wordUnFreqStruct struct {    // uniqueWordByFreq
-	fuWordSeq    string	
     fuWord2      string		
 	fuIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
 	fuIxUnW_fr   int            // index of this word in the uniqueWordByFreq	
@@ -138,7 +139,6 @@ type statStruct struct {
 //--------------------------
 var lastNumDict = 0;   
 type lemmaTranStruct struct {
-	//dL_lemmaSeq   string 
 	dL_lemma      string 
 	dL_numDict    int	
 	dL_tran       string    

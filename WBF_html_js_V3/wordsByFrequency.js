@@ -4,62 +4,80 @@ Words By Frequence: A tool to practice language comprehension
 Antonio Cigna 2023
 license MIT: you can share and modify the software, but you must include the license file 
 */
-/* jshint strict: true */
-/* jshint esversion: 6 */
+/* jshint esversion:  8 */
+/* jshint strict: true  */
 /* jshint undef: true, unused: true */
+/* jshint varstmt: true */
+/* jshint asi: true     */
 //-----------------------------------------------
 const YES1 = "Yes";
 const NOT_YET1 = "Not Yet";
 const MAX_NUM_WORD_LEARN = 10;
 let numWordsKnownChanged = 0;
 const NUM_CELL_LEMMA = 6;  
-//----------------------------------
-var html_fromIxRow  = 0;
-var html_toIxRow  = 0;
-var listaGruppiTesto=""; 
+let sw_rowListFrom_onclick = false
+let listaGruppiTesto=""; 
 //------------------------------------------
-var numeroWord_TR=0;
+let numeroWord_TR=0;
 const wSep = "§";
-const endOfLine = ";;\n"; 
-//var apiceInverso = `40`
+const endOfLine = ";.\n"; 
+//let apiceInverso = `40`
 let is_selected_row_only = false; 
 let index_onlySelRowsWanted = set_ix_selectedRow(); //0
 
 let swBegin=false;
-let ele_allowWordTranslation= document.getElementById("id_allowWordTranslation"); 
-let ele_wordsToTranslate 	= document.getElementById("id_words_to_translate");
-let ele_wordsTranslated  	= document.getElementById("id_words_translated"  );
-let ele_wordListDisplay  	= document.getElementById("id_wordListDisplay"   );
-let ele_wordList = document.getElementById("id_wordList1");
+let ele_allowWordTranslation= getById("id_allowWordTranslation"); 
+let ele_wordsToTranslate 	= getById("id_words_to_translate");
+let ele_wordsTranslated  	= getById("id_words_translated"  );
+
+let ele_wordList = getById("id_wordList1");
+//----------------------------------------
+//  dati che rappresentano il gruppo di testo nel DB  
+let x_rG_group           // numero identificativo del gruppo 
+let x_rG_firstIxRowOfGr  // indice dell'inizio del gruppo    (se il gruppo precedente termina all'indice 250, questa variabile contiene 251)   
+let x_rG_lastIxRowOfGr   // indice della fine del gruppo 
+let x_rowGrIndex
+let x_id_gruppi_iBegNum_html_rowGroup_beginNum
+let x_rG_ixSelGrOption
 
 //----------------------------------------------
-var html_rowGroup_index_gr = 0 ;   // from onchange_rowGroupSelectChange
-var html_rowGroup_beginNum = 0 ;   // from onchange_rowGroupNumBegChange 
-var html_rowGroup_numRows  = 0 ;   // from onchange_rowGroupNumRowsChange 
-var html_sel_extrRow       = "";   // from onchange_mostFreqWordList_extrRow
-var last_html_rowGroup_index_gr = ""; 
-var last_html_rowGroup_beginNum = "";
-var last_html_rowGroup_numRows  = "";
-var last_sel_extrRow_freqWord_list = ""; 
-var sw_somethingChanged	= false;    // resetted  only by onclick_mostFreqWordList_require   
+let SAVE_fromIx_row  ;   
+let	SAVE_toIx_row    ; 	
+//---------------
+let id_gruppi_selected_groupIndex = 0 ; // from onchange_rowGroupSelectChange ( select nella lista dei gruppi, attenzione il gruppo "1" ha indice 0 )
+let id_gruppi_SelectedBegin       = 0 ; // from onchange_rowGroupNumBegChange ( scelta della riga di inizio del gruppo ( es. gruppo 3, inizio 0, num.righe 150 )     
+let id_gruppi_SelectedNumRow      = 0 ; // from onchange_rowGroupNumBegChange ( scelta del numero righe - default = 1+indice finale - indice iniziale o inizio gruppo se inizio > 0 ) 
+//-----------------------------------------------------------
+let html_sel_extrRow       = "";   // from onchange_mostFreqWordList_extrRow
+let last_id_gruppi_sel_html_rowGroup_index_gr 		= ""; 
+let last_id_gruppi_iBegNum_html_rowGroup_beginNum	= "";
+let last_html_rowGroup_numRows 		= "";
+let last_sel_extrRow_freqWord_list	= ""; 
+
+let last_ele_analWords_id 		= "";
+let	last_ele_analWords_tr 		; 
+let	last_ele_analWords_height 	;  
+
+
+let sw_somethingChanged	= false;    // resetted  only by onclick_mostFreqWordList_require   
 
 onchange_mostFreqWordList_extrRow(); 
-onchange_rowGroupSelectChange(false,10); 
+//onchange_rowGroupSelectChange(false,10); 
 
-//var sw_rowGroupSelectChange       = false; 	
-//var sw_rowGroupSelectChange_group = false; 	
+//let sw_rowGroupSelectChange       = false; 	
+//let sw_rowGroupSelectChange_group = false; 	
 
-//let ele_word     = document.getElementById("id_word"      );
-//let ele_wRowList = document.getElementById("id_wRowList1");
-//let ele_wordLisH = document.getElementById("id_wordListH");
+//let ele_word     = getById("id_word"      );
+//let ele_wRowList = getById("id_wRowList1");
+//let ele_wordLisH = getById("id_wordListH");
 
-let myPage01 = document.getElementById("id_myPage01");
-let myPage02 = document.getElementById("id_myPage02");
-let myPage03 = document.getElementById("id_myPage03");
-let myPage04 = document.getElementById("id_myPage04");
-let myPage05 = document.getElementById("id_myPage05");
+let myPage01 = getById("id_myPage01");
+let myPage02 = getById("id_myPage02");
+let myPage03 = getById("id_myPage03");
+let myPage04 = getById("id_myPage04");
+let myPage05 = getById("id_myPage05");
 let maxNumRow = 99999999999; // 100;
-let wordToStudy_list ;
+let wordToStudy_list = [];
 let numberOf_uniW = 0;
 let numberOf_totW = 0;
 let	numberOf_Row  = 0;
@@ -75,10 +93,9 @@ const wordTTBegin   = ";"
 const wordSepEndBeg = wordTTEnd + wordTTBegin
 //-------
 let rowToStudy_list; 
-let ele_toTranslate_textarea 	= document.getElementById("txt_pagOrig");  
-let ele_translated_textarea  	= document.getElementById("txt_pagTrad"  );
+let ele_toTranslate_textarea 	= getById("txt_pagOrig");  
+let ele_translated_textarea  	= getById("txt_pagTrad"  );
 let sw_newRowTranWritten = false;   // when true new translations  cannot  be asked 
- 
 //----------------
 //let sw_newWordTranWritten = false;   // when true new translations  cannot  be asked 
 let sw_ignore_missTranWord  = true;    // ignore missing translation 
@@ -90,10 +107,37 @@ let sw_firstDictLine_already_existed = false;
 //console.log("window dimensions = w=" , window.innerWidth, "  h=", window.innerHeight);   
 //console.log(" javascript " + screen.width + " x " + screen.height);
 //---------------------------------------
-let ele_where = document.getElementById("id_where");
-let ele_bar   =  document.getElementById("id_progrBar");
-let ele_bar2  =  document.getElementById("id_progrBar2");
-let ele_bar3  =  document.getElementById("id_progrBar3");
+//let ele_where = getById("id_where");
+let ele_bar   = getById("id_progrBar");
+let ele_bar2  = getById("id_progrBar2");
+let ele_bar3  = getById("id_progrBar3");
+//---------------------------------
+const numButton1listW = 1; // onclick most frequent word list  
+const numButton2prefW = 2; // onclick BetweenWordList or prefix wordlist   
+const numButton3prefL = 3; // onclick Lemma word list   
+const numButton4rowL  = 5; // onclick Lemma list   
+const numButton5      = 0; // ?   
+//----------------------------------
+//  bottoni di sinistra
+const xOnclick1lisR = "1L" // Lista le Righe scelte                                      onclick_require_rowList1(1)
+const xOnclick2lisW = "2L" // Lista Le Parole delle righe scelte                         onclick_require_rowList1(2)
+const xOnclick3lisL = "3L" // Lista Soltanto le parole delle righe scelte da imparare    onclick_require_rowList1(3)	
+const xOnclick4lisP = "4L" // Lista le Righe scelte per priorità                         onclick_require_rowList1(4)
+const tagLeftOnclickArr = ["",xOnclick1lisR,xOnclick2lisW, xOnclick3lisL, xOnclick4lisP ]
+//-------------------------------------------------
+// bottoni di destra
+const xOnclick1lisAW = "1R" // Lista le Parole di tutti i testi             onclick_mostFreqWordList_require('anyRow','allWords')" 
+const xOnclick2lisALr= "2R" // Lista le Parole da imparare                  onclick_mostFreqWordList_require('anyRow','toBeLearned')
+const xOnclick3lisSW = "3R" // Lista le Parole richieste (pref suffix)      onclick_require_betweenWordList()
+const xOnclick4lisSLm= "4R" // Lista i lemma richiesti   (pref suffix)      onclick_require_betweenLemmaList() 
+const tagRightOnclickArr = ["",xOnclick1lisAW,xOnclick2lisALr, xOnclick3lisSW, xOnclick4lisSLm ]
+//--------------------------------------
+// bottoni sulla parte destra della pagina delle parole
+const xOnclick1ixWord = "RW1" //  onclick_rowsByIxWord(           \'§one-ix1§\'     , 'RW1')
+const xOnclick2ixLemma= "RW2" //  onclick_rowsByIxLemma(          \'§one-ixLemma§\' , 'RW2')
+const xOnclick3LemWord= "RW3" //  onclick_require_lemmaWordList2  \'§one-f_lemma§\' , 'RW3')
+
+
 //------------------
 function black(   str1 ) { return "\u001b[30m" + str1 }
 function red(     str1 ) { return '\u001b[31m' + str1 }
@@ -103,12 +147,141 @@ function blue(    str1 ) { return "\u001b[34m" + str1 }
 function magenta( str1 ) { return "\u001b[35m" + str1 }
 function cyan(    str1 ) { return "\u001b[36m" + str1 }
 function white(   str1 ) { return "\u001b[37m" + str1 }
+let js_parm = "";
+let js_caller = "";
+let js_func = ""; 
+//------------------------------------------------
+function js_call_go() {  // called by  html page body onload
+	let msg1 = "html loaded"; 
+	console.log("html function js_call_go: ", msg1, "\n") 
+	
+	go_passToJs_html_is_ready(msg1,  "", js_parm, js_caller) ;  //  "js_go_go_is_ready"); 
+}
+//-----------------------------------------
+function getCaller(num) {	
+	let stack1="";
+	try {
+		stack1 = (new Error()).stack?.split("\n")[num].toString() ;
+		let s1 = stack1.lastIndexOf("/") 
+		if (s1 > 0) { stack1 = stack1.substring(s1+1) }
+	} catch(e1) {
+		stack1 = ( new Error().stack.toString() )		
+	}	
+	return stack1	
+}
+//------------------------
+function getById_inner( uno ,swTest=false) {
+	let ele1 = getById( uno ,swTest) 
+	if (ele1) {
+		try{ 
+			if (ele1.innerHTML) {
+				return [ele1,true,true]
+			} else {
+				return [ele1,true,false]
+			}	
+		} catch(e1) {
+			return [ele1,false,false]
+		}		
+	} else {
+		return [ele1,false,false]
+	}	
+}
+//------------------------
+function getById_children( uno ,swTest=false) {
+	let ele1 = getById( uno ,swTest) 
+	if (ele1) {
+		try{ 
+			if (ele1.children) {
+				return [ele1,true,true, ele1.children.length]
+			} else {
+				return [ele1,true,false,0]
+			}	
+		} catch(e1) {
+			return [ele1,false,false,0]
+		}		
+	} else {
+		return [ele1,false,false,0]
+	}	
+}
+//----------------
+function getById( uno ,swTest=false) {
+	try {
+		let ele1 = document.getElementById( uno );
+		if (ele1) {
+			return ele1
+		} else {
+			if (swTest) return null;
+			document.getElementById("id_error00").innerHTML = 'errore non trovato id="' + uno + '" in ' + getCaller(3).replace(")"," ") ;			
+			logColor("%%red", 'ERRORE id="', "%%blue;font-weight:bold;",  uno, "%%black", '" in ', "%%blue;font-weight:bold;",  getCaller(3).replace(")"," ") , "%%red", ' non esiste'  );			
+		}	
+	} catch(e1) {
+		logColor("%%red", e1);
+	}	
+}
+/**
+let uno="uno"; let due="due"
+logColor("%%red", 'ERRORE id="', "%%blue",  uno, due, "%%black", '" in ', "%%violet",  "tre" , "%%red", ' non esiste'  );
+logColor("%%red", 'ERRORE id="', "%%blue;font-size:2.0em;",  uno, due, "%%black", '" in ', "%%violet",  "tre" , "%%red", ' non esiste'  );
+**/
+//------------------------------------
+function logColor() {    //  logColor( "%%red", uno, due, tre, "%%green",quattro)
 
+	try {	
+		let numAr = arguments.length ; 
+		let colori = [""];
+		let strList = [];
+		let arg1, argS;
+		let jL = -1;
+		let where = ""
+		let i0=0; 
+		//-----------
+		if (arguments.length > 1) {
+			arg1 = ""+ arguments[0];
+			argS = arg1.trim();
+			if (argS.substr(0,2) != "%%") { 
+				where = argS
+				i0=1;
+			}
+		}	
+		//-----------------		
+		for (let i = i0; i < arguments.length; i++) {
+			arg1 = ""+ arguments[i];
+			argS = arg1.trim();
+			if (argS.substr(0,2) == "%%") {
+				colori.push( "color:" +argS.substring(2).trim() +";" );
+				strList.push("")
+				jL++
+			}	
+			else {
+				strList[jL] += " " + arg1; 
+			}
+		}	
+		//-------------
+		if (where != "") {
+			let lineStm = getCaller(3);
+			colori.push( "color:" +"black;font-size:0.8em;font-style:oblique;" );
+			strList.push("")
+			jL++
+			strList[jL] += "     (in function " + where + " file " + lineStm ;
+		}
+		//-------------------
+		let uno=""
+		for(let i2=0; i2 < strList.length; i2++) {
+			uno += "%c" + strList[i2].substring(1);		
+		}  		
+		colori[0] = uno;
+		console.log(...colori) ;	
+	} catch(e1) {
+	  console.log("%cerrore in logColor(","color:red;",  arguments , ")" );
+	  console.log("%c" + e1, "color:red;")	  
+	}	
+
+} // end of logColor
 //------------------------
 
 function set_ix_selectedRow() {
-	var x2 = document.getElementById("id_sel_2_extrRow");
-    for (var i=0; i < x2.children.length; i++) {
+	let x2 = getById("id_sel_2_extrRow");
+    for (let i=0; i < x2.children.length; i++) {
 		if (x2.children[i].id=="extrRow") {
 			return i; 
 		}
@@ -116,69 +289,29 @@ function set_ix_selectedRow() {
 	return 0; 
 } // 
 
-//-------------------------
-function OLDextract_level(data0) {
-	console.log("extract_level(data0=", data0) 
-	/*
-	result += "<br>" + fmt.Sprintln( sS.uniqueWords , " words (",  
-				sS.uniquePerc, "%), make up ", sS.totPerc,"% of the text (", sS.totWords, " words)") 
-	*/
-	//var eleSelect = document.getElementById("id_sel_1_levTOLTO")
-	/**
-		<select id="id_sel_1_lev"> 
-			<option value="any">qualsiasi</option>
-			<option value="A0">A0</option>
-			<option value="A1">A1</option><option value="A2">A2
-		</select>
-	**/
-	
-	//var newSelect = '   <option value="any">qualsiasi</option> \n' ; 
-	
-	var newSelect = '';
-	
-	var una, j1, oneLevel;
-	j1 = (data0+ " ..end" ).indexOf("..end")
-	var data = data0.substring(0, j1) 
-	var righe = data.split(":");
-	
-	for (var z1=0; z1 < righe.length; z1++) {
-		una = righe[z1].trim();
-		if (una.lastIndexOf("-oth-") > 0) { continue; } 
-		console.log("extract_level(data0) z1=", z1 , "  ". una) 
-		j1=una.lastIndexOf(" ") 
-		if (j1 < 0) {continue}
-		oneLevel = una.substring(j1).trim()	
-		if (oneLevel == "") { continue }		
-		newSelect  += '   <option id="' + oneLevel + '">' + oneLevel + '</option> \n' ; 
-	}	
-	//eleSelect.innerHTML = newSelect; 
-	
-} // end of OLDextract_level 
-
 //---------------------------
-
 
 function js_go_updateStatistics( data, js_parm, jsFunc, goFunc) {
 	
 	function formatRight(num1, numDigit) { 
-		var numS = "" + num1; 
-		var nLen = numS.length
+		let numS = "" + num1; 
+		let nLen = numS.length
 		if (nLen >= numDigit ) { return numS;} 
 		return ("                ".substr(0, numDigit - nLen)) + numS; 
 	}	
 	
-	var statRow = data.split("<br>");   
+	let statRow = data.split("<br>");   
 	//console.log("js_go_updateStatistics()  statRow=", statRow.join("<br>")) 
 	
-	var st1, field;
-	var result="<table> \n";
+	let st1, field;
+	let result="<table> \n";
 	
-	for (var z1=1; z1 < statRow.length; z1++) {  // ignore the first 
+	for (let z1=1; z1 < statRow.length; z1++) {  // ignore the first 
 		st1 = statRow[z1];
 		field = st1.split(",");
 		if (field.length < 4) { continue;}		
 		
-		var line= "<tr>" +
+		let line= "<tr>" +
 				'<td style="text-align:right">' + field[0] + '</td><td style="text-align:left">' + "words ("           + "</td>" +
 				'<td style="text-align:right">' + field[1] + '</td><td style="text-align:left">' + "%), make up "      + "</td>" +
 				'<td style="text-align:right">' + field[2] + '</td><td style="text-align:left">' + "% of the text ("   + "</td>" + 
@@ -188,16 +321,16 @@ function js_go_updateStatistics( data, js_parm, jsFunc, goFunc) {
 	}  	
 	result += "</table>\n";
 	//console.log("result=", result)
-	document.getElementById("id_frequenze").innerHTML = result;
+	getById("id_frequenze").innerHTML = result;
 	
 } // end of js_go_updateStatistics
 
 //---------------------------------
 //---------------------------------------------------------
 
-function onclick_mostFreqWordList_require(anyRow,toLearn) {	
+function onclick_mostFreqWordList_require(anyRow,toLearn, tagSel) {	
 	
-	fun_require_mostFreqWordList( false , "HTML page onclick_mostFreqWordList_require", anyRow, toLearn);
+	fun_require_mostFreqWordList( false , "HTML page onclick_mostFreqWordList_require", anyRow, toLearn, tagSel);
 	
 } // end of onclick_mostFreqWordList_require
 
@@ -205,36 +338,48 @@ function onclick_mostFreqWordList_require(anyRow,toLearn) {
 
 function onchange_mostFreqWordList_extrRow() {	
 	
-	fun_require_mostFreqWordList( true , "HTML page onchange_mostFreqWordList_extrRow",'','');
+	fun_require_mostFreqWordList( true , "HTML page onchange_mostFreqWordList_extrRow",'','','');
 	
 } // end of onchange_mostFreqWordList_require
 
 //---------------------------------
 
-function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", toLearn="") {	
+function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", toLearn="", tagSel="") {	
+	/**
+	//-------------------------------------------------
+// bottoni di destra
+const xOnclick1lisAW = "1R" // Lista le Parole di tutti i testi             onclick_mostFreqWordList_require('anyRow','allWords')" 
+const xOnclick2lisALr= "2R" // Lista le Parole da imparare                  onclick_mostFreqWordList_require('anyRow','toBeLearned')
+const xOnclick3lisSW = "3R" // Lista le Parole richieste (pref suffix)      onclick_require_betweenWordList()
+const xOnclick4lisSLm= "4R" // Lista i lemma richiesti   (pref suffix)      onclick_require_betweenLemmaList() 
+const tagRightOnclickArr = ["",xOnclick1lisAW,xOnclick2lisALr, xOnclick3lisSW, xOnclick4lisSLm ]
+	let sel_rightButton = 
 	
-	console.log("%c	require_mostFreqWordList", "color:blue;")
+	**/
+	//console.log("%c	require_mostFreqWordList", "color:blue;")
 	
 	
-	document.getElementById("id_inpBegError").style.display = "none"; 	
+	getById("id_inpBegError").style.display = "none"; 	
 	
 	word_to_underline_list = []
 	ele_wordList.innerHTML ="";
-	var swChg=false;
-	var fromWord = getInt( document.getElementById("id_inpBegFreqWList").value);	
-	var numWords = getInt( document.getElementById("id_inpMaxNumWords" ).value);
-	if (fromWord < 1) { fromWord=1;     document.getElementById("id_inpBegFreqWList").value = 1; }
-	if (numWords < 1) { numWords = 1;   document.getElementById("id_inpMaxNumWords" ).value = 1; }
-	console.log("anyRow=", anyRow, " fromWord=",fromWord, " numWords=", numWords, " toLearn=", toLearn); 
+	let swChg=false;
+	let fromWord = Number( getById("id_inpBegFreqWList").value);	
+	let numWords = Number( getById("id_inpMaxNumWords" ).value);
+	if (fromWord < 1) { fromWord=1;     getById("id_inpBegFreqWList").value = 1; }
+	if (numWords < 1) { numWords = 1;   getById("id_inpMaxNumWords" ).value = 1; }
+	
+	//console.log("anyRow=", anyRow, " fromWord=",fromWord, " numWords=", numWords, " toLearn=", toLearn); 
+	
 	//---
-	var sel_level = "any"; //  x.options[i].id;
+	let sel_level = "any"; //  x.options[i].id;
 	//---
-	var x2 = document.getElementById("id_sel_2_extrRow");
-    var i = x2.selectedIndex;
+	let x2 = getById("id_sel_2_extrRow");
+    let i = x2.selectedIndex;
 	
 	html_sel_extrRow = x2.options[i].id; 
 	if (anyRow != "") { html_sel_extrRow = anyRow; }
-	console.log("html_sel_extrRow=", html_sel_extrRow)
+	//console.log("html_sel_extrRow=", html_sel_extrRow)
 	
 	//console.log("  require_mostFreqWordList", " html_sel_extrRow =",html_sel_extrRow )
 	
@@ -244,17 +389,17 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", t
 	
 	is_selected_row_only = ( i == index_onlySelRowsWanted); //1 onclick_require_mostFreqWordLi
 	
-	console.log("  require_mostFreqWordList", " is_selected_row_only =", is_selected_row_only )
+	//console.log("  require_mostFreqWordList", " is_selected_row_only =", is_selected_row_only )
 	
 	fun_selRowsWanted_changed();
 	//---	
-	var xTbl = document.getElementById("id_sel_tblwords");
-    var i2 = xTbl.selectedIndex;
-	var sel_toBeLearned = xTbl.options[i2].id;    //( 0 = 'allWords'   1 = 'toBeLearned' )
+	let xTbl = getById("id_sel_tblwords");
+    let i2 = xTbl.selectedIndex;
+	let sel_toBeLearned = xTbl.options[i2].id;    //( 0 = 'allWords'   1 = 'toBeLearned' )
 	if (toLearn != "") {
 		sel_toBeLearned = toLearn; 
 	}
-	console.log("sel_toBeLearned=" ,sel_toBeLearned); 
+	//console.log("sel_toBeLearned=" ,sel_toBeLearned); 
 	
 	//--
 	swChg = isExtrRowChanged() 
@@ -269,16 +414,9 @@ function fun_require_mostFreqWordList( swFromOnChangeExtr , caller, anyRow="", t
 		return; 
 	}
 	
-	console.log("onclick_mostFreqWordList_require " , " isExtrRowChanged=", swChg , " go_passToJs_wordList --> js_go_showWordList_lev2  ( , button=1)");	
+	let js_parm = JSON.stringify(  [1, anyRow, toLearn, "tag",tagSel] );
 	
-	//var caller = "HTML page onclick_require_rowList1" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
-	//if (caller == undefined) { caller = ""; }
-	
-	console.log("%cfun_require_mostFreqWordList fun_require_mostFreqWordList", "color:green;"); 
-	console.log("go_passToJs_wordList ", "swChg=", swChg, " fromWord=", fromWord, " numWords=", numWords, " sel_level=", sel_level, 
-			" html_sel_extrRow=", html_sel_extrRow, " sel_toBeLearned=", sel_toBeLearned ); 
-	
-	go_passToJs_wordList( swChg, ""+fromWord, ""+numWords, sel_level, html_sel_extrRow, sel_toBeLearned, "js_go_showWordList_lev2(1)," + caller);
+	go_passToJs_wordList( swChg, ""+fromWord, ""+numWords, sel_level, html_sel_extrRow, sel_toBeLearned, "js_go_showWordList_lev2", js_parm, caller);
 	
 	
 } // end of fun_require_mostFreqWordList
@@ -291,9 +429,9 @@ function js_go_console( str1 ) {
 //-------------------------------------
 function sortAlpha(wordToStudy_listStr) {
 	//wordToStudy_listStr
-	var ww, col1, key;
-	var listKey = [];
-	for (var z=0; z < wordToStudy_listStr.length; z++) {
+	let ww, col1, key;
+	let listKey = [];
+	for (let z=0; z < wordToStudy_listStr.length; z++) {
 		col1 = (wordToStudy_listStr[z].trim() + ";.;.;.;.;.;.;.;.;.;.").split(";.")
 		key = col1[0];  // wordCod		
 		listKey.push(key  + ":" + z ); 
@@ -305,10 +443,10 @@ function sortAlpha(wordToStudy_listStr) {
 
 function sortFreq(wordToStudy_listStr) {
 	//wordToStudy_listStr
-	var ww, col1, key, freq1, freq2;
-	var listKey = [];
+	let ww, col1, key, freq1, freq2;
+	let listKey = [];
 	
-	for (var z=0; z < wordToStudy_listStr.length; z++) {		
+	for (let z=0; z < wordToStudy_listStr.length; z++) {		
 		col1 = (wordToStudy_listStr[z].trim() + ";.;.;.;.;.;.;.;.;.;.").split(";.")
 		freq1 = 1*("0" + col1[3].trim());
 		freq2 = 10000000 -  freq1;
@@ -323,29 +461,46 @@ function sortFreq(wordToStudy_listStr) {
 
 //-------------------------------------
 function errorNoWord1() {
-	var startIx = getInt( document.getElementById("id_inpBegFreqWList").value );
+	let startIx = Number( getById("id_inpBegFreqWList").value );
 	if (numberOf_uniW < startIx) {
-		document.getElementById("id_inpBegErrMsg").innerHTML =  " il numero di partenza "+  startIx + " supera il numero di parole " + numberOf_uniW + " (forzato 1)"; 
-		document.getElementById("id_inpBegFreqWList").value = 1
+		getById("id_inpBegErrMsg").innerHTML =  " il numero di partenza "+  startIx + " supera il numero di parole " + numberOf_uniW + " (forzato 1)"; 
+		getById("id_inpBegFreqWList").value = 1
 	} else {
-		document.getElementById("id_inpBegErrMsg").innerHTML = ""
+		getById("id_inpBegErrMsg").innerHTML = ""
 	}	
-	document.getElementById("id_inpBegError").style.display = "inline-block"; 		
+	getById("id_inpBegError").style.display = "inline-block"; 		
 } 
 
 //--------------------------------------------------------------
-
+/*
+				row:=   xWordAlpha.uWord2 + separ1 + 
+						xWordAlpha.uWord0 + separ1 +
+		 				"ix" + separ1 + 
+		 				strconv.Itoa(xWordAlpha.uIxUnW_fr) + separ1 + 
+		 				strconv.Itoa(xWordAlpha.uTotRow)   + separ1 +
+		 				lastLemma.leLemma            	+ separ1 + 
+		 				lastLemma.leTran 				+ separ1 +  
+		 				separ1 							+  
+		 				lastLemma.lePara	 			+ separ1 +  
+		 				lastLemma.leExample	 			+ separ1 +  
+		 				strconv.Itoa(totNumRow) 		+ separ1 +  			
+		 				xWordAlpha.uLearnedYN              + separ1 + 			
+		 				"ixLemma" + separ1 + strconv.Itoa(ix2) + separ1 +  	
+		 				endOfLine 	
+		 		//fmt.Println(green("word_to_row "), row )		
+	*/	
+//--------------------	
 function sortWordFreqFirst( wordToStudy_listStr ) { 
 	
-	var col1, key1 , key2; 
+	let col1, key1 , key2; 
 	
-	var MAXKEY = 1000000;  
-	var listKey=[]; 
+	let MAXKEY = 1000000;  
+	let listKey=[]; 
 	
 	//--------------------
 	/*
-	 0 xWordF2.uWordSeq + ";." + 
-	 1 xWordF2.uWord2 + ";." + 
+	 0 xWordF2.uWord2+ ";." + 
+	 1 xWordF2.uWord0 + ";." + 
 	 2 "ix" + ";." +
 	 3 strconv.Itoa(xWordF2.uIxUnW) + ";." + 
 	 4 strconv.Itoa(xWordF2.uTotRow)  + ";." +
@@ -360,7 +515,7 @@ function sortWordFreqFirst( wordToStudy_listStr ) {
 					endOfLine 
 	*/
 	const ix_uTotRow  = 4;
-	const ix_uWordSeq = 0; 
+	const ix_uWord2   = 0; 
 	const ix_lemma    = 5; 
 	const ix_uTotExtrRow = 6;
 	const isNumber = true; 
@@ -369,10 +524,10 @@ function sortWordFreqFirst( wordToStudy_listStr ) {
 	const descending = "d";
 	//-----------	
 	
-	for (var z=0; z < wordToStudy_listStr.length; z++) {		
+	for (let z=0; z < wordToStudy_listStr.length; z++) {		
 		col1 = (wordToStudy_listStr[z].trim() + ";.;.;.;.;.;.;.;.;.;.").split(";.");		
 		key1 = setKey0(isNumber, col1[ix_uTotRow ], descending, MAXKEY);
-		key2 = setKey0(isAlpha,  col1[ix_uWordSeq], ascending,  MAXKEY);			
+		key2 = setKey0(isAlpha,  col1[ix_uWord2], ascending,  MAXKEY);			
 		listKey.push( key1 + ";;" + key2 + ";;" + (MAXKEY + z) + ":" + z  ); 		
 		//if (z < 10) { console.log("lista ", " z=", z, " \t", col1[1] + "\t ix=", col1[3],  "\t", "  ix_uTotRow=", col1[ix_uTotRow ] ) }	
 	}
@@ -382,32 +537,10 @@ function sortWordFreqFirst( wordToStudy_listStr ) {
 
 //------------------------------
 
-function sentenceOneRow( str1 ) {
-	if (str1 == undefined)  { return str2; }
-	var str2 = (""+str1).replaceAll("\n"," ")
-	str2 = str2.replaceAll(". ",".<br>").replaceAll("? ","?<br>").replaceAll("! ","!<br>"); 
-	
-	str2 = str2.
-			replaceAll("1.<br>", "1. "). 	
-			replaceAll("2.<br>", "2. "). 	
-			replaceAll("3.<br>", "3. "). 	
-			replaceAll("4.<br>", "4. "). 	
-			replaceAll("5.<br>", "5. "). 	
-			replaceAll("6.<br>", "6. "). 	
-			replaceAll("7.<br>", "7. "). 	
-			replaceAll("8.<br>", "8. ").
-			replaceAll("9.<br>", "9. ").
-			replaceAll("0.<br>", "0. ") ;		
-	
-	return str2	
-}
-
-//-------------------------------------------
-
 function fun_selRowsWanted_changed() {
-	var ele_sel = document.getElementById("id_sel_2_extrRow");
-	//var ele_listBut = document.getElementById("id_list_Righe_TD_But") 
-	//var ele_listNum = document.getElementById("id_list_Righe_TD_Num") 
+	let ele_sel = getById("id_sel_2_extrRow");
+	//let ele_listBut = getById("id_list_Righe_TD_But") 
+	//let ele_listNum = getById("id_list_Righe_TD_Num") 
 
 	if (is_selected_row_only) {
 		ele_sel.style.border = "4px solid blue"; 
@@ -436,12 +569,12 @@ function writeLanguageChoise() {
 function write_word_dictionary() {
 	//console.log("write word dictionary()")
 	let word1, ix1, nrow, totExtrRow2,  wLemma1, wordTran;  
-	var uLearnedYN;
-	var wLemmaList, wTranList, wLevelList, wParaList, wExampleList, wIxLemmaList;
-	var newTranWord=0;
-	var listNewTranWords = "";
+	let uLearnedYN;
+	let wLemmaList, wTranList, wLevelList, wParaList, wExampleList, wIxLemmaList;
+	let newTranWord=0;
+	let listNewTranWords = "";
 	
-    for (var ixW2StudyLs = 0; ixW2StudyLs < wordToStudy_list.length; ixW2StudyLs++) {
+    for (let ixW2StudyLs = 0; ixW2StudyLs < wordToStudy_list.length; ixW2StudyLs++) {
 		[word1, ix1,        nrow, wLemmaList, wTranList, wLevelList, wParaList, 
 				wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList ] = wordToStudy_list[ixW2StudyLs]; 
 		word1 = word1.trim(); 
@@ -489,11 +622,11 @@ function onclick_require_prefixWordList() {
 	//ele_wRowList.innerHTML = "";
     //ele_word.innerHTML     = ""; 	 
 	//ele_wordLisH.style.display = "none";
-    var sNumWords = document.getElementById("id_inpMaxNumWords").value;
-    var wordPrefix = document.getElementById("id_inpPref").value.trim();   
+    let sNumWords = getById("id_inpMaxNumWords").value;
+    let wordPrefix = getById("id_inpPref").value.trim();   
 	
 
-	var numWords=0; 
+	let numWords=0; 
     try {
         numWords = parseInt(sNumWords);
     } catch (err) {
@@ -509,67 +642,94 @@ function onclick_require_prefixWordList() {
 		return;
 	}	
 	
-    go_passToJs_prefixWordList(""+numWords, wordPrefix, "js_go_showPrefixWordList"); // ask 'go' to give wordlist by js_... function  
+    go_passToJs_prefixWordList(""+numWords, wordPrefix, "js_go_showPrefixWordList", js_parm, js_caller); // ask 'go' to give wordlist by js_... function  
 	
 } // end of onclick_require_prefixWordList
 
 //------------------------------------------------------
 
-function onclick_require_betweenWordList() {
+function onclick_require_betweenWordList(tagSel) {
+	
+	//logColor("onclick_require_betweenWordList", "%%blue","onclick_require_betweenWordList ", "%%black", tagSel)
+	
 	word_to_underline_list = []
 	ele_wordList.innerHTML ="";
 	
-	var eleFromW = document.getElementById("id_inpFromABC");
+	let eleFromW = getById("id_inpFromABC");
 	
-	var fromWordPref = eleFromW.value.trim(); 		
+	let fromWordPref = eleFromW.value.trim(); 		
 	
-	var maxNumWords = getInt(  document.getElementById("id_inpMaxNumABC" ).value );	
-	if (maxNumWords < 1) {  maxNumWords = 1; document.getElementById("id_inpMaxNumABC" ).value = 1; }	
+	let maxNumWords = Number(  getById("id_inpMaxNumABC" ).value );	
+	if (maxNumWords < 1) {  maxNumWords = 1; getById("id_inpMaxNumABC" ).value = 1; }	
 	
 	if (fromWordPref == "") { return; }
 	
 	eleFromW.style.color = null;
 	eleFromW.parentElement.style.backgroundColor = null;
+	/**
+	// numButton=1 default ==> from onclick most frequent word list  
+	// numButton=2         ==> from onclick BetweenWordList or prefix wordlist   
+	// numButton=3         ==> from onclick Lemma word list   
+	// numButton=5         ==> from onclick Lemma list   
+	// numButton=0         ==> from word list from word, lemma, ?   
+	**/
 	
-	go_passToJs_betweenWordList(""+maxNumWords, fromWordPref, "js_go_showBetweenWordList"); // ask 'go' to give wordlist by js_... function  
+	let js_parm   = JSON.stringify(  [2, "tag",tagSel] );	
+	let js_caller = "HTML page onclick_require_betweenWordList"
+	
+	//console.log("go_passToJs_betweenWordList ( fromWordPref="+fromWordPref )
+	
+	go_passToJs_betweenWordList(""+maxNumWords, fromWordPref, "js_go_showBetweenWordList", js_parm, js_caller); // ask 'go' to give wordlist by js_... function  
 	
 } // end of onclick_require_prefixWordList
+//--------------------------------------
 
-
+function js_go_showBetweenWordList(wordListStr, js_parm, js_caller,goFunc) {
+	//logColor("%%red", "js_go_showBetweenWordList ", "%%blue", "js_parm=", js_parm, " js_caller=", js_caller )
+	//logColor("%%blue", "wordListStr=", "%%black", wordListStr); 
+	if (wordListStr == "") {
+		getById("id_bW_err").style.display ="block";   // no entry found
+    } else {
+		getById("id_bW_err").style.display ="none"; 
+	}
+	js_go_showWordList_lev2(wordListStr, js_parm, js_caller, goFunc); 
+	
+} // end of js_go_showBetweenWordList	
 //------------------------------------
-function js_go_showBetweenWordList(wordListStr, js_parm, jsFunc,goFunc) {
-	//console.log("function js_go_showBetweenWordList () ", " js_parm=", js_parm, " <-- " + goFunc + " <-- " + jsFunc) ;
+function TOGLIjs_go_showBetweenWordList(wordListStr, js_parm, js_caller,goFunc) {
+	console.log("function js_go_showBetweenWordList () ", " js_parm=", js_parm, " <-- " + goFunc + " <-- " + js_caller) ;
 	//console.log("wordListStr=\n"+wordListStr +"\n--------------------------\n")
 	
 	if (wordListStr == "") {
-		document.getElementById("id_bW_err").style.display ="block";   // no entry found
+		getById("id_bW_err").style.display ="block";   // no entry found
     } else {
-		document.getElementById("id_bW_err").style.display ="none"; 
+		getById("id_bW_err").style.display ="none"; 
 	}
 	
 	onclick_jumpFromToPage( myPage01,0, myPage02);  //myPage01
 	
-	js_go_showWordList_lev2(wordListStr, 2,jsFunc, goFunc) //2 js_go_showBetweenWordList  onclick_require_prefixWordList
-
+	//let js_parm = JSON.stringify(  [2, "", ""] );	
+	js_go_showWordList_lev2(wordListStr, js_parm, js_caller, goFunc) // numButton=2         ==> from onclick BetweenWordList or prefix wordlist 
+ 
 } // end of js_go_showBetweenWordList
 
 
 //------------------------------------------------------
 
-function onclick_require_betweenLemmaList() {
+function onclick_require_betweenLemmaList(tagSel) {
+	//logColor("onclick_require_betweenLemmaList", "%%blue","onclick_require_betweenLemmaList ", "%%black", tagSel)
 	
-	//console.log("%conclick_require_betweenLemmaList", "color:green;")
 	word_to_underline_list = []
 	ele_wordList.innerHTML ="";
 	
-	var eleFromW = document.getElementById("id_inpLemmaFromABC");
-	//var eleToW   = document.getElementById("id_inpLemmaToABC"  ); 
-	var fromWordPref = eleFromW.value.trim(); 		
-	//var toWordPref   = eleToW.value.trim(); 		
-    
+	let eleFromW = getById("id_inpLemmaFromABC");
+	//let eleToW   = getById("id_inpLemmaToABC"  ); 
+	let fromWordPref = eleFromW.value.trim(); 		
+	//let toWordPref   = eleToW.value.trim(); 		
+ 
 	
-	var maxNumLemma = getInt(  document.getElementById("id_inpLemmaMaxNumABC" ).value );	
-	if (maxNumLemma < 1) {  maxNumLemma = 1; document.getElementById("id_inpLemmaMaxNumABC" ).value = 1; }	
+	let maxNumLemma = Number(  getById("id_inpLemmaMaxNumABC" ).value );	
+	if (maxNumLemma < 1) {  maxNumLemma = 1; getById("id_inpLemmaMaxNumABC" ).value = 1; }	
 	
 	if (fromWordPref == "") { return; }
 	
@@ -577,78 +737,96 @@ function onclick_require_betweenLemmaList() {
 	if (toWordPref == "") { 
 		if (fromWordPref == "") { return; }
 		toWordPref = fromWordPref;
-		//document.getElementById("id_inpToABC"  ).value = toWordPref; 	
+		//getById("id_inpToABC"  ).value = toWordPref; 	
 	} else {
 		if (fromWordPref == "") { 
 			fromWordPref = toWordPref;
-			document.getElementById("id_inpLemmaFromABC").value = fromWordPref; 
+			getById("id_inpLemmaFromABC").value = fromWordPref; 
 		}
 	} 
 	if (toWordPref < fromWordPref) {
-		//document.getElementById("id_inpToABC"  ).value = fromWordPref; 	
-		document.getElementById("id_inpFromABC").value = toWordPref;
-		fromWordPref = document.getElementById("id_inpLemmaFromABC").value.trim(); 		
-	    //toWordPref   = document.getElementById("id_inpLemmaToABC"  ).value.trim(); 		
+		//getById("id_inpToABC"  ).value = fromWordPref; 	
+		getById("id_inpFromABC").value = toWordPref;
+		fromWordPref = getById("id_inpLemmaFromABC").value.trim(); 		
+	    //toWordPref   = getById("id_inpLemmaToABC"  ).value.trim(); 		
 	}
 	**/
 	eleFromW.style.color = null;
 	eleFromW.parentElement.style.backgroundColor = null;
-	var eleLemma = document.getElementById("id_inpLemmaFromABC");  
+	let eleLemma = getById("id_inpLemmaFromABC");  
 	eleLemma.style.color = null;
 	eleLemma.parentElement.style.backgroundColor = null;
-	//var eleLemma2 = document.getElementById("id_inpLemmaToABC");  
+	//let eleLemma2 = getById("id_inpLemmaToABC");  
 	//eleLemma2.style.color = null;
 	//eleLemma2.parentElement.style.backgroundColor = null;
 	
 	//console.log("go_passToJs_betweenLemmaList"   , " fromWordPref=", fromWordPref)
 	
-	go_passToJs_betweenLemmaList(""+maxNumLemma, fromWordPref, "js_go_showBetweenLemmaList"); // ask 'go' to give wordlist by js_... function  
+	/**
+	// numButton=1 default ==> from onclick most frequent word list  
+	// numButton=2         ==> from onclick BetweenWordList or prefix wordlist   
+	// numButton=3         ==> from onclick Lemma word list   
+	// numButton=5         ==> from onclick Lemma list   
+	// numButton=0         ==> from word list from word, lemma, ?   
+	**/
+	
+	let js_parm   = JSON.stringify(  [3, "tag", tagSel] );	
+	let js_caller = "HTML page onclick_require_betweenLemmaList"
+	
+	//console.log("  go_passToJs_betweenLemmaList  ( fromWordPref= " , fromWordPref ) 
+	
+	go_passToJs_betweenLemmaList(""+maxNumLemma, fromWordPref, "js_go_showBetweenLemmaList", js_parm, js_caller); // ask 'go' to give wordlist by js_... function  
 	
 } // end of onclick_require_betweenLemmaList
 
 
 //------------------------------------
-function js_go_showBetweenLemmaList(lemmaListStr, js_parm, jsFunc,goFunc) {
-	//console.log("js_go_showBetweenLemmaList")
+function js_go_showBetweenLemmaList(lemmaListStr, js_parm, js_caller,goFunc) {
+	//logColor("%%green", "js_go_showBetweenLemmaList","%%black"," lemmaListStr.length=",  lemmaListStr.length, " js_parm=", js_parm )
+	//console.log("	lemmaListStr=", lemmaListStr.substring(0,100), " ...");
+	
 	if (lemmaListStr == "") {
-		document.getElementById("id_bW0_err").style.display ="block";   // no entry found
+		getById("id_bW0_err").style.display ="block";   // no entry found
     } else {
-		document.getElementById("id_bW0_err").style.display ="none"; 
+		getById("id_bW0_err").style.display ="none"; 
 	}
 	
-	onclick_jumpFromToPage( myPage01,0, myPage02);  //myPage01
+	//onclick_jumpFromToPage( myPage01,0, myPage02);  //myPage01
 	
-	js_go_showWordList_lev2(lemmaListStr,5, jsFunc, goFunc)
-
+	//console.log("	esegue js_go_showWordList_lev2  ");
+	//console.log("AAA");
+	
+	js_go_showWordList_lev2(lemmaListStr, js_parm, js_caller, goFunc);
+	
+	//console.log("	FINITO js_go_showWordList_lev2  ");
+	  
 } // end of js_go_showBetweenLemmaList
 
 //-------------------------------------------------------
-function onclick_require_lemmaWordList2(aLemma) {
+function onclick_require_lemmaWordList2(aLemma, tagSel) {
+	// questa function è richiamata sull'ultima colonna di destra nella pagina delle lista parole 
+	
+	//logColor( "%%blue;font-weight:bold;","\nonclick_require_lemmaWordList2 ", "%%black","lista le parole con lemma ", aLemma, " tag=", tagSel)
+	
 	if (aLemma=="") return; 
 	word_to_underline_list = []
 	
-	//console.log("%conclick_require_lemmaWordList2 ", "color:green;font-weight:bold;"); console.log("lista le parole con questo lemma")
 	
-	var eleMax = document.getElementById("idTabWRLL3")
 	
-	var inpMaxWordLemma = eleMax.value; 
+	let eleMax = getById("idTabWRLL3")
+	
+	let inpMaxWordLemma = eleMax.value; 
     aLemma = aLemma.trim();    
 	if (aLemma == "") {
 		//ele_wordList.innerHTML ='<span style="color:red;">manca il lemma</span>';
 		return;
 	}		
-	/***
-	var eleFromW = document.getElementById("id_inpFromABC");
-	eleFromW.style.color = null;
-	eleFromW.parentElement.style.backgroundColor = null;
-	var eleLemma = document.getElementById("id_inpLemma");  
-	eleLemma.style.color = null;
-	eleLemma.parentElement.style.backgroundColor = null;
-	***/
-	//myPage01.style.display = "none"; 
-	var caller = "HTML page onclick_require_lemmaWordList2"
-	//console.log("go_passToJs_lemmaWordList ( ", aLemma );
-	go_passToJs_lemmaWordList(aLemma, inpMaxWordLemma, "js_go_showLemmaWordList," + caller);  	
+		
+	let js_parm   = JSON.stringify(  ["tag", tagSel] );	
+	
+	let js_caller = "HTML page onclick_require_lemmaWordList2"
+	
+	go_passToJs_lemmaWordList(aLemma, inpMaxWordLemma, "js_go_showLemmaWordList", js_parm, js_caller);  	
 
 	
 } // end of onclick_require_lemmaWordList2
@@ -658,49 +836,50 @@ function onclick_require_lemmaWordList() {
 	word_to_underline_list = []
 	ele_wordList.innerHTML ="";
 	
-	var inpMaxWordLemma = document.getElementById("id_inpMaxWordLemma").value; 
-   // var aLemma = document.getElementById("id_inpLemma").value.trim();    
+	let inpMaxWordLemma = getById("id_inpMaxWordLemma").value; 
+   // let aLemma = getById("id_inpLemma").value.trim();    
 	**
 	if (aLemma == "") {
 		ele_wordList.innerHTML ='<span style="color:red;">manca il lemma</span>';
 		return;
 	}	
 	**
-	var eleFromW = document.getElementById("id_inpFromABC");
+	let eleFromW = getById("id_inpFromABC");
 	eleFromW.style.color = null;
 	eleFromW.parentElement.style.backgroundColor = null;
-	//var eleLemma = document.getElementById("id_inpLemma");  
+	//let eleLemma = getById("id_inpLemma");  
 	//eleLemma.style.color = null;
 	//eleLemma.parentElement.style.backgroundColor = null;
 	
 	//myPage01.style.display = "none"; 
-	var caller = "HTML page onclick_require_lemmaWordList"
+	let caller = "HTML page onclick_require_lemmaWordList"
 	
 	go_passToJs_lemmaWordList(aLemma, inpMaxWordLemma, "js_go_showLemmaWordList," + caller);  	
 
 } // end of onclick_require_lemmaWordList
 ***/
 //------------------------------------
-function js_go_showLemmaWordList(wordListStr,  js_parm, jsFunc,goFunc) {
+function js_go_showLemmaWordList(wordListStr,  js_parm, js_caller,goFunc) {
 	
 	//console.log(" js_go_showLemmaWordList () ", "wordListStr=\n" + wordListStr + "\n-------------------\n")
 	
 	
 	if (wordListStr.substring(0,5) == "NONE,") {
-		//document.getElementById("id_inpLemma_word").innerHTML = wordListStr.substring(5) 
-		//document.getElementById("id_inpLemma_msg").style.display = "block"			
+		//getById("id_inpLemma_word").innerHTML = wordListStr.substring(5) 
+		//getById("id_inpLemma_msg").style.display = "block"			
 		myPage01.style.display = "flex"; 
 		
 		//onclick_jumpFromToPage( myPage02,myPage03, myPage04); 
 		return
 	}
-	//document.getElementById("id_inpLemma_msg").style.display = "none"
+	//getById("id_inpLemma_msg").style.display = "none"
 	onclick_jumpFromToPage( myPage01,0, myPage02);  
 	myPage01.style.display = "none"; 
 	//console.log("js_go_showLemmaWordList ()  chiama js_go_showWordList_lev2")
+		
+	//let js_parm = JSON.stringify(  [3, "", ""] );	// numButton=3         ==> from onclick Lemma word list   
+	js_go_showWordList_lev2(wordListStr, js_parm, js_caller, goFunc) 	
 	
-	js_go_showWordList_lev2(wordListStr, 3, jsFunc,goFunc  );
-
 } // end of js_go_showLemmaWordList
 
 //---------------------------------------------------------
@@ -717,10 +896,10 @@ function onclick_require_PrefWordFromRowList(word1) {
 		return;
 	}	
 	
-	//get_first_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
+	//get_first_row_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
 	
-	var eleFromW = document.getElementById("id_inpFromABC");
-	//var eleToW   = document.getElementById("id_inpToABC"  ); 
+	let eleFromW = getById("id_inpFromABC");
+	//let eleToW   = getById("id_inpToABC"  ); 
 	//eleToW.value = ""; 
 	eleFromW.value = word1;  
     eleFromW.style.color = "blue";
@@ -737,7 +916,7 @@ function onclick_require_PrefWordFromRowList(word1) {
 
 function onclick_require_PrefWord_lemma(word1, lemma1) {
 			
-	//var max_num_word4LeWor = document.getElementById("idTabWoWL3").value 
+	//let max_num_word4LeWor = getById("idTabWoWL3").value 
 
 	/*
 	nella lista di frasi 
@@ -749,15 +928,15 @@ function onclick_require_PrefWord_lemma(word1, lemma1) {
 	if (word1 == "") {
 		return;
 	}	
-	var eleFromW = document.getElementById("id_inpFromABC");
-	//var eleToW   = document.getElementById("id_inpToABC"  ); 
+	let eleFromW = getById("id_inpFromABC");
+	//let eleToW   = getById("id_inpToABC"  ); 
 	//eleToW.value = ""; 
 	eleFromW.value = word1;  
     eleFromW.style.color = "blue";
 	eleFromW.parentElement.style.backgroundColor = "yellow";
-	//var eleLem  = document.getElementById("id_inpLemma")
-	//var eleLemTD = eleLem.parentElement
-	//var eleLemTR = eleLemTD.parentElement
+	//let eleLem  = getById("id_inpLemma")
+	//let eleLemTD = eleLem.parentElement
+	//let eleLemTR = eleLemTD.parentElement
 	//eleLem.value = lemma1; 
 	//eleLem.style.color = "blue"; 
 	//eleLemTD.style.backgroundColor = "yellow";
@@ -777,122 +956,94 @@ function onclick_require_rowListWithThisWord2(type,word1, maxNumRow5) {
 	//ele_wRowList.innerHTML = "";
     //ele_word.innerHTML     = ""; 	 	
 	//ele_wordLisH.style.display = "none";
-	//console.log('document.getElementById("id_inpWordFra") =' , document.getElementById("id_inpWordFra").outerHTML) 
-    var aWord ="";  
+	//console.log('getById("id_inpWordFra") =' , getById("id_inpWordFra").outerHTML) 
+    let aWord ="";  
 	if (type==2) {
 		aWord = word1; 	
 	} else {		
-		aWord     = document.getElementById("id_inpWordFra").value.trim();  
+		aWord     = getById("id_inpWordFra").value.trim();  
 	}	
 	if (aWord == "") {
 		ele_wordList.innerHTML ='<span style="color:red;">manca la parola da cercare</span>';
 		return;
 	}	
 	
-	//get_first_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
+	//get_first_row_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
+	
+	logColor("%%blue","onclick_require_rowListWithThisWord2 --> CERCA UNA PAROLA go_passToJs_someWordsRowList ", "%%black", aWord, " maxNumRow5=",maxNumRow5);
 	
 	//myPage01.style.display = "none"; 
 	//go_passToJs_thisWordRowList(      aWord, ""+maxNumRow5, "js_go_showWrdRowList"); 
-	go_passToJs_someWordsRowList( "", aWord, ""+maxNumRow5, "js_go_showWrdRowList");   
+	go_passToJs_someWordsRowList( "", aWord, ""+maxNumRow5, "js_go_showWrdRowList", js_parm, js_caller);   
 	
 } // end of onclick_require_rowListWithThisWord2
 
 
 //--------------------------
-
-function onclick_require_rowList1(selFrasiParole12) {	
+function onclick_require_rowList1(selFrasiParole12, tagSel) {
 	
-	//console.log("onclick_require_rowList1 selFrasiParole12=", selFrasiParole12 )
+	//console.log("onclick_require_rowList1 selFrasiParole12=", selFrasiParole12)
 	
-	document.getElementById("id_inpRowEmpty").style.display = "none";
+	getById("id_inpRowEmpty").style.display = "none";
 	word_to_underline_list = []
 	ele_wordList.innerHTML ="";
 	
-	var indexGroup= getInt( document.getElementById("id_gruppi_sel").selectedIndex );
-	var inpBegRow = getInt(document.getElementById("id_gruppi_iBegNum"  ).value );
-	var numRows   = getInt(document.getElementById("id_gruppi_iNumRows" ).value );
+	let indexGroup= Number( getById("id_gruppi_sel").selectedIndex );
+	let inpBegRow = Number(getById("id_gruppi_iBegNum"  ).value );
+	let numRows   = Number(getById("id_gruppi_iNumRows" ).value );
 	
+	//let tagSel = tagLeftOnclickArr[selFrasiParole12]
 	
-	var inpEndRow = inpBegRow+numRows-1;
+	let inpEndRow = inpBegRow+numRows-1;
 		
 	
-	document.getElementById("id_headWord").innerHTML = ""; //head1; 
+	getById("id_headWord").innerHTML = ""; //head1; 
 		
-	var caller = "HTML page onclick_require_rowList1" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
+	let caller = "HTML page onclick_require_rowList1(" + selFrasiParole12+")" //  (new Error()).stack?.split("\n")[2]?.trim().split(" ")[1] ;
 	if (caller == undefined) { caller = ""; }
 	
-	//console.log("%conclick_require_rowList1 ","color:red;", "esegue go_passToJs_rowList  (indexGroup = " + indexGroup + " inpBegRow=",inpBegRow + "," +numRows + ", selFrasiParole12=" + selFrasiParole12 + ","+ "js_go_rowList" + ", " + "js_go_showWordList_lev2(1)" )
+	let js_parm = JSON.stringify(  [selFrasiParole12, "tag",tagSel] );
 	
-	go_passToJs_rowList("" + indexGroup, ""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2(1)", caller); 
-	
-	/**
-	if ( selFrasiParole12 == 4) {
-		go_passToJs_rowList("" + indexGroup, ""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList4" , "js_go_showWordList_lev2(1)", caller); 
-	} else {	
-		go_passToJs_rowList("" + indexGroup, ""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2(1)", caller); 
-	}
-	**/	
+	go_passToJs_rowList("" + indexGroup, ""+inpBegRow, ""+numRows, ""+selFrasiParole12, "js_go_rowList" , "js_go_showWordList_lev2", js_parm, caller); 
+		
 } // end of onclick_require_rowList1
 
-//--------------
-function js_go_build_rowGruppi( gruppi_option) {
-	// run just after the reading of the input text 
-	/*
-	<option>13 file: soloParoleGoetheLista_A1.csv   (783 righe)</option>
-	<option>14 Esempi da dizionario</option>
-	<option>15 140 verbi irregolari</option>
-	*/
-	var optLine = gruppi_option.split("<option>");
-	var opt1, optVV;
-	listaGruppiTesto = ",";
-	for(var v=0; v < optLine.length; v++) {
-		opt1 = (""+optLine[v]).trim();
-		if (opt1 == "") continue
-		optVV = opt1.split(" ");
-		if (optVV.length < 1 ) {continue;}
-		listaGruppiTesto = listaGruppiTesto + trimLeftZero( optVV[0] ) +","
-	}	
-	//console.log("js_go_build_rowGruppi ", gruppi_option, "\nlistGruppiTesto=" + listaGruppiTesto);
-	
-	document.getElementById("id_gruppi_sel").innerHTML = gruppi_option;  	
-	html_rowGroup_index_gr = 0;  // will be updated from last file values 
-	document.getElementById("id_gruppi_sel").selectedIndex = html_rowGroup_index_gr;
-	 
-	setLastValuesOfExtrRowChanged("js_go_build_rowGruppi");
-	
-} 
-//--------------------------
-function getInt( sInt ) {	
-	if (sInt == undefined) return -1
-	try {
-        return parseInt( sInt );
-    } catch (err) {
-		return -1
-	}   
-} 
+
 //-------------------------------
 
-function onclick_rowsByIxWord(sIxWord) {
+function onclick_rowsByIxWord(sIxWord, tagSel) {
 	if (sIxWord == "") return; 
-	if (getInt(sIxWord) < 0) return;
-	//console.log("%conclick_rowsByIxWord", "color:green; font-weight:bold;");
-	//console.log("lista le righe con questa parola", " sIxWord=", sIxWord, " getInt(sIxWord)=", getInt(sIxWord) )
-	var max_num_row4word  = document.getElementById("idTabWRoW1").value  
+	if (Number(sIxWord) < 0) return;
 	
-    go_passToJs_getRowsByIxWord(""+sIxWord, ""+max_num_row4word, "js_go_showWrdRowList"); // ask 'go' to give the rows of the word  by the go function js_go...  
+	//console.log("%conclick_rowsByIxWord", "color:green; font-weight:bold;");
+	//console.log("lista le righe con questa parola", " sIxWord=", sIxWord, " Number(sIxWord)=", Number(sIxWord) )
+	
+	let max_num_row4word  = getById("idTabWRoW1").value  
+	
+	let caller = "HTML page onclick_rowsByIxWord(" + sIxWord +")" 
+	if (caller == undefined) { caller = ""; }
+
+	let js_parm = JSON.stringify(  ["tag",tagSel] );
+	
+    go_passToJs_getRowsByIxWord(""+sIxWord, ""+max_num_row4word, "js_go_showWrdRowList", js_parm, caller);  
 
 } // end of onclick_rowsByIxWord
 
 //-------------------------------
-function onclick_rowsByIxLemma(sIxLemma) {
+function onclick_rowsByIxLemma(sIxLemma, tagSel) {
 	if (sIxLemma == "") return; 
-	if (getInt(sIxLemma) < 0) return;
-	var max_num_row4lemma = document.getElementById("idTabWRoL2").value 
+	if (Number(sIxLemma) < 0) return;
+	let max_num_row4lemma = getById("idTabWRoL2").value 
+	
+	let caller = "HTML page onclick_rowsByIxLemma(" + sIxLemma +")" 
+	if (caller == undefined) { caller = ""; }
 
 	//console.log( "%conclick_rowsByIxLemma","color:green;font-weight:bold;" ); 
 	//console.log( "LISTA le RIGHE con questo lemma ", "  sixLemma=", sIxLemma, " max_num_row4lemma=", max_num_row4lemma)
 
-    go_passToJs_getRowsByIxLemma(""+sIxLemma, ""+max_num_row4lemma, "js_go_showLemmaRowList4"); // ask 'go' to give the rows of the word  by the go function js_go...  
+	let js_parm = JSON.stringify(  ["tag",tagSel] );
+	
+    go_passToJs_getRowsByIxLemma(""+sIxLemma, ""+max_num_row4lemma, "js_go_showLemmaRowList4", js_parm, caller); // ask 'go' to give the rows of the word  by the go function js_go...  
 
 } // end of onclick_rowsByIxLemma
 
@@ -907,10 +1058,10 @@ function checkUpper( thisWord, thisListRow) {
 	 is found in the rows but not at the beginning of the row 
 	 then probably normally is the correct way to write it (eg. a Person Name)
 	*/ 
-	var upperThisW = " " + firstUpper(thisWord);  
-	var righe = thisListRow.split(";;"); 
-	for(var z1=0; z1 < righe.length; z1++)  {
-		var riga = righe[z1].trim()
+	let upperThisW = " " + firstUpper(thisWord);  
+	let righe = thisListRow.split(";;"); 
+	for(let z1=0; z1 < righe.length; z1++)  {
+		let riga = righe[z1].trim()
 		if (riga.indexOf( upperThisW ) > 0 ) return true; 
 	}  	
 	return false;  
@@ -929,12 +1080,12 @@ function splitHeader( inpHeader ) {
 		</HEADER>
 	**/
 	
-	var wordList="", wordTab=""
-	var h1 = inpHeader.indexOf("<WORD>")
-	var h2 = inpHeader.indexOf("</WORD>")
-	//var h3 = inpHeader.indexOf("<TABLE")
-	//var h4 = inpHeader.indexOf("</TABLE>")
-	var h4 = inpHeader.indexOf("</HEADER>")
+	let wordList="", wordTab=""
+	let h1 = inpHeader.indexOf("<WORD>")
+	let h2 = inpHeader.indexOf("</WORD>")
+	//let h3 = inpHeader.indexOf("<TABLE")
+	//let h4 = inpHeader.indexOf("</TABLE>")
+	let h4 = inpHeader.indexOf("</HEADER>")
 	if (h2 < (h1+6)) { 
 		//console.log("errore  splitHeader( inpHeader ) h1=",h1, " h2=", h2, " h3=", h3, " h4=", h4 )  
 		return []
@@ -968,29 +1119,29 @@ function headerSomeWords(str1) {
 	</table>	
 	*/
 	/*
-	var ele_model_tSHeadW_bdy;
-	var model_tSHeadW_div;	
-	document.getElementById("tsHead_4").style.display=" ERRORE non usare block per le table metti table-block"; 		
-	ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_4"); 	
+	let ele_model_tSHeadW_bdy;
+	let model_tSHeadW_div;	
+	getById("tsHead_4").style.display=" ERRORE non usare block per le table metti table-block"; 		
+	ele_model_tSHeadW_bdy = getById("id_model_tSHead_bdy_4"); 	
 	str2 += ele_model_tSHeadW_bdy.replace("§1lemma§",nuovoLemma).
 											replace("§1tran§",     nuovoTran) + 
 											"\n\n";  		
 	*/
 	
-	document.getElementById("tsHead_4").style.display="block"; 		
-	var ele_model_tSHeadW_bdy_inner = document.getElementById("id_model_tSHead_bdy_4").innerHTML ; 	
-	var head1 = str1.split("\n"); 
-	var str2="";
-	for(var v=0; v < head1.length; v++) {
-		var aLine = head1[v] + "|||";
-		var col1 = aLine.split("|") 
+	getById("tsHead_4").style.display="block"; 		
+	let ele_model_tSHeadW_bdy_inner = getById("id_model_tSHead_bdy_4").innerHTML ; 	
+	let head1 = str1.split("\n"); 
+	let str2="";
+	for(let v=0; v < head1.length; v++) {
+		let aLine = head1[v] + "|||";
+		let col1 = aLine.split("|") 
 		str2 += ele_model_tSHeadW_bdy_inner.replace("§4word§",col1[0]).replace("§4lemma§",col1[1]).replace("§4tran§", col1[2]) + "\n";  		
 	} 	
-	var ele_model_tSHeadW_DIV = document.getElementById("id_model_tSHeadW"); 
-	var model_tSHeadW_div = ele_model_tSHeadW_DIV.innerHTML; 	
-	var jBody  = model_tSHeadW_div.indexOf("<tbody");
-	var jBody2 = model_tSHeadW_div.indexOf("<tr", jBody);		
-	var newDiv = model_tSHeadW_div.substr(0, jBody2) +"\n" + str2.trim()  + "\n</tbody></table></div>\n";  
+	let ele_model_tSHeadW_DIV = getById("id_model_tSHeadW"); 
+	let model_tSHeadW_div = ele_model_tSHeadW_DIV.innerHTML; 	
+	let jBody  = model_tSHeadW_div.indexOf("<tbody");
+	let jBody2 = model_tSHeadW_div.indexOf("<tr", jBody);		
+	let newDiv = model_tSHeadW_div.substr(0, jBody2) +"\n" + str2.trim()  + "\n</tbody></table></div>\n";  
 	
 	return newDiv.replaceAll('display:none', 'display:block');  
 	
@@ -1019,33 +1170,33 @@ function buildHeaderTable( str1 ) {
 	if (str1.indexOf("some:") >= 0) {
 		return headerSomeWords(str1.substring( str1.indexOf("some:") + 5) ); 
 	}
-	var lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
+	let lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
 	if (lineTr[0] == "") {  lineTr = lineTr.slice(1);}
 	
-	var str2 = '' ; 
-	var len1 = lineTr.length
+	let str2 = '' ; 
+	let len1 = lineTr.length
 	//-------------------------------
 	// caso 1: un solo lemma e una voce 
 	// caso 2: un solo lemma e diverse voci 
 	// caso 3: diversi lemma e una sola voce
 	// caso 4: diversi lemma e diverse voci    ( non previsto )   	
 	//---------------------------------------
-	var oneWordOnly, oneLemmaOnly; 
+	let oneWordOnly, oneLemmaOnly; 
 	
 	//-----------
-	var numVoci=0
-	var numLemma=0
-	var preLem = "", lem1="", tran1=""
-	var preVoce=""
-	for(var z1=0; z1 < len1; z1++) {
-		var oneTr1 = lineTr[z1].split(":")	
+	let numVoci=0
+	let numLemma=0
+	let preLem = "", lem1="", tran1=""
+	let preVoce=""
+	for(let z1=0; z1 < len1; z1++) {
+		let oneTr1 = lineTr[z1].split(":")	
 		lem1 = oneTr1[0].trim()
 		if (lem1 != preLem) {
 			numLemma++
 			preLem = lem1
 			tran1 = oneTr1[1].trim() 
 		}
-		var voce =  oneTr1[2].trim() 
+		let voce =  oneTr1[2].trim() 
 		if (preVoce == "") {
 			preVoce = voce; 
 			numVoci++
@@ -1059,17 +1210,17 @@ function buildHeaderTable( str1 ) {
 	oneWordOnly  = (numVoci == 1)
 	oneLemmaOnly = (numLemma == 1)
 	//------------------------	
-	var ele_model_tSHeadW_bdy;
-	var model_tSHeadW_div;	
+	let ele_model_tSHeadW_bdy;
+	let model_tSHeadW_div;	
 	
 	//console.log( "   2 buildHeaderTable", " oneWordOnly  =",oneWordOnly, "  oneLemmaOnly =", oneLemmaOnly ) ;  
 
 	//--------------------------------
-	var type = 0;
+	let type = 0;
 
 	if (oneWordOnly) {	
-		document.getElementById("tsHead_1_3").style.display="block"; 
-		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_13"); 	
+		getById("tsHead_1_3").style.display="block"; 
+		ele_model_tSHeadW_bdy = getById("id_model_tSHead_bdy_13"); 	
 		if (oneLemmaOnly) {
 			type=1;
 			//console.log( green(" CASO 1 "), "1XXXXXXXX ONE WORD Only and ONE LEMMA only XXXXXXXXXX")
@@ -1086,23 +1237,23 @@ function buildHeaderTable( str1 ) {
 			type=2;
 			//console.log( green(" CASO 2 "), "1XXXXXXXX many WORD  and ONE LEMMA XXXXXXXXXX")
 		}	
-		document.getElementById("tsHead_2").style.display="block"; 
-		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_2"); 	
+		getById("tsHead_2").style.display="block"; 
+		ele_model_tSHeadW_bdy = getById("id_model_tSHead_bdy_2"); 	
 	}
 	if ((oneWordOnly == false) && (oneLemmaOnly == false)) {
 		type=4;
 		//console.log( green("1 CASO 4 "), "4XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX");
 		
-		document.getElementById("tsHead_4").style.display="block"; 
+		getById("tsHead_4").style.display="block"; 
 		
-		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHead_bdy_4"); 	
+		ele_model_tSHeadW_bdy = getById("id_model_tSHead_bdy_4"); 	
 		
 		//console.log( green("2 CASO 4 "), "4XXXXXXXX many WORD  and many LEMMA XXXXXXXXXX")
 	}
 	//----------------------------------
-	var model_tSHeadW_lemma  = ele_model_tSHeadW_bdy.innerHTML; 
+	let model_tSHeadW_lemma  = ele_model_tSHeadW_bdy.innerHTML; 
 	//console.log("aaa ", model_tSHeadW_lemma)
-	var model_tSHeadW13_row2 = document.getElementById("id_model_tSHead_bdy_13_row2").innerHTML; 	
+	let model_tSHeadW13_row2 = getById("id_model_tSHead_bdy_13_row2").innerHTML; 	
 	
 	
 	
@@ -1130,13 +1281,13 @@ function buildHeaderTable( str1 ) {
 	function case_type1_3() {
 					//console.log("caso 1  una parola e un lemma")
 					//console.log("caso 3  una parola e diversi lemma")				/*	
-				for(var z1=0; z1 < len1; z1++) {
-					var oneTr1 = lineTr[z1]	
-					var jT = oneTr1.indexOf(":tran=");
-					var jW = oneTr1.indexOf(":wordsInLemma=");
-					var nuovoLemma   = oneTr1.substring(0,jT    ).trim();
-					var nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
-					var nuovoLisWord = oneTr1.substring(jW+14   ).trim();						
+				for(let z1=0; z1 < len1; z1++) {
+					let oneTr1 = lineTr[z1]	
+					let jT = oneTr1.indexOf(":tran=");
+					let jW = oneTr1.indexOf(":wordsInLemma=");
+					let nuovoLemma   = oneTr1.substring(0,jT    ).trim();
+					let nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
+					let nuovoLisWord = oneTr1.substring(jW+14   ).trim();						
 					if (z1 == 0) {
 						str2 += model_tSHeadW_lemma.replace("§1lemma§", nuovoLemma).
 											replace("§1tran§",     nuovoTran).
@@ -1171,21 +1322,21 @@ function buildHeaderTable( str1 ) {
 														</tbody>
 													</table>
 			**/
-		var listParole = "", lis1="";
-		var nuovoLemma = "",  nuovoTran = "";
-		var len2=0;
-		var lenT=0;
-		var LENMAX = 70
+		let listParole = "", lis1="";
+		let nuovoLemma = "",  nuovoTran = "";
+		let len2=0;
+		let lenT=0;
+		let LENMAX = 70
 		
-		for(var z1=0; z1 < len1; z1++) {	
-			var oneTr1 = lineTr[z1]	
-			var jT = oneTr1.indexOf(":tran=");
-			var jW = oneTr1.indexOf(":wordsInLemma=");
+		for(let z1=0; z1 < len1; z1++) {	
+			let oneTr1 = lineTr[z1]	
+			let jT = oneTr1.indexOf(":tran=");
+			let jW = oneTr1.indexOf(":wordsInLemma=");
 			if (z1==0) {
 				nuovoLemma   = oneTr1.substring(0,jT    ).trim();
 				nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
 			}
-			var nuovoLisWord = oneTr1.substring(jW+14   ).trim();	
+			let nuovoLisWord = oneTr1.substring(jW+14   ).trim();	
 			
 			len2 = 4 + (""+nuovoLisWord).length
 			lenT = lenT + len2
@@ -1210,13 +1361,13 @@ function buildHeaderTable( str1 ) {
 	function case_type4() {
 				console.log("caso 4  diverse parole e diversi lemma")			
 					
-				for(var z1=0; z1 < len1; z1++) {
-					var oneTr1 = lineTr[z1]	
-					var jT = oneTr1.indexOf(":tran=");
-					var jW = oneTr1.indexOf(":wordsInLemma=");
-					var nuovoLemma   = oneTr1.substring(0,jT    ).trim();
-					var nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
-					var nuovoLisWord = oneTr1.substring(jW+14   ).trim();						
+				for(let z1=0; z1 < len1; z1++) {
+					let oneTr1 = lineTr[z1]	
+					let jT = oneTr1.indexOf(":tran=");
+					let jW = oneTr1.indexOf(":wordsInLemma=");
+					let nuovoLemma   = oneTr1.substring(0,jT    ).trim();
+					let nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
+					let nuovoLisWord = oneTr1.substring(jW+14   ).trim();						
 					str2 += ele_model_tSHeadW_bdy.replace("§1lemma§",nuovoLemma).
 											replace("§1tran§",     nuovoTran) + 
 											"\n\n";  									
@@ -1224,12 +1375,12 @@ function buildHeaderTable( str1 ) {
 	} // end of case_type4
 	//------------------------
 	
-	var ele_model_tSHeadW_DIV = document.getElementById("id_model_tSHeadW"); 
-	var model_tSHeadW_div = ele_model_tSHeadW_DIV.innerHTML; 	
-	var jBody  = model_tSHeadW_div.indexOf("<tbody");
-	var jBody2 = model_tSHeadW_div.indexOf("<tr", jBody);	
+	let ele_model_tSHeadW_DIV = getById("id_model_tSHeadW"); 
+	model_tSHeadW_div = ele_model_tSHeadW_DIV.innerHTML; 	
+	let jBody  = model_tSHeadW_div.indexOf("<tbody");
+	let jBody2 = model_tSHeadW_div.indexOf("<tr", jBody);	
 	
-	var newDiv = model_tSHeadW_div.substr(0, jBody2) +"\n" + str2.trim()  + "\n</tbody></table></div>\n";  
+	let newDiv = model_tSHeadW_div.substr(0, jBody2) +"\n" + str2.trim()  + "\n</tbody></table></div>\n";  
 		
 	//console.log("6 buildHeaderTable () newDiv = ", newDiv)
 	return newDiv;  
@@ -1263,7 +1414,7 @@ function OLD2buildHeaderTable( str1 ) {
 		</HEADER>
 	**/
 	
-	var lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
+	let lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
 	if (lineTr[0] == "") {  lineTr = lineTr.slice(1);}
 	
 	console.log("1 buildHeaderTable () str1=" , str1); 
@@ -1295,79 +1446,79 @@ function OLD2buildHeaderTable( str1 ) {
 	
 	
 	/**
-	var ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHeadW_bdy"); 
-	var model_tSHeadW_lemma = ele_model_tSHeadW_bdy.innerHTML; 
+	let ele_model_tSHeadW_bdy = getById("id_model_tSHeadW_bdy"); 
+	let model_tSHeadW_lemma = ele_model_tSHeadW_bdy.innerHTML; 
 	
 	
 	
-	var jBody  = model_tSHeadW_div.indexOf("<tbody "); 
+	let jBody  = model_tSHeadW_div.indexOf("<tbody "); 
 	 
-	var jBodyEnd = model_tSHeadW_div.indexOf("</tbody>", jBody); 
+	let jBodyEnd = model_tSHeadW_div.indexOf("</tbody>", jBody); 
 	**/
 
 	
-	var str2 = '' ; 
-	var len1 = lineTr.length
+	let str2 = '' ; 
+	let len1 = lineTr.length
 	//-------------------------------
 	// caso 1: un solo lemma e una voce 
 	// caso 2: un solo lemma e diverse voci 
 	// caso 3: diversi lemma e una sola voce
 	// caso 4: diversi lemma e diverse voci    ( non previsto )   	
 	//---------------------------------------
-	var oneWordOnly = true; 
-	var ele_model_tSHeadW_bdy;
+	let oneWordOnly = true; 
+	let ele_model_tSHeadW_bdy;
 	//-----------
-	for(var z1=0; z1 < len1; z1++) {
-		var oneTr1 = lineTr[z1]	
-		var jW = oneTr1.indexOf(":wordsInLemma=");
-		var nuovoLisWord = oneTr1.substring(jW+14   ).trim();				
-		var wor1arr = nuovoLisWord.split("<br>");
+	for(let z1=0; z1 < len1; z1++) {
+		let oneTr1 = lineTr[z1]	
+		let jW = oneTr1.indexOf(":wordsInLemma=");
+		let nuovoLisWord = oneTr1.substring(jW+14   ).trim();				
+		let wor1arr = nuovoLisWord.split("<br>");
 		if (wor1arr.length > 1) { 
 			oneWordOnly = false;			
 		}	
 	} // end for z1
 	//------------------------	
 
-	var	ele_model_tSHeadW_bdy 
-	var model_tSHeadW_div
+	
+	let model_tSHeadW_div
 	if (oneWordOnly) {	
 		console.log("XXXXXXXX oneWordOnly = true  XXXXXXXXXX")
-		document.getElementById("tsHead_2").style.display="block"; 
-		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHeadW2_bdy"); 				
+		getById("tsHead_2").style.display="block"; 
+		ele_model_tSHeadW_bdy = getById("id_model_tSHeadW2_bdy"); 				
 	} else {
-		document.getElementById("tsHead_1").style.display="block"; 
-		ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHeadW1_bdy"); 	
+		getById("tsHead_1").style.display="block"; 
+		ele_model_tSHeadW_bdy = getById("id_model_tSHeadW1_bdy"); 	
 	}
 	
 
 	
-	//var model_tSHeadW_div = ele_model_tSHeadW.innerHTML; 
+	//let model_tSHeadW_div = ele_model_tSHeadW.innerHTML; 
 
 	
-	var model_tSHeadW_lemma  = ele_model_tSHeadW_bdy.innerHTML; 
-	var model_tSHeadW2_row2 = document.getElementById("id_model_tSHeadW2_row2_bdy").innerHTML; 	
+	let model_tSHeadW_lemma  = ele_model_tSHeadW_bdy.innerHTML; 
+	let model_tSHeadW2_row2 = getById("id_model_tSHeadW2_row2_bdy").innerHTML; 	
 	
 	//console.log("XXXXXXXX  model_tSHeadW_lemma = ",   model_tSHeadW_lemma )
 	
-	//var ele_model_tSHeadW_bdyInner = ele_model_tSHeadW_bdy.innerHTML
+	//let ele_model_tSHeadW_bdyInner = ele_model_tSHeadW_bdy.innerHTML
 	
-	//var	jBody    = ele_model_tSHeadW_bdy.innerHTMLele_model_tSHeadW_bdymodel_tSHeadW_div.indexOf("<tbody ");	 
-	//var jBodyEnd = model_tSHeadW_div.indexOf("</tbody>", jBody);  
+	//let	jBody    = ele_model_tSHeadW_bdy.innerHTMLele_model_tSHeadW_bdymodel_tSHeadW_div.indexOf("<tbody ");	 
+	//let jBodyEnd = model_tSHeadW_div.indexOf("</tbody>", jBody);  
 	//----------------------------
-	for(var z1=0; z1 < len1; z1++) {
-		var oneTr1 = lineTr[z1]	
-		var jT = oneTr1.indexOf(":tran=");
-		var jW = oneTr1.indexOf(":wordsInLemma=");
-		var nuovoLemma   = oneTr1.substring(0,jT    ).trim();
-		var nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
-		var nuovoLisWord = oneTr1.substring(jW+14   ).trim();		
+	for(let z1=0; z1 < len1; z1++) {
+		let oneTr1 = lineTr[z1]	
+		let jT = oneTr1.indexOf(":tran=");
+		let jW = oneTr1.indexOf(":wordsInLemma=");
+		let nuovoLemma   = oneTr1.substring(0,jT    ).trim();
+		let nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
+		let nuovoLisWord = oneTr1.substring(jW+14   ).trim();		
 			
-		var wor1arr = nuovoLisWord.split("<br>");
-		var newLe2=""; 
+		let wor1arr = nuovoLisWord.split("<br>");
+		let newLe2=""; 
 		if (wor1arr.length == 1) { 
-			var wor11 = wor1arr[0].trim(); 
-			var lem1arr = nuovoLemma.split("<br>")    ;
-			for(var h1=0; h1 < lem1arr.length; h1++) {
+			let wor11 = wor1arr[0].trim(); 
+			let lem1arr = nuovoLemma.split("<br>")    ;
+			for(let h1=0; h1 < lem1arr.length; h1++) {
 				if (lem1arr[h1].trim() == wor11) {continue;}
 				newLe2 += "<br>" + lem1arr[h1].trim() ; 
 			}
@@ -1403,12 +1554,12 @@ function OLD2buildHeaderTable( str1 ) {
 		}							
 	} // end for z1
 	//------------
-	var ele_model_tSHeadW_DIV = document.getElementById("id_model_tSHeadW"); 
-	var model_tSHeadW_div = ele_model_tSHeadW_DIV.innerHTML; 	
-	var jBody  = model_tSHeadW_div.indexOf("<tbody");
-	var jBody2 = model_tSHeadW_div.indexOf("<tr", jBody);	
+	let ele_model_tSHeadW_DIV = getById("id_model_tSHeadW"); 
+	model_tSHeadW_div = ele_model_tSHeadW_DIV.innerHTML; 	
+	let jBody  = model_tSHeadW_div.indexOf("<tbody");
+	let jBody2 = model_tSHeadW_div.indexOf("<tr", jBody);	
 	
-	var newDiv = model_tSHeadW_div.substr(0, jBody2) +"\n" + str2.trim()  + "\n</tbody></table></div>\n";  
+	let newDiv = model_tSHeadW_div.substr(0, jBody2) +"\n" + str2.trim()  + "\n</tbody></table></div>\n";  
 		
 	console.log("6 buildHeaderTable () newDiv = ", newDiv)
 	
@@ -1428,50 +1579,50 @@ function OLDbuildHeaderTable( str1 ) {
 		</HEADER>
 	**/
 	
-	var lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
+	let lineTr = str1.replaceAll("|", "<br>").replaceAll("\n", " ").split(":lemma="); 
 	if (lineTr[0] == "") {  lineTr = lineTr.slice(1);}
 	
 	console.log("1 buildHeaderTable () str1=" , str1); 
  	
-	var ele_model_tSHeadW = document.getElementById("id_model_tSHeadW"); 
-	var model_tSHeadW_div = ele_model_tSHeadW.innerHTML; 
+	let ele_model_tSHeadW = getById("id_model_tSHeadW"); 
+	let model_tSHeadW_div = ele_model_tSHeadW.innerHTML; 
 	
 	//console.log("2 buildHeaderTable () model_tSHeadW_div=> " + model_tSHeadW_div  + "<==="); 
 	
-	var ele_model_tSHeadW_bdy = document.getElementById("id_model_tSHeadW_bdy"); 
-	var model_tSHeadW_lemma = ele_model_tSHeadW_bdy.innerHTML; 
+	let ele_model_tSHeadW_bdy = getById("id_model_tSHeadW_bdy"); 
+	let model_tSHeadW_lemma = ele_model_tSHeadW_bdy.innerHTML; 
 	
 	
 	
-	var jBody  = model_tSHeadW_div.indexOf("<tbody "); 
+	let jBody  = model_tSHeadW_div.indexOf("<tbody "); 
 	 
-	var jBodyEnd = model_tSHeadW_div.indexOf("</tbody>", jBody); 
+	let jBodyEnd = model_tSHeadW_div.indexOf("</tbody>", jBody); 
 	
 
 	
-	var str2 = '' ; 
-	var len1 = lineTr.length
+	let str2 = '' ; 
+	let len1 = lineTr.length
 	//-------------------------------
 	// caso 1: un solo lemma e una voce 
 	// caso 2: un solo lemma e diverse voci 
 	// caso 3: diversi lemma e una sola voce
 	// caso 4: diversi lemma e diverse voci    ( non previsto )   	
 	//---------------------------------------
-	for(var z1=0; z1 < len1; z1++) {
-		var oneTr1 = lineTr[z1]
+	for(let z1=0; z1 < len1; z1++) {
+		let oneTr1 = lineTr[z1]
 	
-		var jT = oneTr1.indexOf(":tran=");
-		var jW = oneTr1.indexOf(":wordsInLemma=");
-		var nuovoLemma   = oneTr1.substring(0,jT    ).trim();
-		var nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
-		var nuovoLisWord = oneTr1.substring(jW+14   ).trim();		
+		let jT = oneTr1.indexOf(":tran=");
+		let jW = oneTr1.indexOf(":wordsInLemma=");
+		let nuovoLemma   = oneTr1.substring(0,jT    ).trim();
+		let nuovoTran    = oneTr1.substring(jT+6,jW ).trim();
+		let nuovoLisWord = oneTr1.substring(jW+14   ).trim();		
 			
-		var wor1arr = nuovoLisWord.split("<br>") ;
-		var newLe2=""; 
+		let wor1arr = nuovoLisWord.split("<br>") ;
+		let newLe2=""; 
 		if (wor1arr.length == 1) {
-			var wor11 = wor1arr[0].trim(); 
-			var lem1arr = nuovoLemma.split("<br>")    ;
-			for(var h1=0; h1 < lem1arr.length; h1++) {
+			let wor11 = wor1arr[0].trim(); 
+			let lem1arr = nuovoLemma.split("<br>")    ;
+			for(let h1=0; h1 < lem1arr.length; h1++) {
 				if (lem1arr[h1].trim() == wor11) {continue;}
 				newLe2 += "<br>" + lem1arr[h1].trim() ; 
 			}
@@ -1498,25 +1649,31 @@ function OLDbuildHeaderTable( str1 ) {
 	//console.log("6 buildHeaderTable () str2 = " + str2 + "<==" ) ; 
 
 	
-	var newDiv = model_tSHeadW_div.substr(0, jBody) + str2 + model_tSHeadW_div.substr(jBodyEnd+8);  
+	let newDiv = model_tSHeadW_div.substr(0, jBody) + str2 + model_tSHeadW_div.substr(jBodyEnd+8);  
 	
 	return newDiv;  
 	
 } // end of OLDbuildHeaderTable
 
 //--------------------------------------------------
+/**
 function js_go_showWordRowList3(inpstr) {
 	// vedi js_go_showWrdRowList(inpstr)
 	console.log(" js_go_showWordRowList2 (inpstr=" + inpstr);  
 }
+**/
 //--------------------------------------------------
-function js_go_showLemmaRowList4(inpstr) {
+function js_go_showLemmaRowList4(inpstr, js_parm, jsFunc,goFunc) {
 	// vedi js_go_showWrdRowList(inpstr)	
 	//console.log(" js_go_showLemmaRowList2 (inpstr=" + inpstr);  
-	js_go_showWrdRowList(inpstr)
+	js_go_showWrdRowList(inpstr, js_parm, jsFunc,goFunc)
 }
 //------------------------
-function js_go_showWrdRowList(inpstr) {
+function js_go_showWrdRowList(inpstr, js_parm, jsFunc,goFunc) {
+	
+	// triggered by go ( go_passToJs_rowList and js_go_showWrdRowList)
+	
+	//logColor("%%blue", "js_go_showWrdRowList () ", "%%black","  js_parm=" + js_parm + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc ) 
 	
 	// triggered by go ( bild go_passToJs_getWordByIndex )
 	
@@ -1535,28 +1692,28 @@ function js_go_showWrdRowList(inpstr) {
 	myPage01.style.display = "none"; 
 	
 	if (inpstr.substring(0,5) == "NONE,") {
-		console.log(" js_go_showWrdRowList () 3 return inpstr = " +inpstr);  
-		document.getElementById("id_inpWordFra_msgWord").innerHTML = inpstr.substring(5) ;
-		//document.getElementById("id_inpWordFra_msg").style.display = "block";
+		//console.log(" js_go_showWrdRowList () 3 return inpstr = " +inpstr);  
+		getById("id_inpWordFra_msgWord").innerHTML = inpstr.substring(5) ;
+		//getById("id_inpWordFra_msg").style.display = "block";
 		myPage01.style.display = "flex"; 
 		myPage05.style.display = "none";
 		//onclick_jumpFromToPage( myPage02,myPage03, myPage04);  //   
 		return
 	}	
-	//document.getElementById("id_inpWordFra_msg").style.display = "none";
+	//getById("id_inpWordFra_msg").style.display = "none";
 	
 	//console.log("2 js_go_showWrdRowList ");
 	
 	myPage05.style.display = "none";
 	
 		
-	var h_wordListStr = "", h_wordTab = "";
-	var ks = inpstr.indexOf("</HEADER>"); 
+	let h_wordListStr = "", h_wordTab = "";
+	let ks = inpstr.indexOf("</HEADER>"); 
 	if (ks < 0) { return } 	
 	
 	//console.log("3 js_go_showWrdRowList ");
 	
-	var inpHeader = inpstr.substring( 0, ks + 9);
+	let inpHeader = inpstr.substring( 0, ks + 9);
 	
 	//console.log("js_go_showWrdRowList inpHeader + \n" +  inpstr.substring( 0, ks + 20)   +"\n-------------------\n") 
 	
@@ -1572,14 +1729,14 @@ function js_go_showWrdRowList(inpstr) {
 	**/
 	
 	
-	var thisListRow = inpstr.substring(ks+9) ; 
+	let thisListRow = inpstr.substring(ks+9) ; 
 	//console.log("ANTONIO resto \n", inpstr	, "\n------------------------------------ fine ----")
 	
-	var col1 = splitHeader( inpHeader );
-	var h_wordListStr00 = col1[0]
+	let col1 = splitHeader( inpHeader );
+	let h_wordListStr00 = col1[0]
 	
-	var inpReqWord = "";
-	var jh = h_wordListStr00.indexOf(",L:");	
+	let inpReqWord = "";
+	let jh = h_wordListStr00.indexOf(",L:");	
 	if (jh < 1) {
 		h_wordListStr = h_wordListStr00; 
 	} else {
@@ -1600,90 +1757,99 @@ function js_go_showWrdRowList(inpstr) {
 	
 	//console.log("1word_to_underline_list=", word_to_underline_list.length, " parole") 
 	
-	var word3, ixUnW3, totRow3, wLemma3, wTran3;
+	let word3, ixUnW3, totRow3, wLemma3, wTran3;
 
 	
 	
-	document.getElementById("id_headWord").innerHTML = h_wordTab.replaceAll('display:none','display:block').replaceAll("tsHead_1","tsHead_00") ;
+	getById("id_headWord").innerHTML = h_wordTab.replaceAll('display:none','display:block').replaceAll("tsHead_1","tsHead_00") ;
 	
 	//console.log("6 js_go_showWrdRowList");
 	
 	onclick_jumpFromToPage( myPage02,myPage03, myPage04);  //   
 	
-	js_go_rowList( thisListRow );  
+	//js_go_rowList ( thisListRow );  
+	js_go_rowList( thisListRow, js_parm, jsFunc,goFunc)
 	
 	
 } // end of js_go_showWrdRowList  NEW
-//--------------------------------------------
-
-function js_go_rowList2( inpstr )  {
-
-} // end of  js_go_rowList2
-
-function js_go_rowList4( inpstr, js_parm, jsFunc,goFunc ) {
-	js_go_rowList( inpstr, js_parm, jsFunc,goFunc, "4")
-}  // end of  js_go_rowList2	
 
 //--------------------------------------
-function js_go_rowList( inpstr, js_parm, jsFunc,goFunc) {
-	
+function js_go_rowList( inpstr, json_parmStr, jsFunc,goFunc) {
+	//console.log("1 js_go_rowList " ,  "myPage01=", myPage01.style.display,   ",  myPage04=", myPage04.style.display); 
 	// triggered by go ( go_passToJs_rowList and js_go_showWrdRowList)
 	
 	//console.log("function js_go_rowList () js_parm=" + js_parm + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc ) 
 	//console.log("	inpstr=" +inpstr ) 
+	let js_parm_array = fromJsonStringToArray(json_parmStr)
+	
+	//sw_rowListFrom_onclick = (jsFunc.indexOf("HTML page onclick_require_rowList1(1)" ) >= 0) ;
+	
+	sw_rowListFrom_onclick = (js_parm_array[0] == "1") ;
+	/**
+	logColor("js_go_rowList", "%%red", "js_go_rowList ", "%%blue", " sw_rowListFrom_onclick=", "%%black", sw_rowListFrom_onclick, 
+		 "\n\t js_parm_array=" + js_parm_array + "\n\t jsFunc=" + jsFunc , "\n\t goFunc=" + goFunc  )
+	**/
+	
+	getById("id_caller").innerHTML = jsFunc;
+	
 	
 	rowToStudy_list = [];
 	newRowTran = [];
-	var numeroTS_Row=0, numeroTS_OkTran=0, numeroTS_NoTran=0;
+	let numeroTS_Row=0, numeroTS_OkTran=0, numeroTS_NoTran=0;
     if (inpstr == undefined) {
-		console.log("js_go_rowList() 1 return inpstr undefined "); 	
+		console.log("js_go_rowList () 1 return inpstr undefined "); 	
 		onclick_jumpFromToPage( myPage02,myPage03, myPage01);  //   
         return;
     }
 	
     if (inpstr == "") {		
-		console.log("js_go_rowList() 2 return inpstr vuoto");  
-		document.getElementById("id_inpRowEmpty").style.display = "inline-block";
+		console.log("js_go_rowList () 2 return inpstr vuoto");  
+		getById("id_inpRowEmpty").style.display = "inline-block";
 		onclick_jumpFromToPage( myPage02,myPage03, myPage01);  //   
 	    return;
     }
-	myPage01.style.display = "none"; 
+	//myPage01.style.display = "none"; 
 	
 	rowToStudy_list =  inpstr.split("<br>");	
 	
-	//console.log("js_go_rowList() 1 rowToStudy_list.length=", rowToStudy_list.length , "  maxNumRow=",  maxNumRow , " type=", typeof maxNumRow);
+	//console.log("js_go_rowList () 1 rowToStudy_list.length=", rowToStudy_list.length , "  maxNumRow=",  maxNumRow , " type=", typeof maxNumRow);
 	
 	if (rowToStudy_list.length >= maxNumRow) {
 		rowToStudy_list = rowToStudy_list.slice(0, maxNumRow+1) ; 
 	}  
 	
-	//console.log("js_go_rowList() 2 rowToStudy_list.length=", rowToStudy_list.length );
+	//console.log("js_go_rowList () 2 rowToStudy_list.length=", rowToStudy_list.length );
 	
-	for (var z=0; z < rowToStudy_list.length; z++) {	
+	for (let z=0; z < rowToStudy_list.length; z++) {	
 		//if (z < 10) { console.log("js_go_rowList ", z, "  ", rowToStudy_list[z]   )  }
 		newRowTran.push( 0 )
 	}
-		
+	
+	//console.log("2 js_go_rowList build_Page1_rowsToTranslate " ,  "myPage01=", myPage01.style.display,   ",  myPage04=", myPage04.style.display);   
+	
 	[numeroTS_Row, numeroTS_OkTran, numeroTS_NoTran] = build_Page1_rowsToTranslate("3js_go_rowList"); 
 	
-	//console.log("js_go_rowList() numeroTS=", numeroTS_Row, " numeroTS_OkTran=", numeroTS_OkTran, " numeroTS_NoTran=", numeroTS_NoTran ) ;
+	//console.log("js_go_rowList () numeroTS=", numeroTS_Row, " numeroTS_OkTran=", numeroTS_OkTran, " numeroTS_NoTran=", numeroTS_NoTran ) ;
+	
+	myPage01.style.display = "none"; 
 	
 	
 } // end of js_go_rowList
 //-------------------
 
 function build_Page1_rowsToTranslate( wh ) {
+	//console.log("1 build_Page1_rowsToTranslate " ,  "myPage01=", myPage01.style.display,   ",  myPage04=", myPage04.style.display);   
 	
 	
-	var numeroTS_Row=0, numeroTS_OkTran=0, numeroTS_NoTran=0;
-	var numRowNoTranR1 = 0 
-	var rows_to_translate_str = "";  
+	let numeroTS_Row=0, numeroTS_OkTran=0, numeroTS_NoTran=0;
+	let numRowNoTranR1 = 0 
+	let rows_to_translate_str = "";  
 	
-	var nfile,idRow, ixRow,p3,rowS, tranS, nfileS, idRowS, ixRowS, oT; 
+	let nfile,idRow, ixRow,p3,rowS, tranS, nfileS, idRowS, ixRowS, oT; 
 	
 	//console.log("\nXXXXXXXXXXXXXXXXXXXXXXXX   build_Page1_rowsToTranslate (", wh,")",  "  1  length=", rowToStudy_list.length )
 	
-	for (var z=0; z < rowToStudy_list.length; z++) {		
+	for (let z=0; z < rowToStudy_list.length; z++) {		
 		/*
 		;;0;;2;; Erstes Kapitel;; Primo Capitolo 
 		;;0;;3;; 
@@ -1720,13 +1886,13 @@ function build_Page1_rowsToTranslate( wh ) {
 		showRowsAndTranButton("2")
 		return [numeroTS_Row, numeroTS_OkTran, numeroTS_NoTran ];
 	}	
-	document.getElementById("id_notTranNumRow").innerHTML = numRowNoTranR1; 
+	getById("id_notTranNumRow").innerHTML = numRowNoTranR1; 
 	
 	ele_toTranslate_textarea.value = rows_to_translate_str;
 	ele_translated_textarea.value = ""; 
 	
 	//console.log("build... ele_toTranslate_textarea = ", rows_to_translate_str); 
-	
+	 
 	//onclick_jumpFromToPage( myPage01,0,myPage04);   
 	onclick_jumpFromToPage( myPage01,0,myPage04);   
 	
@@ -1736,14 +1902,14 @@ function build_Page1_rowsToTranslate( wh ) {
 
 //-------------------------------------------------
 
-function js_go_showReadFile( str1 ) {
-	//console.log("ANTONIO js_go_showReadFile( str1=" , str1 )
-	var j1 = str1.indexOf( "))" ); 
-	var mainNum     = str1.substring(0,j1);
-	var fileListStr = str1.substring(j1+2); 
+function go_run_js_showReadFile( str1 ) {
+	//console.log("ANTONIO go_run_js_showReadFile( str1=" , str1 )
+	let j1 = str1.indexOf( "))" ); 
+	let mainNum     = str1.substring(0,j1);
+	let fileListStr = str1.substring(j1+2); 
 	
 	//  "level " + msgLevelStat + "))" 	
-	var numUniW, numTotW, numRow, levelStats = "";
+	let numUniW, numTotW, numRow, levelStats = "";
 	[numUniW, numTotW, numRow, levelStats] = mainNum.split(";")
 	numberOf_uniW = numUniW;
 	numberOf_totW = numTotW;
@@ -1752,52 +1918,53 @@ function js_go_showReadFile( str1 ) {
 			" in totale " + parseInt(numTotW).toLocaleString() + " parole " + 
 			"su un testo di " + parseInt(numRow).toLocaleString() + " righe"  ;
 			
-	document.getElementById("id_inpFileList").innerHTML	= "(" + str1 + ")" ; 	
+	getById("id_inpFileList").innerHTML	= "(" + str1 + ")" ; 	
 	/**
-	//console.log("js_go_showReadFile  levelStats=", levelStats)
+	//console.log("go_run_js_showReadFile  levelStats=", levelStats)
 	
 	if (levelStats.indexOf("-oth-: 99%") < 0)  {		
 		str1 += "<br>" + levelStats; 			
 	}
 	
-    var rows = fileListStr.split(";");
-    var td1, td2;
-    //var modelTR = document.getElementById("id_start_trModel").outerHTML;
+    let rows = fileListStr.split(";");
+    let td1, td2;
+    //let modelTR = getById("id_start_trModel").outerHTML;
 	str1 += "<hr>"
-	var str2 = '<table style="border:0px solid black">\n';
+	let str2 = '<table style="border:0px solid black">\n';
 	//str2 += '<tr><th colspan="2">input</th></tr> \n' ;   	
-    for (var i = 0; i < rows.length; i++) {
+    for (let i = 0; i < rows.length; i++) {
         if (rows[i] == "") continue;
         [td1, td2] = rows[i].split("<file>");			
-		var k1= td2.lastIndexOf("\\")
-		var k2= td2.lastIndexOf("/")	
-		var k3 = Math.max(k1,k2) ;
+		let k1= td2.lastIndexOf("\\")
+		let k2= td2.lastIndexOf("/")	
+		let k3 = Math.max(k1,k2) ;
 		listaInputFile = td2.substring(k3+1).trim() + "," 
 		str2 += '<tr><td>' + td2.substring(k3+1) + '</td>' +
 			'<td>(' + parseInt(td1).toLocaleString() + " righe" + ')' + '</td></tr> \n' ;  
     }
 	str2 += '</table>';
 	
-	var str0 = '<div style="border:1px solid black; padding:1em;">';
+	let str0 = '<div style="border:1px solid black; padding:1em;">';
 	
-	document.getElementById("id_inpFileList").innerHTML = str0 + str1 + ""+ str2 + "</div>";
+	getById("id_inpFileList").innerHTML = str0 + str1 + ""+ str2 + "</div>";
 	***/
 	
 }
 //---------------
 /**
 function set_dragDiv() {
-		dragElement(document.getElementById("dragButt1"  ), document.getElementById("dragButt1_header"  ));
-		dragElement(document.getElementById("dragButt2"  ), document.getElementById("dragButt2_header"  ));
-		dragElement(document.getElementById("dragButt3"  ), document.getElementById("dragButt3_header"  ));
-		dragElement(document.getElementById("dragButt4"  ), document.getElementById("dragButt4_header"  ));
-		dragElement(document.getElementById("dragWLsTip5"), document.getElementById("dragWLsTip5_Header")); 
+		dragElement(getById("dragButt1"  ), getById("dragButt1_header"  ));
+		dragElement(getById("dragButt2"  ), getById("dragButt2_header"  ));
+		dragElement(getById("dragButt3"  ), getById("dragButt3_header"  ));
+		dragElement(getById("dragButt4"  ), getById("dragButt4_header"  ));
+		dragElement(getById("dragWLsTip5"), getById("dragWLsTip5_Header")); 
 }
 **/
 //------------------------------------
-function js_go_ready( prevRun00) {
-	console.log("************************* js_go_ready(" + prevRun00.trim() + ")" ); 
+function go_run_js_ready( prevRun00) {
+	console.log("************************* go_run_js_ready(" + prevRun00.trim() + ")" ); 
 	
+	//try{
 	/**
 	5,de,de-DE,Microsoft Stefan - German (Germany):mainpage_value=5491,10,1,100,any,,
 	**/
@@ -1806,9 +1973,9 @@ function js_go_ready( prevRun00) {
 	
 	prevRun00+="                                   ";
 	
-	var jj = prevRun00.indexOf(":mainpage_value=");
-	var lastMainPageValueS;
-	var prevRun = "";
+	let jj = prevRun00.indexOf(":mainpage_value=");
+	let lastMainPageValueS;
+	let prevRun = "";
 	if (jj < 0) {
 		lastMainPageValueS = "";	
 		prevRun = prevRun00;
@@ -1816,12 +1983,12 @@ function js_go_ready( prevRun00) {
 		lastMainPageValueS = prevRun00.substr(jj+16);  	
 		prevRun = prevRun00.substr(0,jj)
 	}
-	var sel_lev  = ""; var sel_ix_lev=0;  var sel_id_lev="";
-	var sel_extr = ""; var sel_ix_extr=0; var sel_id_extr="";
-	var isAlphaStr=""; 
+	let sel_lev  = ""; let sel_ix_lev=0;  let sel_id_lev="";
+	let sel_extr = ""; let sel_ix_extr=0; let sel_id_extr="";
+	let isAlphaStr=""; 
 	
-	var ele_sel_1_lev    = document.getElementById("id_sel_1_levTOLTO");
-	var ele_sel_2extRow  = document.getElementById("id_sel_2_extrRow");
+	//let ele_sel_1_lev    = getById("id_sel_1_levTOLTO");
+	let ele_sel_2extRow  = getById("id_sel_2_extrRow");
 	 	//-----------	
 	
 	
@@ -1847,7 +2014,7 @@ function js_go_ready( prevRun00) {
 	}
 	ele_sel_2extRow.selectedIndex = sel_ix_extr; 
 	
-	is_selected_row_only = (sel_ix_extr == index_onlySelRowsWanted); //3js_go_ready
+	is_selected_row_only = (sel_ix_extr == index_onlySelRowsWanted); //3go_run_js_ready
 	fun_selRowsWanted_changed();
 	//console.log("go_ready:  is_selected_row_only = ",is_selected_row_only ); 
 	
@@ -1858,11 +2025,11 @@ function js_go_ready( prevRun00) {
 	} else {
 		ele_freq.checked  = true;
 	}
-	var eleSele = document.getElementById("id_orderWord1TOLTO");	
-	var swIsAl = ( eleSele.selectedIndex == 0) 
+	let eleSele = getById("id_orderWord1TOLTO");	
+	let swIsAl = ( eleSele.selectedIndex == 0) 
 	***/
 	/***
-	var eleSele = document.getElementById("id_orderWord1TOLTO");	
+	let eleSele = getById("id_orderWord1TOLTO");	
 	if (isAlphaStr == "alpha") {
 		eleSele.selectedIndex = 0;  // alphabetic 
 	} else {
@@ -1871,27 +2038,27 @@ function js_go_ready( prevRun00) {
 	***/
 	//-------------------
 	
-	var prevRunLanguage = prevRun.trim(); 
+	let prevRunLanguage = prevRun.trim(); 
 	if (prevRunLanguage != "") {
 		sw_firstDictLine_already_existed = true; 
 		lastRunLanguage = prevRunLanguage
 		console.log("language file has been read ==>" +  lastRunLanguage) 
 	} 	
   
-    document.getElementById("id_start001").style.display = "none";
+    getById("id_start001").style.display = "none";
     myPage01.style.display = "flex";
 	
-    document.getElementById("id_showButt").style.display = "block";
-    document.getElementById("id_start_tab").style.display = "none";
+    getById("id_showButt").style.display = "block";
+    getById("id_start_tab").style.display = "none";
 	
 	//scroll_1_init() 
 	
 	if (prevRunLanguage != "") { 
 		lastRunLanguage = prevRunLanguage
 		loadPrevLang( prevRunLanguage ) 
-		console.log("js_go_ready()  prevRunLanguage=", prevRunLanguage, "  js_go_ready() NON chiama  fcommon_load_all_voices()");  
+		console.log("go_run_js_ready()  prevRunLanguage=", prevRunLanguage, "  go_run_js_ready() NON chiama  fcommon_load_all_voices()");  
 	}	else {
-		console.log("js_go_ready() call fcommon_load_all_voices()");
+		console.log("go_run_js_ready() call fcommon_load_all_voices()");
 		
 		fcommon_load_all_voices(); // at end calls tts_1_toBeRunAfterGotVoices()		
 		// WARNING: the above function contains asynchronous code.  
@@ -1899,21 +2066,20 @@ function js_go_ready( prevRun00) {
 	}
 	
 	
-	//onclick_getRowGroup(  document.getElementById("id_gruppi_sel") )
+	//onclick_getRowGroup(  getById("id_gruppi_sel") )
 	
-	let cellWord_TrTD = document.getElementById("idTableWordList_tbody").children[0].children[5]; 		
-	let cellWord_TrTH = document.getElementById("idTableWordList_thead").children[0].children[5]; 		
-		console.log("%ccellWord_TrTH=",cellWord_TrTH.innerHTML) 
-		console.log("%ccellWord_TrTD=",cellWord_TrTD.innerHTML) 
+	let cellWord_TrTD ; // = getById("idTableWordList_tbody").children[0].children[5]; 		
+	let cellWord_TrTH ; // = getById("idTableWordList_thead").children[0].children[5]; 
 		
-		console.log("%ccellWord_TrTD  xxx =",document.getElementById("idTableWordList_tbody").rows[0]) 
-
-} // end of js_go_ready
+	
+	//} catch(e1) { console.log("%cerrore in go_run_js_ready () " +  e1, "color:red;") }
+	
+} // end of go_run_js_ready
 //-------------------------------------
 
 function onclick_show_or_hide_statistics() {
-    var eleFreq   = document.getElementById("id_frequenze");
-    var eleStFile = document.getElementById("id_start_tab");
+    let eleFreq   = getById("id_frequenze");
+    let eleStFile = getById("id_start_tab");
 
 
     if (eleFreq.style.display == "block") {
@@ -1928,7 +2094,7 @@ function onclick_show_or_hide_statistics() {
 //----------------------------------------
 function stdCode(inpCode) {	
 
-	var CoerInp = inpCode.replaceAll( "ae","ä").replaceAll("oe","ö").replaceAll("ue","ü").replaceAll("ß","ss") 
+	let CoerInp = inpCode.replaceAll( "ae","ä").replaceAll("oe","ö").replaceAll("ue","ü").replaceAll("ß","ss") 
 					
 	return CoerInp  
 }
@@ -1937,20 +2103,20 @@ function stdCode(inpCode) {
 function evidenzia( unaparola, class_targ, txtinp1) {
 		
 	
-	var newRow="";
+	let newRow="";
 	unaparola = unaparola.toLowerCase().trim();
 	
-	var lenParola = unaparola.length; 
+	let lenParola = unaparola.length; 
 	
-	var lowinp0 = txtinp1.toLowerCase().replaceAll("§"," ") + "§"; 
-	var lowinp1 = lowinp0.replace(/[\s;,:"'\.<>»«()\[\]\!\?„“]/g,"§")  
+	let lowinp0 = txtinp1.toLowerCase().replaceAll("§"," ") + "§"; 
+	let lowinp1 = lowinp0.replace(/[\s;,:"'\.<>»«()\[\]\!\?„“]/g,"§")  
 	
-	var j0=-1, j1=0;
-	var jNew=0
-	var swBold=false;
-	var parola1, parolaT;
+	let j0=-1, j1=0;
+	let jNew=0
+	let swBold=false;
+	let parola1, parolaT;
 	j1=-1; 
-	for(var i=0; i < lowinp1.length; i++) {	    
+	for(let i=0; i < lowinp1.length; i++) {	    
 		j0=j1+1
 		j1 = lowinp1.indexOf("§", j0);  
 		if (j1 < 0) break;
@@ -2024,7 +2190,7 @@ function copyInnerHTML_to_clipboard( this1 , ele_textarea) {
 	// copy innerHTML to textarea value and then ask to copy from that to clipboard (from where you can paste) 
 	// textarea might be with display none  if you need 
 	ele_textarea.value = this1.innerHTML.replaceAll("<br>","\n") ;
-	onclick_copyTextAreaValue_to_clipboard( document.getElementById('myInput') );
+	onclick_copyTextAreaValue_to_clipboard( getById('myInput') );
 }
 //--------------------------------------
 
@@ -2039,28 +2205,28 @@ function onclick_showWordsButton(type) {
 		sw_ignore_missTranWord = false; // Translations added, check again</button	
 	}  	
 	
-	var wordTranList = ele_wordsTranslated.value.trim().split( wordTTEnd );    // 
+	let wordTranList = ele_wordsTranslated.value.trim().split( wordTTEnd );    // 
 	
 	console.log("X3 onclick_showWordsButton() ", " type=", type, " wordTranList=\n", wordTranList ) 	
 	
-	var lenTran =  wordTranList.length;	
-	var wordTran
+	let lenTran =  wordTranList.length;	
+	let wordTran
 		
-	var ixUnTrad, ixUnWtS;
-	var lenW = wordToStudy_list.length;
-	var word1, nrow, totExtrRow2, totExtrRow2, wLemma1, wtran, uLearnedYN  ; 
-	var newTran_f = "";
+	let ixUnTrad, ixUnWtS;
+	let lenW = wordToStudy_list.length;
+	let word1, nrow, totExtrRow2, wLemma1, wtran, uLearnedYN  ; 
+	let newTran_f = "";
 	//------------------------------------------
-	var wX, wT, ixz1,  ixz2, ixzNum   
+	let wX, wT, ixz1,  ixz2, ixzNum   
 	
 	//-----------
-	var wList;
-	var sw_someTranMissingW = false;  // sometimes the automatic translator does some mistakes 
-	var wIxLemmaList, wLemmaList, wTranList, newTranList , wLevelList, wParaList, wExampleList; 
-	var numf=0
-	var sw_Minus1 = false
+	let wList;
+	let sw_someTranMissingW = false;  // sometimes the automatic translator does some mistakes 
+	let wIxLemmaList, wLemmaList, wTranList, newTranList , wLevelList, wParaList, wExampleList; 
+	let numf=0
+	let sw_Minus1 = false
 	//----------------------------
-	for(var z=0; z < lenTran; z++) {
+	for(let z=0; z < lenTran; z++) {
 	
 		wT = wordTranList[z].toLowerCase(); 	
 		//                             z + ";" + ixUnW2 + ";" + ixLemma + "; " +wTran    ( soltanto UNA traduzione (quella del lemma num.f 
@@ -2082,7 +2248,7 @@ function onclick_showWordsButton(type) {
 		//console.log("traduz=", wT, "\n\t ixzNum=", ixzNum, "  ixUnTrad=", ixUnTrad, " numf=", numf, " newTran_f=", newTran_f ) // 
 		
 		//ixzNum is the index of the word in wordToStudy_list
-		var ix3;	
+		let ix3;	
 		try{
 			ix3 = parseInt( ixzNum );
 		} catch(e1) {
@@ -2100,7 +2266,7 @@ function onclick_showWordsButton(type) {
 		
 		//console.log(" wordTranList[z]=", wT, " ===> wList= [ixzNum, ixUnTrad, numf, newTran_f]=", [ixzNum, ixUnTrad, numf, newTran_f] ); 
 		
-		var numIxTrad= parseInt(ixUnTrad)
+		let numIxTrad= parseInt(ixUnTrad)
 		if (numIxTrad == -1) { sw_Minus1 = true; numIxTrad = 0; }
 		if ( parseInt(ixUnWtS) != numIxTrad) {
 			sw_someTranMissingW= true;	
@@ -2110,12 +2276,12 @@ function onclick_showWordsButton(type) {
 				continue; 
 			}	
 		} 
-		var numLemma = parseInt( numf ); // index of the lemma and its translation in the [lemmalist][tran list] in wordToStudy_list 
+		let numLemma = parseInt( numf ); // index of the lemma and its translation in the [lemmalist][tran list] in wordToStudy_list 
 		newTran[ixzNum] = 1; 
 		
 		//console.log("anto newTran[ixzNum=" + ixzNum + "] = 1" ); 
 		
-		for(var h = 0 ; h < wLemmaList.length; h++) {	
+		for(let h = 0 ; h < wLemmaList.length; h++) {	
 			if (h == numLemma) {
 				wTranList[h] = newTran_f.trim();
 			} 
@@ -2129,7 +2295,7 @@ function onclick_showWordsButton(type) {
 		
 		//console.log(" new wordToStudy_list[ixzNum]=", 	wordToStudy_list[ixzNum] ); 
 		
-	}  // end of for(var z ...
+	}  // end of for(let z ...
 	//--------------------------	
 	if (sw_ignore_missTranWord == false) {
 		if (sw_someTranMissingW) {		
@@ -2140,14 +2306,14 @@ function onclick_showWordsButton(type) {
 		}		
 	}
 	//console.log("onclick_showWordsButton() wordToStudy_list.length=" , wordToStudy_list.length)
-	for (var i = 0; i < wordToStudy_list.length; i++) {
+	for (let i = 0; i < wordToStudy_list.length; i++) {
 		[word1, ixUnWtS, nrow,   wLemmaList, wTranList, 
 					wLevelList, wParaList, wExampleList, totExtrRow2, uLearnedYN , wIxLemmaList  ] = wordToStudy_list[i];  
 		if (word1== "Xabfahren") { console.log("word1=", word1, " wParaList=", wParaList, " wExampleList=", wExampleList)}			
 		//console.log("onclick_showWordsButton() 3 i=",i, " wordToStudy_list[i]=" , wordToStudy_list[i])
 		if (word1 == "") { continue; }
 				
-		for(var ixLemma = 0 ; ixLemma < wLemmaList.length; ixLemma++) {	
+		for(let ixLemma = 0 ; ixLemma < wLemmaList.length; ixLemma++) {	
 			if (wLemmaList[ixLemma] == "") { continue }	  // word senza lemma 
 			if (wTranList[ixLemma] == "") {	
 				sw_someTranMissingW = true;  
@@ -2169,7 +2335,7 @@ function onclick_showWordsButton(type) {
 	//console.log("onclick_showWordsButton() ",red("call write word dictionary ")) 
 	
 	if (sw_Minus1) {
-		for (var i = 0; i < wordToStudy_list.length; i++) {  
+		for (let i = 0; i < wordToStudy_list.length; i++) {  
 			[word1, ixUnWtS, nrow,   wLemmaList, wTranList, wLevelList, 
 						wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList ] = wordToStudy_list[i]; 
 			if (word1== "Xabfahren") { console.log("word1=", word1, " wParaList=", wParaList, " wExampleList=", wExampleList)}				
@@ -2188,20 +2354,20 @@ function onclick_showWordsButton(type) {
 
 //------------------------
 function extract_ix_word( i,wordOrig2 ) {
-		// var wordOrig2 = wordOrigList[i].trim(); 		
-		var pp= wordOrig2.indexOf(";"); 
+		// let wordOrig2 = wordOrigList[i].trim(); 		
+		let pp= wordOrig2.indexOf(";"); 
 		
 		//console.log("antonio extract_ix_word( i=" + i + "  wordOrig2=" + wordOrig2 + " ==> pp=" + pp)  
 		
 		if (pp< 0) { return "";}
 	
-		var ix2 = wordOrig2.substring(0, pp); 
-		var	ww2 = wordOrig2.substring(pp+1).trim(); 		
+		let ix2 = wordOrig2.substring(0, pp); 
+		let	ww2 = wordOrig2.substring(pp+1).trim(); 		
 		
 		//console.log("\t\t i=" + i + "   ix2=" + ix2 + "   ww2=" + ww2)  
 		
 		try{
-			var ix3 = parseInt( ix2 );
+			let ix3 = parseInt( ix2 );
 			if (ix3 == i) return ww2;
 			return ""; 	
 		} catch(e1) {
@@ -2220,7 +2386,7 @@ function loadPrevLang(prevLanguage) {
 	//          0,1 ,2    ,3  
 	
 	/***
-	var pvLang = prevLanguage.trim).split(",") 	
+	let pvLang = prevLanguage.trim).split(",") 	
 	prev_voice_ix        =  pvLang[0] ; 	
 	prev_voiceLang2      =  pvLang[1] ; 		
 	prev_voiceLangRegion =  pvLang[2] ;  
@@ -2236,11 +2402,11 @@ function loadPrevLang(prevLanguage) {
 
 } // 
 //---------------------------------
-function js_go_setError(msg) {
-	document.getElementById("id_startwait").innerHTML = msg; 	
+function go_run_js_setError(msg) {
+	getById("id_startwait").innerHTML = msg; 	
 }
 //------------------------------
-var numP=0
+let numP=0
 function whereIs(here) {
 	//numP++
 	
@@ -2251,9 +2417,9 @@ function whereIs(here) {
 		return ;
 	}
 	
-	var cols = here.split("::")
+	let cols = here.split("::")
 	//ele_where.innerHTML = cols[2];
-	var perc=0;
+	let perc=0;
 	try{
 		perc = parseInt( cols[1] )
 		ele_bar.style.width = perc + "%";  
@@ -2265,8 +2431,8 @@ function whereIs(here) {
 	
 } 
 //-------------------------
-function showProgress(perc0) {
-	var perc=0;
+function go_run_js_showProgress(perc0) {
+	let perc=0;
 	try{
 		perc = parseInt( perc0 )
 		ele_bar.style.width = perc + "%";  
@@ -2283,18 +2449,18 @@ function onclick_tts_seeWordsGO1(numTr, ixRow) {
 	
 	word_to_underline_list = []
 	
-	var id_analWords = "idw_" + numTr;
-	var ele_wordset = document.getElementById(id_analWords);   
+	let id_analWords = "idw_" + numTr;
+	let ele_wordset = getById(id_analWords);   
 	if ((ele_wordset == null) || (ele_wordset == false) ) {
-			console.log("onclick_tts_seeWordsGO1(this1," , numId00, ") ==> ", eleTR.outerHTML, "\n\tid_analWords=" + id_analWords , " ERROR ele_wordset == false" )
+			console.log("onclick_tts_seeWordsGO1(numTr=", numTr, " ixRow=", ixRow, ") ==> ", ele_wordset.outerHTML, "\n\tid_analWords=" + id_analWords , " ERROR ele_wordset == false" )
 		return
 	}
 	
-	get_first_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
+	get_first_row_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
 	
 	ele_wordset.innerHTML = ""; 
 		
-	go_passToJs_rowWordList(""+numTr,""+ixRow, "js_go_rowWordList"); // ask 'go' to give wordlist by js_... function  
+	go_passToJs_rowWordList(""+numTr,""+ixRow, "js_go_rowWordList", js_parm, js_caller); // ask 'go' to give wordlist by js_... function  
 		
 } // end of onclick_tts_seeWordsGO1
 
@@ -2303,61 +2469,87 @@ function onclick_tts_seeWordsGO1(numTr, ixRow) {
 //------------------------------------
 function js_go_rowWordList(wordListStr) {
 	
-	//console.log("js_go_rowWordList(wordListStr=", wordListStr)
+	logColor("%%blue","js_go_rowWordList(wordListStr=", "%%black", wordListStr)
+	// riga0: numIdOut,ixRR,rNumWords, len(rowX.rListIxUnF))
+	// riga n:  xWordAlpha.uWord2,uIxUnW_fr,[Lemma;paradigma;traduzione;example;numWords]
+	/*
+	esempio wordListStr=
+	2,2138,2,2;;
+	der,         6,1995;[der;       der;                il;Hier ist der Brief, den du suchst.;11] ;;
+	skiurlaub,7856,   1;[skiurlaub;    ;vacanza sulla neve;                                  ; 1] ;;
+	*/
 	
     // triggered by go func (  go _ passToJs_wordList )
-    if (wordListStr == undefined) {
-        console.log("js_showWordList: parameter is undefined");
-		onclick_jumpFromToPage( myPage02,myPage03,  myPage01);  //   
-        return;
-    }
+    if (wordListStr == undefined) wordListStr = ""
     if (wordListStr == "") {
         console.log("js_showWordList: parameter is empty");
 		onclick_jumpFromToPage( myPage02,myPage03,  myPage01); 
         return;
     }	
 
-    var rowWordList = wordListStr.split(endOfLine);	
+    let rowWordList = wordListStr.split(endOfLine);	
 	
 	//console.log("rowWordList=", rowWordList)
+	/**
+	wordListStr=
+	2,2195,7,7;;
+	ja,18,783;[ja;ja;sì;Sind Sie Herr Watanabe? / Ja.;1] ;;
+	ich,0,5024;[ich;ich;Io;Ich heiße Veronika.;1] ;;wohne,424,42;[wohne;;vivi;;1] [wohnen;wohnen;vivere;Ich wohne in München.;4] ;;erst,237,75;[erst;;prima;;1] ;;seit,193,93;[seit;seit;dal;Ich wohne seit drei Jahren in Köln.;1] ;;gestern,218,84;[gestern;gestern;ieri;Gestern war ich krank.;1] ;;
+	hier,37,484;[hier;hier;qui;Hier ist 06131-553221, Pamela Linke.;1] ;;
+	// riga n:  xWordAlpha.uWord2,uIxUnW_fr,[Lemma;paradigma;traduzione;example;numWords]
+			   blonde,3613,2;[blond;;biondo;;3] [blonde;;biondo;;1] ;.
 	
-	var numId_0 = rowWordList[0].split(",");
-	var numId = (""+numId_0[0]).trim();  	
 	
-
-	var anal_txt = ""; var anal_tts_txt=""; 
-	var idc1 = "idc_"  + numId;
-	var idtts= "idtts" + numId; 
-
-	var anal_ele_idc   = document.getElementById(idc1 );		
-	var anal_ele_idtts = document.getElementById(idtts);	
+	**/
+	let numId_0 = rowWordList[0].split(",");
+	let numId = (""+numId_0[0]).trim();  	
+	
+	console.log("numId=", numId) ;
 		
+	let prevTR  = getById( "idtr_" + numId); 
+	if ( prevTR  == undefined) {
+		return;
+	}
+	console.log("2 js_go_rowWordList ") 
+	
+	let anal_txt = ""; 
+	let anal_tts_txt=""; 
+	
+	let idc1 			= "idc_"  + numId;
+	let idtts			= "idtts" + numId; 
+	let id_analWords 	= "idw_"  + numId;
+	
+	let anal_ele_idc   	= getById(idc1 );		
+	let anal_ele_idtts 	= getById(idtts);
+	let ele_wordset 	= getById(id_analWords);   
+	
+	console.log("3 js_go_rowWordList ") 
+	
 	if (anal_ele_idc) {
 		anal_txt = anal_ele_idc.innerHTML;
 		anal_tts_txt= anal_ele_idtts.innerHTML; 
+		console.log("4 js_go_rowWordList ") 
 	} else {
 		console.log("js_showWordList: idc1=", idc1 , "(anal_ele_idc==false)" )  
 		return;
 	}
+	console.log("5 js_go_rowWordList ") 
 	
-	var eleTR = anal_ele_idtts.parentElement.parentElement.parentElement; 
-	var trHeight = eleTR.offsetHeight; 	
+	let eleTR = anal_ele_idtts.parentElement.parentElement.parentElement; 
+	let trHeight = eleTR.offsetHeight; 	
 	
-	var id_analWords = "idw_" + numId;
-	var ele_wordset = document.getElementById(id_analWords);   
-	
-	
+	console.log("last_ele_analWords_id=", last_ele_analWords_id)
+	let last_ele_analWords
 	if (last_ele_analWords_id != "") {	
+		last_ele_analWords = getById(last_ele_analWords_id, true);
+		if (last_ele_analWords == undefined)  last_ele_analWords=""
+	}
+	if (last_ele_analWords_id != "") {		
 		// remove the previous 
-		var last_ele_analWords = document.getElementById(last_ele_analWords_id);
-		if (last_ele_analWords)  {
-			
-					
+		if (last_ele_analWords)  {					
 			last_ele_analWords.style.height = null;   				
 			last_ele_analWords.innerHTML = "";  
-			last_ele_analWords_tr.style.height = last_ele_analWords_height;	
-			
-				
+			last_ele_analWords_tr.style.height = last_ele_analWords_height;					
 			last_ele_analWords = null; 					
 		}	
 		if (id_analWords == last_ele_analWords_id) {  // if it's the same as the previous then  remove it  		
@@ -2368,16 +2560,16 @@ function js_go_rowWordList(wordListStr) {
 		last_ele_analWords_id = "";
 	}	
 	
-	var ixLastEle, table_txt
+	let ixLastEle, table_txt
 	[ ixLastEle, table_txt] = tts_3_spezzaRiga3( rowWordList.slice(1) )	 ;   
  	
-	var divWord = "";
+	let divWord = "";
 	divWord += `<div style="font-size:0.6em;color: black;text-align:center;margin-top:0.5em;">					
 				clicca su una parola per ottenere paradigma, traduzione, esempi, toccala senza cliccare per avere la traduzione   							
 			</div> \n`; 
 	divWord += table_txt;
 	
-	divWord += anyOtherWord();  // $$anto see appl: lineByLine_v3,  file: lbl2_lineByLine_script3_GOHTML.js  function: onclickSelectWord
+	divWord += anyOtherWord();  
 	
 	//if (table_txt.indexOf("creazione")>= 0 ) { console.log("table_txt=" , table_txt); }
 	ele_wordset.innerHTML = divWord; 
@@ -2386,13 +2578,20 @@ function js_go_rowWordList(wordListStr) {
 	//console.log("ixLastEle=", ixLastEle)
 	if (ixLastEle > 0) {
 		//console.log("ULTIMO")
-		var eleF = document.getElementById("wb1_0");
-		var eleT = document.getElementById("wb2_" + ixLastEle );
+		let eleF = getById("wb1_0");
+		let eleT = getById("wb2_" + ixLastEle );
 		onclick_tts_word_arrowFromIx(eleF, 0,         true, false)
 		onclick_tts_word_arrowToIx(  eleT, ixLastEle, true, false)
 	}	
 	
-	var prevTR  = document.getElementById( "idtr_" + (numId-4) ); 
+	/**
+	let prevTR; 
+	for (var k=numId-4; k <=numId; k++) {       // try to start from some rows before the required  
+		prevTR  = getById( "idtr_" + k, true); 
+		if (prevTR) break; 
+	}
+	**/
+	
 	if (prevTR) tts_5_fun_scroll_tr_toTop( prevTR ); 	// scroll 
 		
 	last_ele_analWords_id = id_analWords;
@@ -2499,89 +2698,6 @@ function js_go_rowWordList(wordListStr) {
   
 
 // ===================================================================
-function OLDtts_3_spezzaRiga3( rowWordList ) {
-	
-    var endix2 = -1;
-
-    var listaParole = [];
-    var listaParo_tts = [];	
-    var listaParo_lemma = [];
-    var listaParo_tran  = [];
-	var listaParo_nFrasi = [];  
-
-    //console.log( list1.length + " " + list2.length); 
-
-
-   // if (list2.length != list1.length) list2 = orig_riga2.split("§");
-	var row1, k1,k2, col1; var part1;
-	var Xword1;
-	var listLemS, listTranS; 
-	var listLem, listTran	
-	var xWord_numFrasi;
-	
-	//console.log("tts_3_spezzaRiga3( rowWordList = " , rowWordList , "<=="  ) 	
-	
-    for (var k = 0; k < rowWordList.length; k++) {
-		row1 = (rowWordList[k]+";").replaceAll(";[",";").replaceAll("];",";")
-		if (row1.trim()=="") continue; 
-		
-		//console.log("\tspezzaRiga3 k=" , k, " row=>" , row1); // spezzaRiga3 k= 6  row=> einem,14,2;[ein einem einer];[a uno uno]
-		
-		part1 = row1.split(";") 
-		if (part1.length < 3) continue
-		col1 = part1[0].split(",")
-		Xword1 = col1[0];
-		xWord_numFrasi = col1[2]; 
-		listLemS = part1[1]; 
-		listTranS = part1[2]
-		listLem = listLemS.split(   wSep ) ;   //  cambia separatore spazio con virgola 
-		listTran = listTranS.split( wSep ) ;   //  
-		
-		var ixLemma;  var strTran=""; var xtt = "" ;
-		for( ixLemma=0; ixLemma < listTran.length; ixLemma++) {
-			xtt = " " + listTran[ixLemma] + " "
-			if (strTran.indexOf(xtt) < 0){ strTran += xtt; }		
-		}	
-		var strLem=""; var xll = "";  
-		for( ixLemma=0; ixLemma < listLem.length; ixLemma++) {
-			if (Xword1 == listLem[ixLemma] ) { continue;}
-			xll = " " + listLem[ixLemma] + " "
-			if (strLem.indexOf(xll) < 0){ strLem += xll; }		
-		}	
-		strLem =  strLem.trim(); 
-		if (strLem != "") { strLem = "(" + strLem + ")"; }
-		listaParole.push(   Xword1 ) ;
-		listaParo_nFrasi.push( xWord_numFrasi );   
-        listaParo_tts.push( Xword1 ) ;
-		listaParo_lemma.push( strLem);	
-		listaParo_tran.push(  strTran.trim()); 
-    }
-    var parola1, paro_tts, paro_lemma, paro_tran, paro_nFrasi  ;
-
-    var frase_showTxt = prototype_word_table_header ; //  '<div><table>
-	
-	//console.log("\t----------------- leng listaParole=", listaParole.length, " ==>", listaParole); // spezza
-	
-	var maxNumRow5 = 100; 
-    for (let z3 = 0; z3 < listaParole.length; z3++) {
-        parola1    = listaParole[z3].trim();
-		paro_nFrasi= listaParo_nFrasi[z3];
-        paro_tts   = listaParo_tts[z3];
-		paro_lemma = listaParo_lemma[z3];		
-		paro_tran  = listaParo_tran[z3];	
-		
-		frase_showTxt  += getWord_tr( z3, parola1, paro_tts, paro_lemma, paro_tran, paro_nFrasi,maxNumRow5) + "\n";
-      
-    } // end of for z3
-	var last1 = listaParole.length - 1 
-	frase_showTxt +=  prototype_word_table_end ; // </table></div>
-	
-    return [ last1, frase_showTxt ];
-
-} //  end of  OLDspezzaRiga3()
-
-//====================
-
 
 function onclick_FR_tts_getInput(elepage) {
 
@@ -2598,25 +2714,25 @@ function onclick_FR_tts_getInput(elepage) {
 //------------------------------------  
 
 function fr_tts_1_join_orig_trad() {
-	document.getElementById("id_msg16").innerHTML = "";
+	getById("id_msg16").innerHTML = "";
 
 	sw_translation_not_wanted = false;
 
-	var msgerr0 = "";
-	var msgerr1 = fr_tts_1_get_orig_subtitle2(); // get orig. text /srt
-	var msgerr2 = fr_tts_1_get_tran_subtitle2(msgerr1); // get tran. text/srt	
+	let msgerr0 = "";
+	let msgerr1 = fr_tts_1_get_orig_subtitle2(); // get orig. text /srt
+	let msgerr2 = fr_tts_1_get_tran_subtitle2(msgerr1); // get tran. text/srt	
 
 	msgerr0 += msgerr1 + msgerr2;
-	var msgerr3 = "";
+	let msgerr3 = "";
 
 	msgerr0 += msgerr3;
 
 	if (msgerr0 != "") {
 		tts_1_putMsgerr(msgerr0);
-		document.getElementById("id_msg16").style.color = "red";
+		getById("id_msg16").style.color = "red";
 		return -1;
 	}
-	document.getElementById("id_msg16").style.color = null;
+	getById("id_msg16").style.color = null;
 
 	tts_9_toBeRunAfterGotVoicesPLAYER(); 
 
@@ -2629,9 +2745,9 @@ function fr_tts_1_join_orig_trad() {
 //--------------------------------------------------
  function fr_tts_1_get_orig_subtitle2() {
      
-      var msgerr1 = "";
+      let msgerr1 = "";
     
-      //builder_orig_subtitles_string = document.getElementById("txt _ pagOrig").value.trim();
+      //builder_orig_subtitles_string = getById("txt _ pagOrig").value.trim();
 	  
 	  builder_orig_subtitles_string = ele_toTranslate_textarea.value.trim();
       
@@ -2643,7 +2759,7 @@ function fr_tts_1_join_orig_trad() {
       }
 	  inp_row_orig = builder_orig_subtitles_string.split("\n") ;
 	  inp_row_orig.push("");    
-	  numOrig = inp_row_orig.length;
+	  //numOrig = inp_row_orig.length;
 	
       return msgerr1;
 
@@ -2652,9 +2768,9 @@ function fr_tts_1_join_orig_trad() {
 
   function fr_tts_1_get_tran_subtitle2(msgerrOrig) {
      
-      var msgerr1 = "";
+      let msgerr1 = "";
 
-      //builder_tran_subtitles_string = document.getElementById("txt _ pagTrad").value.trim();
+      //builder_tran_subtitles_string = getById("txt _ pagTrad").value.trim();
 	  
 	  builder_tran_subtitles_string = ele_translated_textarea.value.trim();
 	 
@@ -2672,7 +2788,7 @@ function fr_tts_1_join_orig_trad() {
       }
 	  inp_row_tran = builder_tran_subtitles_string.split("\n");
 	  inp_row_tran.push(""); 
-	  numTran = inp_row_tran.length;  
+	  //numTran = inp_row_tran.length;  
 	  
       return msgerr1;
 
@@ -2684,7 +2800,7 @@ function replaceSepar( wT1 ) {
 	1;;1374;;sie zum zweiten Male jaeh zu verlassen gezwungen war, so hatte er sie
 	1, 1374, e fu costretto a lasciarla per la seconda volta, l'ebbe
 	**/
-	var k1,k2,k3,kx1,kx2, kx10,kx20, num1,num2,new_wT;
+	let k1,k2,k3,kx1,kx2, kx10,kx20, num1,num2,new_wT;
 	
 	k1 = wT1.indexOf(";;"); if (k1 < 0) k1=99999
 	k2 = wT1.indexOf(";" ); if (k2 < 0) k2=99999 
@@ -2706,11 +2822,11 @@ function replaceSepar( wT1 ) {
 	if (wT1.substr(k2,2) == ";;") kx20 = kx2+2  
 	
 	
-	var rest = wT1.substring(kx20).trim(); 
+	let rest = wT1.substring(kx20).trim(); 
 	new_wT = num1 + ";;" + num2 + ";;" + rest;
 	try {
-		var num1Nu = parseInt(num1);
-		var num2Nu = parseInt(num2);
+		let num1Nu = parseInt(num1);
+		let num2Nu = parseInt(num2);
 	} catch(e) {
 		return wT1; 		
 	} 
@@ -2721,6 +2837,9 @@ function replaceSepar( wT1 ) {
 //--------------------------------------
 
 function onclick_showRowsButton(type) {
+	
+	//console.log("1 onclick_showRowsButton " ,  "myPage01=", myPage01.style.display,   ",  myPage04=", myPage04.style.display);   
+	
 	//    chiamata dopo che è stata copiata la traduzione delle righe 
 	/***	
 	objOrig.value= 
@@ -2744,37 +2863,37 @@ function onclick_showRowsButton(type) {
 		sw_ignore_missTranRow = false; // Translations added, check again</button	
 	}  	
 	
-	//console.log("onclick_showRowsButton(type=", type, ")  sw_ignore_missTranRow=", sw_ignore_missTranRow); 
+	//console.log("onclick_showRowsButton (type=", type, ")  sw_ignore_missTranRow=", sw_ignore_missTranRow); 
 	
 	//---------------------------------------------------
 		
 	//	console.log("onclick_showRowsButton ele_translated_textarea = ", ele_translated_textarea.value); 	 
 		
-	var rowTranList = ele_translated_textarea.value.trim().split( "\n" );  
+	let rowTranList = ele_translated_textarea.value.trim().split( "\n" );  
 	
-	var lenTran = rowTranList.length;	
-	var rowTran
-	var ixRowS, ixRow, ouIxRowS, ouIxRow, rowNewTran; 
+	let lenTran = rowTranList.length;	
+	let rowTran
+	let ixRowS, ixRow, ouIxRowS, ouIxRow, rowNewTran; 
 	//------------------------------------------
 
-	var nfileW, idRowW, ixRowW, rowW, tranW, gruppoW;
+	let nfileW, idRowW, ixRowW, rowW, tranW, gruppoW;
 	//-----------
-	var wList;
-	var sw_someTranMissingR = false;  // sometimes the automatic translator does some mistakes 
-	var wT;
-	var numNoTranRow = 0;
-	var numNoTranRow2 = 0;
-	var numeroTS_Row=0, numeroTS_OkTran=0, numeroTS_NoTran=0;
-	var newAddedTran = 0; 
+	let wList;
+	let sw_someTranMissingR = false;  // sometimes the automatic translator does some mistakes 
+	let wT;
+	let numNoTranRow = 0;
+	let numNoTranRow2 = 0;
+	let numeroTS_Row=0, numeroTS_OkTran=0, numeroTS_NoTran=0;
+	let newAddedTran = 0; 
 	//---------------------------------
 	
-	var lenW    = rowToStudy_list.length;
+	let lenW    = rowToStudy_list.length;
 	
 	
 	//----------------------------
 	//  scandisce le righe di traduzione copiate dal traduttore google (potrebbero essere meno di rowToStudy_list ) 
 	
-	for(var z=0; z < lenTran; z++) {
+	for(let z=0; z < lenTran; z++) {
 	
 		wT = rowTranList[z].trim() + ";;;;;;;;;;;"	; 
 		
@@ -2819,7 +2938,7 @@ function onclick_showRowsButton(type) {
 		//console.log("     2  ouIxRow=", ouIxRow, " ixRow=", ixRow)
 		
 		
-		var oldRow = rowToStudy_list[ouIxRow];
+		let oldRow = rowToStudy_list[ouIxRow];
 		//console.log("     rowToStudy_list[ouIxRow] = "  +  oldRow )
 		// accoppia la riga di traduzione con quella originale  
 		try {
@@ -2853,12 +2972,13 @@ function onclick_showRowsButton(type) {
 		newAddedTran++; 
 					
 	
-	}  // end of for(var z ...
+	}  // end of for(let z ...
 	//--------------------------	
+	//console.log("2 onclick_showRowsButton build_Page1_rowsToTranslate " ,  "myPage01=", myPage01.style.display,   ",  myPage04=", myPage04.style.display);   
 	
-	[numeroTS_Row, numeroTS_OkTran, numeroTS_NoTran ] = build_Page1_rowsToTranslate("2onclick_showRowsButton(type=", type);
+	[numeroTS_Row, numeroTS_OkTran, numeroTS_NoTran ] = build_Page1_rowsToTranslate("2onclick_showRowsButton (type=", type);
 	
-	document.getElementById("id_notTranNumRow").innerHTML = numeroTS_NoTran; 
+	getById("id_notTranNumRow").innerHTML = numeroTS_NoTran; 
 	
 	write_row_dictionary(1); 
 	
@@ -2870,21 +2990,21 @@ function onclick_showRowsButton(type) {
 	
 	showRowsAndTranButton("3");
 	
-} // end of onclick_showRowsButton()
+} // end of onclick_showRowsButton
 //-------------------------------------------
 
 function write_row_dictionary(wh) {
-	var nfileW,ixRowW, rowW, tranW, gruppoW; 
-	var word1, ix1, nrow, wLemma1, wordTran, col1;
+	let nfileW,ixRowW, rowW, tranW, gruppoW; 
+	let word1, ix1, nrow, wLemma1, wordTran, col1;
 	
-	var newTranRow=0;
-	var listNewTranRows = "";
+	let newTranRow=0;
+	let listNewTranRows = "";
 	
 	//console.log("\n----------------------\nwrite_row_dictionary() rowToStudy_list=" ,  rowToStudy_list ,"\n----------")
-	var idRow1, ixRow1; 
-	var id_ix_Row;
+	let idRow1, ixRow1; 
+	let id_ix_Row;
 	
-	for (var i = 0; i < rowToStudy_list.length; i++) {
+	for (let i = 0; i < rowToStudy_list.length; i++) {
 		if ( rowToStudy_list[i] == "") continue; 
 		//console.log("2977write " ,  rowToStudy_list[i] )
 		
@@ -2917,7 +3037,7 @@ function write_row_dictionary(wh) {
 	}
 	console.log("write_row_dictionary (",wh,") ",  newTranRow, " righe tradotte"); 	
 	
-	go_write_row_dictionary(  listNewTranRows );  		
+	go_write_row_dictionary(  listNewTranRows ,"", "", "");  		
 	
 } // end of write_row_dictionary
 
@@ -2925,13 +3045,13 @@ function write_row_dictionary(wh) {
 
 function show_altreRighe(this1,numRows) {
 	
-	var eleTD = this1.parentElement
+	let eleTD = this1.parentElement
 	
-	var eleOnOff = eleTD.children[1]		
+	let eleOnOff = eleTD.children[1]		
 	
 	//console.log("================\nantonio  show_altreRighe() 1 eleOnOff=", eleOnOff.innerHTML  , " display=", eleOnOff.style.display, " eleTD outer=", eleTD.outerHTML) 
 	
-	var showSPAN, showTR;
+	let showSPAN, showTR;
 	if (eleOnOff.innerHTML == "block") {
 		showSPAN = "none"; 
 		showTR   = "none"
@@ -2946,13 +3066,13 @@ function show_altreRighe(this1,numRows) {
 	
 	//console.log("antonio  show_altreRighe() 2 eleOnOff=", eleOnOff.innerHTML , " display=", eleOnOff.style.display)
 	
-	var eleTR = eleTD.parentElement	
+	let eleTR = eleTD.parentElement	
 	
 
-	var nextTR = eleTR;
-	var nextTR2 ;
+	let nextTR = eleTR;
+	let nextTR2 ;
 	
-	for (var rr=0; rr < numRows; rr++ ) {			
+	for (let rr=0; rr < numRows; rr++ ) {			
 		nextTR2 = nextTR.nextElementSibling; 
 		if (nextTR2 == undefined) { break } 
 		nextTR = nextTR2; 
@@ -2974,7 +3094,7 @@ function mouseOutWord(this1,nch) {
 	if (this1.parentElement.children.length <= nch) { 
 		return;
 	}
-	var ele_tran = this1.parentElement.children[nch];	
+	let ele_tran = this1.parentElement.children[nch];	
 	if (ele_tran == undefined) return 
 	//if (ele_tran.contentEditable == true) { return; }		
 	try {
@@ -2994,7 +3114,7 @@ function TOGLImouseOutWord(this1,nch) {
 	if (this1.parentElement.children.length <= nch) { 
 		return;
 	}
-	var ele_tran = this1.parentElement.children[nch];	
+	let ele_tran = this1.parentElement.children[nch];	
 	if (ele_tran == undefined) return 
 	//if (ele_tran.contentEditable == true) { return; }		
 	try {
@@ -3021,20 +3141,20 @@ function OLDmouseOutWord2(this1) {
 
 //-----------------------------------------
 function onclick_word_known(sIxWord, yesNo, this1) {
-	var ixWord = 0;
+	let ixWord = 0;
     try {
         ixWord = parseInt(sIxWord);
     } catch (err) {}	
 	
-	var num1 = 1*this1.innerHTML; 
-	var ele_td= this1.parentElement;
+	let num1 = 1*this1.innerHTML; 
+	let ele_td= this1.parentElement;
 	if (yesNo==0) {		
-		var ele_nextTd = ele_td.nextElementSibling; 
+		let ele_nextTd = ele_td.nextElementSibling; 
 		
-		var next_this1 = ele_nextTd.children[0]
+		let next_this1 = ele_nextTd.children[0]
 		next_this1.innerHTML = 0;
 		next_this1.style.border = null; 
-		go_passToJs_word_known(""+ixWord, "1", "0", "js_go_word_known"); // ask 'go' to update yes/no word known ctr  
+		go_passToJs_word_known(""+ixWord, "1", "0", "js_go_word_known", js_parm, js_caller); // ask 'go' to update yes/no word known ctr  
 		return 
 	} 
 	num1++;
@@ -3045,7 +3165,7 @@ function onclick_word_known(sIxWord, yesNo, this1) {
 		this1.style.border = null; 
 	}
 	
-    go_passToJs_word_known(""+ixWord, ""+yesNo, ""+num1, "js_go_word_known"); // ask 'go' to update yes/no word known ctr  
+    go_passToJs_word_known(""+ixWord, ""+yesNo, ""+num1, "js_go_word_known", js_parm, js_caller); // ask 'go' to update yes/no word known ctr  
 	
 } // end of onclick_word_know_yes		
 
@@ -3068,24 +3188,24 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 	console.log("onclick_sortWordBy_ixField(", nField1,",",nChild1,",", isNumber1,",",ascending1, ",",
 									nField2,",",nChild2,",",isNumber2,",",ascending2,",",swTran)
 	**/									
-									
-	document.getElementById("id_wordList1").scrollTop = 0;
+	getById("id_lastWSort").innerHTML = nField1;							
+	getById("id_wordList1").scrollTop = 0;
 		
-	var ele_tbody = document.getElementById("idTableWordList_tbody"); 
-	var num_tr = ele_tbody.children.length; 
-	var ele_tr, ele_td, ele_butt,  ele_div0, ele_tran;  
-	var num_td =0; 
-	var trad="";
+	let ele_tbody = getById("idTableWordList_tbody"); 
+	let num_tr = ele_tbody.children.length; 
+	let ele_tr, ele_td, ele_butt,  ele_div0, ele_tran;  
+	let num_td =0; 
+	let trad="";
 	
 	const EMPTY  = "_none_"; 
 	
-	var listKey=[ EMPTY ]; // lascio l'entrata 0 occupata 
-	var key1 , key2; 
-	var ke2, ix1, ix2; 
-	var MAXKEY = 1000000;  
-	var ele_td5 ;
+	let listKey=[ EMPTY ]; // lascio l'entrata 0 occupata 
+	let key1 , key2; 
+	let ke2, ix1, ix2; 
+	let MAXKEY = 1000000;  
+	let ele_td5 ;
 	//---------------------------------
-	for(var g=0; g < num_tr; g++) {
+	for(let g=0; g < num_tr; g++) {
 		//if (g > 20) { break; }
 		
 		ele_tr = ele_tbody.children[g]; 
@@ -3096,7 +3216,7 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 		//--
 		ele_td = ele_tr.children[nField1]; 	
 		ele_butt = ele_td 		
-		for(var f2=0; f2 < 10; f2++) {
+		for(let f2=0; f2 < 10; f2++) {
 			if (ele_butt.children.length == 0) break
 			ele_butt = ele_butt.children[0]; 
 		} 		
@@ -3121,7 +3241,7 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 		//--
 		ele_td = ele_tr.children[nField2];	
 		ele_butt = ele_td 		
-		for(var f2=0; f2 < 10; f2++) {
+		for(let f2=0; f2 < 10; f2++) {
 			if (ele_butt.children.length == 0) break
 			ele_butt = ele_butt.children[0]; 
 		} 	
@@ -3140,11 +3260,11 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 	//console.log("\ndopo di sort ", listKey.join("\n") )
 	//console.log("SORT listKey ==> ", listKey.length)    
 	
-	var newBodyInner = "";
-	var newTd;
+	let newBodyInner = "";
+	let newTd;
 	//--------------------
-	var gg=0
-	for(var g=0; g < listKey.length; g++) {
+	let gg=0
+	for(let g=0; g < listKey.length; g++) {
 		if (listKey[g] == EMPTY) { 
 			continue; 
 		}
@@ -3159,7 +3279,7 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 		ele_tr = ele_tbody.children[ix1]; 		
 		if (ele_tr) {
 			if (ele_tr.children.length > 0) { 
-				var child0 = ele_tr.children[0]; 
+				let child0 = ele_tr.children[0]; 
 				if (child0.children) {
 					if (child0.children.length > 0) {						
 						gg++
@@ -3190,7 +3310,7 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 		if (!isNumber) {			
 			return keyAlphaCod(sNum);		
 		}		
-		var num1 =0;	
+		let num1 =0;	
 		try {
 			num1 = parseInt(""+sNum) ;
 		} catch (err) {
@@ -3210,7 +3330,7 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 		if (!isNumber) {			
 			return (keyAlphaCod(""+sNum)).trim();		
 		}		
-		var num1 =0;	
+		let num1 =0;	
 		try {
 			num1 = parseInt(""+sNum) ;
 		} catch (err) {
@@ -3228,12 +3348,12 @@ function onclick_sortWordBy_ixField(nField1,nChild1,isNumber1,ascending1,
 //-----------------------------------------------------------------
 function onclick_write_words_to_learn() {
 	
-	go_passToJs_write_WordsToLearn("js_go_file_words_to_learn_written"); 
+	go_passToJs_write_WordsToLearn("js_go_file_words_to_learn_written", js_parm, js_caller); 
 	
 }
 //-----------------------------------------
 function js_go_file_words_to_learn_written( str1 ) {
-	document.getElementById("id_w_to_learn_written").innerHTML = str1 ;	
+	getById("id_w_to_learn_written").innerHTML = str1 ;	
 }
 //-----------------------------------------------------------------
 
@@ -3252,19 +3372,19 @@ function js_go_file_words_to_learn_read( str1 ) {
 //-----------------------------------------------------------------
 function onclick_remove_words_already_known() {	
 	
-	var ele_tbody = document.getElementById("idTableWordList_tbody"); 
-	var num_tr = ele_tbody.children.length; 
-	var ele_tr, ele_td, ele_butt ; 
-	var num_td =0; 
+	let ele_tbody = getById("idTableWordList_tbody"); 
+	let num_tr = ele_tbody.children.length; 
+	let ele_tr, ele_td, ele_butt ; 
+	let num_td =0; 
 	
 	
-	var newBodyInner = "";
+	let newBodyInner = "";
 	
 	
 	const YESNO_NO_field = 3; 
 	
 	
-	for(var g=0; g < num_tr; g++) {
+	for(let g=0; g < num_tr; g++) {
 		
 		ele_tr = ele_tbody.children[g]; 		
 		ele_td = ele_tr.children[YESNO_NO_field];  
@@ -3286,7 +3406,7 @@ function keyAlphaCod(inp1) {
 	if (!inp1   ) { return ""; }
 	if (inp1=="") { return ""; }
 	
-	var inp2 = inp1.trim().replaceAll( "ae","a" );  
+	let inp2 = inp1.trim().replaceAll( "ae","a" );  
 	
 	inp2 = inp2.replaceAll( "oe","o" );
 	inp2 = inp2.replaceAll( "ue","u" );  		
@@ -3307,112 +3427,62 @@ function keyAlphaCod(inp1) {
 
 } // end of keyAlphaCod
 
-//--------------------------	
-
-
-function onchange_rowGroupSelectChange(sw_newGr,where) {
-	
-	// <select ele_gruppi ></select>	
-	var ele_gruppi = document.getElementById("id_gruppi_sel"          )
-	var ele_begNum = document.getElementById("id_gruppi_iBegNum"  )
-	var ele_numRow = document.getElementById("id_gruppi_iNumRows" )
-
-	if (ele_gruppi.selectedIndex < 0) { return; }
-	
-	//console.log("%conchange_rowGroupSelectChange", "color:blue;"); console.log("onchange_rowGroupSelectChange ", "sw_newGR=", sw_newGr, " where=", where, "  ele_gruppi.selectedIndex=", ele_gruppi.selectedIndex, " ele_begNum",ele_begNum.id, " ==>", ele_begNum.value  ) ;
-	
-	html_rowGroup_index_gr = ele_gruppi.selectedIndex ;  // indice gruppo 	
-    html_rowGroup_beginNum = getInt( ele_begNum.value);  // il gruppo inizia dalla riga in id_gruppi_iBegNum 	
-	html_rowGroup_numRows  = getInt( ele_numRow.value);  // numero di righe richieste in id_gruppi_iNumRows
-	if (html_rowGroup_beginNum < 1) {html_rowGroup_beginNum = 1; ele_begNum.value = 1; }
-	if (html_rowGroup_numRows  < 1) {html_rowGroup_numRows  = 1; ele_numRow.value = 1; }
-	
-	//----------
-	// if the group  changes, reset beginning and number of rows 
-	if (sw_newGr) {
-		html_rowGroup_beginNum = 1;      // relativo all'inizio del gruppo 
-		html_rowGroup_numRows  = 999999;
-		ele_begNum.value = html_rowGroup_beginNum
-		ele_numRow.value = html_rowGroup_numRows
-	}
-	if (last_html_rowGroup_index_gr == "") {last_html_rowGroup_index_gr = html_rowGroup_index_gr; } 
-	if (last_html_rowGroup_beginNum == "") {last_html_rowGroup_beginNum = html_rowGroup_beginNum; } 
-	if (last_html_rowGroup_numRows  == "") {last_html_rowGroup_numRows  = html_rowGroup_numRows; }  
-	
-	go_passToJs_getIxRowFromGroup( ""+html_rowGroup_index_gr,  ""+html_rowGroup_beginNum, ""+html_rowGroup_numRows, "js_go_gotIxRowFromGroup");
-	
-} // end of onchange_rowGroupSelectChange 
 
 //----------------------------------------------
 function isExtrRowChanged() {  // called by fun_require_mostFreqWordList,    sw_something_changed resetted by js_go_showWordList_lev2
-	if (sw_somethingChanged) {extrRowBecause("0PrevChange");  return true; }
-	if (last_html_rowGroup_index_gr != html_rowGroup_index_gr) {
-		console.log("isExtrRowChanged ", "last_html_rowGroup_index_gr =" + last_html_rowGroup_index_gr + ", html_rowGroup_index_gr =" + html_rowGroup_index_gr + "<==")
-		extrRowBecause("1groupIndex"); sw_somethingChanged=true; return true; 
+	
+	if (sw_somethingChanged) {
+		extrRowBecause("0PrevChange");  
+		return true; 
+	}
+	if (last_id_gruppi_sel_html_rowGroup_index_gr != id_gruppi_selected_groupIndex) {
+		console.log("isExtrRowChanged ", "last_id_gruppi_sel_html_rowGroup_index_gr =" + last_id_gruppi_sel_html_rowGroup_index_gr + ", id_gruppi_selected_groupIndex =" + id_gruppi_selected_groupIndex + "<==")
+		extrRowBecause("1groupIndex"); 
+		sw_somethingChanged=true; 
+		return true; 
 	} 
-	if (last_html_rowGroup_beginNum != html_rowGroup_beginNum) {extrRowBecause("2beginNum");   sw_somethingChanged=true; return true; } 
-	if (last_html_rowGroup_numRows  != html_rowGroup_numRows ) {extrRowBecause("3numRows");    sw_somethingChanged=true; return true; }   
-	
-	if (last_sel_extrRow_freqWord_list  != html_sel_extrRow  ) {extrRowBecause("4selExtrRow"); sw_somethingChanged=true; return true; }    
-	
-	
-	
-	//console.log("sw_somethingChanged=",  false)  
-	
+	if (last_id_gruppi_iBegNum_html_rowGroup_beginNum != id_gruppi_SelectedBegin) {
+		extrRowBecause("2beginNum");   
+		sw_somethingChanged=true; 
+		return true; 
+	} 
+	if (last_html_rowGroup_numRows  != id_gruppi_SelectedNumRow ) {
+		extrRowBecause("3numRows");    
+		sw_somethingChanged=true; 
+		return true; 
+	}   	
+	if (last_sel_extrRow_freqWord_list  != html_sel_extrRow  ) {
+		extrRowBecause("4selExtrRow"); 
+		sw_somethingChanged=true; 
+		return true; 
+	}    
+
 	return false; 
 	
 	function extrRowBecause(wh) {
+		return;
+		/**
 		console.log("sw_somethingChanged true, reason=", wh) 
-		console.log("1 last_html_rowGroup_index_gr    = ", last_html_rowGroup_index_gr,    "  html_rowGroup_index_gr = ", html_rowGroup_index_gr )		
-		console.log("2 last_html_beginNum             = ", last_html_rowGroup_beginNum,    "  html_rowGroup_beginNum = ", html_rowGroup_beginNum)
-		console.log("3 last_html_numRows              = ", last_html_rowGroup_numRows,     "  html_rowGroup_numRows  = ", html_rowGroup_numRows )
+		console.log("1 last_id_gruppi_sel_html_rowGroup_index_gr    = ", last_id_gruppi_sel_html_rowGroup_index_gr,    "  id_gruppi_selected_groupIndex = ", id_gruppi_selected_groupIndex )		
+		console.log("2 last_html_beginNum             = ", last_id_gruppi_iBegNum_html_rowGroup_beginNum,    "  id_gruppi_SelectedBegin = ", id_gruppi_SelectedBegin)
+		console.log("3 last_html_numRows              = ", last_html_rowGroup_numRows,     "  id_gruppi_SelectedNumRow  = ", id_gruppi_SelectedNumRow )
 		console.log("4 last_sel_extrRow_freqWord_list = ", last_sel_extrRow_freqWord_list, "  html_sel_extrRow       = ", html_sel_extrRow      )
-	}		
+		**/
+	}	
+	
 } // end of isExtrRowChanged() 
 
 //----------------------------------------------
 
-function setLastValuesOfExtrRowChanged( agent ) {
-	
-	//console.log("setLastValuesOfExtrRowChanged run by ", agent); 
-  	
-	var ele_gruppi = document.getElementById("id_gruppi_sel"          )
-	var ele_begNum = document.getElementById("id_gruppi_iBegNum"  )
-	var ele_numRow = document.getElementById("id_gruppi_iNumRows" )
-	//console.log("onchange_rowGroupSelectChange ele_gruppi.selectedIndex=", ele_gruppi.selectedIndex) ;
-	html_rowGroup_index_gr = ele_gruppi.selectedIndex ;  // indice gruppo 	
-    html_rowGroup_beginNum = getInt( ele_begNum.value);  // il gruppo inizia dalla riga in id_gruppi_iBegNum 	
-	html_rowGroup_numRows  = getInt( ele_numRow.value);  // numero di righe richieste in id_gruppi_iNumRows
-	
-	var x2 = document.getElementById("id_sel_2_extrRow");
-    var i = x2.selectedIndex;	
-	html_sel_extrRow = x2.options[i].id; 
-	
-	last_html_rowGroup_index_gr = html_rowGroup_index_gr; 
-	last_html_rowGroup_beginNum = html_rowGroup_beginNum; 
-	last_html_rowGroup_numRows  = html_rowGroup_numRows ;  
-
-	last_sel_extrRow_freqWord_list  = html_sel_extrRow  ;
-	
-	/**
-	console.log("	1 last_html_rowGroup_index_gr    = ", last_html_rowGroup_index_gr )		
-	console.log("	2 last_html_beginNum             = ", last_html_rowGroup_beginNum )
-	console.log("	3 last_html_numRows              = ", last_html_rowGroup_numRows  )
-	console.log("	4 last_sel_extrRow_freqWord_list = ", last_sel_extrRow_freqWord_list )
-	**/
-	return false; 
-} // end of setExtrRowChanged 
-
-
-//-------------------------------------------------
-
 function js_go_gotIxRowFromGroup( gostr1 ) {
 	
+	//console.log("js_go_gotIxRowFromGroup") 
+	//  onchange_rowGroupSelectChange --> go go_passToJs_getIxRowFromGroup -->  js_go_gotIxRowFromGroup
 	/*
-	js ==> go : go_passToJs_getIxRowFromGroup( ""+html_rowGroup_index_gr,  ""+html_rowGroup_beginNum, ""+html_rowGroup_numRows, "js_go_gotIxRowFromGroup")
+	js ==> go : go_passToJs_getIxRowFromGroup( ""+id_gruppi_selected_groupIndex,  ""+id_gruppi_SelectedBegin, ""+id_gruppi_SelectedNumRow, "js_go_gotIxRowFromGroup")
 	go ==> js :  
 	outS1:= fmt.Sprintf( "inp,%d,%d,%d,rG_,%d,%s,%d,%d,ixR,%d,%d, %s",
-				rowGrIndex, html_rowGroup_beginNum, html_rowGroup_numRows,
+				rowGrIndex, id_gruppi_SelectedBegin, id_gruppi_SelectedNumRow,
 				rG.rG_ixSelGrOption, 
 				rG.rG_group, 
 				rG.rG_firstIxRowOfGr, 
@@ -3421,11 +3491,11 @@ function js_go_gotIxRowFromGroup( gostr1 ) {
 				inputTextRowSlice[  rG.rG_firstIxRowOfGr ].rRow1   )
 	*/
 	
-	var col1 = gostr1.split(",")
-	if ( (col1.length < 12) || ( (col1[0] != "inp") || (col1[4] != "gr") || (col1[9] != "ixr") )  ) {
+	let col1 = gostr1.split(",")
+		if ( (col1.length < 12) || ( (col1[0] != "inp") || (col1[4] != "gr") || (col1[9] != "ixr") )  ) {
 		console.log("Errore1 in js_go_gotIxRowFromGroup (gostr1=", gostr1 , "\n\t non inizia con inp il formato deve essere ",  	
 				`\n "inp,%d,%d,%d,rG_,%d,%s,%d,%d,ixR,%d,%d, %s",
-				rowGrIndex, html_rowGroup_beginNum, html_rowGroup_numRows,
+				rowGrIndex, id_gruppi_SelectedBegin, id_gruppi_SelectedNumRow,
 				rG.rG_ixSelGrOption, 
 				rG.rG_group, 
 				rG.rG_firstIxRowOfGr, 
@@ -3436,127 +3506,218 @@ function js_go_gotIxRowFromGroup( gostr1 ) {
 	}
 	//inp,0,1,6,gr,0,1,0,5,ixr, 0,  5, Die Elemente
 	//    1 2 3  4 5 6 7 8 9   10, 11, 12     
-	let x_rowGrIndex             = col1[1]
-	let x_html_rowGroup_beginNum = col1[2]
+	x_rowGrIndex             = Number( col1[1] )
+	x_id_gruppi_iBegNum_html_rowGroup_beginNum = Number( col1[2] )
 	
-	let html_rowGroup_numRows    = getInt(  col1[3] )
+	let id_gruppi_SelectedNumRow = Number(  col1[3] ); // Number(   col1[3] )
 	
-	let x_rG_ixSelGrOption       = col1[5] 
-	let x_rG_group               = col1[6]  
-	let x_rG_firstIxRowOfGr      = col1[7] 
-	let x_rG_lastIxRowOfGr       = col1[8]
+	x_rG_ixSelGrOption       = Number( col1[5] )
+	x_rG_group               = Number( col1[6] ) 
+	x_rG_firstIxRowOfGr      = Number( col1[7] ) 
+	x_rG_lastIxRowOfGr       = Number( col1[8] )
 	
-	let html_fromIxRow          =  getInt(  col1[10] )
-	let html_toIxRow            =  getInt(  col1[11] )
+	SAVE_fromIx_row          = Number( col1[10] ) ; 
+	SAVE_toIx_row            = Number( col1[11] ) ; 
 	
 	let firstRowOfGroup  = col1.slice(12).join(",")
 	
-	if ((x_rowGrIndex != html_rowGroup_index_gr) || (x_html_rowGroup_beginNum != html_rowGroup_beginNum ) || (x_rowGrIndex != x_rG_ixSelGrOption)) {
+	if ((x_rowGrIndex != id_gruppi_selected_groupIndex) || 
+			(x_id_gruppi_iBegNum_html_rowGroup_beginNum != id_gruppi_SelectedBegin ) || 
+			(x_rowGrIndex != x_rG_ixSelGrOption)) {
 		console.log("Errore2 in js_go_gotIxRowFromGroup (gostr1=", gostr1 , 
-			"html_rowGroup_index_gr oppure html_rowGroup_beginNum sono cambiati" ,
-			" html_rowGroup_index_gr =", html_rowGroup_index_gr , " nuovo=", x_rowGrIndex, 
-			" html_rowGroup_beginNum=", html_rowGroup_beginNum , " nuovo=", x_html_rowGroup_beginNum,
+			"id_gruppi_selected_groupIndex oppure id_gruppi_SelectedBegin sono cambiati" ,
+			" id_gruppi_selected_groupIndex =", id_gruppi_selected_groupIndex , " nuovo=", x_rowGrIndex, 
+			" id_gruppi_SelectedBegin=", id_gruppi_SelectedBegin , " nuovo=", x_id_gruppi_iBegNum_html_rowGroup_beginNum,
 			" x_rowGrIndex = ", x_rowGrIndex  , "  x_rG_ixSelGrOption=", x_rG_ixSelGrOption 			
 			) 
 		return; 		
 	}	
 	
-	document.getElementById("id_gruppi_sel"        ).selectedIndex = html_rowGroup_index_gr;
+	//console.log("  2 ... gotIxRowFromGroup") 
 	
-	document.getElementById("id_gruppi_oSelIx" ).innerHTML = x_rG_ixSelGrOption;
-	document.getElementById("id_gruppo_val"    ).innerHTML = x_rG_group;   
-	document.getElementById("id_inizioGruppo"  ).innerHTML = x_rG_firstIxRowOfGr;
-	document.getElementById("id_fineGruppo"    ).innerHTML = x_rG_lastIxRowOfGr;
-
-	document.getElementById("id_gruppo_numTotRow1" ).innerHTML = getInt(x_rG_lastIxRowOfGr) -  getInt(x_rG_firstIxRowOfGr) + 1; 
-	document.getElementById("id_gruppo_numTotRow2" ).innerHTML = getInt(x_rG_lastIxRowOfGr) -  getInt(x_rG_firstIxRowOfGr) + 1; 
-
-	document.getElementById("id_ixTextAskedRow").innerHTML  = html_fromIxRow;
-	document.getElementById("id_gruppi_firstRow").innerHTML = firstRowOfGroup;
-	
-	document.getElementById("id_gruppi_oBegNum").innerHTML  = html_rowGroup_beginNum
+	getById("id_gruppi_sel"     ).selectedIndex = id_gruppi_selected_groupIndex;
 		
-	document.getElementById("id_gruppi_iNumRows").value     = html_rowGroup_numRows   
+	getById("id_gruppo_numTotRow1" ).innerHTML = Number(x_rG_lastIxRowOfGr) -  Number(x_rG_firstIxRowOfGr) + 1; 
 	
-	document.getElementById("id_fromIx_row"     ).innerHTML = html_fromIxRow  ;   
-	document.getElementById("id_toIx_row"       ).innerHTML = html_toIxRow    ; 
-	
-	document.getElementById("id_inpNumRow").innerHTML = html_rowGroup_numRows ;
+			
+	getById("id_gruppi_iNumRows").value      = id_gruppi_SelectedNumRow   
+		
+	//console.log("  3 ... gotIxRowFromGroup") 
+	/**
+	let beg1 = id_gruppi_SelectedBegin + x_rG_lastIxRowOfGr - 1; 
+	let end1 = id_gruppi_SelectedBegin + rG.rG_firstIxRowOfGr - 1 +	id_gruppi_SelectedNumRow - 1; 	
+	logColor("%%blue", "js_go_gotIxRowFromGroup ", "%%black", "  SAVE_fromIx_row=",  SAVE_fromIx_row, " XX  differenza ", " get_ixRowBeg=", beg1 )
+	logColor("%%blue", "js_go_gotIxRowFromGroup ", "%%black", "  SAVE_toIx_row  =",  SAVE_toIx_row,   " XX  differenza ", " get_ixRowEnd=", end1 )
+	console.log("  4 ... gotIxRowFromGroup") 
+	**/
 	
 } // end of js_go_gotIxRowFromGroup 
 
 //--------------------------------------------------
+function get_ixRowBeg() { 	
+	let beg1 = id_gruppi_SelectedBegin + x_rG_lastIxRowOfGr - 1; 
+	return beg1;
+}
+function get_ixRowEnd() {
+	let end1 = id_gruppi_SelectedBegin + rG.rG_firstIxRowOfGr - 1 +	id_gruppi_SelectedNumRow - 1; 	
+	return end1 
+}
 
-//---------------------------------------------------
-function js_go_valueFromLastRun( gostr1 ) {
-	
-	
-	var col1 = gostr1.split(",")
-	if (col1.length < 16) {
-		console.log("errore1 in js_go_valueFromLastRun il numero di valori tra virgola (", col1.length,") < 16" ,   " gostr1=" + gostr1 );
-		return	;	
-	}
-	//  1,2,0,0,html,1,2,28,ix,0,0,w,1,774,extrRow, :row=,Die Elemente
-	var rS_ixSelGrOption = col1[ 0 ] 
-	var rS_group         = col1[ 1 ]   	
-	var last_rG_firstIxRowOfGr = col1[ 2 ]      
-	var last_rG_lastIxRowOfGr  = col1[ 3 ]    
-				
-	html_rowGroup_index_gr = col1[ 5 ] 
-	
-	if (html_rowGroup_index_gr < 0) {  console.log("js_go_valueFromLastRun html_rowGroup_index_gr=", html_rowGroup_index_gr) }
-	
-	html_rowGroup_beginNum = col1[ 6 ] 
-	html_rowGroup_numRows  = col1[ 7 ]  			
-	
-	html_fromIxRow   = col1[ 9 ]     
-	html_toIxRow     = col1[ 10 ]       
+//--------------
+
+function go_run_js_build_rowGruppi( gruppi_option) {
+	// run just after the reading of the input text 
+	/*
+	<option>13 file: soloParoleGoetheLista_A1.csv   (783 righe)</option>
+	<option>14 Esempi da dizionario</option>
+	<option>15 140 verbi irregolari</option>
+	*/
+	let optLine = gruppi_option.split("<option>");
+	let opt1, optVV;
+	listaGruppiTesto = ",";
+	for(let v=0; v < optLine.length; v++) {
+		opt1 = (""+optLine[v]).trim();
+		if (opt1 == "") continue
+		optVV = opt1.split(" ");
+		if (optVV.length < 1 ) {continue;}
+		listaGruppiTesto = listaGruppiTesto + trimLeftZero( optVV[0] ) +","
+	}	
+	//console.log("js_go_build_rowGruppi ", gruppi_option, "\nlistGruppiTesto=" + listaGruppiTesto);
 		
-	var word_fromWord    = col1[ 12 ] 	
-	var word_numWords    = col1[ 13 ]			
-	var sel_extrRow      = col1[ 14 ] 
+	id_gruppi_selected_groupIndex = 0;  // will be updated from last file values 
 	
-	var row                   = col1.slice(16).join(",")
+	getById("id_gruppi_sel").innerHTML     = gruppi_option;  
+	getById("id_gruppi_sel").selectedIndex = id_gruppi_selected_groupIndex;
+	 
+	//setLastValuesOfExtrRowChanged("js_go_build_rowGruppi");  // 2
 	
+} // end of  go_run_js_build_rowGruppi
+//---------------------------------------------------
+function go_run_js_read_valueFromLastRun( gostr1 ) {
+	/*
+	la funzione viene eseguita all'inizio, usando i dati del file last_mainpage_values2.txt letto dalla funzione GO   
+		*** esempio di file letto **
+		rG_ixSelGrOption=2, rG_group=3, rG_firstIxRowOfGr=13, rG_lastIxRowOfGr=23, 
+		id_gruppi_selected_groupIndex=2, id_gruppi_SelectedBegin=1, id_gruppi_SelectedNumRow=11, 
+		ixRowBeg=13, ixRowEnd=23, 
+		w_fromWord=1, w_numWords=9999, 
+		sel_extrRow=anyRow
+	*/
+	console.log("  go_read_valueFromLastRun ") 
 	
-	document.getElementById("id_gruppi_iNumRows").value     = html_rowGroup_numRows
+	/**
+	esempio di contenuto di gostr1 
+	0:rG_ixSelGrOption, 1:rG_group, 2:rG_firstIxRowOfGr, 3:rG_lastIxRowOfGr,
+	html	
+	5:id_gruppi_selected_groupIndex, 6:id_gruppi_SelectedBegin, 7:id_gruppi_SelectedNumRow, 
+	ix
+	9:ixRowBeg, 10:ixRowEnd, 
+	w
+	12:w_fromWord, 13:w_numWords, 
+	14:sel_extrRow=anyRow
+	:row=
+	16rwS
+	**/	
+	let col1 = gostr1.split(",")
+	if (col1.length < 16) {
+		console.log("errore1 in go_read_valueFromLastRun il numero di valori tra virgola (", col1.length,") < 16" ,   " gostr1=" + gostr1 );
+		return	;	
+	}	
+	//logColor("%%blue", "go_read_valueFromLastRun =>", "%%black", gostr1)  ;
 	
-	document.getElementById("id_fromIx_row").innerHTML = html_fromIxRow  ;    // relativo all'inizio della lista righe
-	document.getElementById("id_toIx_row").innerHTML   = html_toIxRow    ;    // relativo all'inizio della lista righe
+	//  1,2,0,0,html,1,2,28,ix,0,0,w,1,774,extrRow, :row=,Die Elemente
 	
+	x_rG_ixSelGrOption     	    	= Number( col1[ 0 ] )
+	x_rG_group               		= Number( col1[ 1 ] ) 	
+	x_rG_firstIxRowOfGr 			= Number( col1[ 2 ] )     
+	x_rG_lastIxRowOfGr  			= Number( col1[ 3 ] )   
+	// html col1[4]			
+	id_gruppi_selected_groupIndex 	= Number( col1[ 5 ] ) 
+	id_gruppi_SelectedBegin   		= Number( col1[ 6 ] )
+	id_gruppi_SelectedNumRow  		= Number( col1[ 7 ] ) 			
+	// x col1[8]
+	SAVE_fromIx_row         		= Number( col1[ 9 ] )    
+	SAVE_toIx_row              		= Number( col1[10 ] )       
+	// w col1[11]	
+	let word_fromWord          		= Number( col1[12 ] ) 	
+	let word_numWords          		= Number( col1[13 ] )			
+	let sel_extrRow            		= col1[ 14 ] 	
+	let row                    		= col1.slice(16).join(",")
+	/**
+	console.log("  3 go_read_valueFromLastRun ") 
+	console.log("id_gruppi_SelectedBegin = ", id_gruppi_SelectedBegin, " typeof ", typeof id_gruppi_SelectedBegin, " type number ",  typeof Number(id_gruppi_SelectedBegin))
 	
-	document.getElementById("id_inpNumRow").innerHTML = html_rowGroup_numRows ;
+	logColor("%%blue", "    ... id_gruppi_SelectedBegin=", " %%black",id_gruppi_SelectedBegin,"%%blue", " id_gruppi_SelectedNumRow=", "%%black", id_gruppi_SelectedNumRow,
+			"%%blue"," SAVE_fromIx_row=", "%%black",SAVE_fromIx_row,  
+			"%%blue"," SAVE_toIx_row=",   "%%black",SAVE_toIx_row ,  " XX num row=", (1 + SAVE_toIx_row - SAVE_fromIx_row) )  ;
+	**/
+	getById("id_gruppi_iNumRows"   ).value     		= id_gruppi_SelectedNumRow
+	getById("id_gruppi_sel"        ).selectedIndex  = id_gruppi_selected_groupIndex;  // il contenuto dovrebbe rimanere invariato	
+	getById("id_gruppi_iBegNum"    ).value     		= id_gruppi_SelectedBegin ;    // relativo all'inizio del gruppo // contenuto cambia solo se è variato il gruppo
+	getById("id_gruppo_numTotRow1" ).innerHTML 		= x_rG_lastIxRowOfGr -  x_rG_firstIxRowOfGr + 1; // nella pagina html è il numero tra parentesi che si trova sotto la scelta del gruppo 
+	getById( sel_extrRow           ).selected 		= "true"; 	
+	getById("id_inpMaxNumWords"    ).value 			= word_numWords ; 
+    getById("id_inpBegFreqWList"   ).value 			= word_fromWord ;
+	//--------
+	//console.log("  2 go_read_valueFromLastRun ") 
 	
-	document.getElementById("id_gruppi_firstRow").innerHTML = row; 
+	let beg1 = id_gruppi_SelectedBegin + x_rG_firstIxRowOfGr - 1;    // indice della prima riga richiesta
+	let end1 = id_gruppi_SelectedBegin + x_rG_firstIxRowOfGr - 1 +	id_gruppi_SelectedNumRow - 1; 	
+	if (end1 > x_rG_lastIxRowOfGr) { end1 = x_rG_lastIxRowOfGr; id_gruppi_SelectedNumRow = end1 - beg1 + 1; }
 	
+	/**
+	console.log("  2.2 go_read_valueFromLastRun ") 
+	logColor("%%blue", "js_go_gotIxRowFromGroup ", "%%black", "  SAVE_fromIx_row=",  SAVE_fromIx_row, " XX  differenza ", " get_ixRowBeg=", beg1 )
+		console.log("  2.3 go_read_valueFromLastRun ") 
+	logColor("%%blue", "js_go_gotIxRowFromGroup ", "%%black", "  SAVE_toIx_row  =",  SAVE_toIx_row,   " XX  differenza ", " get_ixRowEnd=", end1 )
+	**/
 	//---
-	document.getElementById("id_gruppi_sel").selectedIndex    = html_rowGroup_index_gr;
-	last_html_rowGroup_index_gr = html_rowGroup_index_gr;
 	
+	//console.log("  3 ...go_read_valueFromLastRun") 
 	
-	document.getElementById("id_gruppi_oSelIx").innerHTML = html_rowGroup_index_gr;
+	onchange_rowGroupSelectChange(false,10); 
 	
-	document.getElementById("id_gruppi_iBegNum" ).value     = html_rowGroup_beginNum ;    // relativo all'inizio del gruppo 
-	document.getElementById("id_gruppi_oBegNum" ).innerHTML = html_rowGroup_beginNum ;  // relativo all'inizio del gruppo 
-	
-	//console.log("html_fromIxRow = ", html_fromIxRow ,"  html_toIxRow=", html_toIxRow) 
-	
-	
-	document.getElementById("id_gruppo_numTotRow1" ).innerHTML = getInt(last_rG_lastIxRowOfGr) -  getInt(last_rG_firstIxRowOfGr) + 1; 
-	document.getElementById("id_gruppo_numTotRow2" ).innerHTML = getInt(last_rG_lastIxRowOfGr) -  getInt(last_rG_firstIxRowOfGr) + 1; 
-	
-	document.getElementById("id_gruppo_val"      ).innerHTML = rS_group;   
-	document.getElementById("id_inizioGruppo"    ).innerHTML = last_rG_firstIxRowOfGr; 
-	document.getElementById("id_fineGruppo"      ).innerHTML = last_rG_lastIxRowOfGr; 
-	document.getElementById("id_ixTextAskedRow"  ).innerHTML = html_fromIxRow ; 
-	
-	document.getElementById( sel_extrRow        ).selected = "true"; 
-	document.getElementById("id_inpMaxNumWords" ).value = word_numWords ; 
-    document.getElementById("id_inpBegFreqWList").value = word_fromWord ;
-
-	setLastValuesOfExtrRowChanged("js_go_valueFromLastValue");
+	//setLastValuesOfExtrRowChanged("js_go_valueFromLastValue"); // 1
 		
 } // end of js_go_valueFromLastValue()
+
+//--------------------------------------------------
+function onchange_rowGroupSelectChange(sw_newGr,where) {
+	
+	// <select ele_gruppi ></select>	
+	let ele_gruppi = getById("id_gruppi_sel"      )
+	let ele_begNum = getById("id_gruppi_iBegNum"  )
+	let ele_numRow = getById("id_gruppi_iNumRows" )
+
+	if (ele_gruppi.selectedIndex < 0) { ele_gruppi.selectedIndex = 0; }
+		
+	id_gruppi_selected_groupIndex     	= ele_gruppi.selectedIndex ; // indice gruppo   ( html id="id_gruppi_sel" ) 	
+	id_gruppi_SelectedBegin   			= Number( ele_begNum.value);  // indica da dove si deve iniziare a leggere il gruppo  ( html id="id_gruppi_iBegNum" ) 	
+	id_gruppi_SelectedNumRow  			= Number( ele_numRow.value);  // numero di righe richieste ( html id="id_gruppi_iNumRows" ) 	
+	if (id_gruppi_SelectedBegin  < 1)	{id_gruppi_SelectedBegin  = 1; ele_begNum.value = 1; }
+	if (id_gruppi_SelectedNumRow < 1) 	{id_gruppi_SelectedNumRow = 1; ele_numRow.value = 1; }
+	
+	//----------
+	// if the group  changes, reset beginning and number of rows 
+	if (sw_newGr) {
+		id_gruppi_SelectedBegin  = 1;      // relativo all'inizio del gruppo 
+		id_gruppi_SelectedNumRow = 200;
+		ele_begNum.value 		 = id_gruppi_SelectedBegin
+		ele_numRow.value 		 = id_gruppi_SelectedNumRow
+	}
+	if (last_id_gruppi_sel_html_rowGroup_index_gr     == "") {last_id_gruppi_sel_html_rowGroup_index_gr     = id_gruppi_selected_groupIndex; } 
+	if (last_id_gruppi_iBegNum_html_rowGroup_beginNum == "") {last_id_gruppi_iBegNum_html_rowGroup_beginNum = id_gruppi_SelectedBegin;       } 
+	if (last_html_rowGroup_numRows                    == "") {last_html_rowGroup_numRows                    = id_gruppi_SelectedNumRow;      }  
+	
+	let x2 				= getById("id_sel_2_extrRow");
+    let i				= x2.selectedIndex;	
+	html_sel_extrRow 	= x2.options[i].id; 
+	last_sel_extrRow_freqWord_list  = html_sel_extrRow  ;
+	
+	go_passToJs_getIxRowFromGroup( ""+id_gruppi_selected_groupIndex,  ""+id_gruppi_SelectedBegin, ""+id_gruppi_SelectedNumRow, "js_go_gotIxRowFromGroup", js_parm, js_caller );
+	
+} // end of onchange_rowGroupSelectChange 
+
 
 //-------------------------
 /***
@@ -3582,20 +3743,20 @@ function js_go_valueFromLastRun( gostr1 ) {
 ***/ 
 //---
 function onclickModifyRowTran(this1) {
-	var eleDiv = this1.parentElement;
-	var eleTD  = eleDiv.parentElement; 
-	var newDiv;
+	let eleDiv = this1.parentElement;
+	let eleTD  = eleDiv.parentElement; 
+	let newDiv;
 	if (eleTD.children.length >= 2) { 		// elimina div che permette variazione/immissione traduzione della riga 
 		newDiv = eleTD.children[1]; 	
 		newDiv.remove();
 		return; 
 	} 	
-	var ele_tran = eleDiv.children[1];		// aggiunge div che permette variazione/immissione traduzione della riga 
+	let ele_tran = eleDiv.children[1];		// aggiunge div che permette variazione/immissione traduzione della riga 
 	newDiv = document.createElement("div");
 	newDiv.style.textAlign = "left";
 	eleTD.appendChild(newDiv);
 	
-	var newInn=""
+	let newInn=""
 	newInn += '<div  style="font-size:0.6em;width:100%;">add/modify translation</span></div>' + '\n';
 	newInn += '<div style="background-color:lightgrey; color:black; font-weight:bold;border:2px solid black;min-width:100%;text-align:left;" ' +
 		'contentEditable=true>' + 
@@ -3660,13 +3821,13 @@ function onclickDoubleWordTran(this1) {
 	
 	
 	
-	var eleDiv0  = this1.parentElement;
-	var eleDiv1  = eleDiv0.parentElement; 
-	var eleTD    = eleDiv1.parentElement; 
+	let eleDiv0  = this1.parentElement;
+	let eleDiv1  = eleDiv0.parentElement; 
+	let eleTD    = eleDiv1.parentElement; 
 	
-	var eleLemmaTD   = eleTD.nextElementSibling
-	var eleLemDiv1   = eleLemmaTD.children[0]
-	var eleLemmaSpan = eleLemDiv1.children[0]
+	let eleLemmaTD   = eleTD.nextElementSibling
+	let eleLemDiv1   = eleLemmaTD.children[0]
+	let eleLemmaSpan = eleLemDiv1.children[0]
 	if (eleLemmaSpan.innerHTML == "") return; 
 	
 	
@@ -3677,14 +3838,14 @@ function onclickDoubleWordTran(this1) {
 	//if (eleTD.children.length >= 2) { return; } 
 	if (eleDiv1.children.length >= 2) { return; } 
 	
-	var ele_tran = eleDiv0.children[1];
+	let ele_tran = eleDiv0.children[1];
 	
 	const newDiv = document.createElement("div");
 	newDiv.style.textAlign = "left";
 	//eleTD.appendChild(newDiv);
 	eleDiv1.appendChild(newDiv);
 	//console.log(red("medio eleTD="), eleTD.outerHTML) ; 	
-	var newInn=""
+	let newInn=""
 	newInn += '<div  style="font-size:0.6em;width:100%;">add/modify translation</span></div>' + '\n';
 	newInn += '<div  class="c_wordTran" ' +
 		'style="background-color:lightgrey; color:black; font-weight:bold;border:2px solid black;min-width:100%;text-align:left;" ' +
@@ -3732,10 +3893,10 @@ function onclickDoubleWordTran(this1) {
 
 //------------------------
 function vertResizeWord(this1) {	
-	var class01 = "c_size_1_line";
-	var classNN = "c_size_nn_line";
-	var divToResize = this1.parentElement.parentElement.parentElement
-	var swClass = ( divToResize.classList.contains( class01 )	)
+	let class01 = "c_size_1_line";
+	let classNN = "c_size_nn_line";
+	let divToResize = this1.parentElement.parentElement.parentElement
+	let swClass = ( divToResize.classList.contains( class01 )	)
 	//----------------------
 	if (swClass) {	
 		divToResize.classList.remove( class01 );			
@@ -3751,7 +3912,7 @@ function vertResizeWord(this1) {
 function TOGLIonclick_saveNewWordTran(this1) {
 	//===
 	let wordx, ix12, nrow, totExtrRow2,  wLemma1, wordTran, uLearnedYN ;
-	var wLemmaList, wTranList, wLevelList, wParaList, wExampleList,  wIxLemmaList;	
+	let wLemmaList, wTranList, wLevelList, wParaList, wExampleList,  wIxLemmaList;	
 	
 	// =================
 	//console.log("1 onclick_saveNewWordTran"); 
@@ -3759,10 +3920,10 @@ function TOGLIonclick_saveNewWordTran(this1) {
 	
 	vertResizeWord(this1);
 	
-	var eleTR = this1.parentElement; 
-	var eleTD;
-	var numCellWrd = -1; 
-	for(var z1=0; z1 < 10; z1++) {
+	let eleTR = this1.parentElement; 
+	let eleTD;
+	let numCellWrd = -1; 
+	for(let z1=0; z1 < 10; z1++) {
 		if (eleTR == null) break; 
 		if (eleTR.tagName == "TR") { break; } 
 		if (eleTR.tagName == "TD") { 
@@ -3777,28 +3938,27 @@ function TOGLIonclick_saveNewWordTran(this1) {
 	if (eleTR.tagName != "TR") { return; }
 	if (numCellWrd < 0) {
 		console.log("%error onclick_saveNewWordTran cellIndex < 0","color:red;");	
-		console.log("    eleTr=", eleTr.outerHTML); 
-		return;	
+		console.log("    eleTR=", eleTR.outerHTML); 		return;	
 	}	
 	
 	//console.log("2 onclick_saveNewWordTran", " cellIndex=", numCellWrd, " TR outerHTML=", eleTR.outerHTML ); 
 	
-	var elePareTr = eleTR.parentElement; // tbody
+	let elePareTr = eleTR.parentElement; // tbody
 	if (elePareTr == null) return; 
 	
-	var eleTr2;
+	let eleTr2;
 
 	let word1, ixW2StudyLs, ix1, ixLemma; 
 	
-	var oldDivTran, eleOldTran, oldTranslation; 
-	var newDivTran, eleNewTran, newTranslation; 
-	var swChg=false;
-	//var listNewTranIx = [];
-	//var listNewTransla= [];
-	var eleTD_0, eleTD_5; var eleTD0_val;
-	var eleTD_6, ele_details, ele_details, ele_summ, ele_tranLemma; 
+	let oldDivTran, eleOldTran, oldTranslation; 
+	let newDivTran, eleNewTran, newTranslation; 
+	let swChg=false;
+	//let listNewTranIx = [];
+	//let listNewTransla= [];
+	let eleTD_0, eleTD_5; let eleTD0_val;
+	let eleTD_6, ele_details, ele_summ, ele_tranLemma; 
 	
-	var newUp = 0; 
+	let newUp = 0; 
 	
 	/*
 	il primo TD contiene il numero d'ordine visibile seguito da parola, 2 indici, indice lemma (visbile per mouse over)  es:  6  die 3 1 1 4472   
@@ -3835,7 +3995,7 @@ function TOGLIonclick_saveNewWordTran(this1) {
 	*/
 	//console.log("3 onclick_saveNewWordTran"  , "  elePareTr.children.length=", elePareTr.children.length ); 
 	
-	for(var t1=0; t1 < elePareTr.children.length; t1++) {
+	for(let t1=0; t1 < elePareTr.children.length; t1++) {
 		eleTr2 = elePareTr.children[t1];	// scan su tutti  i TR ( tutte le righe )
 		if (eleTr2 == null) { continue; }
 		eleTD_0 = eleTr2.children[0]; 
@@ -3876,7 +4036,7 @@ function TOGLIonclick_saveNewWordTran(this1) {
 				</td>	
 			*/
 	
-		var eleTD_5div = eleTD_5.children[0];
+		let eleTD_5div = eleTD_5.children[0];
 		oldDivTran = eleTD_5div.children[0];
 		if (oldDivTran) {
 			eleOldTran = oldDivTran.children[1];  
@@ -3940,11 +4100,11 @@ function TOGLIonclick_saveNewWordTran(this1) {
 				
 				//console.log("numCellWrd+1=", (numCellWrd+1), " eleTD_6=", eleTD_6.outerHTML)
 				
-				var eleTD_6div =  eleTD_6.children[0];  
-				var ele_divSu = eleTD_6div.children[1]
+				let eleTD_6div =  eleTD_6.children[0];  
+				let ele_divSu = eleTD_6div.children[1]
 				//console.log("  ele_divSu=", ele_divSu.outerHTML)
 				if (ele_divSu) {
-					var ele_tranLemma = ele_divSu.children[3]
+					let ele_tranLemma = ele_divSu.children[3]
 					//console.log("  spanTran =", ele_tranLemma.outerHTML)
 					if (ele_tranLemma) {
 							ele_tranLemma.innerHTML = newTranslation; 						
@@ -3996,33 +4156,33 @@ function onclick_saveNewRowTran(this1) {
 	/*
 	questa funzione salva tutte le nuove traduzioni inserite trovate in tutte le TR del TBODY
 	*/
-	var eleDiv1 = this1.parentElement;  
-	var eleDiv2 = eleDiv1.parentElement; 	
-	var eleTDs  = eleDiv2.parentElement;
-	var eleTR   = eleTDs.parentElement; 
+	let eleDiv1 = this1.parentElement;  
+	let eleDiv2 = eleDiv1.parentElement; 	
+	let eleTDs  = eleDiv2.parentElement;
+	let eleTR   = eleTDs.parentElement; 
 	/*
-	var eleTR = this1.parentElement; 
-	for(var z1=0; z1 < 10; z1++) {
+	let eleTR = this1.parentElement; 
+	for(let z1=0; z1 < 10; z1++) {
 		if (eleTR.tagName == "TR") { break; } 
 		eleTR = eleTR.parentElement; 
 	} 
 	**/
 	if (eleTR.tagName != "TR") { return; } 	
-	var elePareTr = eleTR.parentElement; // tbody
-	var eleTr2;
+	let elePareTr = eleTR.parentElement; // tbody
+	let eleTr2;
 
 
 	let word1, ixW2StudyLs, ix1, ixLemma; 
 	
-	var oldDivTran, eleOldTran, oldTranslation; 
-	var newDivTran, eleNewTran, newTranslation; 
-	var swChg=false;
-	//var listNewTranIx = [];
-	//var listNewTransla= [];
-	var eleTD_0, eleTD_5; var eleTD0_val;
-	var newUp = 0; 
-	let ixRow2StudyLs, nfile, idRow, ixRow, origRow, tranRow; 
-	var row0, cols;
+	let oldDivTran, eleOldTran, oldTranslation; 
+	let newDivTran, eleNewTran, newTranslation; 
+	let swChg=false;
+	//let listNewTranIx = [];
+	//let listNewTransla= [];
+	let eleTD_0, eleTD_5; let eleTD0_val;
+	let newUp = 0; 
+	let ixRow2StudyLs, nfile, idRow, ixRow, origRow, tranRow, gruppoW; 
+	let row0, cols;
 	/**
 		<td class="borderVert">                 xx   eleTD_5
 			<div class="divRowText">            xx   oldDivTran
@@ -4040,7 +4200,7 @@ function onclick_saveNewRowTran(this1) {
 			</div>
 		</td>
 	**/
-	for(var t1=0; t1 < elePareTr.children.length; t1++) {
+	for(let t1=0; t1 < elePareTr.children.length; t1++) {
 		eleTr2 = elePareTr.children[t1];	
 		if (eleTr2.id.indexOf("_m") >0) {continue}
 		ixRow2StudyLs = -1;
@@ -4146,12 +4306,12 @@ function onclickSelectWord2(id1) {
 	//ele_wRowList.innerHTML = "";
     //ele_word.innerHTML     = ""; 	 	
 	//ele_wordLisH.style.display = "none";
-	//console.log('document.getElementById("id_inpWordFra") =' , document.getElementById("id_inpWordFra").outerHTML) 
-    var aWord ="";  
+	//console.log('getById("id_inpWordFra") =' , getById("id_inpWordFra").outerHTML) 
+    let aWord ="";  
 	if (type==2) {
 		aWord = word1; 	
 	} else {		
-		aWord     = document.getElementById("id_inpWordFra").value.trim();  
+		aWord     = getById("id_inpWordFra").value.trim();  
 	}	
 	if (aWord == "") {
 		ele_wordList.innerHTML ='<span style="color:red;">manca la parola da cercare</span>';
@@ -4162,62 +4322,70 @@ function onclickSelectWord2(id1) {
 	
 	**/
 	
-	var maxNumRow5 = 100; 
+	let maxNumRow5 = 100; 
 	
-	var wordLista1 = "", wordLista2=""; 
-	var ele_lista1 , ele_lista2;  	
+	let wordLista1 = "", wordLista2=""; 
+	let ele_lista1 , ele_lista2;  	
 	
 	
-	var id_wordLista1 = "idwS1_" + id1; 
-	var id_wordLista2 = "idwS2_" + id1; 
-	var id_maxNum     = "idwS3_" + id1; 
-	if (document.getElementById(id_maxNum)) {
-		var numVal=	getInt( document.getElementById(id_maxNum).value);
+	let id_wordLista1 = "idwS1_" + id1; 
+	let id_wordLista2 = "idwS2_" + id1; 
+	let id_maxNum     = "idwS3_" + id1; 
+	if (getById(id_maxNum)) {
+		let numVal=	Number( getById(id_maxNum).value);
 		if (numVal > 0) maxNumRow5 = numVal; 	
 	}
 	
-	ele_lista1 = document.getElementById(id_wordLista1);  
-	ele_lista2 = document.getElementById(id_wordLista2);  
+	ele_lista1 = getById(id_wordLista1);  
+	ele_lista2 = getById(id_wordLista2);  
 	if (ele_lista1) wordLista1 = ele_lista1.value;
 	if (ele_lista2) wordLista2 = ele_lista2.value;	
 	
-	//console.log("%conclickSelectWord2 ", "color:red;"); console.log("maxNumRow5=", maxNumRow5, " wordLista1=", wordLista1, " wordLista2=", wordLista2); 
+	logColor("%%blue","onclickSelectWord2 --> CERCA PAROLE go_passToJs_someWordsRowList ", "%%black", " wordLista1=", wordLista1, " wordLista2=", wordLista2, " maxNumRow5=", maxNumRow5,  ); 
 	//console.log("%cCERCA  PAROLA "+ wordLista1 + " "+ wordLista2 , "color: green;") 
 		
-	//get_first_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
+	//get_first_row_tr_visible();  // memorizza la prima TR visibile delle frasi in cui si trova questa funzione 
 	
 	//myPage01.style.display = "none"; 
-	go_passToJs_someWordsRowList(wordLista1, wordLista2, ""+maxNumRow5, "js_go_showWrdRowList"); 	
+	go_passToJs_someWordsRowList(wordLista1, wordLista2, ""+maxNumRow5, "js_go_showWrdRowList", js_parm, js_caller); 	
 	
 	
-	return 
-	var idMsg = "err_" + id1;
-	var eleMsg = document.getElementById(idMsg);  
-	if (eleMsg)  eleMsg.style.display ="none";	
-	
-	//myPage01.style.display = "none"; 
-	go_passToJs_someWordsRowList(aWord, ""+maxNumRow5, "js_go_showWrdRowList"); 	
 	
 } // end of onclickSelectWord2
 
 //=========================================================
+function back_from_listaRighe(   page1, page2,page3, page4) {
+	 
+	get_first_row_tr_visible() 
+	 
+	onclick_jumpFromTo1_2Page( page1, page2,page3, page4)
+	
+} // end of back_fromn_listaRighe
 
-function get_first_tr_visible() {	
-	var divConTab1 = document.getElementById("id_div_tabSub");  // elemento scrollabile che contiene la tabella
-	var eleTabBody = document.getElementById("id_tabSub_tbody");
-	var eleTrList  = eleTabBody.children;          //righe tabella che possono scomparire/apparire qusndo  il cursore sposta la vista 
-	var container  =  document.getElementById("id_div_tabSub");  // elemento scrollabile che contiene la tabella
+//-----------------------------------
+
+function get_first_row_tr_visible() {	
+
+	//logColor("%%red", "get_first_row_tr_visible ", "%%black", " sw_rowListFrom_onclick=",  sw_rowListFrom_onclick)
+	
+	if (sw_rowListFrom_onclick == false) return;    // aggiorna "id_gruppi_iBegNum" solo se la richiesta arriva da onclick_rowList
+	
+	//let divConTab1 = getById("id_div_tabSub"); 
+	let container  = getById("id_div_tabSub");     // elemento scrollabile che contiene la tabella
+	let eleTabBody = getById("id_tabSub_tbody");
+	let eleTrList  = eleTabBody.children;          //righe tabella che possono scomparire/apparire qusndo  il cursore sposta la vista 
+
 	
 	const containerTop = container.scrollTop;
 	const containerBottom = containerTop + container.clientHeight;
-	var first_visible_tr_id = -1;
+	let first_visible_tr_id = -1;
 	for (let i = 0; i < eleTrList.length; i++) {
-		var ele = eleTrList[i]
+		let ele = eleTrList[i]
 		const eleTop = ele.offsetTop;
 		const eleBottom = eleTop + ele.clientHeight;
 		if (eleTop >= containerTop && eleBottom <= containerBottom) { // The element is fully visible in the container
 			 first_visible_tr_id = i;
-			 //console.log("%cget_first_tr_visible ","color:red;"); console.log("first_visible_tr_id =i=", i, " ele=\n",ele.innerHTML) 
+			 //console.log("%cget_first_row_tr_visible ","color:red;"); console.log("first_visible_tr_id =i=", i, " ele=\n",ele.innerHTML) 
 			 break; 
 		}
 	} // end for i 
@@ -4225,50 +4393,59 @@ function get_first_tr_visible() {
 		//console.log("%cnessuna tr è visibile", "color:red;")
 	} else {
 		//console.log("%cLa prima tr visibile è " + first_visible_tr_id, "color:blue;")
-		var eleFromNum=document.getElementById("id_gruppi_iBegNum");  
-		//console.log('get_first_tr_visible 1 document.getElementById("id_gruppi_iBegNum")=', document.getElementById("id_gruppi_iBegNum").value) 
-		var newSt = parseInt(eleFromNum.value) + first_visible_tr_id - 1;  	
+		let eleFromNum=getById("id_gruppi_iBegNum");  
+		//console.log('get_first_row_tr_visible 1 getById("id_gruppi_iBegNum")=', getById("id_gruppi_iBegNum").value) 
+		let newSt = parseInt(eleFromNum.value) + first_visible_tr_id - 1;  	
 		if (newSt < 0) newSt=0; 
 		eleFromNum.value = newSt;               // set on first page
 		
-		//console.log('get_first_tr_visible 2 document.getElementById("id_gruppi_iBegNum")=', document.getElementById("id_gruppi_iBegNum").value) 
+		//console.log('get_first_row_tr_visible 2 getById("id_gruppi_iBegNum")=', getById("id_gruppi_iBegNum").value) 
 
 		onchange_rowGroupSelectChange(false,11);
 	}
 	
 	
-} // end of get_first_tr_visible	
+} // end of get_first_row_tr_visible	
+
 //-----------------------------------
-function back_from_listaRighe(  myPage05, zero,myPage03, myPage01) {
+function back_from_listaParole(  page1, page2,page3, page4) {
 	 
-	get_first_tr_visible() 
+	get_first_word_tr_visible(); 
 	 
-	onclick_jumpFromTo1_2Page( myPage05, 0,myPage03, myPage01)
+	onclick_jumpFromTo1_2Page( page1, page2,page3, page4)
 	
 } // end of back_fromn_listaRighe
-
 //-------------------------
-window.onbeforeunload = function(){
-	get_first_tr_visible();
-	//return 'Are you sure you want to leave?';
+/**
+// ask before exiting 
+window.onbeforeunload = function(){	
+	return 'Are you sure you want to leave?';
 };
+**/
 
-
-//----------------------------------------
-function onclick_setPrevRowsLearned(this1) {
-	get_first_word_tr_visible();
-} // end of onclick_setPrevRowsLearned 
 //-----------------------------------------
+let wordButton = 0;  
+let word_sw_all = false;
+//--------------------------------------------
 function get_first_word_tr_visible() {	
-	var eleTabBody = document.getElementById("idTableWordList_tbody");
-	var eleTrList  = eleTabBody.children;          //righe tabella che possono scomparire/apparire qusndo  il cursore sposta la vista 
-	var container  =  document.getElementById("id_wordList1");  // elemento scrollabile
+
+	if (word_sw_all == false) return;
+	
+	//logColor("%%blue"," get_first_word_tr_visible", "%%black", "id_lastWSort=",  getById("id_lastWSort").innerHTML)
+	
+	if (getById("id_lastWSort").innerHTML != "1") return; 
+	// only if the page has not been sorted we can set the number of word to skip
+ 	
+	let container  = getById("id_div_word_tabSub");  // elemento scrollabile
+	let eleTabBody = getById("idTableWordList_tbody");
+	let eleTrList  = eleTabBody.children;      //righe tabella che possono scomparire/apparire qusndo  il cursore sposta la vista 
+	
 	
 	const containerTop = container.scrollTop;
 	const containerBottom = containerTop + container.clientHeight;
-	var first_visible_tr_id = -1;
+	let first_visible_tr_id = -1;
 	for (let i = 0; i < eleTrList.length; i++) {
-		var ele = eleTrList[i]
+		let ele = eleTrList[i]
 		const eleTop = ele.offsetTop;
 		const eleBottom = eleTop + ele.clientHeight;
 		if (eleTop >= containerTop && eleBottom <= containerBottom) { // The element is fully visible in the container
@@ -4276,31 +4453,52 @@ function get_first_word_tr_visible() {
 			 break; 
 		}
 	} // end for i 
+	
 	if (first_visible_tr_id < 0) {
 		//console.log("%cnessuna tr è visibile", "color:red;")
 	} else {
-		var ele = eleTrList[first_visible_tr_id]
-		var eleTD0 = ele.children[0];
-		console.log("%cLa prima tr visibile è " + first_visible_tr_id, "color:blue;")
-		console.log(eleTD0.children[0].innerHTML, " => ", eleTD0.children[1].innerHTML );  
-		/**
-		var eleFromNum=document.getElementById("id_gruppi_iBegNum");  
-		eleFromNum.value = parseInt(eleFromNum.value) + first_visible_tr_id;  	               // set on first page
-		onchange_rowGroupSelectChange(false,11);
-		**/
+			/**
+				<td class="fixWordTdWidth4" style="text-align:center;font-size:0.8em;font-weight:100;">
+					<span onmouseover="mouseOverWord(this)" onmouseout="mouseOutWord(this)"  >§one-numTR§</span>					
+					<span style="display:none;">
+						<span>§one-word1§</span>    
+						<span>§ixW2StudyLs§</span>
+						<span>§one-ix1§</span>
+						<span>§one-ixixLemma§</span>	
+						<span>§one-ixLemma§</span>	
+					</span>	
+			</td>  
+			**/
+		let ele = eleTrList[first_visible_tr_id]
+		let eleTD0 = ele.children[0];
+		let eleNumWord = eleTD0.children[1].children[2]
+		let numWord
+		if (eleNumWord) {
+			numWord= Number(eleNumWord.innerHTML)
+			//logColor("%%blue","    numero parola=", "%%black",numWord, " =>", eleTD0.innerHTML)  		
+			
+			let eleInpBeg = getById("id_inpBegFreqWList")
+			
+			//console.log("     prima eleInpBeg.value=",  eleInpBeg.value, "   eleNum.value=", 	getById("id_inpMaxNumWords").value ) 
+			
+			eleInpBeg.value = Number(eleInpBeg.value) + numWord - 1;  
+			
+			let eleNum 	  =	getById("id_inpMaxNumWords" )
+			eleNum.value  = Number( eleNum.value ) - numWord + 1;	 // the number of row can be greater than the number of the required words (a word can appear more than on time)
+			//eleNum.value  = eleTrList.length - numWord + 1	
+			//console.log("     dopo eleInpBeg.value=",  eleInpBeg.value, "   eleNum.value=", eleNum.value ) 
+		}
 	}
-	
-	
+
 } // end of get_first_word_tr_visible	
-//-----------------------------------	
 //--------------------------------------------
 function onclick_word_known2(sIxWord, this1) {
-	var ixWord = 0, yes_not_len1;
+	let ixWord = 0, yes_not_len1;
     try {
         ixWord = parseInt(sIxWord);
     } catch (err) {}	
 	
-	var sw_yesNo = (this1.innerHTML != YES1)
+	let sw_yesNo = (this1.innerHTML != YES1)
   
 	if (sw_yesNo) {
 		this1.innerHTML = YES1;		
@@ -4312,9 +4510,9 @@ function onclick_word_known2(sIxWord, this1) {
 		this1.className = "notYetLearnedButt";			
 	}	
 	numWordsKnownChanged++; 
-	document.getElementById("id_buttLearnNumW").innerHTML = numWordsKnownChanged;
+	getById("id_buttLearnNumW").innerHTML = numWordsKnownChanged;
 	
-	go_passToJs_word_known2(""+ixWord, yes_not_len1, "js_go_word_known2"); // ask 'go' to update yes/no word known ctr  
+	go_passToJs_word_known2(""+ixWord, yes_not_len1, "js_go_word_known2", js_parm, js_caller); // ask 'go' to update yes/no word known ctr  
 	
 } // end of onclick_word_know_yes		
 
@@ -4323,7 +4521,7 @@ function js_go_word_known2(str1) {
 	//console.log("js_go_word=", str1);   
 	
 	if (numWordsKnownChanged == 1) {		
-		document.getElementById("id_buttLearnDiv").style.display = "block";
+		getById("id_buttLearnDiv").style.display = "block";
 	} 	
 	if (numWordsKnownChanged > MAX_NUM_WORD_LEARN) {		
 		onclick_write_words_to_learn();
@@ -4333,24 +4531,24 @@ function js_go_word_known2(str1) {
 
 //-------------------------------------------------------------
 function js_go_file_words_to_learn_written( str1 ) {
-	//document.getElementById("id_w_to_learn_written").innerHTML = str1 ;	
+	//getById("id_w_to_learn_written").innerHTML = str1 ;	
 	numWordsKnownChanged = 0; 
-	document.getElementById("id_buttLearnNumW").innerHTML = numWordsKnownChanged;
-	document.getElementById("id_buttLearnDiv").style.display = "none";
+	getById("id_buttLearnNumW").innerHTML = numWordsKnownChanged;
+	getById("id_buttLearnDiv").style.display = "none";
 }
 //-----------------------------------------------------------------
 
 function onclick_hideShowWordTran(this1) {	
 
-	var swEle = this1.previousElementSibling;
+	let swEle = this1.previousElementSibling;
 	
 	//console.log("%conclick_hideShowWordTran", "color:red;"); console.log(" swEle=", swEle)
 
 	// nasconde o mostra la traduzione di tutte le parole 
-	var eleBody = document.getElementById("idTableWordList_tbody")
-	var rows1 = eleBody.rows; 	
+	let eleBody = getById("idTableWordList_tbody")
+	let rows1 = eleBody.rows; 	
 	//--------
-	var lemmaCell, eleTran, visib;		
+	let lemmaCell, eleTran, visib;		
 	//-------------
 	if (swEle.innerHTML == "y") {
 		swEle.innerHTML = "n"; 
@@ -4363,7 +4561,7 @@ function onclick_hideShowWordTran(this1) {
 	}	
 	//console.log( "            swEle.innerHTML=", swEle.innerHTML,   " visib=", visib, " rows1.length=", rows1.length)
 	//----------------------
-	for (var g=0; g < rows1.length; g++ ) {	
+	for (let g=0; g < rows1.length; g++ ) {	
 		try {
 			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
 			eleTran = lemmaCell.children[0].children[1].children[1]; 
@@ -4377,14 +4575,14 @@ function onclick_hideShowWordTran(this1) {
 } // end of onclick_hideShowWordTran 
 //-------------------------------------------------------
 
-var hideShowTranExample_H1 = "mostra traduzione ed esempi"; 
-var hideShowTranExample_H2 = "nascondi traduzione ed esempi"; 
+let hideShowTranExample_H1 = "mostra traduzione ed esempi"; 
+let hideShowTranExample_H2 = "nascondi traduzione ed esempi"; 
 //----------------
 function onclick_hideShowTranExample(this1) {
 	//console.log("onclick_hideShowTranExample")
-	var display1;
-	var lemmaCell, eleTran;
-	var buttHeader = this1.innerHTML; 
+	let display1;
+	let lemmaCell, eleTran;
+	let buttHeader = this1.innerHTML; 
 	if (buttHeader == hideShowTranExample_H1) {
 		display1="block";
 		this1.innerHTML = hideShowTranExample_H2
@@ -4392,10 +4590,10 @@ function onclick_hideShowTranExample(this1) {
 		display1="none";
 		this1.innerHTML = hideShowTranExample_H1
 	}	
-	var eleBody = document.getElementById("idTableWordList_tbody")
-	var rows1 = eleBody.rows; 
+	let eleBody = getById("idTableWordList_tbody")
+	let rows1 = eleBody.rows; 
 	//--------------------------
-	for (var g=0; g < rows1.length; g++ ) {	
+	for (let g=0; g < rows1.length; g++ ) {	
 		try {
 			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
 			eleTran = lemmaCell.children[0].children[2]; 
@@ -4409,24 +4607,24 @@ function onclick_hideShowTranExample(this1) {
 } // end of onclick_hideShowTranExample
 //------------------------
 function TOGLIonclick_vertResizeLemma(this1) {	
-	var eleBody = document.getElementById("idTableWordList_tbody")
-	var rows1 = eleBody.rows; 		
-	var class01 = "c_size_1_line";
-	var classNN = "c_size_nn_line";
+	let eleBody = getById("idTableWordList_tbody")
+	let rows1 = eleBody.rows; 		
+	let class01 = "c_size_1_line";
+	let classNN = "c_size_nn_line";
 	if (rows1.length < 1) return
-	var lemmaCell = rows1[0].cells[NUM_CELL_LEMMA].children[0]
-	var swClass = ( lemmaCell.classList.contains( class01 )	)
+	let lemmaCell = rows1[0].cells[NUM_CELL_LEMMA].children[0]
+	let swClass = ( lemmaCell.classList.contains( class01 )	)
 	//----------------------
 	if (swClass) {		
 		this1.innerHTML = "mostra solo 2 righe"
-		for (var g=0; g < rows1.length; g++ ) {	
+		for (let g=0; g < rows1.length; g++ ) {	
 			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA].children[0]
 			lemmaCell.classList.remove( class01 );
 			lemmaCell.classList.add(    classNN );		
 		} // end for g
 	} else {		
 		this1.innerHTML = "mostra tutte le righe"
-		for (var g=0; g < rows1.length; g++ ) {	
+		for (let g=0; g < rows1.length; g++ ) {	
 			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA].children[0]
 			lemmaCell.classList.remove( classNN );
 			lemmaCell.classList.add(    class01 );				
@@ -4438,16 +4636,16 @@ function TOGLIonclick_vertResizeLemma(this1) {
 
 function onclick_listNoParadigmaLemma(this1) {	
 
-	var downfilename= "parole_senza_paradigma.txt" 
-	var outText = "Lista Parole senza paradigma " + "\n\n" ;
+	let downfilename= "parole_senza_paradigma.txt" 
+	let outText = "Lista Parole senza paradigma " + "\n\n" ;
 	
 	
-	var eleBody = document.getElementById("idTableWordList_tbody")
-	var rows1 = eleBody.rows; 	
+	let eleBody = getById("idTableWordList_tbody")
+	let rows1 = eleBody.rows; 	
 	//--------
-	var lemmaCell, eleTran, elePara, eleDivSup;	
+	let lemmaCell, eleTran, elePara, eleDivSup;	
 	//----------------------
-	for (var g=0; g < rows1.length; g++ ) {	
+	for (let g=0; g < rows1.length; g++ ) {	
 		try {
 			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
 			eleDivSup = lemmaCell.children[0].children[1];
@@ -4469,22 +4667,22 @@ function onclick_listNoParadigmaLemma(this1) {
 //-----------------------------------------------------------------
 
 function onclick_listNoTranLemma(this1,swNoTran) {	
-	
-	var downfilename= "Lemma_senza_traduzione.txt" 
-	var outText = "Lista Lemma senza Traduzione"+ "\n" ;
+	let g;
+	let downfilename= "Lemma_senza_traduzione.txt" 
+	let outText = "Lista Lemma senza Traduzione"+ "\n" ;
 	if (swNoTran == false) {
 		downfilename= "lista_tutti_lemma.txt" 
 	    outText = "Lista di tutti i lemma"+ "\n" ;
 	} 
 	
-	var eleBody = document.getElementById("idTableWordList_tbody")
-	var rows1 = eleBody.rows; 	
+	let eleBody = getById("idTableWordList_tbody")
+	let rows1 = eleBody.rows; 	
 	//--------
-	var lemmaCell, eleTran, elePara, eleDivSup;	
+	let lemmaCell, eleTran, elePara, eleDivSup;	
 	//----------------------
-	var noTranL = []
-	var tranS;
-	for (var g=0; g < rows1.length; g++ ) {	
+	let noTranL = []
+	let tranS;
+	for (let g=0; g < rows1.length; g++ ) {	
 		try {
 			lemmaCell = rows1[g].cells[NUM_CELL_LEMMA]
 			eleDivSup = lemmaCell.children[0].children[1];
@@ -4504,8 +4702,8 @@ function onclick_listNoTranLemma(this1,swNoTran) {
 	//-----------------
 	noTranL.sort();
 	//------------------	
-	var preW="", wo="";
-	var nn=0;
+	let preW="", wo="";
+	let nn=0;
 	for (g=0; g < noTranL.length; g++ ) {
 		wo = noTranL[g]
 		if (wo == preW) continue;
@@ -4522,17 +4720,17 @@ function onclick_listNoTranLemma(this1,swNoTran) {
 
 function onclick_listWords(this1) {	
 	
-	var downfilename= "lista_parole.txt" 
-	var outText = "Lista Parole"+ "\n" ;	
-	var eleBody = document.getElementById("idTableWordList_tbody")
-	var rows1 = eleBody.rows; 	
+	let downfilename= "lista_parole.txt" 
+	let outText = "Lista Parole"+ "\n" ;	
+	let eleBody = getById("idTableWordList_tbody")
+	let rows1 = eleBody.rows; 	
 	//--------
-	var wordCell, lemmaCell, eleTran, elePara, eleDivSup, eleWrd;	
-	var lemmaT, wordT;
+	let wordCell, lemmaCell, eleTran, elePara, eleDivSup, eleWrd;	
+	let lemmaT, wordT;
 	//----------------------
-	var noTranL = []
-	var tranS;
-	for (var g=0; g < rows1.length; g++ ) {	
+	let noTranL = []
+	let tranS;
+	for (let g=0; g < rows1.length; g++ ) {	
 		try {
 			wordCell = rows1[g].cells[4];
 			eleWrd = wordCell.children[0].children[0].children[0].children[0]; 
@@ -4554,8 +4752,8 @@ function onclick_listWords(this1) {
 	//-----------------
 	noTranL.sort();
 	//------------------	
-	var preW="", wo="";
-	var nn=0;
+	let preW="", wo="";
+	let nn=0;
 	for (g=0; g < noTranL.length; g++ ) {
 		wo = noTranL[g].split("§§")[1];
 		if (wo == preW) continue;
@@ -4570,7 +4768,7 @@ function onclick_listWords(this1) {
 //------------------------------------------	
 function download(filename, text) {
 
-    var element = document.createElement('a');
+    let element = document.createElement('a');
 
     element.setAttribute('href', 'data:text/plain;charset=utf-8,' +
         encodeURIComponent(text));
@@ -4584,9 +4782,9 @@ function download(filename, text) {
 }
 
 //--------------------------------------------------
-function onclick_split_newText() {
-		var eleTxt = document.getElementById("id_newText");
-		var str1 = (""+eleTxt.value).trim();
+function onclick_split_newText(this1) {
+		let eleTxt = getById("id_newText");
+		let str1 = (""+eleTxt.value).trim();
 		if (str1.length == 0) return;
 		/**
 		console.log("punto ==> ",  str1.replaceAll(".",".\n") )
@@ -4597,7 +4795,10 @@ function onclick_split_newText() {
 		
 		//console.log("tutti ==> ",  str1)
 			
-		eleTxt.value = str1;			
+		eleTxt.value = str1;	
+		this1.nextElementSibling.style.display = "inline-block"
+
+		
 } // end of onclick_split_newText		  
 /**
 1_0|O|file: prova.csv
@@ -4608,23 +4809,23 @@ function onclick_split_newText() {
 //-------------------
 function trimLeftZero( num1 ) {
 	num1 = ("" + num1).trim();
-	for(var g=0; g < 5; g++) {   
+	for(let g=0; g < 5; g++) {   
 		if (num1.length < 2) { break;}
 		if (num1.substr(0,1) == "0") num1 = num1.substring(1); 
 	}
 	return num1;
 }	
 //--------------
-function onclick_get_newText() { 			
-	var eleTxt = document.getElementById("id_newText");
-	var str1 = (""+eleTxt.value).trim();
+function onclick_get_newText(this1) { 			
+	let eleTxt = getById("id_newText");
+	let str1 = (""+eleTxt.value).trim();
 	if (str1.length == 0) return;			
-	var ele_id1 = document.getElementById("id_newTxt_id")
-	var ele_title1 = document.getElementById("id_newTxt_title"); 
-	var id1 = ele_id1.value.trim();
-	var title1 = ele_title1.value;	
+	let ele_id1 = getById("id_newTxt_id")
+	let ele_title1 = getById("id_newTxt_title"); 
+	let id1 = ele_id1.value.trim();
+	let title1 = ele_title1.value;	
 	
-	var msg1="";
+	let msg1="";
 	if (id1=="") {msg1=" manca identificativo"; }
 	if (title1=="") { msg1+=" manca titolo del testo"; }
 	if (id1 != "") {
@@ -4635,20 +4836,22 @@ function onclick_get_newText() {
 	} 	
 	if (msg1 != "") msg1="<br>errore: " + msg1;	
 		
-	document.getElementById("id_newTxtMsg1").innerHTML = msg1;
+	getById("id_newTxtMsg1").innerHTML = msg1;
 	if (msg1 != "") return;
 	
-	var righe=str1.split("\n");
-	var riga;
-	var outText = id1+"_0|O|file: " + title1 ;
+	let righe=str1.split("\n");
+	let riga;
+	let outText = id1+"_0|O|file: " + title1 ;
 	outText += "\n" + id1+"_0|T|file: " + title1 ;
-	for (var f=0; f < righe.length; f++) {
+	for (let f=0; f < righe.length; f++) {
 		riga = "\n" + id1+ "_" + (f+1) + "|O|" + righe[f].trim();
 		outText += riga;
 	}	
 	eleTxt.value = outText;
-	console.log(" onclick_get_newText ", " --> go_write_new_row_dictionary ", outText)
-	go_write_new_row_dictionary( outText, "js_go_new_row_written")
+	this1.style.display = "none";
+	//console.log(" onclick_get_newText ", " --> go_write_new_row_dictionary ", outText)
+	
+	go_write_new_row_dictionary( outText, "js_go_new_row_written","","")
 	
 	
 }// end of onclick_get_newText		
@@ -4661,13 +4864,13 @@ function go_write_new_row_dictionary( str1 ) {
 ***/
 //-------------------------------------
 function js_go_new_row_written(str1 ) {
-	var eleTxt = document.getElementById("id_newText").value = ""
-	var ele_id1 = document.getElementById("id_newTxt_id")
-	var ele_title1 = document.getElementById("id_newTxt_title"); 
-	var str1 = "il nuovo testo con identificativo " + ele_id1.value + " è stato accettato";
-	//var msg1 = "chiudi e riesegui l'applicazione"
-	document.getElementById("id_newTxtMsg0").innerHTML = "<br>" + str1;
-	document.getElementById("id_newTxtMsg1").innerHTML = "";
+	let eleTxt = getById("id_newText").value = ""
+	let ele_id1 = getById("id_newTxt_id")
+	let ele_title1 = getById("id_newTxt_title"); 
+	str1 = "il nuovo testo con identificativo " + ele_id1.value + " è stato accettato";
+	//let msg1 = "chiudi e riesegui l'applicazione"
+	getById("id_newTxtMsg0").innerHTML = "<br>" + str1;
+	getById("id_newTxtMsg1").innerHTML = "";
 	ele_id1.value = "";  
 	ele_title1.value= ""; 
 	
@@ -4697,26 +4900,26 @@ function onclick_moveOverActivate(this1) {
 //---------------------------------------------
 function onmouseOverRow(this1) {  // toccando la riga originale, rende visibile la traduzione  
 	if (sw_mouseoverActiv == false) return;
-	var id1 = this1.id;
+	let id1 = this1.id;
 	if (id1 == undefined) return 
-	var idNum = id1.replaceAll("idc_","idt_"); 
-	var eleTran = document.getElementById(idNum); 
+	let idNum = id1.replaceAll("idc_","idt_"); 
+	let eleTran = getById(idNum); 
 	if (eleTran == undefined) return;
 	eleTran.style.display = "block";			 
 } // end of onmouseOverRow
 //-----------------------------------------------------------	
 function onmouseOutRow(this1) {   // allontanando il mouse dalla riga originale, nasconde la traduzione (a meno che non sia attivo il tasto show T.  
 	if (sw_mouseoverActiv == false) return;	
-	var id1 = this1.id
+	let id1 = this1.id
 	if (id1 == undefined) return 
-	var idNum = id1.replaceAll("idc_","idt_"); 
-	var eleTran = document.getElementById(idNum); 
+	let idNum = id1.replaceAll("idc_","idt_"); 
+	let eleTran = getById(idNum); 
 	if (eleTran == undefined) return;
 	// sarebbe naturale rimettere display none, ma fintanto che esistono i pulsanti di show/hide transl. forzo lo stato dettato da questi 
-	var idNumButtT = id1.replaceAll("idc_","idbT_");
+	let idNumButtT = id1.replaceAll("idc_","idbT_");
 	if (idNumButtT == undefined) return;
-	var eleTranButt = document.getElementById(idNumButtT); 
-	var eleTbutCh   = eleTranButt.children[0]; 
+	let eleTranButt = getById(idNumButtT); 
+	let eleTbutCh   = eleTranButt.children[0]; 
 	if (eleTbutCh == undefined) return;
 	eleTran.style.display = eleTbutCh.style.display;			 
 } // end of onmouseOutRow
@@ -4724,16 +4927,16 @@ function onmouseOutRow(this1) {   // allontanando il mouse dalla riga originale,
 
 function onmouseOverRow2( num1 ) {  // toccando la riga originale, rende visibile la traduzione  
 	
-	var idNum = "idt_" + num1; 
-	var eleTran = document.getElementById(idNum); 
+	let idNum = "idt_" + num1; 
+	let eleTran = getById(idNum); 
 	if (eleTran == undefined) return;
 	eleTran.style.display = "block";	
 	
 } // end of onmouseOverRow
 //-----------------------------------------------------------	
 function onmouseOutRow2( num1 ) {   // allontanando il mouse dalla riga originale, nasconde la traduzione (a meno che non sia attivo il tasto show T.  
-	var idNum = "idt_" + num1; 
-	var eleTran = document.getElementById(idNum); 
+	let idNum = "idt_" + num1; 
+	let eleTran = getById(idNum); 
 	if (eleTran == undefined) return;
 	eleTran.style.display = "none";	 
 	
@@ -4743,9 +4946,9 @@ function onmouseOutRow2( num1 ) {   // allontanando il mouse dalla riga original
 //----------------------------------------------------------
 function onclick_changeTraduzione(this1 ) {	
 	
-	var eleTD0  = this1.parentElement;
+	let eleTD0  = this1.parentElement;
 	
-	var eleLemmaTD = eleTD0.nextElementSibling;
+	let eleLemmaTD = eleTD0.nextElementSibling;
 	
 	/***
 		// td lemma     tr.cells[NUM_CELL_LEMMA] 	
@@ -4767,22 +4970,22 @@ function onclick_changeTraduzione(this1 ) {
 	
 	***/
 		
-	var eleWordTD  = eleTD0.previousElementSibling;
+	let eleWordTD  = eleTD0.previousElementSibling;
 		
-	var eleTD    =  eleWordTD; 
+	let eleTD    =  eleWordTD; 
 		
-	var eleLemDiv1   = eleLemmaTD.children[0]
-	var eleLemmaSpan = eleLemDiv1.children[0]
+	let eleLemDiv1   = eleLemmaTD.children[0]
+	let eleLemmaSpan = eleLemDiv1.children[0]
 	if (eleLemmaSpan.innerHTML == "") return; 	
 		
 	if (eleLemmaTD.children.length >= 2) { return; } 
 	
-	var ele_oldTran = eleLemmaTD.children[0].children[1].children[1];
+	let ele_oldTran = eleLemmaTD.children[0].children[1].children[1];
 	const newDiv = document.createElement("div");
 	newDiv.style.textAlign = "left";
 	
 	eleLemmaTD.appendChild(newDiv);
-	var newInn=""
+	let newInn=""
 	newInn += '<div  style="font-size:0.6em;width:100%;">add/modify translation</span></div>' + '\n';
 	newInn += '<div  class="c_wordTran" ' +
 		'style="background-color:lightgrey; color:black; font-weight:bold;border:2px solid black;min-width:100%;text-align:left;" ' +
@@ -4828,46 +5031,49 @@ function onclick_saveNewWordTran(this1) {
 	*********/
 	
 	
-	var wLemmaList, wTranList, wLevelList, wParaList, wExampleList,  wIxLemmaList;	
+	let wLemmaList, wTranList, wLevelList, wParaList, wExampleList,  wIxLemmaList;	
 	let wordx, ix12, nrow, totExtrRow2,  wLemma1, wordTran, uLearnedYN ;
 	let word1, ixW2StudyLs, ix1, ixLemma; 	
-	var oldDivTran, eleOldTran, oldTranslation; 
-	var newDivTran, eleNewTran, newTranslation; 
-	var swChg=false;
-	var eleTD_0, eleTD_5; var eleTD0_val;
-	var eleTD_6, ele_details, ele_details, ele_summ, ele_tranLemma; 
+	let oldDivTran, eleOldTran, oldTranslation; 
+	let newDivTran, eleNewTran, newTranslation; 
+	let swChg=false;
+	let eleTD_0, eleTD_5; let eleTD0_val;
+	let eleTD_6, ele_details, ele_summ, ele_tranLemma; 
 	
-	var newUp = 0; 
+	let newUp = 0; 
 	
-	var div_onsave00 = this1.parentElement; 	
-	var divAdded00   = div_onsave00.parentElement;  
-	var eleTdLemma00 = divAdded00.parentElement; 
-	if (eleTdLemma00.tagName != "TD") { console.log("%cERRORE eleTdLemma.tagName not equal TD =" + +eleTdLemma00.tagName );return; } 	
-	var eleTR = eleTdLemma00.parentElement; 	
+	let div_onsave00 = this1.parentElement; 	
+	let divAdded00   = div_onsave00.parentElement;  
+	let eleTdLemma00 = divAdded00.parentElement; 
+	if (eleTdLemma00.tagName != "TD") { 
+		console.log("%cERRORE eleTdLemma.tagName not equal TD =" + eleTdLemma00.tagName );
+		return;
+	} 	
+	let eleTR = eleTdLemma00.parentElement; 	
 	if (eleTR.tagName != "TR") { return; }
-	var elePareTr = eleTR.parentElement; // tbody
+	let elePareTr = eleTR.parentElement; // tbody
 	if (elePareTr == null) return; 
 	
 	//----------------------
 	// cerca tutti i lemma con traduzione pendente  
 	
-	var tranToUpdList = [];
-	var bodyChild = elePareTr.children
-	for (var p1=0; p1 < bodyChild.length; p1++) {
-		var eleTr0 = bodyChild[p1];
-		var oneTdLemma = eleTr0.children[NUM_CELL_LEMMA]; 		
+	let tranToUpdList = [];
+	let bodyChild = elePareTr.children
+	for (let p1=0; p1 < bodyChild.length; p1++) {
+		let eleTr0 = bodyChild[p1];
+		let oneTdLemma = eleTr0.children[NUM_CELL_LEMMA]; 		
 		if (oneTdLemma.children.length < 2) { continue; }	
-		var oneNewLemTran = oneTdLemma.children[1]; 
-		var oneNewLemTranInner = oneNewLemTran.children[1].innerHTML;
+		let oneNewLemTran = oneTdLemma.children[1]; 
+		let oneNewLemTranInner = oneNewLemTran.children[1].innerHTML;
 		if (oneNewLemTranInner == "") { continue; }	
 		tranToUpdList.push( [ oneTdLemma.children[0].children[0].innerHTML, oneNewLemTranInner, oneNewLemTran ] ); 		
 	} // end for p1	
 	//-------------------
-	for(var t2=0; t2 < tranToUpdList.length; t2++) {
-		var toUpdLemma   = tranToUpdList[t2][0];	
-		var toUpdTran    = tranToUpdList[t2][1];	
-		var addedLivTran = tranToUpdList[t2][2];
-		for (var p2=0; p2 < bodyChild.length; p2++) {
+	for(let t2=0; t2 < tranToUpdList.length; t2++) {
+		let toUpdLemma   = tranToUpdList[t2][0];	
+		let toUpdTran    = tranToUpdList[t2][1];	
+		let addedLivTran = tranToUpdList[t2][2];
+		for (let p2=0; p2 < bodyChild.length; p2++) {
 			updateOneTran(  bodyChild[p2], toUpdLemma, toUpdTran); 
 		}	
 		addedLivTran.remove(); 			
@@ -4881,8 +5087,8 @@ function onclick_saveNewWordTran(this1) {
 	
 	//------------------------------
 	function updateOneTran( eleTr2, targetLemmaName, newLemTran ) {
-		var eleTdLemma = eleTr2.children[ NUM_CELL_LEMMA] ;
-		var ele_target_lemmaName = eleTdLemma.children[0].children[0].innerHTML; 			
+		let eleTdLemma = eleTr2.children[ NUM_CELL_LEMMA] ;
+		let ele_target_lemmaName = eleTdLemma.children[0].children[0].innerHTML; 			
 		if (ele_target_lemmaName != targetLemmaName) { 
 			return;
 		}	
@@ -4894,8 +5100,8 @@ function onclick_saveNewWordTran(this1) {
 		ix1         = eleTD0_val.children[2].innerHTML; // indice word (in go) 
 		ixLemma     = eleTD0_val.children[3].innerHTML; // indice lemma x lemma e tran list 
 
-		var ele_target_lemTran = eleTdLemma.children[0].children[1].children[1]; 		
-		var ele_target_tran2   = eleTdLemma.children[0].children[2].children[0].children[0]; 
+		let ele_target_lemTran = eleTdLemma.children[0].children[1].children[1]; 		
+		let ele_target_tran2   = eleTdLemma.children[0].children[2].children[0].children[0]; 
 		//console.log("ele_target_lemTran=", ele_target_lemTran.innerHTML)
 		//console.log("ele_target_tran2  =", ele_target_tran2.innerHTML)
 		
@@ -4921,10 +5127,10 @@ function onclick_saveNewWordTran(this1) {
 //------------------------------------
 
 function vertResizeLemma( eleTdLemma ) {	
-	var class01 = "c_size_1_line";
-	var classNN = "c_size_nn_line";
-	var divToResize = eleLemma.children[0] ; 
-	var swClass = ( divToResize.classList.contains( class01 )	)
+	let class01 = "c_size_1_line";
+	let classNN = "c_size_nn_line";
+	let divToResize = eleTdLemma.children[0] ; 
+	let swClass = ( divToResize.classList.contains( class01 )	)
 	//----------------------
 	if (swClass) {	
 		divToResize.classList.remove( class01 );			
@@ -4947,12 +5153,12 @@ function onclick_showHideLemma(this1) {
 
 function getWord_tr2(z3, parola1, paro_tts, trad1, all_lemma_for_thisWord, paro_nFrasi, maxNumRow) {
 
-	var wordTR = prototype_word_tr_tts.replaceAll("§1§", z3).replaceAll("§4txt§", parola1).replaceAll("§4maxNumRow§", "" + maxNumRow).
+	let wordTR = prototype_word_tr_tts.replaceAll("§1§", z3).replaceAll("§4txt§", parola1).replaceAll("§4maxNumRow§", "" + maxNumRow).
 	replaceAll("§ttsWtxt§", paro_tts).replaceAll("§8numfrasi§", paro_nFrasi).replaceAll("§6tran§", trad1).
 	replaceAll("§6alllemmaWord§", all_lemma_for_thisWord);
 	return wordTR;
 
-} // end of getWord_tr 
+} // end of getWord_tr2 
 
 //-----------------------------------
 
@@ -5016,9 +5222,18 @@ function primaLeRigheGruppoRichiesto(inpBegRow, inpEndRow, rowToStudy_list) {
 
 } // end of primaLeRigheGruppoRichiesto	
 //----------------------------------------------
-
+function add_otherGrafToWordList(word_to_underline_list) {
+	// duplicare la parola con ortografia alternativa, es. ue= u con umlaut;  bisogna spostare questa logica in 'go'  
+	let newList=[], word1, word2;
+	for(let hx=0; hx < word_to_underline_list.length; hx++) {  
+		word1 = word_to_underline_list;
+		newList.push(word1)	
+	}
+	return newList
+}
+//---------------------------------------
 function showRowsAndTranButton(wh) {	
-	
+ 
 	//console.log("showRowsAndTranButton  (wh=",wh)	
 	let showList = ''    ;    
 	let riga;		
@@ -5032,10 +5247,17 @@ function showRowsAndTranButton(wh) {
 	let first= -1, last=-1;
 	let visib;
 	let ixRow2StudyLs;
-	var indexGroup= getInt( document.getElementById("id_gruppi_sel").selectedIndex );
-	let inpBegRow = getInt( document.getElementById("id_fromIx_row").innerHTML );
-	let numRows   = getInt( document.getElementById("id_inpNumRow" ).innerHTML );  
+	let indexGroup= Number( getById("id_gruppi_sel").selectedIndex );
+
+
+    //console.log("myPage01=", myPage01.style.display,   ",  myPage04=", myPage04.style.display);   
+	
+	let inpBegRow = SAVE_fromIx_row;	
+	let numRows   = id_gruppi_SelectedNumRow
 	let inpEndRow = inpBegRow+numRows-1;
+	
+	//console.log("showRowsAndT 1"); 
+	
 	//------------------------------------
 	let newRowList = primaLeRigheGruppoRichiesto(inpBegRow, inpEndRow, rowToStudy_list);
 	//------------------------------
@@ -5043,16 +5265,17 @@ function showRowsAndTranButton(wh) {
 	let idRow1, idRow2; 
 	let PREF_MARKER = ":PREF:";
 	//----------------------------------------------------
-	
+	//console.log("showRowsAndT 2"); 
 	for (let i = 0; i < newRowList.length; i++) {
 		one_newRowList(i);	
 	} // end for i
 	
+	//console.log("showRowsAndT 3"); 
 	//---------------------------------------------------
 	eleTabSub_tbody.innerHTML = showList;		
 	if ( (last - first) > 0) {
-		let eleF = document.getElementById("b1_" + first);
-		let eleT = document.getElementById("b2_" + last);
+		let eleF = getById("b1_" + first);
+		let eleT = getById("b2_" + last);
 		onclick_tts_arrowFromIx(eleF, first, 5);
 		onclick_tts_arrowToIx(  eleT, last , "3showRowsAndTranButton" );		
 	}	
@@ -5131,8 +5354,733 @@ function showRowsAndTranButton(wh) {
 		
 	} // end of one_newRowList
 	//---------------------------
+  
 	
 } // end of showRowsAndTranButton
 
+//------------------------------------------------
+// var a1        = JSON.stringify([12,34,56]);
+// var a12_array = fromJsonStringToArray(a1)
 //-------------------------------------------------
+function fromJsonStringToArray( str1 ) {
+	if (str1 == undefined) return [""]; 
+	str1 = ""+str1;
+	if (str1.length < 1) return [""]
+	if ( str1.substr(0,1) == "[" ) {
+		return JSON.parse( str1);
+	}	
+	return [ str1 ]
+}
+//--------------------------------------
+// gestione_lemma
+//----------------------------------------------------------	
+	
+function js_go_showWordList_lev2(wordListStr00, json_parmStr, js_caller, goFunc) {
+	/**
+	logColor("%%red;font-size:1.2em;font-weight:bold;", "js_go_showWordList_lev2 ", 
+		"%%black", " wordListStr00.length=", wordListStr00.length, " json_parmStr=", json_parmStr, " js_caller=", js_caller)
+	**/
+	// parametri da pagina html ('anyRow','toBeLearned'),  ('anyRow','allWords') 
+	
+	/*
+												row:= xWordAlpha.uWord2 + separ1 + xWordAlpha.uWord0 + separ1 +
+		g04_bind_go_between_wordList_V3.go => 				"ix" + separ1 + 
+		g04_bind_go_between_wordList_V3.go => 				strconv.Itoa(xWordAlpha.uIxUnW_fr) + separ1 + 
+		g04_bind_go_between_wordList_V3.go => 				strconv.Itoa(xWordAlpha.uTotRow)   + separ1 +
+		g04_bind_go_between_wordList_V3.go => 				lastLemma.leLemma            	+ separ1 + 
+		g04_bind_go_between_wordList_V3.go => 				lastLemma.leTran 				+ separ1 +  
+		g04_bind_go_between_wordList_V3.go => 				separ1 							+  
+		g04_bind_go_between_wordList_V3.go => 				lastLemma.lePara	 			+ separ1 +  
+		g04_bind_go_between_wordList_V3.go => 				lastLemma.leExample	 			+ separ1 +  
+		g04_bind_go_between_wordList_V3.go => 				strconv.Itoa(totNumRow) 		+ separ1 +  			
+		g04_bind_go_between_wordList_V3.go => 				xWordAlpha.uLearnedYN              + separ1 + 			
+		g04_bind_go_between_wordList_V3.go => 				"ixLemma" + separ1 + strconv.Itoa(ix2) + separ1 +  	
+		g04_bind_go_between_wordList_V3.go => 				endOfLine 	
+		g04_bind_go_between_wordList_V3.go => 		//fmt.Println(green("word_to_row "), row )		
+	*/	
+	
+	let js_parmArray = fromJsonStringToArray(json_parmStr)
+	
+	//console.log("json_parmStr=", json_parmStr, "  js_parmArray=",  js_parmArray,  " len=",   js_parmArray.length)
+	
+	let numButton   = ""; 
+	let anyrow      = ""; 
+	let toBeLearned = ""; 
+	let tagSel = "";
+	let pp=999;
+	for(let p=0; p < js_parmArray.length; p++) {
+		//console.log( "	js_parmArray =", js_parmArray[p], "   tagSel=", tagSel)
+		if (js_parmArray[p] == "tag") { pp=p; if ((p+1) < js_parmArray.length) tagSel = js_parmArray[p+1]; break; }
+	}
+	if (pp > 0) numButton   = Number(js_parmArray[0]) ;  
+	if (pp > 1) anyrow      = js_parmArray[1];  
+	if (pp > 2) toBeLearned = js_parmArray[2]; 
+	if (numButton == "") {
+		if (tagSel == "RW3") numButton = 2;   
+	}
+	
+	let swAllWords = (toBeLearned == 'allWords'); 
+	
+	wordButton = numButton; 
+	word_sw_all = swAllWords;
+	
+	//logColor("js_go_showWordList_lev2", "%%green", "js_go_showWordList_lev2", "%%black", " json_parmStr=", json_parmStr, " js_caller=", js_caller, " goFunc=", goFunc)
+	
+	//console.log("    ", "wordListStr.length=",wordListStr00.length  ," numButton=", numButton) ;
+	
+	//let le2=200; if (wordListStr00.length > le2) console.log("   wordListStr=",wordListStr00.substring(0,le2) + " ..."); else  console.log("   wordListStr=",wordListStr00 );   
+
+	// numButton=1 default ==> from onclick most frequent word list  
+	// numButton=2         ==> from onclick BetweenWordList or prefix wordlist   
+	// numButton=3         ==> from onclick Lemma word list   
+	// numButton=5         ==> from onclick Lemma list   
+	// numButton=0         ==> from word list from word, lemma, ?   
+	if (numButton==1 ) {
+		sw_somethingChanged = false; 
+	} 
+	
+	word_to_underline_list = []
+	let wordListStr = wordListStr00.trim();
+	let len = wordListStr.length	
+
+	if (wordListStr.substring(len-1) == ";") { len = len - 1; wordListStr = wordListStr.substring(0, len) }
+	if (wordListStr.substring(len-1) == ";") { len = len - 1; wordListStr = wordListStr.substring(0, len) }
+		
+    // triggered by go func (  go _ passToJs_wordList )
+    if (wordListStr == undefined) {
+        //console.log("js_showWordList: parameter is undefined");
+		onclick_jumpFromToPage( myPage02,myPage03,  myPage01); 
+        return;
+    }
+	
+	//console.log(" 2 function js_go_showWordList_lev2 2 ")
+	
+    if (wordListStr == "") {
+        //console.log("js_showWordList: parameter is empty");
+		if (numButton==1) { errorNoWord1()}
+		onclick_jumpFromToPage( myPage02,myPage03,  myPage01); 
+        return;
+    }
+	
+	myPage01.style.display = "none"; 
+	
+	//console.log("3 function js_go_showWordList_lev2 3 ")
+
+	let wLemmaListU, wTranListU, wLevelListU,	wParaListU, wExampleListU, wIxLemmaListU;   
+	let wLemmaList,  wTranList,  wLevelList,    wParaList,  wExampleList , wIxLemmaList ;
+	let word2, word0, ixUnW2, totRow2, totExtrRow2 
+	let uLearnedYN;
+	let chk_ix, chk_ixLemma;
+	
+    let wordToStudy_listStr = wordListStr.split( endOfLine );	
+	
+	//console.log("3 function js_go_showWordList_lev2 3 ")	
+	/*
+	wordListStr=
+						 0                 1         2     3     4        5              6    7   8   9  10   11 
+	genannt.genannt      ;.  genannt    ;.505;.    145;. 123;. 123;. nennen  ;.  nome    ;.   ;.  ;.  ;.  0;.  ;					 
+	\ngen.gen            ;.  gen        ;.7548;.     2;. 123;. 123;.  gen    ;.  gen     ;.   ;.  ;.  ;.  0;.  ;;
+	\ngenannte.genannte  ;.  genannte   ;.13717;.    1;. 123;. 123;. genannt ;.  chiamato;.   ;.  ;.  ;.  0;.  ;;
+
+	*/	
+	wordToStudy_list = []
+	let ixNumPlus; 
+	let z;
+	
+	
+	let listKey=[]; let keyS, keyIx;
+	
+	if (numButton == 1) {	
+			//console.log("function js_go_showWordList_lev2 4 button 1 ")
+			listKey = sortWordFreqFirst(wordToStudy_listStr) ;
+			for (let x=0; x < listKey.length; x++ ) {
+				[keyS, keyIx] = listKey[x].split(":") 
+				oneElemToStudy(keyIx, x)
+			} 		 
+	}
+	//-------------------------------------- 
+	if (numButton == 5) {
+		//console.log("function js_go_showWordList_lev2 5 button 5 ")
+		for (let g=0; g < wordToStudy_listStr.length; g++) {
+			let wordLineZ =	wordToStudy_listStr[g]	
+			console.log( "%c   wordToStudy g" + g + " =>" + wordLineZ, "color:green;" )
+			if (wordLineZ == "") return; 
+		
+			let ww0 = ((wordLineZ + ";.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.").split(";.") ).slice(0,15);
+			
+			[word2, word0, chk_ix, ixUnW2, totRow2, wLemmaList, wTranList,	wLevelList,	wParaList, wExampleList,
+						   totExtrRow2, uLearnedYN,   chk_ixLemma, wIxLemmaList] = ww0;  	
+						   
+			console.log("     ", word2, "   ", word0 )			   
+			/**		
+			wordToStudy_list.push(  [word2, ixUnW2, totRow2, [wLemmaList], [wTranList], [wLevelList], [wParaList], [wExampleList], 
+									totExtrRow2, uLearnedYN, [wIxLemmaList], numButton] ); 
+			**/
+			wordToStudy_list.push(  [word0, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
+									totExtrRow2, uLearnedYN, wIxLemmaList, numButton] ); 					
+									
+									
+		}
+	}
+	//------------------	
+	if ((numButton > 1) && (numButton < 5)) {
+		//console.log("function js_go_showWordList_lev2 6 button 1>1 e <5 ")
+		for (let x=0; x < wordToStudy_listStr.length; x++ ) {
+			oneElemToStudy(x)
+		}		
+		/**
+		listKey = sortAlpha(wordToStudy_listStr)   // cod 
+		for (let x=0; x < listKey.length; x++ ) {
+				[keyS, keyIx] = listKey[x].split(":") 
+				oneElemToStudy(keyIx)
+		} 
+		**/
+	}
+	//console.log("function js_go_showWordList_lev2 7 ")
+	//--------------------
+	
+	function oneElemToStudy(z, x0) {		
+		if (z < 0) return;
+		let wordLineZ = wordToStudy_listStr[z].trim();  
+		if (wordLineZ == "") return; 
+		
+		//[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList]
+		
+		let ww0 = ((wordLineZ + ";.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.;.").split(";.") ).slice(0,15);
+		/**
+		  abschied;.abschied;.ix;.4569;.1;.abscheiden§abschied;.separato§addio§;.A1|A1§A1|A1;.abscheiden|abscheiden§abschied|der abschied;.
+								Die kranken Tiere von den gesunden abscheiden|in Frieden abscheiden§|der erste Abschied von zu Hause fiel ihm sehr schwer;.
+								0;.y;.ixLemma;.306§308§;.;;
+
+			uWord2				abschied;.abschied;.
+								ix;.
+			uIxUnW 				4569;.
+			uTotRow				1;.
+			uLemmaL   *lista	abscheiden§abschied;.          
+			uTranL    *lista 	separato§addio§;.                
+			uLevel    *lista	A1|A1§A1|A1;.                  
+			uPara     *lista	abscheiden|abscheiden§abschied|der abschied;.             
+			uExample  *lista	Die kranken Tiere von den gesunden abscheiden|in Frieden abscheiden§|der erste Abschied von zu Hause fiel ihm sehr schwer;.        
+			uTotExtRow 			0;.
+			uLearned   			y;.
+								ixLemma;.
+			uIxLemmaL *lista  	306§308§;.
+			;;
+			----
+			                    // ;. separa i diversi campi della struttura, 
+								// §  separa lemma diversi   nello stesso campo
+								// |  separa level, paradigma ed esempi con lo stesso lemma  
+			const wSep = "§";  									   
+			const endOfLine = ";;\n"; 
+		**/	
+		
+		[ word2, word0, chk_ix, ixUnW2, totRow2, wLemmaList, wTranList,	wLevelList,	wParaList, wExampleList,
+					   totExtrRow2, 
+					   uLearnedYN,   chk_ixLemma, wIxLemmaList ] = ww0; 
+		
+		wordToStudy_list.push(  [word0, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
+									totExtrRow2, uLearnedYN, wIxLemmaList, numButton ] ); 							
+									
+			
+	}  // end of oneElemToStudy
+	///---------------------------------
+	newTran = [];
+	for ( z=0; z < wordToStudy_list.length; z++) {
+		newTran.push( 0 )
+	}
+	//------------------------
+	
+	fun_showWordList("3") 
+	
+	//console.log("function js_go_showWordList_lev2 9")
+	
+} // end of js_go_showWordList_lev2
+//--------------------------------------------------------------
+
+function fun_showWordList(wh, ix1=-1) {	
+		
+	//console.log("function fun_showWordList  wh=", wh, " ix1=", ix1)	
+		
+	let numNoTran = 0; // -1 
+	let word2, ixUnW2, totRow2, totExtrRow2, wLemmaList, wTranList , wLevelList, wParaList, wExampleList, uLearnedYN, wIxLemmaList  ; 
+	let words_to_translate_str = wordTTBegin   //  ; 
+	
+	for (let z=0; z < wordToStudy_list.length; z++) {			
+		[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList ] = wordToStudy_list[z] ; 	
+		
+		for(let f = 0; f < wLemmaList.length; f++) {	
+			if (wLemmaList[f] == "") { continue }			
+			if (wTranList[f] == "") {			
+				numNoTran++			
+				words_to_translate_str += z + ";" + ixUnW2 + ";" + f + "; " +wLemmaList[f] + wordSepEndBeg;  // ;,;    // blank dopo ; prima di wLemma (serve per evitare problemi google)
+			} else {				
+				if (wTranList[f] == "_word_not_found_") {
+					numNoTran++			
+					words_to_translate_str += z + ";" + "-1" + ";" + f + "; " +wLemmaList[f] + wordSepEndBeg;  	
+				}
+			}
+		}
+	}
+	//---------------------
+	if (numNoTran < 1) {		
+		showWordsAndTranButton("2")
+		return
+	}	
+		
+	ele_wordsToTranslate.value = words_to_translate_str; //  .replaceAll("\n"," "); 
+	ele_wordsTranslated.value = ""; 
+	getById("id_notTranNum").innerHTML = numNoTran; 
+	
+	onclick_jumpFromToPage( myPage01,0,myPage02);  
+	
+
+} // end of fun_showWordList
+
+//-------------------------------------------
+function showWordsAndTranButton(wh) {		
+	//console.log("%cfunction  showWordsAndTranButton(" + wh + ")",  "color:blue;")
+	
+	let showList = prototype_tableWordList_Header;  
+		
+	let x2 = getById("id_sel_2_extrRow");
+    let i = x2.selectedIndex;
+	let sel_extrRow = x2.options[i].id;
+	is_selected_row_only = ( i == index_onlySelRowsWanted);  // 2showWordsAndTranButton(wh) 
+	
+	//console.log("    1 showWordsAndTranButton  wordToStudy_list.length=", wordToStudy_list.length)
+	
+	fun_selRowsWanted_changed();
+	
+	//console.log("    2 showWordsAndTranButton  wordToStudy_list.length=", wordToStudy_list.length)
+    
+	let word2, ix1,ixUnW2, totRow2, nrow, totExtrRow2, wLemma1;
+	let riga;	
+	let wordOrig2, wordTran2;
+	let wIxLemmaList, wLemmaList, wTranList , wLevelList, wParaList, wExampleList;  
+	let uLearnedYN;	
+	let wordTran = ""; 
+	let wLemma3, wTran3;
+	let nSpanV, spanV;	
+	let clas1;
+	let hig=1
+	let swP; 
+	let col1; 
+	numeroWord_TR = 0;
+	let numButton;
+	
+	//-------------------------------------------------------------------------
+	try {
+		for (let ixW2StudyLs = 0; ixW2StudyLs < wordToStudy_list.length; ixW2StudyLs++) {
+
+			[word2, ixUnW2, totRow2, wLemmaList, wTranList, wLevelList, wParaList, wExampleList, 
+					totExtrRow2, uLearnedYN, wIxLemmaList, numButton ] = wordToStudy_list[ixW2StudyLs]; 
+					
+			/**
+			console.log("%c    LOOP wordToStudy_list " +  ixW2StudyLs , " color:red;")
+			console.log("               word2=", word2, "wLemmaList type=", typeof wLemmaList, " =>", 
+				wLemmaList, " wLemmaList.length=", wLemmaList.length)
+			**/
+			//------------
+			showList += oneTR_lemma(ixW2StudyLs, ixW2StudyLs, "", word2, ixUnW2, totRow2, 
+						wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList, numButton); 
+		
+			//------------------------	
+			/**
+			for(let ixixLemma = 0 ; ixixLemma < wLemmaList.length; ixixLemma++) {	
+				showList += oneTR_lemma(ixW2StudyLs, ixixLemma, "", word2, ixUnW2, totRow2, 
+						wLemmaList, wTranList, wLevelList, wParaList, wExampleList, totExtrRow2, uLearnedYN, wIxLemmaList, numButton); 
+			}
+			***/
+		}
+	} catch(e1) {
+		logColor("%%red",e1)
+		console.log("%c ERRORE in showWordsAndTranButton","color:red;")
+		console.log("ixW2StudyLs=",ixW2StudyLs)
+		console.log("wordToStudy_list[ixW2StudyLs]=", 	wordToStudy_list[ixW2StudyLs] )
+		console.log("  wParaList=", wParaList , " type=", typeof wParaList )
+		
+	}
+	//---------------------------------------------------
+	//console.log("    3 showWordsAndTranButton")
+	
+	showList += '   </tbody>  \n' +
+		'</table> \n'; 	
+    ele_wordList.innerHTML = showList;
+	//nascondi_celleEgualiPrecedenti() 	
+	
+	//allinea_colGroupTabWord();  
+   	
+	onclick_jumpFromToPage( myPage01,myPage02, myPage03);  
+	let ele0, swEle, swChild, numChild0;
+	[ele0, swEle, swChild, numChild0] = getById_children( "idTableWordList_thead");
+	if ( (swEle == false) || (swChild == false) || (numChild0 < 1) )  return; 
+	cellWord_TrTH =  getById("idTableWordList_thead").children[0].children[4]; 	
+	
+    [ele0, swEle, swChild, numChild0] = getById_children( "idTableWordList_tbody");
+	if ( (swEle == false) || (swChild == false) || (numChild0 < 1) )  return; 
+	
+	//console.log("ele0=", ele0, " swEle=", swEle, "  swChild=", swChild, " numChild0=", numChild0)
+	
+	cellWord_TrTD = getById("idTableWordList_tbody").children[0].children[4]; 
+	
+
+	resize1.observe(cellWord_TrTD)
+	//resize2.observe(cellWord_TrTH)		
+			
+	/**
+	console.log("%cfunction  showWordsAndTranButton(" + wh + ")",  "color:blue;")		
+	let eleX1 = getById("idTableWordList_tbody"); 
+	let eleX2; 
+	for(let mio1=0; mio1 < 20; mio1++) {
+		console.log( mio1 + " tag=" + eleX1.tagName + " id=" + eleX1.id  + 
+			" width=" + eleX1.style.width + " offw=" + eleX1.offsetWidth + "px" + " border=", eleX1.style.border) 	;
+		if (eleX1.tagName == "HTML") break;
+		eleX2 = eleX1.parentElement; 
+		eleX1 = eleX2; 
+	} 
+	**/
+	
+} // end of showWordsAndTranButton
+//------------------------------
+let cellWord_TrTD;
+let cellWord_TrTH; 			
+function resizeTd_wordFunc(e) {
+	if (e[0].target) {
+		//console.log("e=", e[0] )
+		//cellWord_TrTH.style.width = e[0].target.clientWidth + "px";
+		cellWord_TrTH.style.width = e[0].contentRect.width + "px"; 
+		//cellWord_TrTH.style.width = e[0].contentRect.width + "px"; 
+
+		
+		//cellWord_TrTD.style.width = e[0].target.offsetWidth + "px";
+	} 
+}	
+				
+let resize1 = new ResizeObserver(resizeTd_wordFunc)
+//let resize2	= new ResizeObserver(resizeTd_wordFunc)
+			
+			//----------------
+		
+//---------------------------
+
+function nascondi_celleEgualiPrecedenti() {	
+	//console.log("%cfunction  nascondi_celleEgualiPrecedenti", "color:red;")
+	let IX_WORD = 4; 
+	let IX_LEMMA = IX_WORD+1
+	
+	let eleTab = getById("idTableWordList_tbody");	
+	if (eleTab == null) return;	
+	if (eleTab.tagName != "TBODY") { return; }
+	
+	let nRighe   = eleTab.rows.length;
+	let eleRighe = eleTab.rows;	
+
+	//console.log(" numrighe=", eleTab.rows.length)
+	
+	let preWord = ""; let preLemma=""
+	let word1 = "";   let lemma1=""
+	//---------------------
+	for(let g=0; g < nRighe; g++) {
+		let thisRiga = eleRighe[g]
+		let cells = thisRiga.cells;
+		if (cells.length < IX_WORD) {word1="_"; lemma1="_"} 
+		word1  = cells[IX_WORD ].innerHTML; 
+		lemma1 = cells[IX_LEMMA].innerHTML; 
+		if (g > 0) {  
+			if (word1  == preWord ) cells[IX_WORD ].children[0].className ="c_size_1_line"
+			if (lemma1 == preLemma) cells[IX_LEMMA].children[0].className ="c_size_1_line"  
+		}
+		preWord = word1; preLemma = lemma1
+	}	
+} // end of nascondi_celleEgualiPrecedenti
+
+//-------------------------------------------
+
+function oneTR_lemma( ixW2StudyLs, ixLemma, clas1, word1, ix1, nrow, f_lemma, f_tran, f_level, f_para, f_example, 
+					totExtrRow2, uLearnedYN, f_ixLemma, numButton) {	
+			//console.log("%c        oneTR_lemma(" +ixW2StudyLs + " wor1=" + word1 + " lemma=" + f_lemma, "color:blue;") 		
+			let wLemma1;
+			let riga;
+			let wordOrig2, wordTran2;			
+			let wordTran = ""; 
+			let wLemma3, wTran3;
+			let nSpanV, spanV;			
+			let showList = ""; 		
+			
+			
+			
+			let nn_para    = f_para.split("|")	
+			let nn_example = f_example.split("|")	
+			
+			
+			
+			//----------------------------------------------------------------------
+			// §  separa i lemma nello stesso campo 
+			// |  separa level, paradigma ed esempi con lo stesso lemma  		
+			//----------------------------------------------------------------------
+			/*
+			uLemmaL   *lista	abscheiden§abschied;.          
+			uTranL    *lista 	separato§addio§;.                
+			uLevel    *lista	A1|A1§A1|A1;.                  
+			uPara     *lista	abscheiden|abscheiden§abschied|der abschied;.             
+			uExample  *lista	Die kranken Tiere von den gesunden abscheiden|in Frieden abscheiden§|der erste Abschied von zu Hause fiel ihm sehr schwer;.   
+			uIxLemmaL *lista  	306§308§;.
+			ixLemma = 0 
+					f_lemma = abscheiden, f_ixLemma = 306, f_tran = separato, f_level = A1|A2, f_para = abscheiden|abscheiden, f_example= Die kranken Tiere von den gesunden abscheiden|in Frieden abscheiden
+						           nn_level   = [A1, A2], 
+								   nn_para    = [abscheiden, abscheiden], 
+								   nn_example = [Die kranken Tiere von den gesunden abscheiden, in Frieden abscheiden]									
+			*/
+			//--------------------------------------------------------------------
+				
+			let x_level="", x_para="", x_example=""; 
+			let x_para1="", x_para2="", x_example1="", x_example2=""; 	
+			let jbr; 			
+			
+			let riga00 = ""	
+			
+			let hig = 1.2 
+						
+			let XixW2StudyLs = ""+ixW2StudyLs;  
+			let Xix1   = ""+ix1;  
+			let Xnrow  = ""+nrow; 	
+			let XnExtrRow = "";
+			if (totExtrRow2) { if (totExtrRow2 > 0) { XnExtrRow = ""+totExtrRow2; } }  	
+				
+			let Xword1 = word1;
+			
+			let Xf_lemma = f_lemma;
+			let Xf_para  = f_para; 
+			let Xf_tran  = f_tran.replaceAll("|", "<br>") ; 
+			
+			
+			
+			//-----------------------	
+			let key="",	pKey=""
+			let numLev = nn_para.length;
+			//let num1 = numLev
+			
+			key="";
+			// num > 1, significa che ci sono diverse righe
+			
+			//prototype_lemmaTD   //   §tdLemma§ somma di tutti i lemma 
+			/***
+			//c_displayNone
+			let prototype_lemmaTD = `
+				<div style="display:none;">§one-f_lemma§</div>
+				<div class="hpad top left1 §topBorder§"  style="resize:vertical; overflow-y:auto; width:100%;">										
+					<span §displayNoneL§ onmouseover='mouseOverWord(this,3)' onmouseout='mouseOutWord(this,3)'><b>§one-f_lemma§</b></span>
+					<span  class="c_paradigma" onmouseover='mouseOverWord(this,3)' onmouseout='mouseOutWord(this,3)'>§one-x_para1§</span>						
+					<br   class="c_paradigma"  >	
+					<span class="c_wordTran" style="display:none;">§one-f_tran§</span>		
+					<div   class="c_example"  >§one-x_example1§</div>
+				</div> \n					
+		`; 	// end of prototype_lemmaTD
+
+			***/
+			let displayNone  = "";
+			let displayNone1 = "";
+			let displayNoneL = "";
+			let topBorder = "";
+			
+			/**
+			console.log("f_para=", f_para, "  nn_para=", nn_para)			
+			console.log("            numLev=", numLev, "   nn_para=", nn_para, 		
+				"  nn_example=", nn_example)
+			**/
+			
+		
+			//------------------------------------------------------
+			let tdLemmaList = ""; 
+			let last_para = ""
+			for (let m=0; m < numLev; m++) {	
+				/**
+				key = x_level + " " + x_para + " " + x_example 
+				if (key == pKey) {continue; }	
+				pKey = key
+				**/
+				let newTdLemma = prototype_lemmaTD;
+				
+				//x_level   = nn_level[m]; 
+				x_para    = sentenceOneRow( nn_para[m] );
+				x_example = sentenceOneRow( nn_example[m] ); 
+
+				if (f_para == "") x_para = f_lemma; 	
+				
+				//console.log( m, " x_para=", x_para, " xexample=", x_example)
+				
+				if (m > 0)	topBorder = "c_topBorder"; else topBorder="";
+				
+				
+				/**
+				if (x_para != "") {
+					displayNoneL = 'style="display:none;"' ;
+					if (x_para == last_para) {
+						newTdLemma = newTdLemma.replaceAll("c_paradigma", "c_displayNone").replaceAll("c_wordTran", "c_displayNone")
+						topBorder="";
+					} 
+				} else {
+					displayNoneL = "";
+				}	
+				
+				last_para = x_para	
+				**/
+				
+				newTdLemma = newTdLemma.	
+					replaceAll("§topBorder§"     , topBorder ). 
+					replaceAll("§displayNone§"   , displayNone ).  
+					replaceAll("§displayNone1§"  , displayNone1 ).  
+					replaceAll("§displayNoneL§"  , displayNoneL ). 	
+					replaceAll("§one-f_lemma§"   , ""+f_lemma  ). 			 
+					replaceAll("§one-x_level§"   , ""+x_level  ).
+					replaceAll("§one-f_tran§"    , ""+Xf_tran  ).   
+					replaceAll("§one-x_para1§"   , ""+x_para  ). 
+					replaceAll("§one-x_example1§", ""+x_example ) 
+				;  	
+			
+				tdLemmaList += newTdLemma ;
+				//console.log("                             tdLemmaList=", tdLemmaList)
+			}	
+			//----------			
+			numeroWord_TR++;				
+			let newTr = newTr_from_prototype_manyLev( numeroWord_TR, clas1, XixW2StudyLs, ""+f_ixLemma, ixLemma, Xnrow, 
+					Xix1, Xword1, Xf_lemma, x_level, Xf_para, Xf_tran, x_para1, x_example1,"", 0, 
+					XnExtrRow, uLearnedYN, numButton, tdLemmaList); 
+			/*
+			console.log("        newTr = newTr_from_prototype_manyLev: ", " Xword1=", Xword1, " Xf_lemma=", Xf_lemma, " Xf_para=", Xf_para,
+				" tdLemmaList.length=", tdLemmaList.length	)
+			*/	
+			
+			showList    += newTr ;	
+			
+			
+		return showList
+		
+}  // end of oneTR_lemma
+//----------------------------------------
+
+function sentenceOneRow( str1 ) {
+	if (str1 == undefined)  { return str1; }
+	let str2 = (""+str1).replaceAll("\n"," ")
+	str2 = str2.replaceAll(". ",".<br>").replaceAll("? ","?<br>").replaceAll("! ","!<br>"); 
+	
+	str2 = str2.
+			replaceAll("1.<br>", "1. "). 	
+			replaceAll("2.<br>", "2. "). 	
+			replaceAll("3.<br>", "3. "). 	
+			replaceAll("4.<br>", "4. "). 	
+			replaceAll("5.<br>", "5. "). 	
+			replaceAll("6.<br>", "6. "). 	
+			replaceAll("7.<br>", "7. "). 	
+			replaceAll("8.<br>", "8. ").
+			replaceAll("9.<br>", "9. ").
+			replaceAll("0.<br>", "0. ") ;		
+	
+	return str2	
+}
+
+//-------------------------------------------
+//--------------------------------------------------------------------
+
+	function newTr_from_prototype_manyLev( numeroTR, clas1, ixW2StudyLs, ixLemma, ixixLemma, nrow, ix1, 
+					word1, 
+					f_lemma, x_level, 
+					f_para, f_tran, x_para1,x_example1, showAltre, m, 
+					n_extr_row1, 
+					uLearnedYN, numButton,
+					tdLemmaList
+					) {  
+		//console.log("newTr_from_prototype_manyLev ", " word1=", word1, " lemma=", f_lemma, "\n\ttdLemmaList=",tdLemmaList)    
+		let displayNone  = "";
+		let displayNone1 = "";
+		let displayNoneL = "";
+		let dyNoneTD234  = ""; 
+		
+		
+		let newTr = prototype_oneTR_lemma.trim(); 
+		
+		//if (x_level != "")    { x_level    = "(lev." + x_level + ")"; }
+		if (x_para1 != "")    {
+			displayNoneL = 'style="display:none;"'
+		}		
+		if (x_example1 == undefined) console.log("x_example1=", x_example1);
+		if (x_example1 != "") { x_example1 = x_example1 ; }
+		let summarystyle = ' style="list-style-position: outside;" ' 
+		if ((x_level == "") && ( x_para1=="") && (x_example1=="") ) {
+			summarystyle= ' style="display:block;" '  // in <detail><summary></summary> other staff </details> if other stuff is empty hide the arrow (default is display:list-item) 
+		}
+		/**
+		if (nrow == 0) {
+			displayNone  = 'style="display:none;"';
+			displayNone1 = 'style="display:none;"';
+		} 
+		**/
+		
+		let wordvisib = "";
+		if (numButton == "5") {  
+			//wordvisib = ' style="visibility:hidden;" ' ;
+			//anto4agosto word1 = "";
+			//anto4agosto displayNone1 = 'style="display:none;"';
+		} else if (numButton == "2") {  
+			n_extr_row1 = "";
+		} else if (numButton == "3") {  
+			n_extr_row1 = "";
+		}
+	
+		
+		/**
+		if (word1 == "$lemmalist$") {
+			word1 = buttonWordList( f_lemma )
+		}
+		**/
+		let yesOrNot;
+		let learnedClass;
+		if (uLearnedYN == "y") {
+			yesOrNot = YES1; 
+			learnedClass = '';	
+		} else { 
+			yesOrNot = NOT_YET1;
+			learnedClass = ' class="notYetLearnedButt" '
+		}
+		
+		if (ix1 < 0) {			
+			displayNone  = 'style="display:none;"';
+			displayNone1 = 'style="display:none;"';
+			dyNoneTD234  = 'style="display:none;"';
+		} 
+		if (word1 == "") {displayNone1 = 'style="display:none;"';}		
+		
+		//console.log(word1 , "  nrow=", nrow,  " displayNone=>" + displayNone, "<==")
+		newTr = newTr.
+			replaceAll("§summarystyle§"  , summarystyle).
+			replaceAll(" §wordvisib§"    , wordvisib   ). 
+			replaceAll("§displayNone§"   , displayNone ).  
+			replaceAll("§displayNone1§"  , displayNone1 ).  
+			replaceAll("§displayNoneL§"  , displayNoneL ).  
+			replaceAll("§dyNoneTD234§"   , dyNoneTD234  ).
+			replaceAll("§ixW2StudyLs§"      , ""+ixW2StudyLs ). 
+			replaceAll("§one-ixLemma§"   , ""+ixLemma   ). 
+			replaceAll("§one-ixixLemma§" , ""+ixixLemma ). 
+			replaceAll("§one-numTR§"     , ""+numeroTR ). 
+			replaceAll("§one-nrow§"      , ""+nrow     ). 
+			replaceAll("§one-ix1§"       , ""+  ix1    ). 
+			replaceAll("§one-word1§"     , ""+word1    ). 			
+			replaceAll("§one-f_lemma§"   , ""+f_lemma  ). 			 
+			replaceAll("§one-x_level§"   , ""+x_level  ).
+			replaceAll("§one-f_tran§"    , ""+f_tran   ).   
+			replaceAll("§one-x_para1§"   , ""+x_para1  ). 
+			replaceAll("§one-x_example1§", ""+x_example1 ). 
+			replaceAll("§one-showAltre§",  ""+ showAltre). 	
+			replaceAll("§one-n_extr_row§", ""+ n_extr_row1).	
+			replaceAll("§YESorNOT§"      , ""+yesOrNot).  		
+			replaceAll("§learnedClass§"  , learnedClass).
+			replaceAll("§tdLemma§"       , tdLemmaList )  	
+			;  
+		return newTr;	
+		
+	}  // end of newTr_from_prototype
+//---------------------------------------	
+
+
+
 

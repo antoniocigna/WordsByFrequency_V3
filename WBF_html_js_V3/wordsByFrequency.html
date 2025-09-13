@@ -563,8 +563,8 @@
                      <div>
                         <script>		 
                            function onclick_showHiddenRowData() {
-                           	e_rowHid1 = document.getElementById("id_rowHid1");
-                           	e_rowHid2 = document.getElementById("id_rowHid2");
+                           	e_rowHid1 = getById("id_rowHid1");
+                           	e_rowHid2 = getById("id_rowHid2");
                            	if (e_rowHid1.style.display == "none" ) {
                            		e_rowHid1.style.display = "block";
                            		e_rowHid2.style.display = "block";
@@ -578,55 +578,32 @@
                         <select id="id_gruppi_sel" style="display:inline-block; 
                            font-size:1.0em; font-weight:bold;
                            text-align:left;background-color:white;
-                           color:blue;
-						   width:25em;
-                           " onchange="onchange_rowGroupSelectChange(true,1)">		
+                           color:blue;width:25em;" 
+						   onchange="onchange_rowGroupSelectChange(true,1)">		
                         </select>
 						<br>
                         <span style="padding-left:0.5em;font-size:0.8em;">(<span id="id_gruppo_numTotRow1"></span> righe)</span>
                      </div>
                   </div>
                   <div class="centerXY" style="width:100%; margin-top:0.5em;">
-                     <div>
-                        <div style="font-size:0.8em;">
+                        <div style="font-size:0.8em;border:0px solid black;">
                            <span style="padding-left:2em;">le prime 
                            <input id="id_gruppi_iNumRows" type="number" min="100" value="4" 
 								style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;" 
-								onchange="onchange_rowGroupSelectChange(false,3)">righe, iniziando dalla riga  
+								onchange="onchange_rowGroupSelectChange(false,3)">righe, iniziando dalla riga 
                            <input id="id_gruppi_iBegNum" type="number" min="1" value="1" 
 								style="text-align:right; width:5em;background-color:white;font-size:1.2em; font-weight:bold;" 
 								onchange="onchange_rowGroupSelectChange(false,2)">                       	
                            <span id="id_inpRowEmpty" style="display:none;color:red; font-weight:bold;font-size:1.5em;"> nessuna riga trovata</span>
                         </div>
-                        <div id="id_rowHid1" style="display:none;border:0.6px solid black;"> 	
-                           il gruppo selezionato <span id="id_gruppo_val"></span>    ha indice  <span id="id_gruppi_oSelIx"></span>
-                           <br>
-                           comprende le righe di testo dalla <span id="id_inizioGruppo"></span>, 
-                           alla <span id="id_fineGruppo"></span> (in tutto <span id="id_gruppo_numTotRow2"></span>)    
-                           <br><br>la prima riga richiesta la n.
-							<span id="id_gruppi_oBegNum">88</span> del gruppo è la riga di testo n.<span id="id_ixTextAskedRow"></span>   
-                           <span style="display:none;">
-                           <br>prima riga del gruppo:<br>
-                           <span id="id_gruppi_firstRow"></span>	
-                           </span>
-                        </div>
-                        <div id="id_rowHid2" style="display:none;">
-                           le righe del testo richieste vanno dal numero
-                           <span id="id_fromIx_row" style="text-align:right; width:5em;background-color:white;"></span>												
-                           al numero 
-                           <span id="id_toIx_row" style="text-align:right; width:5em;background-color:white;"></span>
-                           e sono 
-                           <span id="id_inpNumRow" style="text-align:right; width:5em;background-color:white;"></span>	
-                        </div>
-                     </div>
                   </div>
                   <div class="centerXY" style="width:100%;margin-top:1em;margin-bottom:1em;">
                      <div style="width:100%;">				
-                        <button onclick="onclick_require_rowList1(1)" class="tdBut1" >Lista le Righe</button><br>
-                        <button onclick="onclick_require_rowList1(2)" class="tdBut1" >Lista Le Parole</button><br>
-                        <button onclick="onclick_require_rowList1(3)" class="tdBut1" >Lista Soltanto le parole da imparare</button><br>		
+                        <button onclick="onclick_require_rowList1(1,'1L')" class="tdBut1" >Lista le Righe</button><br>
+                        <button onclick="onclick_require_rowList1(2,'2L')" class="tdBut1" >Lista Le Parole</button><br>
+                        <button onclick="onclick_require_rowList1(3,'3L')" class="tdBut1" >Lista Soltanto le parole da imparare</button><br>		
 								<br>
-						<button onclick="onclick_require_rowList1(4)" class="tdBut1" >Lista le Righe per priorità</button>
+						<button onclick="onclick_require_rowList1(4,'4L')" class="tdBut1" >Lista le Righe per priorità</button>
                      </div>
                   </div>
                </td>
@@ -641,7 +618,7 @@
                         <table style="border:0px solid green;">
                            <tr>
                               <td class="tdV1"> 
-                                 <button onclick="onclick_mostFreqWordList_require('anyRow','allWords')"  class="tdBut1" >Lista le Parole di tutti i testi</button>
+                                 <button onclick="onclick_mostFreqWordList_require('anyRow','allWords', '1R')"  class="tdBut1" >Lista le Parole di tutti i testi</button>
                               </td>
                               <td class="tdV1" rowspan="2">
                                  <div style="display: flex;align-content:border:51px solid green;" >
@@ -660,15 +637,15 @@
                                              <option id="toBeLearned" >soltanto le parole to be learned</option>
                                           </select>
                                        </span>
-                                       <span style="font-size:0.8em;">
-                                       <span style="padding-left:1em;">al massimo </span>	
-                                       <input id="id_inpMaxNumWords" type="number"  min="1" value="200" style="text-align:right; width:4em; background-color:white;">
-                                       <span style="text-align:right; width:4em; background-color:white;font-size:1.2em; 
-                                          ">
-                                       parole iniziando dalla numero</span>
-                                       <input id="id_inpBegFreqWList" type="number" min="1" value="1" 
-                                          style="text-align:right; width:4em;background-color:white;font-size:1.2em; font-weight:bold;">									
-                                       </span>
+                                       <div style="font-size:0.8em;">
+										   <span style="padding-left:1em;">al massimo </span>	
+										   <input id="id_inpMaxNumWords" type="number"  min="1" value="200" style="text-align:right; width:4em; background-color:white;">
+										   <span style="text-align:right; width:4em; background-color:white;font-size:1.2em; 
+											  ">
+										   parole iniziando dalla numero</span>
+										   <input id="id_inpBegFreqWList" type="number" min="1" value="1" 
+											  style="text-align:right; width:4em;background-color:white;font-size:1.2em; font-weight:bold;">	
+                                       </div>
                                        <span id="id_inpBegError"  style="display:none;color:red; font-weight:bold;font-size:1.5em;"> nessuna parola trovata 
                                        <span id="id_inpBegErrMsg"></span>										
                                        </span>  
@@ -678,13 +655,13 @@
                            </tr>
                            <tr>
                               <td class="tdV1"> 
-                                 <button onclick="onclick_mostFreqWordList_require('anyRow','toBeLearned')"  class="tdBut1" >Lista le Parole da imparare</button>
+                                 <button onclick="onclick_mostFreqWordList_require('anyRow','toBeLearned','2R')"  class="tdBut1" >Lista le Parole da imparare</button>
                               </td>
                            </tr>
                            <tr>
                               <td class="tdV1"  style="vertical-align:top;">
                                  <div>
-                                    <button onclick="onclick_require_betweenWordList()" class="tdBut1">Lista le Parole richieste
+                                    <button onclick="onclick_require_betweenWordList('3R')" class="tdBut1">Lista le Parole richieste
                                     </button>
                               </td>
                               <td class="tdV1" style="text-align:left; padding-left:0.5em;"> 
@@ -705,7 +682,7 @@
                            </tr>
                            <tr >
                            <td class="tdV1" style="vertical-align:top;"> 
-                           <button onclick="onclick_require_betweenLemmaList()" class="tdBut1">Lista i lemma richiesti
+                           <button onclick="onclick_require_betweenLemmaList('4R')" class="tdBut1">Lista i lemma richiesti
                            </button>
                            </td>
                            <td class="tdV1" style="text-align:left; padding-left:0.5em; "> 
@@ -750,6 +727,7 @@
          </table>
          <div style="display:flex; border-top:1px solid black;padding-top:2em;margin-bottom:1em;">
          <div>
+		 <div id="id_error00"  style="color:red;font-weight:bold;font-size:1.2em;"></div>
          <span style="width:100%; text-align:center;font-weight:bold;">Per Aggiungere Un Nuovo Testo</span>
          <br>
          <span style="font-size:0.8em;">
@@ -764,8 +742,8 @@
 		 <span id="id_newTxtMsg0" style="font-weight:bold;"></span>
          <span id="id_newTxtMsg1" style="color:red; font-weight:bold;"></span>
          <br>
-         <button onclick="onclick_split_newText()">split at full stop or at a question/exclamation mark</button> 	
-         <button onclick="onclick_get_newText()">get new text</button> 
+         <button onclick="onclick_split_newText(this)">split at full stop or at a question/exclamation mark</button> 	
+         <button onclick="onclick_get_newText(this)"  style="display:none;">get new text</button> 
          <br>				
          <textarea id="id_newText" rows="6" cols="120" style="text-align:left;vertical-align:top;padding:0.5em;"></textarea>
          </div>
@@ -795,7 +773,7 @@
          <div id="dragButt1" class="mydrag_backButton " >
             <div id="dragButt1_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
                <button onclick="onclick_jumpFromToPage( myPage02,0, myPage01)">
-               <span style='font-size:2.0em;font-weight:bold;width:8em;'>&#8656;</span>indietro
+               <span style='font-size:2.0em;font-weight:bold;width:8em;'>&#8656;</span>indietro4
                </button>
             </div>	
          </div>
@@ -815,7 +793,7 @@
                      </li>
                   </ol>
                </div>
-               <button onclick="onclick_copyTextAreaValue_to_clipboard( document.getElementById('id_words_to_translate') )" >
+               <button onclick="onclick_copyTextAreaValue_to_clipboard( getById('id_words_to_translate') )" >
                Copy textarea (qui sotto) to clipboard
                </button>
                <br>
@@ -851,12 +829,11 @@
       <div id="id_myPage03" class="onePage1" style="display: none;">         
          <div id="dragButt2" class="mydrag_backButton" >
             <div id="dragButt2_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
-               <button onclick="onclick_jumpFromToPage( myPage03,0, myPage01)">
-               <span style="font-size:2.0em;font-weight:bold;width:8em;">&#8656;</span>indietro
+               <button onclick="back_from_listaParole(myPage03,0, myPage01)">
+               <span style="font-size:2.0em;font-weight:bold;width:8em;">&#8656;</span>indietro1  
                </button>			
             </div>
-         </div>
-		
+         </div>		
          <div class="centerXY" style="height:100%; width: 100%;text-align:center; ">
             <div id="id_wordList1" class="00tableFixHead" style="border:0px solid red;width:100%;height:100%;">
                una table  inserita qui da wordsByFrequency.js  
@@ -869,18 +846,17 @@
       </div>
 	  
       <div id="id_myPage04" class="onePage1" style="display:none;">
-         myPage04
          <div id="dragButt3" class="mydrag_backButton" >
             <div id="dragButt3_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
                <button onclick="onclick_jumpFromToPage( myPage04, 0, myPage01)">
-               <span style='font-size:2.0em;font-weight:bold;width:8em;'>&#8656;</span>indietro					
+               <span style='font-size:2.0em;font-weight:bold;width:8em;'>&#8656;</span>indietro2					
                </button>		
             </div>           
          </div>
          <div>
             <br>
             <div class="centerXY" style="width:100%">
-               <button onclick="onclick_copyTextAreaValue_to_clipboard( document.getElementById('txt_pagOrig') )">
+               <button onclick="onclick_copyTextAreaValue_to_clipboard( getById('txt_pagOrig') )">
                Copy textarea (qui sotto) to clipboard 2
                </button>
             </div>
@@ -943,7 +919,7 @@
          <div id="dragButt4" class="mydrag_backButton" >
             <div id="dragButt4_Header"  class="mydrag_backButtonHeader  gradientColor" style="padding:1em;margin:2px;">
                <button onclick="back_from_listaRighe( myPage05, 0,myPage03, myPage01)">
-               <span style='font-size:2.0em;font-weight:bold;width:8em;'>&#8656;</span>indietro
+               <span style='font-size:2.0em;font-weight:bold;width:8em;'>&#8656;</span>indietro3
                </button>			
             </div>            
          </div>
@@ -1052,6 +1028,7 @@
                                     <span id="id_headWord" class="msg header_1 fsize1" style="font-size:2em;text-align:center;"></span>
                                  </div>
 								 <div style="text-align:center;width:100%;" class="header_1">
+									<span id="id_caller"  style="display:none;color:blue;"></span>
 									<br>riga in lingua originale e sua traduzione</b> 
 									<br><span style="font-weight:normal;">
 									Per rendere visibile il testo in lingua originale usare il tasto con l'icona del libro delle riga o del gruppo di righe, 
@@ -1180,8 +1157,8 @@
       <script src="./goWBF_LineByLine_script_style/wbf_row_print.js"         ></script>	   
       <script src="./wordsByFrequency_prototype_script.html_js" ></script>		
       <script src="./wordsByFrequency.js"                       ></script>		
-      <script src="./wordByFrequency_start_linkgo.js"></script>			
-      <script src="wordsByFrequence_gestione_lemma.js"></script>
+      <!-- <script src="./wordByFrequency_start_linkgo.js"></script>		-->	
+      <!-- <script src="wordsByFrequence_gestione_lemma.js"></script> -->
       <!-- <script src="./wordByFrequency_dragDiv.js"></script>		-->
    </body>
 </html>

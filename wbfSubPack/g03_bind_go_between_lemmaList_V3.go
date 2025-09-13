@@ -9,20 +9,22 @@ package wbfSubPack
 	)
 
 //--------------------------------------
-func g03_bind_go_passToJs_betweenLemmaList_V3( maxNumLemmas int, fromLemmaPref string, js_function string) {
+func g03_bind_go_passToJs_betweenLemmaList_V3( maxNumLemmas int, fromLemmaPref string, js_function string, js_parm string, js_caller string) {
 	//fmt.Println("func ", green("g03_bind_go_passToJs_betweenLemmaList_V3"), " -->   g03_get_lemma_row_list")
 	outS1 := g03_get_lemma_row_list( maxNumLemmas, fromLemmaPref) 
 	
-	go_exec_js_function( js_function, outS1 ); 		
+	go_exec_js_functionPlus( js_function, outS1, js_parm, js_caller); 		 		
 			
-} // end of bind_go_passToJs_betweenWordList
+} // end of bind_go_passToJs_betweenLemmaList_V3
 //------------------
 
 //--------------------------------------------------
-func g03_get_lemma_row_list( maxNumLemmas int, fromLemmaPref string) string {
+func g03_get_lemma_row_list( maxNumLemmas int, fromLemmaPref0 string) string {
 	
 	//fmt.Println( red("\n 0 get_lemma_row_list ") + fromLemmaPref )  
+	fromLemmaPref := stdCode( fromLemmaPref0)
 	
+	//fmt.Println( red("\n 0 get_lemma_row_list ") + fromLemmaPref0 + " ==>" + fromLemmaPref , " maxNumLemmas=", maxNumLemmas) 
 	
 	var outS1 string; 	
 	//----------------------------------------------------------------------
@@ -85,6 +87,7 @@ func g03_get_lemma_row_list( maxNumLemmas int, fromLemmaPref string) string {
 		if num1 >= maxNumLemmas { break }	
 	}	
 	**/
+	
 	//fmt.Println( "\n", red("\n 0 get_lemma_row_list ") + fromLemmaPref , "  sw_oneLemma=",  sw_oneLemma, " totNumLemmas=",totNumLemmas )  
 	/**
 	for j1, ix2:= range listA {
@@ -93,9 +96,10 @@ func g03_get_lemma_row_list( maxNumLemmas int, fromLemmaPref string) string {
 	**/
 	for _, ix2:= range listA {
 		//fmt.Println("\n           ", green("LEMMA lemmaSlice"),"[", ix2, "]=", lemmaSlice[ix2] , " totNumLemmas=",totNumLemmas,  "  sw_oneLemma=",  sw_oneLemma , " j1=", j1) 
-		
+		//fmt.Println("     listA[", j1, "] = " , " ix2=", ix2, "   lemmaSlice[ix2] =",  lemmaSlice[ix2]   )     
 		if sw_oneLemma {
-			rowW = g05_build_one_lemma_row_word_OnlyOneLemma(ix2, lemmaSlice[ix2], totNumLemmas, sw_oneLemma)			
+			rowW = g05_build_one_lemma_row_word_OnlyOneLemma(ix2, lemmaSlice[ix2], totNumLemmas, sw_oneLemma)	
+			//fmt.Println(" sw_oneLemma row=", rowW)	
 		} else { 
 			rowW = g05_build_one_lemma_row_word_ManyLemma( ix2,  lemmaSlice[ix2],  totNumLemmas, sw_oneLemma)		
 		} 

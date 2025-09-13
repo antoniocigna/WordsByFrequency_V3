@@ -10,8 +10,7 @@ package wbfSubPack
 	)
 
 //----------------------------------------
-
-func checkTheWord( word0 string ) string {
+func g12_checkTheWord( word0 string ) string {
 	// check word 
 	//  return space if not valid
 	//  return the same word if OK, sometime with the first character removed 
@@ -57,7 +56,7 @@ func checkTheWord( word0 string ) string {
 			return ""    
 		} 
 	} 
-	return stdCode(wor)
+	return wor; 
 }
 //-------------------------------------------
 
@@ -104,109 +103,9 @@ func g12_add_totRow_and_indexLemmaPairUNO_NUOVO() {
 	
 	g12_updateWordAlpha_with_ix_lemma()     //  crea nuove word  con lemma = prefix + lemma originale    wordAlphaPlusPref[]
 	
-	/**
-	//wordSliceAlpha in ordine di wWordSeq, wWord2, wNfile
-	ix1   := 0
-	if len(wordSliceAlpha) < 1 {return }
-	preW  := wordSliceAlpha[0].wWordSeq;	
-	//--------------------------------------
-	for ix2, wS1 := range wordSliceAlpha {
-		
-		if (wS1.wWordSeq != preW) {			
-			g12_manage_one_word_of_manyRowsUNO(ix1, ix2, preW, + , tot_extrRow, totR, lastIx)			
-			pre_wSwSelRow = SEL_NO_EXTR_ROW 
-			totR = 0
-			tot_extrRow = 0
-			ix1  = ix2; 
-			preW = wS1.wWordSeq; 
-		} 
-		
-		if wS1.wSwSelRowR == SEL_EXTR_ROW {   // se almeno uno è "estratto", tutti lo sono 
-			pre_wSwSelRow = SEL_EXTR_ROW 
-			tot_extrRow++	
-			//if (wS1.wWord2 == "schrift") { fmt.Println("ANTO addTotRowToWord  ",  wS1 , " SEL_EXTR_ROW=", SEL_EXTR_ROW, "  tot_extrRow=", tot_extrRow) }  //
-		} 
-		totR++;     	
-	}	
-	//------		
-	if (errori == 0) {
-		fmt.Println( green("NESSUN ERRORE DI INDICE "))
-	} else {
-		fmt.Println( red(" TROVATI "), errori, "ERRORI di  INDICE ")
-	}
-	fmt.Println( red("nuove parole con prefisso:"), "  testati=", numPrefTestati, "  presi=",numPrefPresi)
-	for _, wS33:= range wordSliceAlphaToApp{
-		fmt.Println("    aggiunto (vecchio metodo ): ",  wS33.wWord2 , " lemma=", wS33.wIxLemmaList,
-			printLemmaList(wS33.wIxLemmaList)	 )
-	}
-	***/
 	
 } // end of g12_add_totRow_and_indexLemmaPairUNO_NUOVO
 
-//-----------------------------------------------------------------
-
-//--------------------
-func TOGLIg12_add_totRow_and_indexLemmaPairUNO() {	
-	fmt.Println("   func ", green("add_totRow_and_indexLemmaPair") )
-	
-	wordSliceAlphaToApp := make([]wordStruct, 0, 0)  // serve solo per terminare la compilazione, la funzioone deve essere eliminata
-	
-	/*
-	each element of wordSliceAlpha contains a word (the same word may be in several rows) 
-	the number of repetition of a word (totRow) is put in its element  ( later will be put in each row that contain it) 
-		eg.  one 3, one 3, one 3, two 4, two 4, two 4, two 4	
-	*/
-	
-	totR  := 0	
-	
-	
-	pre_wSwSelRow := SEL_NO_EXTR_ROW 
-	//----------------
-	tot_extrRow:=0
-	lastIx:=0
-	// alla fine dello slice c'è la parola LAST_WORD  che rende non necessaria la gestione di fine file  
-	
-	//fmt.Println(" len(listAllLemmaFromFile) = ", len(listAllLemmaFromFile) )
-	fmt.Println(" len(lemmaSlice) = ", len(lemmaSlice) )
-	maxNumWApp:= len(wordSliceAlpha)
-	wordSliceAlphaToApp = make([]wordStruct, 0, maxNumWApp)
-	
-	//wordSliceAlpha in ordine di wWordSeq, wWord2, wNfile
-	ix1   := 0
-	if len(wordSliceAlpha) < 1 {return }
-	preW  := wordSliceAlpha[0].wWordSeq;	
-	//--------------------------------------
-	for ix2, wS1 := range wordSliceAlpha {
-		
-		if (wS1.wWordSeq != preW) {		
-			OLDg12_manage_one_word_of_manyRowsUNO(ix1, ix2, preW, pre_wSwSelRow , tot_extrRow, totR, lastIx)		
-			pre_wSwSelRow = SEL_NO_EXTR_ROW 
-			totR = 0
-			tot_extrRow = 0
-			ix1  = ix2; 
-			preW = wS1.wWordSeq; 
-		} 
-		
-		if wS1.wSwSelRowR == SEL_EXTR_ROW {   // se almeno uno è "estratto", tutti lo sono 
-			pre_wSwSelRow = SEL_EXTR_ROW 
-			tot_extrRow++	
-			//if (wS1.wWord2 == "schrift") { fmt.Println("ANTO addTotRowToWord  ",  wS1 , " SEL_EXTR_ROW=", SEL_EXTR_ROW, "  tot_extrRow=", tot_extrRow) }  //
-		} 
-		totR++;     	
-	}	
-	//------		
-	if (errori == 0) {
-		fmt.Println( green("NESSUN ERRORE DI INDICE "))
-	} else {
-		fmt.Println( red(" TROVATI "), errori, "ERRORI di  INDICE ")
-	}
-	fmt.Println( red("nuove parole con prefisso:"), "  testati=", numPrefTestati, "  presi=",numPrefPresi)
-	for _, wS33:= range wordSliceAlphaToApp{
-		fmt.Println("    aggiunto (vecchio metodo ): ",  wS33.wWord2 , " lemma=", wS33.wIxLemmaList,
-			printLemmaList(wS33.wIxLemmaList)	 )
-	}
-	
-} // end of TOGLIadd_totRow_and_indexLemmaPair
 
 //-----------------------------------------------------------------
 func printLemmaList( ixList []int ) string {
@@ -299,7 +198,6 @@ func OLDg12_manage_one_word_of_manyRowsUNO(ix1 int, ix2 int, preW string, pre_wS
 				 lemmaIndex = append(lemmaIndex, ixAF)
 				 wS33 = wS22
 				 wS33.wWord2   =  wS22.wWord2   + " ... " + onePref 
-				 wS33.wWordSeq =  wS22.wWordSeq + " ... " + onePref 
 				 wS33.wIxLemmaList = []int{} 
 				 wS33.wIxLemmaList = append( wS33.wIxLemmaList, ixAF)
 				 wS33.wSwSelRowG    = pre_wSwSelRow; 	// se esiste almeno un richiamo a una riga estratta ( wSwSelRowR)allora questo segnale è ripetuto come wSwSelRowG
@@ -346,15 +244,15 @@ func g12_add_totRow_and_indexLemmaPairDUE() {
 	
 	//-----------------------------------------------------------	
 	sort.Slice(wordSliceAlpha, func(i, j int) bool {
-		if wordSliceAlpha[i].wWordSeq != wordSliceAlpha[j].wWordSeq {
-			return wordSliceAlpha[i].wWordSeq < wordSliceAlpha[j].wWordSeq            // word  ascending order (eg.   a before b ) 
+		if wordSliceAlpha[i].wWord2 != wordSliceAlpha[j].wWord2 {
+			return wordSliceAlpha[i].wWord2 < wordSliceAlpha[j].wWord2  
 		} else {
-			if wordSliceAlpha[i].wWord2 != wordSliceAlpha[j].wWord2 {
-				return wordSliceAlpha[i].wWord2 < wordSliceAlpha[j].wWord2  
-			} else {
+			if wordSliceAlpha[i].wWord0 != wordSliceAlpha[j].wWord0 {
+				return wordSliceAlpha[i].wWord0 < wordSliceAlpha[j].wWord0  
+			} else {			
 				return wordSliceAlpha[i].wNfile < wordSliceAlpha[j].wNfile          // nFile ascending order (eg.   0 before 1 ) 
 			}
-		}
+		}		
 	})
 	//------------------------------	
 	//=====================================
@@ -368,17 +266,17 @@ func g12_add_totRow_and_indexLemmaPairDUE() {
 	
 	ix1   := 0
 	if len(wordSliceAlpha) < 1 {return }
-	preW  := wordSliceAlpha[0].wWordSeq;	
+	preW  := wordSliceAlpha[0].wWord2;	
 	//--------------------------------------
 	for ix2, wS1 := range wordSliceAlpha {
 		
-		if (wS1.wWordSeq != preW) {			
+		if (wS1.wWord2 != preW) {			
 			g12_manage_one_word_of_manyRowsDUE(ix1, ix2, preW, pre_wSwSelRow , tot_extrRow, totR, lastIx)			
 			pre_wSwSelRow = SEL_NO_EXTR_ROW 
 			totR = 0
 			tot_extrRow = 0
 			ix1  = ix2; 
-			preW = wS1.wWordSeq; 
+			preW = wS1.wWord2; 
 		} 
 		
 		if wS1.wSwSelRowR == SEL_EXTR_ROW {   // se almeno uno è "estratto", tutti lo sono 
@@ -424,8 +322,8 @@ func g12_buildUnique( n1 int, wS1 wordStruct) {
 	if wS1.wTotRow >= LAST_WORD_FREQ {
 		wS1.wTotRow = 0
 	}
-	xWordF.uWordSeq  	= wS1.wWordSeq;
 	xWordF.uWord2    	= wS1.wWord2;
+	xWordF.uWord0    	= wS1.wWord0;
 	xWordF.uTotRow   	= wS1.wTotRow
 	xWordF.uTotExtrRow 	= wS1.wTotExtrRow  
 	xWordF.uSwSelRowR 	= wS1.wSwSelRowR 
@@ -439,16 +337,6 @@ func g12_buildUnique( n1 int, wS1 wordStruct) {
 	//xWordF.wTran = "" 
 	xWordF.uIxUnW_al  = len(uniqueWordByAlpha)  
 	
-	/***
-	if len(wS1.wListPref) > 0 {
-		for _, unPref := range wS1.wListPref {
-			xWordF.uWordSeq  = wS1.wWordSeq + "..." + unPref;
-			xWordF.uWord2    = wS1.wWord2   + "..." + unPref;
-			xWordF.uIxUnW_fr     = len(uniqueWordByFreq)  
-			uniqueWordByFreq = append( uniqueWordByFreq, xWordF);  					
-		}					
-	} 
-	***/
 	
 	g13_addLemmaTranParadigmaToUniqueWord( xWordF , wS1.wIxLemmaList)  // append to uniqueWordByAlpha  
 	
@@ -460,8 +348,8 @@ func g12_buildUnique( n1 int, wS1 wordStruct) {
 /*
 //--
 type wordStruct struct {       // a word is repeated several time one for each row containing it  
-	wWordSeq  string
     wWord2    string
+	wWord0    string
 	wIxThisWord_al int 
 	wIxUniq_al   int               // index of uniqueWordByFreq 	
 	wIxUniq_fr   int               // index of uniqueWordByFreq 	
@@ -481,7 +369,6 @@ type wordStruct struct {       // a word is repeated several time one for each r
 //-------------------------------
 
 type wordLemmaPairStruct struct {
-	//lWordSeq 	 string 
 	lWord2   	 string 
 	lLemma   	 string
 	lIxLemma  	 int
@@ -511,15 +398,17 @@ func g12_updateWordAlpha_with_ix_lemma() {
 	tempWordUniq := make([]wordUnAlphaStruct,0, len(wordSliceAlpha) )
 	
 	ix1:=0
-	preW:=""
+	preW2:=""; preW0:=""
 	// non is seve gestire l'ultimo elem = x'FF
 	for ix2, wS1 := range wordSliceAlpha {		
-		if (wS1.wWordSeq != preW) {	
-			xWordF.uWord2 = preW; 
+		if (wS1.wWord2 != preW2) {	
+			xWordF.uWord2   = preW2; 
+			xWordF.uWord0   = preW0; 
 			xWordF.uIxFromWord_al = ix1
 			xWordF.uTotRow    = ix2-ix1	
-			tempWordUniq = append(tempWordUniq, xWordF)			
-			preW = wS1.wWordSeq; 					
+			tempWordUniq = append(tempWordUniq, xWordF)						
+			preW2 = wS1.wWord2 	
+			preW0 = wS1.wWord0 	
 			ix1 = ix2; 	
 		} 
 	}	
@@ -614,7 +503,6 @@ func g12_updateWordAlpha_with_ix_lemma() {
 			ixWordAlf := wC1.wc_ixWordAlpha 
 			wS33 := wordSliceAlpha[ixWordAlf]
 			wS33.wWord2   =  wC1.wc_word2 
-			wS33.wWordSeq =  wC1.wc_word2  
 			wS33.wIxLemmaList = []int{}
 			wS33.wIxLemmaList = append(wS33.wIxLemmaList, wC1.wc_ixLemma...)
 			wordAlphaPlusPref = append(wordAlphaPlusPref, wS33)

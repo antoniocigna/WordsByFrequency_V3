@@ -52,7 +52,7 @@ func read_lastValueSets2() {
 		fmt.Println( red("read_lastValueSets2"), " outS1 empty =" + outS1, " \n" + " sw_stop=", sw_stop, "  dat=" , dat)
 		return
 	}				
-	go_exec_js_function( "js_go_valueFromLastRun", outS1 )	
+	go_exec_js_function( "go_run_js_read_valueFromLastRun", outS1 )	
 	
 	
 } // end read_lastValueSets2()

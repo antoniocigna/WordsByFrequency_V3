@@ -23,11 +23,13 @@ func add_wordCombinations( wordL1 []string, wordL2 []string )  []string {
 	}	
 	newWordList:= []string{}
 	for _, wor1 := range wor3List {
-		word1 := checkTheWord( wor1 ) ;
-		if word1 == "" { continue }					
-		wordCod:= seqCode( word1 )	
+		word0 := g12_checkTheWord( wor1 ) 			
+		if word0 == "" { continue }	
+		word2   := stdCode( word0 )    // elimina umlaut ed eszet  
+		wordCod := word2 
+		
 		_, ixT:= lookForWordInUniqueAlpha( wordCod,0)	
-		if (ixT >= 0) { newWordList = append(newWordList, strings.ToLower(word1))	}
+		if (ixT >= 0) { newWordList = append(newWordList, strings.ToLower(word2))	}
 	}	
 	return newWordList
 	
@@ -35,7 +37,7 @@ func add_wordCombinations( wordL1 []string, wordL2 []string )  []string {
 
 //----------------------------------------------------
 
-func getRowIndexFromWordIndex( wordA00 []string, swComb bool, maxNumRow int) ( string, string, []int) {
+func g08_getRowIndexFromWordIndex( wordA00 []string, swComb bool, maxNumRow int) ( string, string, []int) {
 	
 	listRowIndices := make([]int,0, maxNumRow)
 	listIxRR := make([]int,0, maxNumRow)
@@ -45,34 +47,35 @@ func getRowIndexFromWordIndex( wordA00 []string, swComb bool, maxNumRow int) ( s
 	var xWordAlpha wordUnAlphaStruct
 	//------------------------------
 	for _, wor1 := range wordA00 {
-		word1 := checkTheWord( wor1 ) ;
-		if word1 == "" { continue }					
-		wordCod:= seqCode( word1 )	
-		
+		word0 := g12_checkTheWord( wor1 ) 			
+		if word0 == "" { continue }	
+		word2   := stdCode( word0 )    // elimina umlaut ed eszet  
+		wordCod := word2
+			
 		ixF, ixT:= lookForWordInUniqueAlpha( wordCod,0)	
 		if (ixT < 0) { 
 			if swComb == false {
-				listWords += " " +  word1
-				listLemma += word1 + "|||\n" 
+				listWords += " " +  word2
+				listLemma += word2 + "|||\n" 
 			}
 			continue 
 		}
 		ixWord:= -1 	
 		for ix:= ixF; ix <= ixT; ix++ {
 			xWordAlpha =  uniqueWordByAlpha[ix] 			
-			if xWordAlpha.uWordSeq != wordCod { continue } // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
+			if xWordAlpha.uWord2 != wordCod { continue } // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
 			ixWord = xWordAlpha.uIxUnW_al			
 			if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
 			if ixWord < 0 { continue }
-			listRowIndices = getRowIndicesFromIxAlphaWord(ixWord, maxNumRow) 
+			listRowIndices = g07_getRowIndicesFromIxAlphaWord(ixWord, maxNumRow) 
 			if len(listRowIndices) < 1 {continue} 
 			listIxRR = append(listIxRR, listRowIndices...)
 		} // end for ix 
 		//------------
 		if ixWord < 0 { 
 			if swComb == false {
-				listWords += " " +  word1
-				listLemma += word1 + "|||\n" 
+				listWords += " " +  word2
+				listLemma += word2 + "|||\n" 
 			}
 			continue 
 		} 
@@ -96,7 +99,7 @@ func getRowIndexFromWordIndex( wordA00 []string, swComb bool, maxNumRow int) ( s
 	
 	return listWords, listLemma, listIxRR	
 		
-} // end of getRowIndexFromWordIndex
+} // end of g08_getRowIndexFromWordIndex
 
 
 //--------------------------------------------------------
@@ -111,7 +114,7 @@ func g08_bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_func
 	//---------------------------------------
 
 	var xWordA, xWordF wordUnAlphaStruct;  		
-	wordCod:= seqCode( aWord )		
+	wordCod:= aWord 		
 	
 	ixF, ixT:= lookForWordInUniqueAlpha( wordCod,0)	
 	
@@ -128,12 +131,12 @@ func g08_bind_go_passToJs_thisWordRowList( aWord string,  maxNumRow int, js_func
 	for ix:= ixF; ix <= ixT; ix++ {
 		xWordA =  uniqueWordByAlpha[ix] 
 		
-		if xWordA.uWordSeq != wordCod { continue }            // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
+		if xWordA.uWord2 != wordCod { continue }            // get only the required word (might be several entries of the same word) and then the list of lemmas of this word 
 		
 		ixWord = xWordA.uIxUnW_al			
 		if ixWord >= numberOfUniqueWords {ixWord = numberOfUniqueWords - 1;}	
 		
-		listRowIndices = getRowIndicesFromIxAlphaWord(ixWord, maxNumRow)
+		listRowIndices = g07_getRowIndicesFromIxAlphaWord(ixWord, maxNumRow)
 
 		for _, ind1:= range listRowIndices {
 			listIxRR = append(listIxRR, ind1 )
@@ -250,7 +253,7 @@ func g08_getWordList(aWordList0 string, maxNumList int) []string {
 			wordAlist = append(wordAlist, wor00)
 			continue 
 		}
-		_, wordPrefixIndexList, wordSuffixIndexList := g04_get_word_row_list( maxNumList, wor00) 
+		_, wordPrefixIndexList, wordSuffixIndexList := g04_get_word_row_list( maxNumList, wor00)   // get list of indices 
 		for _, ixWord:= range wordPrefixIndexList {  if ixWord >= 0 { wordAlist = append(wordAlist, uniqueWordByAlpha[ixWord].uWord2 )  } }
 		for _, ixWord:= range wordSuffixIndexList {  if ixWord >= 0 { wordAlist = append(wordAlist, uniqueWordByAlpha[ixWord].uWord2 )  } } 		
 	} 	
@@ -279,25 +282,13 @@ func g08_bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string
 	}
 	sw1:= (aWordList1 != "")
 	sw2:= (aWordList2 != "") 
-	/**
-	if sw1 {wordA1 = regexp.MustCompile(separWord).Split(aWordList1, -1) } // split row into words 
-	if sw2 {wordA2 = regexp.MustCompile(separWord).Split(aWordList2, -1) } // split row into words 
-	**/
+	
 	if sw1 {wordA1 = g08_getWordList(aWordList1, maxNumRow) } // split row into words  ( also  prefix and suffix as input )
 	if sw2 {wordA2 = g08_getWordList(aWordList2, maxNumRow) } // split row into words  ( also  prefix and suffix as input )	
-	//for _, wor00:= range wordA1 { fmt.Println("word_to_row 1 = ", wor00) }
-	//for _, wor00:= range wordA2 { fmt.Println("word_to_row 2 = ", wor00) }
 	
 	//fmt.Println("_someWordsRowList wordA1=", strings.Join(wordA1," "), " sw1=", sw1, " sw2=", sw2,  " maxNumRow=", maxNumRow   )
 	
 	wordA3:= []string{}
-	
-	/**
-	if ( ( sw1 == false) && (len(wordA2) == 1) ) {
-		bind_go_passToJs_thisWordRowList( wordA2[0], maxNumRow, js_function)  
-		return
-	}
-	**/
 		
 	/*
 	le parole in word1 sono in or: è sufficiente che una di queste sia presente  per estrarre la riga ==> estrae tutte le righe di tutte le parole 
@@ -321,7 +312,7 @@ func g08_bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string
 	//------------------
 	// per ogni parola della lista1 estrae gli indici alle righe  
 	if sw1 {
-		listWords_str_L1, listLemmas_str_L1, listIxRR_L1 = getRowIndexFromWordIndex( wordA1 ,false, maxNumRow2)
+		listWords_str_L1, listLemmas_str_L1, listIxRR_L1 = g08_getRowIndexFromWordIndex( wordA1 ,false, maxNumRow2)
 		if swPrt { 
 			fmt.Println("le parole listWords_str_L1 = ", listWords_str_L1)
 			fmt.Println("le parole ", aWordList1, " si trovano in ", len(listIxRR_L1), " righe")
@@ -329,7 +320,7 @@ func g08_bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string
 	} // end sw1 
 	//-------------
 	// per ogni parola della lista2 estrae gli indici alle righe  
-	listWords_str_L2, listLemmas_str_L2, listIxRR_L2 = getRowIndexFromWordIndex( wordA2 , false, maxNumRow2)
+	listWords_str_L2, listLemmas_str_L2, listIxRR_L2 = g08_getRowIndexFromWordIndex( wordA2 , false, maxNumRow2)
 	if swPrt {
 		fmt.Println("le parole listWords_str_L2 = ", listWords_str_L2)	
 		fmt.Println("le parole ", aWordList2, " si trovano in ", len(listIxRR_L2), " righe") 
@@ -338,7 +329,7 @@ func g08_bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string
 	if sw1 {
 		wordA3 = add_wordCombinations(wordA1, wordA2)	
 		if len(wordA3) > 0 {
-			listWords_str_L3, listLemmas_str_L3, listIxRR_L3 = getRowIndexFromWordIndex( wordA3 ,true, maxNumRow2)
+			listWords_str_L3, listLemmas_str_L3, listIxRR_L3 = g08_getRowIndexFromWordIndex( wordA3 ,true, maxNumRow2)
 			if swPrt {
 				if len( listIxRR_L3 ) > 0 {	
 					fmt.Println("sono state ottenute ", len(wordA3) , " parole combinando le parole di lista1 e lista2 (.es. A e B possono formare AB e BA, es. ein e steigen formano einsteigen e steigenein)", 
@@ -424,245 +415,6 @@ func g08_bind_go_passToJs_someWordsRowList( aWordList1 string, aWordList2 string
 
 //-----------------------------------------------------
 
-func g08_bind_go_passToJs_rowList(indexGroup int,  inpBegRow int, maxNumRow int, selFrasiParole12 int, 
-				js_function1R string, js_function2W string, caller string) {
-	// lista tutte le frasi richieste ( numero della prima frase, numero di frasi) 
-	
-	// 	selFrasiParole12: 1 = list chosen rows,  2 = list words in the chosen rows  3 = list toBeLearned words in the chosen rows 
-	//                    4 = list chosen rows sorted by priority 
-	
-	swPriorSort := false
-	if selFrasiParole12 == 4 {
-		swPriorSort = true
-		selFrasiParole12 = 1
-	}
-	
-	if inpBegRow == 1 {inpBegRow=0} 
-	
-	swLIST_WORD := (selFrasiParole12 != 1)    
-	swLIST_TOLEARN := (selFrasiParole12 == 3)  // only to be learned words
-	/**
-	fmt.Println( green("g08_bind_go_passToJs_rowList ")," indexGroup =", indexGroup, " inpBegRow=", inpBegRow, 
-			"  maxNumRow=", maxNumRow, " selFrasiParole12=", selFrasiParole12,
-			green(" swPriorSort="), swPriorSort, " swLIST_WORD=", swLIST_WORD)
-	**/
-		
-	var outS1 string;
-	numOut:=0 
-	
-	new_rIdRow :=""
-	wordIxFrList:= make([]int, 0, 10000)    //  list of index  of uniqueWordByFreq  of the words in the row 
-	
-	//fmt.Println("bind_go_passToJs_rowList ixFromList=", ixFromList, " swLIST_WORD=", swLIST_WORD ,  " selFrasiParole12=",  selFrasiParole12, " len=",  len(inputTextRowSlice) ) 
-	//list swLIST_WORD= true  selFrasiParole12= 2  len= 7	
-	//----------------------------------------------------------------
-	
-	type rowPr2 struct {   // priority of rows in the text 			
-		p2_index 		int    // index of row in inputTextRowSlice
-		p2_prio         int    // priority                          
-	}
-	var onePr rowPr2
-	
-	listIxRowPrio:= make([]rowPr2, 0, (maxNumRow + 10) )
-
-	//-----------------------------
-	/**
-	nOut1  :=-1
-	minIx  :=0
-	maxOut := inpBegRow+maxNumRow
-	if maxOut >= len(rowPriorityList) {  maxOut = len(rowPriorityList)  }
-	**/
-	
-	//fmt.Println(green("range_gr_ixRow_seq = "), range_gr_ixRow_seq)
-	//fmt.Println(green("range_gr_ixRow_pry = "), range_gr_ixRow_pry)
-	/***
-		for ix1, rG:= range lista_gruppiSelectRow {
-		range_gr_ixRow_seq[ix1] = rG.rG_firstIxRowOfGr		
-		fmt.Println(  green("lista_gruppiSelectRow ["), ix1, "] = ", rG, ", rG.rG_firstIxRowOfGr=", rG.rG_firstIxRowOfGr ,
-			", range_gr_ixRow_seq[ix1=", ix1, "]=",  range_gr_ixRow_seq[ix1] )	
-	}
-	//-------------
-	***/
-	ixStartGroup := 0; 
-	ixEndGroup   := len(lista_gruppiSelectRow) 
-	if indexGroup     < len(lista_gruppiSelectRow) { ixStartGroup = lista_gruppiSelectRow[indexGroup].rG_firstIxRowOfGr }
-	if (indexGroup+1) < len(lista_gruppiSelectRow) { ixEndGroup   = lista_gruppiSelectRow[(indexGroup+1)].rG_firstIxRowOfGr }
-	//--------------------------------
-	minIx  := ixStartGroup + inpBegRow;
-	maxOut := minIx        + maxNumRow
-	
-	if maxOut >= ixEndGroup {  maxOut = ixEndGroup }
-	//fmt.Println( green("listIxRowPrio:"), minIx, " - ", maxOut)
-	//----------------------
-	if swPriorSort {
-		for pp:=minIx; pp < maxOut; pp++ {			
-			if rowPriorityList[pp].rP_ixGroup != indexGroup { continue }	
-				onePr.p2_index = rowPriorityList[pp].rP_index
-				onePr.p2_prio  = pp	
-				listIxRowPrio  = append(listIxRowPrio, onePr) 			
-		} // end for pp
-	} else {
-		for ixRR := minIx; ixRR < maxOut; ixRR++ {
-			rline := inputTextRowSlice[ixRR]	
-			if rline.rIxGroup != indexGroup { continue }
-			onePr.p2_index = ixRR
-			onePr.p2_prio  = rline.rPriority	
-			listIxRowPrio  = append(listIxRowPrio, onePr) 				
-		} // end for ixRR		
-	} 
-	//--------------------------
-	/***
-	if swPriorSort {
-		**
-		oneP.rP_numWords 	= rline.rNumWords
-		oneP.rP_wordFreqAvg = avgWfreq
-		oneP.rP_index 		= ixRR
-		oneP.rP_nFile1      = rline.rNfile1
-		***
-		minIx = inpBegRow;
-		nOut1= -1; 
-		
-		fmt.Println("minIx=", minIx, " maxOut=", maxOut,  " indexGroup=", indexGroup, " rowPriorityList[minIx].rP_ixGroup=", rowPriorityList[minIx].rP_ixGroup  )
-		
-		for pp:=minIx; pp < maxOut; pp++ {
-			sw1 := ((pp >= 260) && (pp < 275)) 
-			if sw1 {  
-				fmt.Println( green("xxxxxxxxxx "),  " rowPriorityList[", pp, "].rP_ixGroup=", rowPriorityList[pp].rP_ixGroup  )
-			}
-			if rowPriorityList[pp].rP_ixGroup != indexGroup { continue }		
-			nOut1++				
-			if nOut1 < inpBegRow {continue }
-			onePr.p2_index = rowPriorityList[pp].rP_index
-			onePr.p2_prio  = pp	
-			listIxRowPrio  = append(listIxRowPrio, onePr) 
-			
-			//ixRR:= onePr.p2_index; 
-			//if pp < 100 { fmt.Println( cyan("g08_...rowList "), "pp=", pp, " append ", pp, " ",inputTextRowSlice[ixRR]) }
-			
-			if nOut1 >= maxOut {break}
-		} // end for pp
-		
-		//fmt.Println(" trovate PRIOR ", " group = ",  indexGroup, " nOut1=", nOut1, " len(listIxRowPrio)=", len(listIxRowPrio) )
-		
-	} else {	
-		minIx = inpBegRow
-		nOut1 = -1
-		
-		//fmt.Println(" inpBegRow=", inpBegRow, " maxNumRow=", maxNumRow)
-		for ixRR := minIx;  ixRR < maxOut; ixRR++  {
-			rline := inputTextRowSlice[ixRR]	
-			//fmt.Println("ixRR=",  ixRR," nOut1=", nOut1, " rline.rIxGroup=", rline.rIxGroup, " indexGroup=", indexGroup)
-			if rline.rIxGroup != indexGroup { continue }
-			nOut1++			
-			//fmt.Println(" nOut1=", nOut1," inpBegRow=", inpBegRow, " maxNumRow=", maxNumRow)
-			if nOut1 < inpBegRow {continue }			
-			//fmt.Println(" indexGroup=", indexGroup, " rIxGroup=", rline.rIxGroup , " ixRR=", ixRR, " ", rline) 	
-			onePr.p2_index = ixRR
-			onePr.p2_prio  = rline.rPriority	
-			listIxRowPrio  = append(listIxRowPrio, onePr) 
-			if nOut1 >= maxOut {break}
-		} // end for ixRR	
-		//fmt.Println(" trovate seq.naturale ", " group = ",  indexGroup, " nOut1=", nOut1, " len(listIxRowPrio)=", len(listIxRowPrio) )
-	}
-	***/
-	//fmt.Println(" trovate  len(listIxRowPrio)=", len(listIxRowPrio) )
-
-	//-------------------------------
-	for _, onePr:= range listIxRowPrio {
-		ixRR:= onePr.p2_index
-		
-		//if pp < 10 {fmt.Println( red(" out "), " pp=", pp , " onePr=", onePr, " ixRR=", ixRR ) }
-		
-		rline := inputTextRowSlice[ixRR]
-		
-		rowX := cleanRow(rline.rRow1)	
-		
-		//fmt.Println("bind_go_passToJs_rowList rline.rIxGroup=", rline.rIxGroup," rline=", rline )
-		
-		if ((rowX =="") || (rowX == LAST_WORD)) { 
-			//fmt.Println("   bind_go_pa... 1")
-			continue 
-		}		
-		
-		if rline.rIxGroup < 0 { 
-			new_rIdRow = "- " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
-		} else {
-			new_rIdRow = lista_gruppiSelectRow[ rline.rIxGroup ].rG_group + " " + strconv.Itoa( rline.rIxBaseGroup ) + "(" + rline.rIdRow +  " " + strconv.Itoa(ixRR) 
-		}
-		if swLIST_WORD {  
-			//fmt.Println("leggi riga=", rowX,  " rNumWords=", rline.rNumWords, " .rListIxUnF=", rline.rListIxUnF, " freq=", rline.rListFreq)
-			wordIxFrList = append(wordIxFrList, rline.rListIxUnF...)
-		} else {	
-			//if (pp < 10) {fmt.Println(      red(" out2 "), " ixRR=", ixRR , " ", rowX ) }
-			outS1 += "<br>" + strconv.Itoa( SEL_EXTR_ROW ) + "|" + new_rIdRow + "|" + strconv.Itoa( ixRR) + "|"   + rowX + "|" + rline.rTran1 +
-				"|" + strconv.Itoa(rline.rIxGroup); 
-		}	
-	} // end for ixRR
-	//------------------------------
-	if swLIST_WORD {
-		sort.Ints(wordIxFrList)
-		wordIxFrList = append(wordIxFrList, -1)  // serve per scrivere l'ultimo dell'elenco 
-		   
-		//fmt.Println("bind_go_passToJs_rowList  wordIxFrList=", wordIxFrList)
-		
-		preW:=-1
-		numRw:=-999
-		outS1 = ""
-		//var highestValue = string( highestValueByte ) + "end_of_list"	
-		//fmt.Println("bind_go_passToJs_rowList len(uniqueWordByFreq)=",  len(uniqueWordByFreq), " last word=",  uniqueWordByFreq[ len(uniqueWordByFreq)-1 ].uWord2 ) 
-		//----------------
-		/**
-		for ix1,WF := range(uniqueWordByFreq) { 
-			fmt.Println(" tutti    uniqueWordByFreq[",ix1, "]=", WF.uWord2) 
-		}
-		**/
-		//------------------------------------
-		swElab:=false; 
-		var xWordAlpha wordUnAlphaStruct  
-		
-		for _,ixWF := range(wordIxFrList) {
-			//fmt.Println("bind_go_passToJs_rowList  ixWF =", ixWF,  "  preW=", preW, "   numRw=", numRw )
-			
-			if ixWF == preW {
-				numRw++
-				continue
-			}  	
-			swElab = false
-			if ((numRw > 0) && (preW >= 0)) { 
-				swElab = true
-				ixAl := uniqueWordByFreq[preW].fuIxUnW_al 
-				xWordAlpha= uniqueWordByAlpha[ixAl] 
-				//fmt.Println("preW=", preW, " WORD ", cyan(xWordAlpha.uWord2), " xWordAlpha.uLearnedYN=", xWordAlpha.uLearnedYN, "  swLIST_TOLEARN=", swLIST_TOLEARN)
-				if swLIST_TOLEARN {
-					if xWordAlpha.uLearnedYN == LEARNED_YES { swElab = false }
-				}
-			}
-			if swElab {	
-				//fmt.Println("    uniqueWordByFreq[",preW, "]=",cyan( uniqueWordByFreq[preW].uWord2 ) , " numRw=", numRw)     	
-				sw, rowW := word_to_row("", false, "anyRow", xWordAlpha, numRw)  
-				if sw {	
-					numOut++
-					//if (numOut < from1) {continue}   // July7, 2025  
-					outS1 += "<br>" + rowW 						
-					//if numOut >= numWords { 
-					//	break
-					//}
-				}
-			}
-			preW = ixWF	
-			numRw = 1
-		} // end for ixWf range
-		//fmt.Println("bind_go_passToJs_rowList  ", numOut, " words  --> js function=",js_function2W , "\n\toutS1=", outS1 )   
-		if len(outS1) == 0 { outS1 = "<br>" }
-		go_exec_js_function( js_function2W+","+caller, outS1 ); 			
-	} else {	
-		if len(outS1) == 0 { outS1 = "<br>" }
-		go_exec_js_function( js_function1R+","+caller, outS1 ); 	
-	}
-			
-} // end of bind_go_passToJs_rowList
-
-//-------------------------------
 func listStringLemmaSlice_Tran( xWordAlpha wordUnAlphaStruct) string {
 	listS:=""
 	for _, ixL1:= range xWordAlpha.uIxLemmaL { 
@@ -689,7 +441,7 @@ g00_2structure.go => }
 g00_2structure.go => //-------------------------------
 g00_2structure.go => //--
 g00_2structure.go => type wordUnAlphaStruct struct {    // uniqueWordByAlpha
-g00_2structure.go => 	uWordSeq    string	
+g00_2structure.go => 	uWord0    string	
 g00_2structure.go =>     uWord2      string		
 g00_2structure.go => 	uIxUnW_al   int            // index of this word in the uniqueWordByAlpha 	
 g00_2structure.go => 	uIxUnW_fr   int            // index of this word in the uniqueWordByFreq	
@@ -729,7 +481,7 @@ func g08_bind_go_passToJs_rowWordList(numIdOut string, ixRR int, js_function str
 			strconv.Itoa(xWordAlpha.uTotRow)  + ";" ; 
 		for _,ixLe:= range xWordAlpha.uIxLemmaL {
 			lem := lemmaSlice[ixLe]  
-			row11 += "[" + lem.leLemma + ";" + lem.lePara + ";" + lem.leTran + ";" + lem.leExample + ";" + strconv.Itoa(lem.leNumWords) + "] " ; 
+			row11 += "[" + lem.leLemmaOr + ";" + lem.lePara + ";" + lem.leTran + ";" + lem.leExample + ";" + strconv.Itoa(lem.leNumWords) + "] " ; 
 		}
 		outS1 += row11 + endOfLine; 		
 	}	
@@ -739,39 +491,6 @@ func g08_bind_go_passToJs_rowWordList(numIdOut string, ixRR int, js_function str
 } // end of bind_go_passToJs_rowWordList 
 
 //------------------
-func OLDg08_bind_go_passToJs_rowWordList(numIdOut string, ixRR int, js_function string) {
-	//  lista di tutte le parole di una frase	
-	
-	if ixRR >= len(inputTextRowSlice) { ixRR = len(inputTextRowSlice) - 1 }
-	
-	rowX := inputTextRowSlice[ixRR]
-
-	outS1:= numIdOut + "," + strconv.Itoa(ixRR) + "," + strconv.Itoa(rowX.rNumWords) +"," + strconv.Itoa( len(rowX.rListIxUnF)) + endOfLine
-	
-	for w:=0; w < len(rowX.rListIxUnF); w++ {  
-		if rowX.rListFreq[w] < 1 {continue}     // the entry is allocated, but unused  
-		ixWord := rowX.rListIxUnF[w] 
-		if ixWord < 0 { continue}
-		ixAl:= uniqueWordByFreq[ixWord].fuIxUnW_al 
-		xWordAlpha := uniqueWordByAlpha[ ixAl ]
-		//pLemma:=  lemmaQuestionMark_remove( xWordF.uLemmaL )
-		
-		row11 := xWordAlpha.uWord2 + "," + strconv.Itoa(xWordAlpha.uIxUnW_fr) + "," + 
-			strconv.Itoa(xWordAlpha.uTotRow)  + ";" + 
-			fmt.Sprint( strings.Join(xWordAlpha.uLemmaL, wSep) ) +  
-			//";" + fmt.Sprint( strings.Join(xWordAlpha.uTranL, wSep)) + 
-			";" + listStringLemmaSlice_Tran(xWordAlpha)     +
-			endOfLine 
-		
-		outS1 += row11; 
-		
-	}	
-
-	go_exec_js_function( js_function, outS1 ); 				
-
-} // end of OLDbind_go_passToJs_rowWordList 
-
-//-------------------------------------------------
 
 func cleanRow(row0 string) string{
 

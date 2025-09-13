@@ -367,16 +367,6 @@ let note_clock_timer_symb = '<span style="font-size:2em;width:auto;height:1.4em;
 
 //--------------------------------
 
-//js2___________________  js2
-
-
-let last_ele_analWords_id; 
-let last_ele_analWords_tr;
-let last_ele_analWords_height;
-//js3___________________  	
-
-//js4___________________  	
-
 let startTime;
 let txt_length; 
 let sw_pause = false; 

@@ -112,13 +112,14 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 		cols := strings.Fields( regexp.MustCompile(separWord).ReplaceAllString(lineZ0," ") ) 
 		//cols:= strings.Split( strings.ToLower( lineZ0 ), "|" )   // Fields   split using whitespace,  treats consecutive whitespace characters as a single separator		
 		if len(cols) < 2 { continue } 
-		wordLemma1.lWord2   = stdCode( strings.TrimSpace( cols[0] ) ) 		
-		wordLemma1.lLemma   = stdCode( strings.TrimSpace( cols[1] )	)
+		wordLemma1.lWord0   = strings.TrimSpace( cols[0] )  		
+		wordLemma1.lLemmaOr = strings.TrimSpace( cols[1] )
+		wordLemma1.lWord2   = stdCode( wordLemma1.lWord0 ) 		
+		wordLemma1.lLemma   = stdCode( wordLemma1.lLemmaOr )
 		
 		if len(wordLemma1.lLemma) < 1 { continue;  } 
 		if ((wordLemma1.lLemma == "-") || (wordLemma1.lLemma[0:1] < "A")) { continue;  }   // ignore number  
-		
-		//wordLemma1.lWordSeq     = seqCode( wordLemma1.lWord2)
+				
 		wordLemma1.lIxLemma     = -1
 		wordLemma1.lIxUnWord_al = -1
 		
@@ -142,6 +143,7 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 		
 	numLemma:=0
 	preLemma:=  ""
+	preLemmaOr:=  ""
 	numLemmaAdded:=0
 	numLemmaOrig:=0 
 	z:=-1 // minus 1
@@ -171,7 +173,7 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 		if preLemma != wL.lLemma { 	
 			if numW > 0 {
 				//scrive lemma precedente 	
-				numLemmaOrig, numLemmaAdded	= g14_appendOneLemma( preLemma, fromIx, toIx, numLemmaOrig, numLemmaAdded)
+				numLemmaOrig, numLemmaAdded	= g14_appendOneLemma( preLemma, preLemmaOr, fromIx, toIx, numLemmaOrig, numLemmaAdded)
 				listAllLemmaFromFile = append(listAllLemmaFromFile, preLemma)  // non mi serve lemmaSlice è nello stesso ordine
 			}			
 			numW=0
@@ -179,12 +181,13 @@ func g30_read_wordLemma_file( path0 string, inpLemmaFile_wordLemma0 string,  inp
 		} 
 		numW++
 		toIx=z	
-		preLemma = wL.lLemma	
+		preLemma   = wL.lLemma	
+		preLemmaOr = wL.lLemmaOr	
 	} 
 	///-------------
 	if numW > 0 {
 		//scrive lemma precedente 				
-		numLemmaOrig, numLemmaAdded	= g14_appendOneLemma( preLemma, fromIx, toIx, numLemmaOrig, numLemmaAdded)	
+		numLemmaOrig, numLemmaAdded	= g14_appendOneLemma( preLemma, preLemmaOr, fromIx, toIx, numLemmaOrig, numLemmaAdded)	
 		listAllLemmaFromFile = append(listAllLemmaFromFile, preLemma)
 	}
 	

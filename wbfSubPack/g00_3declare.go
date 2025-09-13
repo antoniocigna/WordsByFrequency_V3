@@ -2,7 +2,8 @@ package wbfSubPack
 
 //-----------------------------------------
 const wSep = "§";                         // used to separe word in a list 
-const endOfLine = ";;\n"
+const endOfLine = ";.\n"
+const separ1    = ";."
 var lemma_para_list = make([]paraStruct, 0, 0 )   	
 var lemmaNotFoundList = make([]string,0,100)
 //----------------------
@@ -94,7 +95,7 @@ var separRowList = make([]string,0,0)
 var msgLevelStat = "" 
 
 var sw_PRINT_TIME bool = false;                 // in caso di durata abnorme, usa true per vedere dove impiega più tempo
-var all_words      = make([]string,0, 0) 
+//var all_words      = make([]string,0, 0) 
 var wordSliceAlpha = make([]wordStruct, 0, 0)  
 //var wordSliceAlphaToApp = make([]wordStruct, 0, 0)   
 var wordAlphaPlusPref   = make([]wordStruct, 0, 0)   
